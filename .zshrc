@@ -35,8 +35,7 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # 常用的环境变量
-source ~/.config/zsh/zshenv
-source ~/.config/zsh/zshenv.secrets
+test -r ~/.config/shell-env && source ~/.config/shell-env
 
 # 套件四天王
 zinit light zsh-users/zsh-completions
