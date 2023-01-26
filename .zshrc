@@ -58,10 +58,15 @@ zinit light SukkaW/zsh-proxy
 
 (( $+commands[fnm] )) && eval "$(fnm env --use-on-cd)"
 
-# pnpm
-export PNPM_HOME="$HOME/.local/share/pnpm"
-export PATH="$PNPM_HOME:$PATH"
-# pnpm end
+if [ -d $BREW_PREFIX ]; then
+  eval "$($BREW_PREFIX/bin/brew shellenv)"
+  fpath=($BREW_PREFIX/share/zsh/site-functions $fpath)
+fi
+
+if [ -d $HOME/.nix-profile ]; then
+  . $HOME/.nix-profile/etc/profile.d/nix.sh
+  fpath=($HOME/.nix-profile/share/zsh/site-functions $fpath)
+fi
 
 # Other useful tools
 autoload -U zcalc
