@@ -9,5 +9,6 @@ There is also an [article](https://sspai.com/post/66894) in Chinese explained wh
 - Automate everything, configuration as code.
 - Prefer to `nix` whenever possible.
   - `yay` or `brew` only for OS specific packages.
+  - Migrate to home-manager.
 
 Happy hacking!

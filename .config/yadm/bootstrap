@@ -28,16 +28,19 @@ install_nix() {
       . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
     fi
   }
-  command -v nix >/dev/null 2>&1 || install_nix_bin
 
-  if [ -f "$HOME/.config/nix/installed_packages" ]; then
-    # This list created with `nix-env -qaPs|grep '^I'|awk '{print $2}' > ~/.config/nix/installed_packages`
-    cat "$HOME/.config/nix/installed_packages" | xargs nix-env -iA
-  fi
-  if [ -f "$HOME/.config/nix/installed_packages.local" ]; then
-    # Additional packages that might be needed here or there
-    cat "$HOME/.config/nix/installed_packages.local" | xargs nix-env -i
-  fi
+  install_home_manager() {
+    nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+    nix-channel --update
+    nix-shell '<home-manager>' -A install
+  }
+ 
+  command -v nix >/dev/null 2>&1 || install_nix_bin
+  command -v home-manager >/dev/null 2>&1 || install_home_manager
+
+  # 如果需要，可以设置镜像
+  # 测试下来，镜像不是很稳定，不如直接用 proxy
+  # https://mirrors.tuna.tsinghua.edu.cn/help/nix/
 }
 
 # For Arch Linux
