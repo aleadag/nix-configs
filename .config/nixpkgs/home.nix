@@ -28,6 +28,8 @@
   # changes in each release.
   home.stateVersion = "22.11";
 
+  imports = [ ./nix-nvim ];
+
   # Disable for now, as still cannot figure now how to make it work!
   # i18n.inputMethod.enabled = "fcitx5";
   # i18n.inputMethod.fcitx.engines = with pkgs.fcitx-engines; [ libpinyin cloudpinyin ];
@@ -55,9 +57,17 @@
     };
  
     git = {
-      enable = true;
+      enable = false;
       userName = "Alexander Wang";
       userEmail = "alexander@tiwater.com";
+      # extraConfig = {
+      #   http = {
+      #     proxy = socks5://127.0.0.1:7891;
+      #   };
+      #   https = {
+      #     proxy = socks5://127.0.0.1:7891;
+      #   };
+      # };
     };
 
     newsboat = {
@@ -65,7 +75,33 @@
       urls = [{
         url = "https://rsshub.app/cls/telegraph";
         tags = ["财经"];
+      } {
+        url = "https://hnrss.org/newest";
+        tags = ["技术"];
+      } {
+        url = "http://feeds.bbci.co.uk/news/world/rss.xml";
+        tags = ["新闻"];
+      } {
+        url = "https://news.mingpao.com/rss/pns/s00001.xml";
+        tags = ["新闻"];
+      } {
+        url = "http://www.zhihu.com/rss";
+        tags = ["视野"];
+      } {
+        url = "http://www.matrix67.com/blog/feed";
+        tags = ["视野"];
+      } {
+        url = "https://www.williamlong.info/rss.xml";
+      } {
+        url = "https://feeds.appinn.com/appinns/";
+      } {
+        url = "https://feeds.bbci.co.uk/zhongwen/simp/rss.xml";
       }];
+      extraConfig = ''
+        bookmark-cmd instapaper
+        bookmark-autopilot yes
+        bind-key i bookmark
+      '';
     };
  };
 }

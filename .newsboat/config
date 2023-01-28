@@ -1,4 +1,0 @@
-# browser "links %u"
-bookmark-cmd instapaper
-bookmark-autopilot yes
-bind-key i bookmark
