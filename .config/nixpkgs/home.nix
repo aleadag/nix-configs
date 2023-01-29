@@ -17,6 +17,10 @@
     pkgs.yadm
   ];
 
+  home.shellAliases = {
+    ll = "ls -l";
+  };
+
 
   # This value determines the Home Manager release that your
   # configuration is compatible with. This helps avoid breakage
@@ -28,7 +32,7 @@
   # changes in each release.
   home.stateVersion = "22.11";
 
-  imports = [ ./nix-nvim ];
+  imports = [ ./nix-nvim ./nix-zsh ];
 
   # Disable for now, as still cannot figure now how to make it work!
   # i18n.inputMethod.enabled = "fcitx5";
