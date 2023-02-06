@@ -1,18 +1,6 @@
 { pkgs, lib }:
 
 {
-  vim-bepoptimist = pkgs.vimUtils.buildVimPlugin rec {
-    pname = "vim-bepoptimist";
-    version = "v2.1.1";
-    src = pkgs.fetchFromGitHub {
-        owner = "vegaelle";
-        repo = "vim-bepoptimist";
-        rev = "${version}";
-        sha256 = "1nmpvnqlw4y2g1ki33nbj74vdnaxnaqshqv3238zxgvps44y3mw5";
-    };
-    meta.homepage = "https://github.com/sheoak/vim-bepoptimist";
-    };
-
   nvim-base16 = pkgs.vimUtils.buildVimPlugin rec {
     pname = "nvim-base16";
     version = "2022-05-27";

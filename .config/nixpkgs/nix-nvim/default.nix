@@ -1,6 +1,7 @@
 { pkgs, lib, ... }:
 let
   vim-plugins = import ./plugins.nix { inherit pkgs lib; };
+  nixos-unstable = import <nixpkgs-unstable> {};
 in {
   # nixpkgs.overlays = [
   #   (import (builtins.fetchTarball {
@@ -8,7 +9,7 @@ in {
   #   }))
   # ];
   home.packages = with pkgs; [
-    nodePackages.pyright tree-sitter code-minimap
+    nixos-unstable.nodePackages.pyright nixos-unstable.tree-sitter nixos-unstable.code-minimap
     luaPackages.lua-lsp rnix-lsp nodePackages.vim-language-server
     nodePackages.yaml-language-server nodePackages.bash-language-server
     nodePackages.vscode-json-languageserver-bin
@@ -18,7 +19,7 @@ in {
   ];
   programs.neovim = {
     enable = true;
-    # package = nixos-unstable.neovim-unwrapped;
+    package = nixos-unstable.neovim-unwrapped;
     viAlias = true;
     vimAlias = true;
     vimdiffAlias = true;
@@ -41,17 +42,16 @@ in {
       vim-nix
       robotframework-vim
       # vimspector
-      vim-bepoptimist
-      nvim-base16  # the one packaged in nixpkgs is different
+      vim-plugins.nvim-base16  # the one packaged in nixpkgs is different
       popup-nvim
       plenary-nvim
       telescope-nvim
       telescope-symbols-nvim
       # telescope-media-files  # doesn't support wayland yet
       nvim-colorizer-lua
-      nvim-treesitter.withAllGrammars
+      nixos-unstable.vimPlugins.nvim-treesitter.withAllGrammars
       nvim-lspconfig
-      lsp_extensions-nvim
+      nixos-unstable.vimPlugins.lsp_extensions-nvim
       # completion-nvim
       # cmp-nvim-lsp
       nvim-cmp
@@ -59,9 +59,9 @@ in {
       gitsigns-nvim
       neogit
       diffview-nvim
-      bufferline-nvim
+      nixos-unstable.vimPlugins.bufferline-nvim
       nvim-autopairs
-      galaxyline-nvim
+      nixos-unstable.vimPlugins.galaxyline-nvim
       vim-closetag
       friendly-snippets
       vim-vsnip
@@ -69,8 +69,8 @@ in {
       nvim-web-devicons
       vim-devicons
       # vim-auto-save  # ?
-      neoscroll-nvim
-      # zenmode-nvim
+      nixos-unstable.vimPlugins.neoscroll-nvim
+      vim-plugins.zenmode-nvim
       minimap-vim
       indent-blankline-nvim  # using my own derivation because the nixpkgs still uses the master branch
       vim-easymotion

@@ -1090,24 +1090,24 @@ map("n", "<leader>z", [[ <Cmd> ZenMode<CR>]], opt)
 -- Writing mode
 local writing_mode = false
 -- local spell_mode = vim.wo.spell
--- function toggle_writing_mode()
---   require("zen-mode").toggle({
---     window = {width = 100, options = {number = false, relativenumber = false, signcolumn = "no", linebreak = true, cursorline = false, colorcolumn = "", spell=true}},
---     plugins = {options = {textwidth = 0}}
---   })
---   if writing_mode then
---     -- base16(base16.themes["solarized-dark"], true)
---     vim.cmd('colorscheme base16-solarized-dark')
---     set_highlights()
---     writing_mode = false
---   else
---     -- base16(base16.themes["solarized-light"], true)
---     vim.cmd('colorscheme base16-solarized-light')
---     writing_mode = true
---   end
--- end
+function toggle_writing_mode()
+  require("zen-mode").toggle({
+    window = {width = 100, options = {number = false, relativenumber = false, signcolumn = "no", linebreak = true, cursorline = false, colorcolumn = "", spell=true}},
+    plugins = {options = {textwidth = 0}}
+  })
+  if writing_mode then
+    -- base16(base16.themes["solarized-dark"], true)
+    vim.cmd('colorscheme base16-solarized-dark')
+    set_highlights()
+    writing_mode = false
+  else
+    -- base16(base16.themes["solarized-light"], true)
+    vim.cmd('colorscheme base16-solarized-light')
+    writing_mode = true
+  end
+end
 
--- map("n", "<leader>Z", [[ <Cmd> lua toggle_writing_mode()<CR>]], opt)
+map("n", "<leader>Z", [[ <Cmd> lua toggle_writing_mode()<CR>]], opt)
 map("i", "<down>", "<c-\\><c-o>gj", {nowait = true, noremap = true})
 map("i", "<up>", "<c-\\><c-o>gk", {nowait = true, noremap = true})
     
@@ -1422,7 +1422,8 @@ g.minimap_width = 10
 g.minimap_auto_start = 1
 g.minimap_auto_start_win_enter = 1
 g.minimap_highlight_range = 1
-g.minimap_block_buftypes = {'terminal', 'help'}
+-- 使用默认设置
+-- g.minimap_block_buftypes = {'nofile', 'terminal', 'help'}
 
 -- quick-scope
 g.qs_highlight_on_keys = {'f', 'F', 't', 'T', 'à', 'À'}  -- à doesn't seem to work?

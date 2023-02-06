@@ -19,6 +19,7 @@ in
   programs.zsh = {
     enable = true;
     enableAutosuggestions = true;
+    enableCompletion = true;
     enableSyntaxHighlighting = true;
     initExtra = ''
       # The powerlevel theme I'm using is distgusting in TTY, let's default
@@ -54,6 +55,10 @@ in
           rev = "2c15588a1585ea07c0673f551dd39e904a7d504a";
           sha256 = "M01m50VNkjc6Fgo9KaETlINJYkLttaRMrkBsCgqRJ4c=";
         };
+      }
+      {
+        name = "nixify";
+        src = ./plugins;
       }
     ];
   };

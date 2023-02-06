@@ -1,20 +1,26 @@
 { config, pkgs, ... }:
 
+let
+  pkgsUnstable = import <nixpkgs-unstable> {};
+in
 {
-  nixpkgs.config.allowUnfree = true;
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
   home.username = "awang";
   home.homeDirectory = "/home/awang";
 
-  home.packages = [
+  home.packages = with pkgs; [
     # Need to test it!
     # pkgs.clash
-    pkgs.htop
+
     # 暂时移除，尚不知道如何设置：allowUnfree = true
     # pkgs.microsoft-edge
     # 在完全切换到hm之前，还是需要ydm
-    pkgs.yadm
+    yadm
+
+    # Nix related
+    nix-doc
+    nix-index
   ];
 
   home.shellAliases = {
@@ -32,7 +38,18 @@
   # changes in each release.
   home.stateVersion = "22.11";
 
-  imports = [ ./nix-nvim ./nix-zsh ];
+  xdg = {
+    enable = true;
+  };
+
+  imports = [ ./nix-nvim ./nix-zsh ./nix-lf ];
+
+  # autorandr 1.13 有问题，nixpkgs 尚未更新，故先使用unstable版本
+  nixpkgs.overlays = [
+    (self: supper: {
+      autorandr = pkgsUnstable.autorandr;
+    })
+  ];
 
   # Disable for now, as still cannot figure now how to make it work!
   # i18n.inputMethod.enabled = "fcitx5";
@@ -40,6 +57,47 @@
   programs = {
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
+
+   autorandr = {
+      enable = true;
+      profiles = {
+        "work" = {
+          fingerprint = {
+            eDP-1 =
+              "00ffffffffffff000e6f091300000000001e0104a51d147803fad5a3554e9b260f5054000000010101010101010101010101010101015998b8a0b0d0397030203a0025c310000018000000000000000000000000000000000018000000fe0043534f5454330a202020202020000000fe004d4e443838384841312d310a2000ed";
+            DP-1 =
+              "00ffffffffffff00410c5809c61e00002b1e0104b54627783b57a5ac504aa527125054bfef00d1c0b30095008180814081c0010101014dd000a0f0703e8030403500b9882100001a000000ff0041553032303433303037383738000000fc0050484c2033323842310a202020000000fd00283c8c8c3c010a202020202020013c020321f14b0103051404131f120211902309070783010000681a00000101283c00a36600a0f0701f8030203500b9882100001a565e00a0a0a0295030203500b9882100001e4d6c80a070703e8030203a00b9882100001a00000000000000000000000000000000000000000000000000000000000000000000000000000000b8";
+          };
+          config = {
+            eDP-1 = {
+              enable = false;
+            };
+            DP-1 = {
+              enable = true;
+              crtc = 1;
+              primary = true;
+              position = "0x0";
+              mode = "3840x2160";
+              # gamma = "1.0:0.909:0.833";
+              rate = "60.00";
+              # rotate = "left";
+            };
+          };
+          # hooks.postswitch = readFile ./work-postswitch.sh;
+        };
+      };
+    };
+    
+    bat = {
+      enable = true;
+      # This should pick up the correct colors for the generated theme. Otherwise
+      # it is possible to generate a custom bat theme to ~/.config/bat/config
+      config = { theme = "base16"; };
+    };
+    dircolors = {
+      enable = true;
+      enableZshIntegration = true;
+    };
     # Use direnv to manage development environments
     direnv = {
       enable = true;
@@ -55,15 +113,23 @@
     gh = {
       enable = true;
       settings = {
+        editor = "vi";
         git_protocol = "ssh";
         prompt = "enabled";
       };
     };
  
     git = {
-      enable = false;
+      enable = true;
       userName = "Alexander Wang";
       userEmail = "alexander@tiwater.com";
+      aliases = {
+        hist = "log --pretty=format:'%C(yellow)[%ad]%C(reset) %C(green)[%h]%C(reset) | %C(red)%s %C(bold red){{%an}}%C(reset) %C(blue)%d%C(reset)' --graph --date=short";
+      };
+      delta.enable = true;
+      delta.options.syntax-theme = "gruvbox-dark";
+      lfs.enable = true;
+      lfs.skipSmudge = true;
       # extraConfig = {
       #   http = {
       #     proxy = socks5://127.0.0.1:7891;
@@ -74,13 +140,17 @@
       # };
     };
 
+    htop.enable = true;
+
+    jq.enable = true;
+
     newsboat = {
       enable = true;
       urls = [{
         url = "https://rsshub.app/cls/telegraph";
         tags = ["财经"];
       } {
-        url = "https://hnrss.org/newest";
+        url = "https://hnrss.org/newest?points=100";
         tags = ["技术"];
       } {
         url = "http://feeds.bbci.co.uk/news/world/rss.xml";
@@ -107,5 +177,21 @@
         bind-key i bookmark
       '';
     };
- };
+
+    # starship = {
+    #   enable = true;
+
+    #   settings = {
+    #     character = {
+    #       success_symbol = "[λ](bold green)";
+    #       error_symbol = "[λ](bold red)";
+    #       vicmd_symbol = "[λ](bold yellow)";
+    #     };
+    #   };
+    # };
+  };
+
+  services = {
+    clipmenu.enable = true;
+  };
 }
