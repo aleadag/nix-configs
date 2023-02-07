@@ -1,6 +1,12 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 let
+  inherit (lib) mkIf mkDefault;
+  inherit (pkgs.stdenv.hostPlatform) isLinux isDarwin;
+
+  dummyPackage = pkgs.runCommandLocal "dummy" { } "mkdir $out";
+  packageIfLinux = x: if isLinux then x else dummyPackage;
+
   pkgsUnstable = import <nixpkgs-unstable> {};
 in
 {
@@ -58,8 +64,8 @@ in
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
 
-   autorandr = {
-      enable = true;
+    autorandr = {
+      enable = mkDefault isLinux;
       profiles = {
         "work" = {
           fingerprint = {
@@ -192,6 +198,6 @@ in
   };
 
   services = {
-    clipmenu.enable = true;
+    clipmenu.enable = mkDefault isLinux;
   };
 }
