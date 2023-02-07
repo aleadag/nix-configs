@@ -13,7 +13,10 @@ in
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
   home.username = "awang";
-  home.homeDirectory = "/home/awang";
+  home.homeDirectory = lib.mkMerge [
+    (mkIf isDarwin "/Users/alexander")
+    (mkIf (!isDarwin) "/home/awang")
+  ];
 
   home.packages = with pkgs; [
     # Need to test it!
@@ -57,6 +60,10 @@ in
     })
   ];
 
+  # macOS 上无法编译 man pages
+  # https://github.com/NixOS/nixpkgs/issues/196651
+  manual.manpages.enable = mkDefault isLinux;
+
   # Disable for now, as still cannot figure now how to make it work!
   # i18n.inputMethod.enabled = "fcitx5";
   # i18n.inputMethod.fcitx.engines = with pkgs.fcitx-engines; [ libpinyin cloudpinyin ];
@@ -64,7 +71,7 @@ in
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
 
-    autorandr = {
+   autorandr = {
       enable = mkDefault isLinux;
       profiles = {
         "work" = {

@@ -1401,21 +1401,24 @@ cmd("highlight! StatusLineNC gui=underline guibg=NONE guifg=#073642")
 cmd "hi cursorlinenr guibg=NONE guifg=#fdf6e3"
 
 -- Zenmode
--- require("zen-mode").setup {
---   plugins = {
---     kitty =  {
---       enabled = true,
---       font = "+2"
---     }
---   },
---   on_open = function(win)
---      cmd[[MinimapClose]]
---   end,
---   -- callback where you can add custom code when the Zen window closes
---   on_close = function()
---     cmd[[Minimap]]
---   end,
--- }
+require("zen-mode").setup {
+  plugins = {
+    kitty =  {
+      enabled = true,
+      font = "+2"
+    }
+  },
+  on_open = function(win)
+     cmd[[MinimapClose]]
+  end,
+  -- callback where you can add custom code when the Zen window closes
+  on_close = function()
+    cmd[[Minimap]]
+  end,
+}
+
+-- vimwiki
+g.vimwiki_list = {{path = '~/notes', syntax = 'markdown', ext = '.md'}}
 
 -- Minimap
 g.minimap_width = 10
