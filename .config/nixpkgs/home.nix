@@ -70,8 +70,9 @@ in
   programs = {
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
-
-   autorandr = {
+    
+    alacritty.enable = true;
+    autorandr = {
       enable = mkDefault isLinux;
       profiles = {
         "work" = {

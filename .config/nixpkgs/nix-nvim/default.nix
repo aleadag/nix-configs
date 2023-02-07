@@ -42,7 +42,7 @@ in {
       vim-nix
       robotframework-vim
       # vimspector
-      vim-plugins.nvim-base16  # the one packaged in nixpkgs is different
+      nixos-unstable.vimPlugins.nvim-base16
       popup-nvim
       plenary-nvim
       telescope-nvim

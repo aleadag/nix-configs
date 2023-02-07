@@ -1,19 +1,6 @@
 { pkgs, lib }:
 
 {
-  nvim-base16 = pkgs.vimUtils.buildVimPlugin rec {
-    pname = "nvim-base16";
-    version = "2022-05-27";
-    src = pkgs.fetchFromGitHub {
-        owner = "RRethy";
-        repo = "nvim-base16";
-        rev = "d8c6c19d87b2d8489bb4bbc532c5036c843e2fd9";
-        sha256 = "R0TAahwbCZW5PQiKw6kKv4xFAhp/KAaPV3xOVvrTqM4=";
-    };
-    meta.homepage = "https://github.com/norcalli/nvim-base16";
-    }
-;
-
   neoscroll-nvim = pkgs.vimUtils.buildVimPlugin rec {
     pname = "neoscroll-nvim";
     version = "2022-06-16";
