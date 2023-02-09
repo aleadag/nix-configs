@@ -30,6 +30,9 @@ in {
     nix-doc
     nix-index
     nixfmt
+
+    # Formatters
+    pkgsUnstable.stylua
   ];
 
   home.shellAliases = { ll = "ls -l"; };
@@ -44,7 +47,10 @@ in {
   # changes in each release.
   home.stateVersion = "22.11";
 
-  xdg = { enable = true; };
+  xdg = {
+    enable = true;
+    configFile = { "stylua/stylua.toml".source = ./config/stylua.toml; };
+  };
 
   imports = [ ./nix-nvim ./nix-zsh ./nix-lf ./nix-tmux ];
 
