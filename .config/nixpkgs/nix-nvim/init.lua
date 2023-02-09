@@ -37,7 +37,7 @@ opt("w", "cursorline", true)
 opt("w", "colorcolumn", "+1")
 
 opt("o", "mouse", "a")
-opt("b", "spelllang", "en,fr")
+opt("b", "spelllang", "en,us")
 
 
 opt("w", "signcolumn", "yes")
@@ -1092,7 +1092,7 @@ local writing_mode = false
 -- local spell_mode = vim.wo.spell
 function toggle_writing_mode()
   require("zen-mode").toggle({
-    window = {width = 100, options = {number = false, relativenumber = false, signcolumn = "no", linebreak = true, cursorline = false, colorcolumn = "", spell=true}},
+    window = {width = 100, options = {number = false, relativenumber = false, signcolumn = "no", linebreak = true, cursorline = false, colorcolumn = "", spell=false}},
     plugins = {options = {textwidth = 0}}
   })
   if writing_mode then
@@ -1110,7 +1110,6 @@ end
 map("n", "<leader>Z", [[ <Cmd> lua toggle_writing_mode()<CR>]], opt)
 map("i", "<down>", "<c-\\><c-o>gj", {nowait = true, noremap = true})
 map("i", "<up>", "<c-\\><c-o>gk", {nowait = true, noremap = true})
-    
 
 
 map("n", "<F11>", [[ <Cmd> set spell!<CR>]], opt)
@@ -1121,7 +1120,7 @@ map("i", "<F2>", [[ <Cmd>set paste!<CR>]], opt)
 
 map('n', '<C-c>', '<cmd> let @/ = ""<CR>', opt)
 
-map('n', '<leader>ç', '<cmd> MinimapToggle<CR>', opt)
+map('n', '<leader>c', '<cmd> MinimapToggle<CR>', opt)
 map('t', '<Esc>', '<C-\\><C-n>', opt)
 
 -- highlights --
@@ -1409,7 +1408,7 @@ require("zen-mode").setup {
     }
   },
   on_open = function(win)
-     cmd[[MinimapClose]]
+    cmd[[MinimapClose]]
   end,
   -- callback where you can add custom code when the Zen window closes
   on_close = function()
@@ -1422,7 +1421,7 @@ g.vimwiki_list = {{path = '~/notes', syntax = 'markdown', ext = '.md'}}
 
 -- Minimap
 g.minimap_width = 10
-g.minimap_auto_start = 1
+g.minimap_auto_start = 0
 g.minimap_auto_start_win_enter = 1
 g.minimap_highlight_range = 1
 -- 使用默认设置

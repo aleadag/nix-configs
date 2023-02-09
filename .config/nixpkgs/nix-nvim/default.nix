@@ -65,7 +65,7 @@ in {
       vim-closetag
       friendly-snippets
       vim-vsnip
-      nvim-tree-lua
+      nixos-unstable.vimPlugins.nvim-tree-lua
       nvim-web-devicons
       vim-devicons
       # vim-auto-save  # ?

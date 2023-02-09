@@ -15,12 +15,12 @@
 
   zenmode-nvim = pkgs.vimUtils.buildVimPlugin rec {
     pname = "zenmode-nvim";
-    version = "2021-11-07";
+    version = "2023-02-08";
     src = pkgs.fetchFromGitHub {
         owner = "folke";
         repo = "zen-mode.nvim";
-        rev = "f1cc53d32b49cf962fb89a2eb0a31b85bb270f7c";
-        sha256 = "1fxkrny1xk69w8rlmz4x5msvqb8i8xvvl9csndpplxhkn8wzirdp";
+        rev = "3c92f503823088862ca2a7809d1c7edc90fb92fa";
+        sha256 = "F/BKOdFjm8SCCvWWry+n1OLUNQ9y/Mp0Y3batkJ4jdA=";
     };
     meta.homepage = "https://github.com/folke/zen-mode.nvim";
     };
