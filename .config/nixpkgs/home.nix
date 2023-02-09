@@ -7,9 +7,8 @@ let
   dummyPackage = pkgs.runCommandLocal "dummy" { } "mkdir $out";
   packageIfLinux = x: if isLinux then x else dummyPackage;
 
-  pkgsUnstable = import <nixpkgs-unstable> {};
-in
-{
+  pkgsUnstable = import <nixpkgs-unstable> { };
+in {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
   home.username = "awang";
@@ -30,12 +29,10 @@ in
     # Nix related
     nix-doc
     nix-index
+    nixfmt
   ];
 
-  home.shellAliases = {
-    ll = "ls -l";
-  };
-
+  home.shellAliases = { ll = "ls -l"; };
 
   # This value determines the Home Manager release that your
   # configuration is compatible with. This helps avoid breakage
@@ -47,18 +44,13 @@ in
   # changes in each release.
   home.stateVersion = "22.11";
 
-  xdg = {
-    enable = true;
-  };
+  xdg = { enable = true; };
 
   imports = [ ./nix-nvim ./nix-zsh ./nix-lf ./nix-tmux ];
 
   # autorandr 1.13 有问题，nixpkgs 尚未更新，故先使用unstable版本
-  nixpkgs.overlays = [
-    (self: supper: {
-      autorandr = pkgsUnstable.autorandr;
-    })
-  ];
+  nixpkgs.overlays =
+    [ (self: supper: { autorandr = pkgsUnstable.autorandr; }) ];
 
   # macOS 上无法编译 man pages
   # https://github.com/NixOS/nixpkgs/issues/196651
@@ -79,11 +71,20 @@ in
           program = "${pkgs.zsh}/bin/zsh";
           args = [ "-l" "-c" "source /etc/zshrc && tmux attach || tmux" ];
         };
-        font = let fontname = "JetBrainsMono Nerd Font"; in
-        {
-          normal = { family = fontname; style = "Bold"; };
-          bold = { family = fontname; style = "Bold"; };
-          italic = { family = fontname; style = "Light"; };
+        font = let fontname = "JetBrainsMono Nerd Font";
+        in {
+          normal = {
+            family = fontname;
+            style = "Bold";
+          };
+          bold = {
+            family = fontname;
+            style = "Bold";
+          };
+          italic = {
+            family = fontname;
+            style = "Light";
+          };
           size = 12;
         };
         # Colors (Solarized Dark)
@@ -100,25 +101,25 @@ in
           };
 
           normal = {
-            black   = "#073642"; # base02
-            red     = "#dc322f"; # red
-            green   = "#859900"; # green
-            yellow  = "#b58900"; # yellow
-            blue    = "#268bd2"; # blue
+            black = "#073642"; # base02
+            red = "#dc322f"; # red
+            green = "#859900"; # green
+            yellow = "#b58900"; # yellow
+            blue = "#268bd2"; # blue
             magenta = "#d33682"; # magenta
-            cyan    = "#2aa198"; # cyan
-            white   = "#eee8d5"; # base2;
+            cyan = "#2aa198"; # cyan
+            white = "#eee8d5"; # base2;
           };
 
           bright = {
-            black   = "#586e75"; # base01
-            red     = "#cb4b16"; # orange
-            green   = "#586e75"; # base01
-            yellow  = "#657b83"; # base00
-            blue    = "#839496"; # base0
+            black = "#586e75"; # base01
+            red = "#cb4b16"; # orange
+            green = "#586e75"; # base01
+            yellow = "#657b83"; # base00
+            blue = "#839496"; # base0
             magenta = "#6c71c4"; # violet
-            cyan    = "#93a1a1"; # base1
-            white   = "#fdf6e3"; # base3
+            cyan = "#93a1a1"; # base1
+            white = "#fdf6e3"; # base3
           };
         };
       };
@@ -135,9 +136,7 @@ in
               "00ffffffffffff00410c5809c61e00002b1e0104b54627783b57a5ac504aa527125054bfef00d1c0b30095008180814081c0010101014dd000a0f0703e8030403500b9882100001a000000ff0041553032303433303037383738000000fc0050484c2033323842310a202020000000fd00283c8c8c3c010a202020202020013c020321f14b0103051404131f120211902309070783010000681a00000101283c00a36600a0f0701f8030203500b9882100001a565e00a0a0a0295030203500b9882100001e4d6c80a070703e8030203a00b9882100001a00000000000000000000000000000000000000000000000000000000000000000000000000000000b8";
           };
           config = {
-            eDP-1 = {
-              enable = false;
-            };
+            eDP-1 = { enable = false; };
             DP-1 = {
               enable = true;
               crtc = 1;
@@ -172,9 +171,7 @@ in
       # nix-direnv.enableFlakes = true;
     };
 
-    fzf = {
-      enable = true;
-    };
+    fzf = { enable = true; };
 
     gh = {
       enable = true;
@@ -190,7 +187,8 @@ in
       userName = "Alexander Wang";
       userEmail = "alexander@tiwater.com";
       aliases = {
-        hist = "log --pretty=format:'%C(yellow)[%ad]%C(reset) %C(green)[%h]%C(reset) | %C(red)%s %C(bold red){{%an}}%C(reset) %C(blue)%d%C(reset)' --graph --date=short";
+        hist =
+          "log --pretty=format:'%C(yellow)[%ad]%C(reset) %C(green)[%h]%C(reset) | %C(red)%s %C(bold red){{%an}}%C(reset) %C(blue)%d%C(reset)' --graph --date=short";
       };
       delta.enable = true;
       delta.options.syntax-theme = "gruvbox-dark";
@@ -212,31 +210,35 @@ in
 
     newsboat = {
       enable = true;
-      urls = [{
-        url = "https://rsshub.app/cls/telegraph";
-        tags = ["财经"];
-      } {
-        url = "https://hnrss.org/newest?points=100";
-        tags = ["技术"];
-      } {
-        url = "http://feeds.bbci.co.uk/news/world/rss.xml";
-        tags = ["新闻"];
-      } {
-        url = "https://news.mingpao.com/rss/pns/s00001.xml";
-        tags = ["新闻"];
-      } {
-        url = "http://www.zhihu.com/rss";
-        tags = ["视野"];
-      } {
-        url = "http://www.matrix67.com/blog/feed";
-        tags = ["视野"];
-      } {
-        url = "https://www.williamlong.info/rss.xml";
-      } {
-        url = "https://feeds.appinn.com/appinns/";
-      } {
-        url = "https://feeds.bbci.co.uk/zhongwen/simp/rss.xml";
-      }];
+      urls = [
+        {
+          url = "https://rsshub.app/cls/telegraph";
+          tags = [ "财经" ];
+        }
+        {
+          url = "https://hnrss.org/newest?points=100";
+          tags = [ "技术" ];
+        }
+        {
+          url = "http://feeds.bbci.co.uk/news/world/rss.xml";
+          tags = [ "新闻" ];
+        }
+        {
+          url = "https://news.mingpao.com/rss/pns/s00001.xml";
+          tags = [ "新闻" ];
+        }
+        {
+          url = "http://www.zhihu.com/rss";
+          tags = [ "视野" ];
+        }
+        {
+          url = "http://www.matrix67.com/blog/feed";
+          tags = [ "视野" ];
+        }
+        { url = "https://www.williamlong.info/rss.xml"; }
+        { url = "https://feeds.appinn.com/appinns/"; }
+        { url = "https://feeds.bbci.co.uk/zhongwen/simp/rss.xml"; }
+      ];
       extraConfig = ''
         bookmark-cmd instapaper
         bookmark-autopilot yes
@@ -257,7 +259,5 @@ in
     # };
   };
 
-  services = {
-    clipmenu.enable = mkDefault isLinux;
-  };
+  services = { clipmenu.enable = mkDefault isLinux; };
 }

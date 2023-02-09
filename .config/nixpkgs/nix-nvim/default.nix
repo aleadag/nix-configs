@@ -1,7 +1,7 @@
 { pkgs, lib, ... }:
 let
   vim-plugins = import ./plugins.nix { inherit pkgs lib; };
-  nixos-unstable = import <nixpkgs-unstable> {};
+  nixos-unstable = import <nixpkgs-unstable> { };
 in {
   # nixpkgs.overlays = [
   #   (import (builtins.fetchTarball {
@@ -9,9 +9,14 @@ in {
   #   }))
   # ];
   home.packages = with pkgs; [
-    nixos-unstable.nodePackages.pyright nixos-unstable.tree-sitter nixos-unstable.code-minimap
-    luaPackages.lua-lsp rnix-lsp nodePackages.vim-language-server
-    nodePackages.yaml-language-server nodePackages.bash-language-server
+    nixos-unstable.nodePackages.pyright
+    nixos-unstable.tree-sitter
+    nixos-unstable.code-minimap
+    luaPackages.lua-lsp
+    rnix-lsp
+    nodePackages.vim-language-server
+    nodePackages.yaml-language-server
+    nodePackages.bash-language-server
     nodePackages.vscode-json-languageserver-bin
     nodePackages.vscode-html-languageserver-bin
     nodePackages.vscode-css-languageserver-bin
@@ -25,12 +30,12 @@ in {
     vimdiffAlias = true;
     plugins = with pkgs.vimPlugins; [
       csv-vim
-      vim-surround  # fix config
+      vim-surround # fix config
       vim-repeat
       # vim-speeddating  # makes statusline buggy??
       vim-commentary
       vim-unimpaired
-      vim-sleuth  # adjusts shiftwidth and expandtab based on the current file
+      vim-sleuth # adjusts shiftwidth and expandtab based on the current file
       vim-startify
       vim-multiple-cursors
       gundo-vim
@@ -70,14 +75,14 @@ in {
       vim-devicons
       # vim-auto-save  # ?
       nixos-unstable.vimPlugins.neoscroll-nvim
-      vim-plugins.zenmode-nvim
+      nixos-unstable.vimPlugins.zen-mode-nvim
       minimap-vim
-      indent-blankline-nvim  # using my own derivation because the nixpkgs still uses the master branch
+      nixos-unstable.vimPlugins.indent-blankline-nvim # using my own derivation because the nixpkgs still uses the master branch
       vim-easymotion
       quick-scope
       matchit-zip
       targets-vim
-      neoformat
+      nixos-unstable.vimPlugins.neoformat
       vim-numbertoggle
       # vim-markdown-composer
       vimwiki
@@ -85,10 +90,14 @@ in {
       vim-python-pep8-indent
       lsp_signature-nvim
       rust-tools-nvim
-      vim-plugins.keymap-layer-nvim
+      keymap-layer-nvim
       vim-plugins.hydra-nvim
     ];
 
-    extraConfig = "lua << EOF\n" + builtins.readFile ./init.lua + "\nEOF";
+    extraConfig = ''
+      lua << EOF
+    '' + builtins.readFile ./init.lua + ''
+
+      EOF'';
   };
 }
