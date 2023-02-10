@@ -1,6 +1,8 @@
 { config, lib, pkgs, ... }:
 
 let
+  # The idea comes from here:
+  # https://github.com/berbiche/dotfiles/blob/master/user/nicolas/home.nix
   inherit (lib) mkIf mkDefault;
   inherit (pkgs.stdenv.hostPlatform) isLinux isDarwin;
 
