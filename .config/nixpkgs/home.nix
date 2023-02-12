@@ -37,7 +37,10 @@ in {
     pkgsUnstable.stylua
   ];
 
-  home.shellAliases = { ll = "ls -l"; };
+  home.shellAliases = {
+    ll = "ls -l";
+    cat = "bat";
+  };
 
   # This value determines the Home Manager release that your
   # configuration is compatible with. This helps avoid breakage
@@ -54,7 +57,7 @@ in {
     configFile = { "stylua/stylua.toml".source = ./config/stylua.toml; };
   };
 
-  imports = [ ./nix-nvim ./nix-zsh ./nix-lf ./nix-tmux ];
+  imports = [ ./nix-nvim ./nix-zsh ./nix-lf ./nix-tmux ./irssi.nix ];
   # https://github.com/treffynnon/nix-setup/blob/master/home-configs/default.nix
   # 这种方式会报错！暂时绕过去
   # ++ optionals isDarwin [
@@ -212,7 +215,11 @@ in {
       enable = true;
       # This should pick up the correct colors for the generated theme. Otherwise
       # it is possible to generate a custom bat theme to ~/.config/bat/config
-      config = { theme = "base16"; };
+      config = {
+        theme = "base16";
+        tabs = "2";
+        pager = "less -FR";
+      };
     };
     dircolors = {
       enable = true;
