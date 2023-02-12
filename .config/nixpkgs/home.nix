@@ -3,7 +3,7 @@
 let
   # The idea comes from here:
   # https://github.com/berbiche/dotfiles/blob/master/user/nicolas/home.nix
-  inherit (lib) mkIf mkDefault;
+  inherit (lib) mkIf mkDefault optionals;
   inherit (pkgs.stdenv.hostPlatform) isLinux isDarwin;
 
   dummyPackage = pkgs.runCommandLocal "dummy" { } "mkdir $out";
@@ -55,6 +55,17 @@ in {
   };
 
   imports = [ ./nix-nvim ./nix-zsh ./nix-lf ./nix-tmux ];
+  # https://github.com/treffynnon/nix-setup/blob/master/home-configs/default.nix
+  # 这种方式会报错！暂时绕过去
+  # ++ optionals isDarwin [
+  #   ./hammerspoon.nix
+  # ];
+
+  home.file.".hammerspoon" = {
+    enable = mkDefault isDarwin;
+    source = ./config/hammerspoon;
+    recursive = true;
+  };
 
   # autorandr 1.13 有问题，nixpkgs 尚未更新，故先使用unstable版本
   nixpkgs.overlays =
