@@ -1,6 +1,7 @@
 # dotfiles - Configuration as Code
 
-My dotfiles to help me setup my machine in minutes using [yadm](https://yadm.io/).
+My dotfiles to help me setup my machine in minutes using ~~[yadm](https://yadm.io/)~~
+[HM](https://github.com/nix-community/home-manager).
 
 There is also an [article](https://sspai.com/post/66894) in Chinese explained why and how to use it.
 

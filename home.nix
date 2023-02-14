@@ -9,6 +9,7 @@ let
   inherit (lib.systems.elaborate { system = currentSystem; }) isLinux isDarwin;
 
   pkgsUnstable = import <nixpkgs-unstable> { };
+  secrets = import ./secrets.nix { };
 in {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
@@ -36,6 +37,7 @@ in {
     pkgsUnstable.stylua
 
     git-crypt
+    ripgrep # for VIM telescope live grep
   ];
 
   home.shellAliases = {
@@ -44,6 +46,8 @@ in {
   };
 
   home.sessionPath = [ "$HOME/.local/bin" ];
+
+  home.sessionVariables = secrets;
 
   # This value determines the Home Manager release that your
   # configuration is compatible with. This helps avoid breakage
@@ -54,6 +58,11 @@ in {
   # the Home Manager release notes for a list of state version
   # changes in each release.
   home.stateVersion = "22.11";
+
+  nix = {
+    package = pkgs.nix;
+    settings = { experimental-features = [ "nix-command" "flakes" ]; };
+  };
 
   xdg = {
     enable = true;
