@@ -236,6 +236,10 @@ in {
       # };
     };
 
+    gpg = {
+      enable = true;
+    };
+
     htop.enable = true;
 
     jq.enable = true;
