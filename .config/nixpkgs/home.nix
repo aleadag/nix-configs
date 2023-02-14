@@ -35,6 +35,8 @@ in {
 
     # Formatters
     pkgsUnstable.stylua
+
+    git-crypt
   ];
 
   home.shellAliases = {
@@ -322,4 +324,26 @@ in {
   };
 
   services = { clipmenu.enable = mkDefault isLinux; };
+
+  xsession = {
+    enable = mkDefault isLinux;
+    windowManager.command = "exec dwm";
+    initExtra = ''
+      # Set key press auto-repeat
+      xset r rate 300 50
+      fcitx5 &
+      # dwm status bar
+      dwmstatus 2>&1 >/dev/null &
+
+      # Set a random wallpaper
+      # feh --bg-fill --randomize ~/Pictures/Wallpapers/*
+      $HOME/.fehbg
+
+      # 启用 compositor，这样才能把st的背景变得透明
+      picom &
+
+      # 熄屛后需输入密码
+      $HOME/.local/bin/xsidle.sh slock &
+    '';
+  };
 }

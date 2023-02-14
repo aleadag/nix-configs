@@ -750,10 +750,10 @@ function on_attach(client, bufnr)
   map("n", "ga", "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
 
   -- Set some keybinds conditional on server capabilities
-  if client.server_capabilities.document_formatting then
-    map("n", "<leader>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-  elseif client.server_capabilities.document_range_formatting then
-    map("v", "<leader>f", "<cmd>lua vim.lsp.buf.range_formatting()<CR>", opts)
+  if client.server_capabilities.documentFormattingProvider then
+    map("n", "<leader>f", "<cmd>lua vim.lsp.buf.format()<CR>", opts)
+  elseif client.server_capabilities.documentRangeFormattingProvider then
+    map("v", "<leader>f", "<cmd>lua vim.lsp.buf.range_format()<CR>", opts)
   end
 end
 
@@ -1200,7 +1200,8 @@ map("n", "<Leader>fh", [[<Cmd>lua require('telescope.builtin').help_tags()<CR>]]
 map("n", "<Leader>fo", [[<Cmd>lua require('telescope.builtin').oldfiles()<CR>]], opt)
 map("n", "<Leader>fe", [[<Cmd>lua require('telescope.builtin').symbols()<CR>]], opt)
 map("n", "<Leader>ft", [[<Cmd>lua require('telescope.builtin').treesitter()<CR>]], opt)
-map("n", "<Leader>fm", [[<Cmd> Neoformat<CR>]], opt)
+map("n", "<Leader>fl", [[<Cmd>lua require('session-lens').search_session()<CR>]], opt)
+-- map("n", "<Leader>fm", [[<Cmd> Neoformat<CR>]], opt)
 
 -- nvimTree
 vim.o.termguicolors = true
@@ -1623,4 +1624,27 @@ Hydra({
     { "<Enter>", cmd("Telescope"), { exit = true, desc = "List all pickers" } },
     { "<Esc>", nil, { exit = true, nowait = true } },
   },
+})
+
+-- chatGPT
+require("chatgpt").setup({
+  -- optional configuration
+})
+
+-- null-ls
+local null_ls = require("null-ls")
+
+null_ls.setup({
+  on_attach = on_attach,
+  sources = {
+    null_ls.builtins.formatting.stylua,
+    null_ls.builtins.formatting.nixfmt,
+    null_ls.builtins.formatting.dprint,
+  },
+})
+
+-- auto-session
+require("auto-session").setup({
+  log_level = "error",
+  auto_session_suppress_dirs = { "~/Downloads", "/" },
 })
