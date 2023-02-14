@@ -1,8 +1,0 @@
-# vim: set ft=sh sw=2 et :
-
-##
-## Paths
-##
-BREW_PREFIX=/home/linuxbrew/.linuxbrew
-export XDG_DATA_DIRS="$BREW_PREFIX/share:$XDG_DATA_DIRS"
-# brew's shellenv will be executecd in .zshrc
