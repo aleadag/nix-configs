@@ -1,9 +1,0 @@
-[Unit]
-Description=Run feh-bing service repeatly and on boot
-
-[Timer]
-OnBootSec=30min
-OnUnitActiveSec=3h
-
-[Install]
-WantedBy=timers.target
