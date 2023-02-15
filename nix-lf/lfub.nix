@@ -23,7 +23,7 @@ writeShellScriptBin "lfub" ''
     mkfifo "$FIFO_UEBERZUG"
     ${ueberzug} layer -s <"$FIFO_UEBERZUG" -p json &
     exec 3>"$FIFO_UEBERZUG"
-    trap cleanup HUP INT QUIT TERM PWR EXIT
+    trap cleanup HUP INT QUIT TERM EXIT # PWR removed for mac
     ${lf} "$@" 3>&-
   fi
 ''

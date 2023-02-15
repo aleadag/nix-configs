@@ -1,7 +1,9 @@
 # Linux specific settings
 { pkgs, ... }:
-
-{
+let
+  fetch-bing-wp = pkgs.callPackage ./scripts/fetch-bing-wp.nix { };
+  xsidle = pkgs.callPackage ./scripts/xsidle.nix { };
+in {
   programs.zsh.profileExtra = ''
     if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
       exec startx
@@ -25,7 +27,7 @@
     picom &
 
     # 熄屛后需输入密码
-    ${./scripts/xsidle.sh} slock &
+    ${xsidle}/bin/xsidle slock &
 
     exec dwm
   '';
@@ -59,4 +61,28 @@
   };
 
   services = { clipmenu.enable = true; };
+
+  systemd.user = {
+    services = {
+      feh-bing = {
+        Unit = {
+          Description = "Downloads BING image and sets a wallpaper";
+          PartOf = "graphical-session.target";
+        };
+
+        Service = { ExecStart = "${fetch-bing-wp}/bin/fetch-bing-wp"; };
+      };
+    };
+
+    timers = {
+      feh-bing = {
+        Unit = { Description = "Run feh-bing service repeatly and on boot"; };
+
+        Timer = {
+          OnBootSec = "30min";
+          OnUnitActiveSec = "3h";
+        };
+      };
+    };
+  };
 }

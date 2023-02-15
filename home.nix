@@ -10,6 +10,7 @@ let
 
   pkgsUnstable = import <nixpkgs-unstable> { };
   secrets = import ./secrets.nix { };
+  add-to-instapaper = pkgs.callPackage ./scripts/add-to-instapaper.nix { inherit config; };
 in {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
@@ -22,6 +23,8 @@ in {
   home.packages = with pkgs; [
     # Need to test it!
     # pkgs.clash
+
+    dprint
 
     # 暂时移除，尚不知道如何设置：allowUnfree = true
     # pkgs.microsoft-edge
@@ -38,6 +41,7 @@ in {
 
     git-crypt
     ripgrep # for VIM telescope live grep
+    shfmt
   ];
 
   home.shellAliases = {
@@ -276,7 +280,7 @@ in {
         { url = "https://feeds.bbci.co.uk/zhongwen/simp/rss.xml"; }
       ];
       extraConfig = ''
-        bookmark-cmd instapaper
+        bookmark-cmd ${add-to-instapaper}/bin/add-to-instapaper
         bookmark-autopilot yes
         bind-key i bookmark
       '';
