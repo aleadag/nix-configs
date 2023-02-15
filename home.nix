@@ -10,7 +10,8 @@ let
 
   pkgsUnstable = import <nixpkgs-unstable> { };
   secrets = import ./secrets.nix { };
-  add-to-instapaper = pkgs.callPackage ./scripts/add-to-instapaper.nix { inherit config; };
+  add-to-instapaper =
+    pkgs.callPackage ./scripts/add-to-instapaper.nix { inherit config; };
 in {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
@@ -24,24 +25,21 @@ in {
     # Need to test it!
     # pkgs.clash
 
-    dprint
-
     # 暂时移除，尚不知道如何设置：allowUnfree = true
     # pkgs.microsoft-edge
-    # 在完全切换到hm之前，还是需要ydm
-    yadm
 
     # Nix related
     nix-doc
     nix-index
-    nixfmt
 
     # Formatters
+    dprint
+    nixfmt
+    shfmt
     pkgsUnstable.stylua
 
     git-crypt
     ripgrep # for VIM telescope live grep
-    shfmt
   ];
 
   home.shellAliases = {
@@ -195,10 +193,12 @@ in {
         pager = "less -FR";
       };
     };
+
     dircolors = {
       enable = true;
       enableZshIntegration = true;
     };
+
     # Use direnv to manage development environments
     direnv = {
       enable = true;
@@ -240,9 +240,7 @@ in {
       # };
     };
 
-    gpg = {
-      enable = true;
-    };
+    gpg = { enable = true; };
 
     htop.enable = true;
 

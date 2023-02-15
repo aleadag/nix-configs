@@ -2,8 +2,7 @@
 let
   vim-plugins = import ./plugins.nix { inherit pkgs lib; };
   nixos-unstable = import <nixpkgs-unstable> { };
-in
-{
+in {
   # nixpkgs.overlays = [
   #   (import (builtins.fetchTarball {
   #     url = https://github.com/nix-community/neovim-nightly-overlay/archive/master.tar.gz;
