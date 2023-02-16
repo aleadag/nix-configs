@@ -1165,7 +1165,6 @@ map("n", "<Leader>fh", [[<Cmd>lua require('telescope.builtin').help_tags()<CR>]]
 map("n", "<Leader>fo", [[<Cmd>lua require('telescope.builtin').oldfiles()<CR>]], opt)
 map("n", "<Leader>fe", [[<Cmd>lua require('telescope.builtin').symbols()<CR>]], opt)
 map("n", "<Leader>ft", [[<Cmd>lua require('telescope.builtin').treesitter()<CR>]], opt)
-map("n", "<Leader>fl", [[<Cmd>lua require('session-lens').search_session()<CR>]], opt)
 -- map("n", "<Leader>fm", [[<Cmd> Neoformat<CR>]], opt)
 
 -- nvimTree
@@ -1606,5 +1605,35 @@ null_ls.setup({
     null_ls.builtins.formatting.nixfmt,
     null_ls.builtins.formatting.dprint,
     null_ls.builtins.formatting.shfmt,
+  },
+})
+
+-- which-key
+require("which-key").setup({
+  icons = {
+    breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
+    separator = "  ", -- symbol used between a key and it's label
+    group = "+", -- symbol prepended to a group
+  },
+
+  popup_mappings = {
+    scroll_down = "<c-d>", -- binding to scroll down inside the popup
+    scroll_up = "<c-u>", -- binding to scroll up inside the popup
+  },
+
+  window = {
+    border = "none", -- none/single/double/shadow
+  },
+
+  layout = {
+    spacing = 6, -- spacing between columns
+  },
+
+  hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ " },
+
+  triggers_blacklist = {
+    -- list of mode / prefixes that should never be hooked by WhichKey
+    i = { "j", "k" },
+    v = { "j", "k" },
   },
 })

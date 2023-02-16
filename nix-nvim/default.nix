@@ -13,7 +13,6 @@ in {
     nixos-unstable.tree-sitter
     nixos-unstable.code-minimap
     luaPackages.lua-lsp
-    rnix-lsp
     nodePackages.vim-language-server
     nodePackages.yaml-language-server
     nodePackages.bash-language-server
@@ -21,6 +20,7 @@ in {
     nodePackages.vscode-html-languageserver-bin
     nodePackages.vscode-css-languageserver-bin
     rnix-lsp
+    fd
   ];
   programs.neovim = {
     enable = true;
@@ -98,6 +98,7 @@ in {
         # neoformat
         ChatGPT-nvim
         null-ls-nvim
+        which-key-nvim
       ])
       # Customized plugins
       ++ (with vim-plugins; [ hydra-nvim ]);
