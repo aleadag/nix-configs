@@ -83,7 +83,6 @@ in {
         lsp_signature-nvim
         rust-tools-nvim
         keymap-layer-nvim
-        auto-session
       ]
       # Unstable plugins
       ++ (with nixos-unstable.vimPlugins; [
@@ -101,7 +100,7 @@ in {
         null-ls-nvim
       ])
       # Customized plugins
-      ++ (with vim-plugins; [ hydra-nvim session-lens ]);
+      ++ (with vim-plugins; [ hydra-nvim ]);
 
     extraConfig = ''
       lua << EOF

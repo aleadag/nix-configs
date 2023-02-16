@@ -12,16 +12,4 @@
     };
     meta.homepage = "https://github.com/anuvyklack/hydra.nvim";
   };
-
-  session-lens = pkgs.vimUtils.buildVimPlugin rec {
-    pname = "session-lens";
-    version = "2022-12-18";
-    src = pkgs.fetchFromGitHub {
-      owner = "rmagatti";
-      repo = "session-lens";
-      rev = "b15e36782d01abacf6cd44e12f3292632064ab91";
-      sha256 = "q5hftrs9zgDGVPO9zJrSxYT2Ot9F9XRMfqr1DogrV/Y=";
-    };
-    meta.homepage = "https://github.com/rmagatti/session-lens";
-  };
 }

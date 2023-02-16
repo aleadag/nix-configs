@@ -1643,9 +1643,3 @@ null_ls.setup({
     null_ls.builtins.formatting.shfmt,
   },
 })
-
--- auto-session
-require("auto-session").setup({
-  log_level = "error",
-  auto_session_suppress_dirs = { "~/Downloads", "/" },
-})
