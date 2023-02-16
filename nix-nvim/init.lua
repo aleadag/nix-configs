@@ -520,17 +520,6 @@ gls.left[6] = {
   },
 }
 
--- gls.left[7] = {
---     LeftEnd = {
---         provider = function()
---             return " "
---         end,
---         separator = " ",
---         separator_highlight = {colors.line_bg, colors.line_bg},
---         highlight = {colors.line_bg, colors.line_bg}
---     }
--- }
-
 gls.left[7] = {
   DiagnosticError = {
     provider = "DiagnosticError",
@@ -539,16 +528,7 @@ gls.left[7] = {
   },
 }
 
--- gls.left[8] = {
---     Space = {
---         provider = function()
---             return " "
---         end,
---         highlight = {colors.line_bg, colors.line_bg}
---     }
--- }
-
-gls.left[9] = {
+gls.left[8] = {
   DiagnosticWarn = {
     provider = "DiagnosticWarn",
     icon = "  ",
@@ -686,21 +666,6 @@ gls.right[9] = {
 }
 
 gls.right[10] = {
-  Paste = {
-    provider = function()
-      if vim.o.paste then
-        return "  "
-      else
-        return "   "
-      end
-    end,
-    separator = "",
-    separator_highlight = { colors.bg, colors.yellow },
-    highlight = { colors.bg, colors.yellow },
-  },
-}
-
-gls.right[11] = {
   Spell = {
     provider = function()
       if vim.wo.spell then
