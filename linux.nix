@@ -5,7 +5,7 @@ let
   xsidle = pkgs.callPackage ./scripts/xsidle.nix { };
 in {
   programs.zsh.profileExtra = ''
-    if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
+    if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" -eq 1 ]; then
       exec startx
     fi
   '';
@@ -32,7 +32,7 @@ in {
     exec dwm
   '';
 
-  autorandr = {
+  programs.autorandr = {
     enable = true;
     profiles = {
       "work" = {
