@@ -12,7 +12,8 @@ let
   secrets = import ./secrets.nix { };
   add-to-instapaper =
     pkgs.callPackage ./scripts/add-to-instapaper.nix { inherit config; };
-in {
+in
+{
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
   home.username = "awang";
@@ -71,7 +72,7 @@ in {
     configFile = { "stylua/stylua.toml".source = ./config/stylua.toml; };
   };
 
-  imports = [ ./nix-nvim ./nix-zsh ./nix-lf ./nix-tmux ./irssi.nix ]
+  imports = [ ./nix-nvim ./nix-zsh ./nix-tmux ./irssi.nix ]
     ++ optionals isDarwin [ ./macOS.nix ] ++ optionals isLinux [ ./linux.nix ];
 
   # autorandr 1.13 有问题，nixpkgs 尚未更新，故先使用unstable版本
@@ -93,22 +94,24 @@ in {
           program = "${pkgs.zsh}/bin/zsh";
           args = [ "-l" "-c" "source /etc/zshrc && tmux attach || tmux" ];
         };
-        font = let fontname = "JetBrainsMono Nerd Font";
-        in {
-          normal = {
-            family = fontname;
-            style = "Bold";
+        font =
+          let fontname = "JetBrainsMono Nerd Font";
+          in
+          {
+            normal = {
+              family = fontname;
+              style = "Bold";
+            };
+            bold = {
+              family = fontname;
+              style = "Bold";
+            };
+            italic = {
+              family = fontname;
+              style = "Light";
+            };
+            size = 12;
           };
-          bold = {
-            family = fontname;
-            style = "Bold";
-          };
-          italic = {
-            family = fontname;
-            style = "Light";
-          };
-          size = 12;
-        };
         # Colors (Solarized Dark)
         colors = {
           # default colors
@@ -282,6 +285,17 @@ in {
         bookmark-autopilot yes
         bind-key i bookmark
       '';
+    };
+
+    nnn = {
+      enable = true;
+      bookmarks = {
+        c = "~/hacking";
+        d = "~/Documents";
+        D = "~/Downloads";
+        p = "~/Pictures";
+        v = "~/Videos";
+      };
     };
 
     # starship = {
