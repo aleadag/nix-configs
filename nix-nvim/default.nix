@@ -99,6 +99,7 @@ in {
         ChatGPT-nvim
         null-ls-nvim
         which-key-nvim
+        telescope-fzf-native-nvim
       ])
       # Customized plugins
       ++ (with vim-plugins; [ hydra-nvim ]);
