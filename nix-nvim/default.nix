@@ -47,7 +47,6 @@ in {
         vim-markdown
         ansible-vim
         vim-nix
-        robotframework-vim
         # vimspector
         popup-nvim
         plenary-nvim
@@ -95,7 +94,6 @@ in {
         neoscroll-nvim
         zen-mode-nvim
         indent-blankline-nvim # using my own derivation because the nixpkgs still uses the master branch
-        # neoformat
         ChatGPT-nvim
         null-ls-nvim
         which-key-nvim
