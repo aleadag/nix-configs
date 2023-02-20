@@ -197,6 +197,10 @@ in
       };
     };
 
+    broot = {
+      enable = true;
+    };
+
     dircolors = {
       enable = true;
       enableZshIntegration = true;
