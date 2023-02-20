@@ -222,6 +222,7 @@ in
         editor = "vi";
         git_protocol = "ssh";
         prompt = "enabled";
+        pager = "less -RF";
       };
     };
 
