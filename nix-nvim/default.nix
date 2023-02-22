@@ -56,7 +56,11 @@ in {
         nvim-colorizer-lua
         nvim-lspconfig
         # completion-nvim
-        # cmp-nvim-lsp
+        cmp-nvim-lsp
+        cmp-buffer
+        cmp-path
+        cmp-cmdline
+        cmp-vsnip
         nvim-cmp
         lspkind-nvim
         gitsigns-nvim

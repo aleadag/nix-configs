@@ -729,7 +729,7 @@ for k, lang in pairs(servers) do
   lspconf[lang].setup({
     root_dir = vim.loop.cwd,
     on_attach = on_attach,
-    -- capabilities = capabilities,
+    capabilities = capabilities,
   })
 end
 
@@ -886,7 +886,7 @@ cmp.setup.cmdline(":", {
 })
 
 -- Setup lspconfig.
--- capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+capabilities = require('cmp_nvim_lsp').default_capabilities()
 -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
 -- require('lspconfig')['<YOUR_LSP_SERVER>'].setup {
 --   capabilities = capabilities
@@ -1404,7 +1404,9 @@ require("zen-mode").setup({
 })
 
 -- vimwiki
+-- https://jaredgorski.org/notes/my-knowledge-management-system/
 g.vimwiki_list = { { path = "~/notes", syntax = "markdown", ext = ".md" } }
+cmd("autocmd FileType vimwiki set autochdir")
 
 -- Minimap
 g.minimap_width = 10
