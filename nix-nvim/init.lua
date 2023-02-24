@@ -1650,3 +1650,7 @@ require("which-key").setup({
     v = { "j", "k" },
   },
 })
+
+-- gh.nvim
+require("litee.lib").setup()
+require("litee.gh").setup()

@@ -104,7 +104,7 @@ in {
         telescope-fzf-native-nvim
       ])
       # Customized plugins
-      ++ (with vim-plugins; [ hydra-nvim ]);
+      ++ (with vim-plugins; [ hydra-nvim litee-nvim gh-nvim ]);
 
     extraConfig = ''
       lua << EOF
