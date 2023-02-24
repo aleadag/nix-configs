@@ -87,6 +87,7 @@ in
     home-manager.enable = true;
 
     alacritty = {
+      # Does not work in Arch Linux, need to install the version comes with yay
       enable = true;
       settings = {
         env.TERM = "xterm-256color";
