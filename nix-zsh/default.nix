@@ -8,8 +8,7 @@ let
   # $ mv ~/.p10k.zsh p10k-config/p10k.zsh
   configThemeNormal = ./p10k-config/p10k.zsh;
   configThemeTTY = ./p10k-config/p10k_tty.zsh;
-in
-{
+in {
   # fonts.fontconfig.enable = true;
   # home.packages = with pkgs; [
   #   # Meslo Nerd Font patched for Powerlevel10k
@@ -38,6 +37,21 @@ in
       else
         [[ ! -f ${configThemeTTY} ]] || source ${configThemeTTY}
       fi
+    '';
+    # https://gist.github.com/Linerre/f11ad4a6a934dcf01ee8415c9457e7b2
+    profileExtra = ''
+      # Brew, for macOS
+      if [ -e '/opt/homebrew/bin/brew' ]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+        FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
+      fi
+      # End Brew
+
+      # Nix
+      if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+        . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+      fi
+      # End Nix
     '';
     plugins = [
       {

@@ -90,9 +90,10 @@ in
       enable = true;
       settings = {
         env.TERM = "xterm-256color";
+        env.TERM_PROGRAM = "Alacritty";
         shell = {
           program = "${pkgs.zsh}/bin/zsh";
-          args = [ "-l" "-c" "source /etc/zshrc && tmux attach || tmux" ];
+          args = [ "-l" "-c" "tmux attach || tmux" ];
         };
         font =
           let fontname = "JetBrainsMono Nerd Font";
