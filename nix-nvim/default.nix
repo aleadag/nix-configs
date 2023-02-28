@@ -86,6 +86,7 @@ in {
         lsp_signature-nvim
         rust-tools-nvim
         keymap-layer-nvim
+        bufexplorer
       ]
       # Unstable plugins
       ++ (with nixos-unstable.vimPlugins; [
