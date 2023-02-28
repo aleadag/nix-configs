@@ -32,6 +32,10 @@ in {
     exec dwm
   '';
 
+  home.sessionVariables = {
+    vblank_mode = 0;
+  };
+
   programs.autorandr = {
     enable = true;
     profiles = {

@@ -770,7 +770,7 @@ require("lspconfig").sumneko_lua.setup({
 })
 
 require("lspconfig").jsonls.setup({
-  cmd = { "json-languageserver" },
+  cmd = { "json-languageserver", "--stdio" },
   root_dir = function()
     return vim.loop.cwd()
   end,
