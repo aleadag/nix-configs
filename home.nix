@@ -255,6 +255,18 @@ in
 
     jq.enable = true;
 
+    kitty = {
+      enable = true;
+      font = {
+        name = "JetBrainsMono Nerd Font";
+        size = 12;
+      };
+      theme = "GitHub Dark Dimmed";
+      settings = {
+        adjust_column_width = -1;
+      };
+    };
+
     newsboat = {
       enable = true;
       urls = [
