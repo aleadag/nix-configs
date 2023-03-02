@@ -43,8 +43,10 @@ in {
   ];
 
   home.shellAliases = {
-    ll = "ls -l";
+    ls = "ls --color=auto";
+    ll = "ls -l --color=auto";
     cat = "bat";
+    s = "kitty +kitten ssh";
   };
 
   home.sessionPath = [ "$HOME/.local/bin" ];
