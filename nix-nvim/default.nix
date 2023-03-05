@@ -87,6 +87,7 @@ in {
         rust-tools-nvim
         keymap-layer-nvim
         bufexplorer
+        markdown-preview-nvim
       ]
       # Unstable plugins
       ++ (with nixos-unstable.vimPlugins; [
