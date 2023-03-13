@@ -249,6 +249,8 @@ in {
       };
     };
 
+    sioyek.enable = true;
+
     # starship = {
     #   enable = true;
 

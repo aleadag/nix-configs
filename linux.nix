@@ -32,9 +32,9 @@ in {
     exec dwm
   '';
 
-  home.sessionVariables = {
-    vblank_mode = 0;
-  };
+  home.sessionVariables = { vblank_mode = 0; };
+
+  home.shellAliases = { kit = "GLFW_IM_MODULE=ibus nixGL kitty"; };
 
   programs.autorandr = {
     enable = true;
