@@ -76,9 +76,15 @@ in {
   imports = [ ./nix-nvim ./nix-zsh ./irssi.nix ]
     ++ optionals isDarwin [ ./macOS.nix ] ++ optionals isLinux [ ./linux.nix ];
 
-  # autorandr 1.13 有问题，nixpkgs 尚未更新，故先使用unstable版本
-  nixpkgs.overlays =
-    [ (self: supper: { autorandr = pkgsUnstable.autorandr; }) ];
+  nixpkgs.overlays = [
+    (self: supper: {
+      # autorandr 1.13 有问题，nixpkgs 尚未更新，故先使用unstable版本
+      autorandr = pkgsUnstable.autorandr;
+      # kitty-themes 2022-08-11 无法使用:
+      # error: opening file '/nix/store/r6p6zpgk41n2rk7h0661rnvg4ifq77hc-kitty-themes-unstable-2022-08-11/share/kitty-themes/themes.json': No such file or directory
+      kitty-themes = pkgsUnstable.kitty-themes;
+    })
+  ];
 
   # Disable for now, as still cannot figure now how to make it work!
   # i18n.inputMethod.enabled = "fcitx5";
