@@ -104,9 +104,11 @@ in {
         null-ls-nvim
         which-key-nvim
         telescope-fzf-native-nvim
+        hydra-nvim
+        litee-nvim
       ])
       # Customized plugins
-      ++ (with vim-plugins; [ hydra-nvim litee-nvim gh-nvim ]);
+      ++ (with vim-plugins; [ gh-nvim ]);
 
     extraConfig = ''
       lua << EOF
