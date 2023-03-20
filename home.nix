@@ -40,6 +40,7 @@ in {
 
     git-crypt
     ripgrep # for VIM telescope live grep
+    xh
   ];
 
   home.shellAliases = {
