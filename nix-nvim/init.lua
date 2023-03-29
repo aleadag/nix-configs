@@ -741,7 +741,7 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagn
 })
 
 -- lua lsp settings
-require("lspconfig").sumneko_lua.setup({
+require("lspconfig").lua_ls.setup({
   cmd = { "lua-lsp" },
   root_dir = function()
     return vim.loop.cwd()
