@@ -74,7 +74,7 @@ in {
     configFile = { "stylua/stylua.toml".source = ./config/stylua.toml; };
   };
 
-  imports = [ ./nix-nvim ./nix-zsh ./irssi.nix ]
+  imports = [ ./nix-nvim ./nix-zsh ./irssi.nix ./httpie.nix ]
     ++ optionals isDarwin [ ./macOS.nix ] ++ optionals isLinux [ ./linux.nix ];
 
   nixpkgs.overlays = [
@@ -242,6 +242,20 @@ in {
         bookmark-cmd ${add-to-instapaper}/bin/add-to-instapaper
         bookmark-autopilot yes
         bind-key i bookmark
+
+        # Dark solarized color scheme for newsbeuter
+        color background         default   default
+        color listnormal         default   default
+        color listnormal_unread  default   default
+        color listfocus          black     yellow
+        color listfocus_unread   black     yellow
+        color info               default   black
+        color article            default   default
+
+        # highlights
+        highlight article "^(Title):.*$" blue default
+        highlight article "https?://[^ ]+" red default
+        highlight article "\\[image\\ [0-9]+\\]" green default
       '';
     };
 
