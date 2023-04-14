@@ -66,7 +66,6 @@ in {
         lspkind-nvim
         gitsigns-nvim
         neogit
-        diffview-nvim
         nvim-autopairs
         vim-closetag
         friendly-snippets
@@ -92,6 +91,7 @@ in {
       ]
       # Unstable plugins
       ++ (with nixos-unstable.vimPlugins; [
+        diffview-nvim
         nvim-base16
         nvim-treesitter.withAllGrammars
         lsp_extensions-nvim
