@@ -22,6 +22,8 @@ in {
     nodePackages.typescript-language-server
     rnix-lsp
     fd
+    # go language server
+    gopls
   ];
   programs.neovim = {
     enable = true;

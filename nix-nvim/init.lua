@@ -708,7 +708,7 @@ function on_attach(client, bufnr)
   map("n", "<leader>D", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opts)
   map("n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
   map("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", opts)
-  map("n", "<leader>e", "<cmd>lua vim.diagnostic.open_float({scope=\"line\"})<CR>", opts)
+  map("n", "<leader>e", '<cmd>lua vim.diagnostic.open_float({scope="line"})<CR>', opts)
   map("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
   map("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
   map("n", "<leader>q", "<cmd>lua vim.diagnostic.set_loclist()<CR>", opts)
@@ -723,7 +723,7 @@ function on_attach(client, bufnr)
 end
 
 local lspconf = require("lspconfig")
-local servers = { "pyright", "bashls", "rls", "jsonls", "rnix" }
+local servers = { "pyright", "bashls", "rls", "jsonls", "rnix", "gopls" }
 
 for k, lang in pairs(servers) do
   lspconf[lang].setup({
@@ -796,7 +796,15 @@ require("lspconfig").cssls.setup({
 require("lspconfig").tsserver.setup({
   on_attach = on_attach,
   filetypes = { "typescript", "typescriptreact", "typescript.tsx" },
-  cmd = { "typescript-language-server", "--stdio" }
+  cmd = { "typescript-language-server", "--stdio" },
+})
+
+require("lspconfig").gopls.setup({
+  cmd = { "gopls" },
+  root_dir = function()
+    return vim.loop.cwd()
+  end,
+  on_attach = on_attach,
 })
 
 -- Compe
@@ -892,7 +900,7 @@ cmp.setup.cmdline(":", {
 })
 
 -- Setup lspconfig.
-capabilities = require('cmp_nvim_lsp').default_capabilities()
+capabilities = require("cmp_nvim_lsp").default_capabilities()
 -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
 -- require('lspconfig')['<YOUR_LSP_SERVER>'].setup {
 --   capabilities = capabilities

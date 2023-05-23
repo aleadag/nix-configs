@@ -270,6 +270,10 @@ in {
       };
     };
 
+    # script-directory = {
+    #   enable = true;
+    # };
+
     sioyek.enable = true;
 
     # starship = {
