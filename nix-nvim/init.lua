@@ -799,6 +799,15 @@ require("lspconfig").tsserver.setup({
   cmd = { "typescript-language-server", "--stdio" },
 })
 
+require("lspconfig").svelte.setup({
+  cmd = { "svelteserver", "--stdio" },
+  filetypes = { "svelte", "html" },
+  root_dir = function()
+    return vim.loop.cwd()
+  end,
+  on_attach = on_attach,
+})
+
 require("lspconfig").gopls.setup({
   cmd = { "gopls" },
   root_dir = function()

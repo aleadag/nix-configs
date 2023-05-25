@@ -20,6 +20,7 @@ in {
     nodePackages.vscode-html-languageserver-bin
     nodePackages.vscode-css-languageserver-bin
     nodePackages.typescript-language-server
+    nodePackages.svelte-language-server
     rnix-lsp
     fd
     # go language server
