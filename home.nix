@@ -8,7 +8,6 @@ let
   inherit (builtins) currentSystem;
   inherit (lib.systems.elaborate { system = currentSystem; }) isLinux isDarwin;
 
-  pkgsUnstable = import <nixpkgs-unstable> { };
   secrets = import ./secrets.nix { };
   add-to-instapaper =
     pkgs.callPackage ./scripts/add-to-instapaper.nix { inherit config; };
@@ -20,6 +19,12 @@ in {
     (mkIf isDarwin "/Users/alexander")
     (mkIf (!isDarwin) "/home/awang")
   ];
+
+  # script-directory
+  home.file."sd" = {
+    source = ./sd;
+    recursive = true;
+  };
 
   home.packages = with pkgs; [
     # Need to test it!
@@ -36,7 +41,7 @@ in {
     dprint
     nixfmt
     shfmt
-    pkgsUnstable.stylua
+    stylua
 
     git-crypt
     ripgrep # for VIM telescope live grep
@@ -76,16 +81,6 @@ in {
 
   imports = [ ./nix-nvim ./nix-zsh ./irssi.nix ./httpie.nix ]
     ++ optionals isDarwin [ ./macOS.nix ] ++ optionals isLinux [ ./linux.nix ];
-
-  nixpkgs.overlays = [
-    (self: supper: {
-      # autorandr 1.13 有问题，nixpkgs 尚未更新，故先使用unstable版本
-      autorandr = pkgsUnstable.autorandr;
-      # kitty-themes 2022-08-11 无法使用:
-      # error: opening file '/nix/store/r6p6zpgk41n2rk7h0661rnvg4ifq77hc-kitty-themes-unstable-2022-08-11/share/kitty-themes/themes.json': No such file or directory
-      kitty-themes = pkgsUnstable.kitty-themes;
-    })
-  ];
 
   # Disable for now, as still cannot figure now how to make it work!
   # i18n.inputMethod.enabled = "fcitx5";
@@ -198,7 +193,6 @@ in {
 
     kitty = {
       enable = true;
-      package = pkgsUnstable.kitty;
       font = {
         name = "JetBrainsMono Nerd Font";
         size = 12;
@@ -275,6 +269,15 @@ in {
     # };
 
     sioyek.enable = true;
+
+    script-directory = {
+      enable = true;
+      settings = {
+        # SD_ROOT = "${config.home.homeDirectory}/.sd";
+        SD_EDITOR = "nvim";
+        SD_CAT = "bat";
+      };
+    };
 
     # starship = {
     #   enable = true;

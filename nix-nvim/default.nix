@@ -1,7 +1,6 @@
 { pkgs, lib, ... }:
 let
   vim-plugins = import ./plugins.nix { inherit pkgs lib; };
-  nixos-unstable = import <nixpkgs-unstable> { };
 in {
   # nixpkgs.overlays = [
   #   (import (builtins.fetchTarball {
@@ -9,9 +8,9 @@ in {
   #   }))
   # ];
   home.packages = with pkgs; [
-    nixos-unstable.nodePackages.pyright
-    nixos-unstable.tree-sitter
-    nixos-unstable.code-minimap
+    nodePackages.pyright
+    tree-sitter
+    code-minimap
     luaPackages.lua-lsp
     nodePackages.vim-language-server
     nodePackages.yaml-language-server
@@ -28,7 +27,7 @@ in {
   ];
   programs.neovim = {
     enable = true;
-    package = nixos-unstable.neovim-unwrapped;
+    package = pkgs.neovim-unwrapped;
     viAlias = true;
     vimAlias = true;
     vimdiffAlias = true;
@@ -91,9 +90,6 @@ in {
         keymap-layer-nvim
         bufexplorer
         markdown-preview-nvim
-      ]
-      # Unstable plugins
-      ++ (with nixos-unstable.vimPlugins; [
         diffview-nvim
         nvim-base16
         nvim-treesitter.withAllGrammars
@@ -110,7 +106,7 @@ in {
         telescope-fzf-native-nvim
         hydra-nvim
         litee-nvim
-      ])
+      ]
       # Customized plugins
       ++ (with vim-plugins; [ gh-nvim ]);
 
