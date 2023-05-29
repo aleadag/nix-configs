@@ -14,7 +14,10 @@ let
 in {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
-  home.username = "awang";
+  home.username = lib.mkMerge [
+    (mkIf isDarwin "alexander")
+    (mkIf (!isDarwin) "awang")
+  ];
   home.homeDirectory = lib.mkMerge [
     (mkIf isDarwin "/Users/alexander")
     (mkIf (!isDarwin) "/home/awang")
