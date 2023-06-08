@@ -14,10 +14,8 @@ let
 in {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
-  home.username = lib.mkMerge [
-    (mkIf isDarwin "alexander")
-    (mkIf (!isDarwin) "awang")
-  ];
+  home.username =
+    lib.mkMerge [ (mkIf isDarwin "alexander") (mkIf (!isDarwin) "awang") ];
   home.homeDirectory = lib.mkMerge [
     (mkIf isDarwin "/Users/alexander")
     (mkIf (!isDarwin) "/home/awang")
@@ -36,18 +34,12 @@ in {
     # 暂时移除，尚不知道如何设置：allowUnfree = true
     # pkgs.microsoft-edge
 
-    # Nix related
-    nix-doc
-    nix-index
-
     # Formatters
-    dprint
     nixfmt
     shfmt
     stylua
 
     git-crypt
-    ripgrep # for VIM telescope live grep
     xh
   ];
 
@@ -281,6 +273,8 @@ in {
         SD_CAT = "bat";
       };
     };
+
+    ripgrep = { enable = true; };
 
     # starship = {
     #   enable = true;
