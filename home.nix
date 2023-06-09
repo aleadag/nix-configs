@@ -41,6 +41,7 @@ in {
 
     git-crypt
     xh
+    dig
   ];
 
   home.shellAliases = {
