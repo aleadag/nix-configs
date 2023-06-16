@@ -43,6 +43,7 @@ in {
     xh
     dig
     keepassxc
+    megacmd
   ];
 
   home.shellAliases = {
