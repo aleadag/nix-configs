@@ -32,6 +32,8 @@ in {
     exec dwm
   '';
 
+  hoem.packages = with pkgs; [ megacmd ];
+
   home.sessionVariables = { vblank_mode = 0; };
 
   home.shellAliases = { kit = "GLFW_IM_MODULE=ibus nixGL kitty"; };
