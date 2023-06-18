@@ -32,7 +32,7 @@ in {
     exec dwm
   '';
 
-  hoem.packages = with pkgs; [ megacmd ];
+  home.packages = with pkgs; [ megacmd ];
 
   home.sessionVariables = { vblank_mode = 0; };
 
