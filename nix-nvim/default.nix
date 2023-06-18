@@ -46,7 +46,6 @@ in {
         gundo-vim
         vim-easy-align
         vim-table-mode
-        editorconfig-vim
         vim-markdown
         ansible-vim
         vim-nix
