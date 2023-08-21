@@ -1246,7 +1246,7 @@ map("n", "<leader>a", ":NvimTreeToggle<CR>", opt)
 --   { key = "q",                            cb = tree_cb("close") },
 --   { key = "g?",                           cb = tree_cb("toggle_help") },
 -- }
-local tree_cb = require("nvim-tree.config").nvim_tree_callback
+-- local tree_cb = require("nvim-tree.config").nvim_tree_callback
 require("nvim-tree").setup({
   -- side = "left",
   -- width = 25,
@@ -1721,3 +1721,6 @@ require("which-key").setup({
 -- gh.nvim
 require("litee.lib").setup()
 require("litee.gh").setup()
+
+-- refactoring.nvim
+require('refactoring').setup()

@@ -43,6 +43,7 @@ in {
     xh
     dig
     keepassxc
+    anki-bin
   ];
 
   home.shellAliases = {

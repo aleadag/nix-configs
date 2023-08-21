@@ -1,6 +1,5 @@
 { pkgs, lib, ... }:
-let
-  vim-plugins = import ./plugins.nix { inherit pkgs lib; };
+let vim-plugins = import ./plugins.nix { inherit pkgs lib; };
 in {
   # nixpkgs.overlays = [
   #   (import (builtins.fetchTarball {
@@ -105,6 +104,7 @@ in {
         telescope-fzf-native-nvim
         hydra-nvim
         litee-nvim
+        refactoring-nvim
       ]
       # Customized plugins
       ++ (with vim-plugins; [ gh-nvim ]);
