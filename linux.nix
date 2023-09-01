@@ -32,7 +32,7 @@ in {
     exec dwm
   '';
 
-  home.packages = with pkgs; [ megacmd ];
+  home.packages = with pkgs; [ megacmd filezilla ];
 
   home.sessionVariables = { vblank_mode = 0; };
 

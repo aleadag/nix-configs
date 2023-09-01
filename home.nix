@@ -44,7 +44,6 @@ in {
     dig
     keepassxc
     anki-bin
-    filezilla
   ];
 
   home.shellAliases = {
