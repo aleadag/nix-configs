@@ -105,6 +105,7 @@ in {
         hydra-nvim
         litee-nvim
         refactoring-nvim
+        vimtex
       ]
       # Customized plugins
       ++ (with vim-plugins; [ gh-nvim ]);

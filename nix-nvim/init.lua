@@ -816,6 +816,13 @@ require("lspconfig").gopls.setup({
   on_attach = on_attach,
 })
 
+require("lspconfig").dartls.setup({
+  root_dir = function()
+    return vim.loop.cwd()
+  end,
+  on_attach = on_attach,
+})
+
 -- Compe
 vim.o.completeopt = "menuone,noselect"
 vim.o.shortmess = vim.o.shortmess .. "c"
@@ -1723,4 +1730,4 @@ require("litee.lib").setup()
 require("litee.gh").setup()
 
 -- refactoring.nvim
-require('refactoring').setup()
+require("refactoring").setup()
