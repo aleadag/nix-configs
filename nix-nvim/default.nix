@@ -1,6 +1,7 @@
 { pkgs, lib, ... }:
 let vim-plugins = import ./plugins.nix { inherit pkgs lib; };
-in {
+in
+{
   # nixpkgs.overlays = [
   #   (import (builtins.fetchTarball {
   #     url = https://github.com/nix-community/neovim-nightly-overlay/archive/master.tar.gz;
@@ -103,9 +104,9 @@ in {
         which-key-nvim
         telescope-fzf-native-nvim
         hydra-nvim
-        litee-nvim
         refactoring-nvim
         vimtex
+        octo-nvim
       ]
       # Customized plugins
       ++ (with vim-plugins; [ gh-nvim ]);
