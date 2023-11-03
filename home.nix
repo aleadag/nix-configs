@@ -11,7 +11,8 @@ let
   secrets = import ./secrets.nix { };
   add-to-instapaper =
     pkgs.callPackage ./scripts/add-to-instapaper.nix { inherit config; };
-in {
+in
+{
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
   home.username =
@@ -182,6 +183,8 @@ in {
       #   };
       # };
     };
+
+    git-cliff = { enable = true; };
 
     gpg = { enable = true; };
 

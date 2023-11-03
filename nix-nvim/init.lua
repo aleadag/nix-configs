@@ -1726,6 +1726,14 @@ require("which-key").setup({
   },
 })
 
+-- closetag
+g.closetag_filetypes = "html,js,typescriptreact"
+g.closetag_emptyTags_caseSensitive = 1
+g.closetag_regions = {
+  ["typescript.tsx"] = "jsxRegion,tsxRegion",
+  ["javascript.jsx"] = "jsxRegion",
+}
+
 -- octo.nvim
 require("octo").setup()
 

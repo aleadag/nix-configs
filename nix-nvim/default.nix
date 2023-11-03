@@ -1,6 +1,7 @@
 { pkgs, lib, ... }:
 let vim-plugins = import ./plugins.nix { inherit pkgs lib; };
-in {
+in
+{
   # nixpkgs.overlays = [
   #   (import (builtins.fetchTarball {
   #     url = https://github.com/nix-community/neovim-nightly-overlay/archive/master.tar.gz;
@@ -97,7 +98,7 @@ in {
         nvim-tree-lua
         neoscroll-nvim
         zen-mode-nvim
-        indent-blankline-nvim # using my own derivation because the nixpkgs still uses the master branch
+        indent-blankline-nvim
         ChatGPT-nvim
         null-ls-nvim
         which-key-nvim
