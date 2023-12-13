@@ -1,7 +1,6 @@
 { pkgs, lib, ... }:
 let vim-plugins = import ./plugins.nix { inherit pkgs lib; };
-in
-{
+in {
   # nixpkgs.overlays = [
   #   (import (builtins.fetchTarball {
   #     url = https://github.com/nix-community/neovim-nightly-overlay/archive/master.tar.gz;
@@ -107,6 +106,7 @@ in
         refactoring-nvim
         vimtex
         octo-nvim
+        dart-vim-plugin
       ]
       # Customized plugins
       ++ (with vim-plugins; [ ]);

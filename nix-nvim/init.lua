@@ -1739,3 +1739,10 @@ require("octo").setup()
 
 -- refactoring.nvim
 require("refactoring").setup()
+
+-- Flutter l10n file
+vim.filetype.add({
+  extension = {
+    arb = "json",
+  },
+})
