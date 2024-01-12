@@ -4,7 +4,7 @@ let
   # The idea comes from here:
   # https://github.com/berbiche/dotfiles/blob/master/user/nicolas/home.nix
   # https://github.com/treffynnon/nix-setup/blob/master/home-configs/default.nix
-  inherit (lib) mkIf mkDefault optionals;
+  inherit (lib) mkIf optionals;
   inherit (builtins) currentSystem;
   inherit (lib.systems.elaborate { system = currentSystem; }) isLinux isDarwin;
 
@@ -15,8 +15,7 @@ in
 {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
-  home.username =
-    lib.mkMerge [ (mkIf isDarwin "alexander") (mkIf (!isDarwin) "awang") ];
+  home.username = lib.mkMerge [ (mkIf isDarwin "alexander") (mkIf (!isDarwin) "awang") ];
   home.homeDirectory = lib.mkMerge [
     (mkIf isDarwin "/Users/alexander")
     (mkIf (!isDarwin) "/home/awang")
@@ -35,13 +34,7 @@ in
     # 暂时移除，尚不知道如何设置：allowUnfree = true
     # pkgs.microsoft-edge
 
-    # Formatters
-    nixfmt
-    shfmt
-    stylua
-
     git-crypt
-    xh
     dig
     keepassxc
     anki-bin
@@ -73,12 +66,7 @@ in
     settings = { experimental-features = [ "nix-command" "flakes" ]; };
   };
 
-  xdg = {
-    enable = true;
-    configFile = { "stylua/stylua.toml".source = ./config/stylua.toml; };
-  };
-
-  imports = [ ./nix-nvim ./nix-zsh ./irssi.nix ./httpie.nix ]
+  imports = [ ./nix-zsh ./irssi.nix ./httpie.nix ./nix-helix ]
     ++ optionals isDarwin [ ./macOS.nix ] ++ optionals isLinux [ ./linux.nix ];
 
   # Disable for now, as still cannot figure now how to make it work!
@@ -135,7 +123,7 @@ in
       };
     };
 
-    broot = { enable = true; };
+    broot = { enable = false; };
 
     dircolors = {
       enable = true;
@@ -200,8 +188,8 @@ in
         name = "JetBrainsMono Nerd Font";
         size = 12;
       };
-      theme = "GitHub Dark Dimmed";
-      settings = { adjust_column_width = -1; };
+      theme = "Catppuccin-Frappe";
+      settings = { adjust_column_width = -1; macos_option_as_alt = "yes"; };
     };
 
     newsboat = {
@@ -267,10 +255,6 @@ in
       };
     };
 
-    # script-directory = {
-    #   enable = true;
-    # };
-
     sioyek.enable = true;
 
     script-directory = {
@@ -283,17 +267,5 @@ in
     };
 
     ripgrep = { enable = true; };
-
-    # starship = {
-    #   enable = true;
-
-    #   settings = {
-    #     character = {
-    #       success_symbol = "[λ](bold green)";
-    #       error_symbol = "[λ](bold red)";
-    #       vicmd_symbol = "[λ](bold yellow)";
-    #     };
-    #   };
-    # };
   };
 }
