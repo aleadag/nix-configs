@@ -8,7 +8,8 @@ let
   # $ mv ~/.p10k.zsh p10k-config/p10k.zsh
   configThemeNormal = ./p10k-config/p10k.zsh;
   configThemeTTY = ./p10k-config/p10k_tty.zsh;
-in {
+in
+{
   # fonts.fontconfig.enable = true;
   # home.packages = with pkgs; [
   #   # Meslo Nerd Font patched for Powerlevel10k
@@ -38,7 +39,19 @@ in {
         [[ ! -f ${configThemeTTY} ]] || source ${configThemeTTY}
       fi
 
-      precmd () {print -Pn "\e]0;%~\a"}
+      # Set kitty's tab title to dir/program name: 
+      # https://github.com/kovidgoyal/kitty/issues/610#issuecomment-395357004
+      function set-title-precmd() {
+        printf "\e]2;%s\a" "''${PWD/#$HOME/~}"
+      }
+
+      function set-title-preexec() {
+        printf "\e]2;%s\a" "$1"
+      }
+
+      autoload -Uz add-zsh-hook
+      add-zsh-hook precmd set-title-precmd
+      add-zsh-hook preexec set-title-preexec
     '';
     # https://gist.github.com/Linerre/f11ad4a6a934dcf01ee8415c9457e7b2
     profileExtra = ''
