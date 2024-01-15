@@ -190,6 +190,10 @@ in
       };
       theme = "Catppuccin-Frappe";
       settings = { adjust_column_width = -1; macos_option_as_alt = "yes"; };
+      keybindings = {
+        "kitty_mod+enter" = "launch --cwd=current";
+        "kitty_mod+t" = "new_tab_with_cwd";
+      };
     };
 
     newsboat = {
@@ -261,7 +265,7 @@ in
       enable = true;
       settings = {
         # SD_ROOT = "${config.home.homeDirectory}/.sd";
-        SD_EDITOR = "nvim";
+        SD_EDITOR = "hx";
         SD_CAT = "bat";
       };
     };

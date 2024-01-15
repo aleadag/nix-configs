@@ -58,6 +58,14 @@
           args = [ "--stdio" ];
         };
 
+        # tailwindcss
+        # https://github.com/helix-editor/helix/issues/2213#issuecomment-1307840100
+        tailwindcss-css = with pkgs; {
+          language-id = "css";
+          command = "${tailwindcss-language-server}/bin/tailwindcss-language-server";
+          args = [ "--stdio" ];
+        };
+
         nil = {
           command = "${pkgs.nil}/bin/nil";
           config.nil = {
@@ -67,6 +75,13 @@
       };
 
       language = [
+        {
+          name = "css";
+          scope = "source.css";
+          file-types = [ "css" "postcss" ];
+          language-servers = [ "tailwindcss-css" "vscode-css-language-server" ];
+        }
+
         {
           name = "json";
           auto-format = true;
