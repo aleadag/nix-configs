@@ -2,6 +2,7 @@
   home.packages = with pkgs; [
     gopls
     marksman
+    tailwindcss-language-server
     nodePackages.bash-language-server
     nodePackages.svelte-language-server
     nodePackages.typescript-language-server
@@ -56,14 +57,7 @@
         vscode-css-language-server = with pkgs.nodePackages; {
           command = "${vscode-css-languageserver-bin}/bin/css-languageserver";
           args = [ "--stdio" ];
-        };
-
-        # tailwindcss
-        # https://github.com/helix-editor/helix/issues/2213#issuecomment-1307840100
-        tailwindcss-css = with pkgs; {
-          language-id = "css";
-          command = "${tailwindcss-language-server}/bin/tailwindcss-language-server";
-          args = [ "--stdio" ];
+          config = { provideFormatter = true; css = { validate = { enable = true; }; }; };
         };
 
         nil = {
@@ -77,9 +71,7 @@
       language = [
         {
           name = "css";
-          scope = "source.css";
-          file-types = [ "css" "postcss" ];
-          language-servers = [ "tailwindcss-css" "vscode-css-language-server" ];
+          language-servers = [ "vscode-css-language-server" "tailwindcss-ls" ];
         }
 
         {
