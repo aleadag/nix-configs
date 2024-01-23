@@ -66,7 +66,7 @@ in
     settings = { experimental-features = [ "nix-command" "flakes" ]; };
   };
 
-  imports = [ ./nix-zsh ./irssi.nix ./httpie.nix ./nix-helix ]
+  imports = [ ./irssi.nix ./httpie.nix ./helix.nix ./fish.nix ]
     ++ optionals isDarwin [ ./macOS.nix ] ++ optionals isLinux [ ./linux.nix ];
 
   # Disable for now, as still cannot figure now how to make it work!
@@ -189,7 +189,11 @@ in
         size = 12;
       };
       theme = "Catppuccin-Frappe";
-      settings = { adjust_column_width = -1; macos_option_as_alt = "yes"; };
+      settings = {
+        adjust_column_width = -1;
+        macos_option_as_alt = "yes";
+        shell = "${config.programs.fish.package}/bin/fish";
+      };
       keybindings = {
         "kitty_mod+enter" = "launch --cwd=current";
         "kitty_mod+t" = "new_tab_with_cwd";
