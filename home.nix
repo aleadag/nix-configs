@@ -39,9 +39,6 @@ in
   ];
 
   home.shellAliases = {
-    ls = "ls --color=auto";
-    ll = "ls -l --color=auto";
-    cat = "bat";
     s = "kitty +kitten ssh";
   };
 
@@ -83,13 +80,6 @@ in
         tabs = "2";
         pager = "less -FR";
       };
-    };
-
-    broot.enable = true;
-
-    dircolors = {
-      enable = true;
-      enableZshIntegration = true;
     };
 
     # Use direnv to manage development environments
