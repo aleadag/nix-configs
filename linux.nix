@@ -3,7 +3,8 @@
 let
   fetch-bing-wp = pkgs.callPackage ./scripts/fetch-bing-wp.nix { };
   xsidle = pkgs.callPackage ./scripts/xsidle.nix { };
-in {
+in
+{
   programs.zsh.profileExtra = ''
     if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" -eq 1 ]; then
       exec startx
@@ -63,6 +64,13 @@ in {
         };
         # hooks.postswitch = readFile ./work-postswitch.sh;
       };
+    };
+  };
+
+  programs.nnn = {
+    enable = true;
+    bookmarks = {
+      c = "~/hacking";
     };
   };
 

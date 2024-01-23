@@ -9,8 +9,6 @@ let
   inherit (lib.systems.elaborate { system = currentSystem; }) isLinux isDarwin;
 
   secrets = import ./secrets.nix { };
-  add-to-instapaper =
-    pkgs.callPackage ./scripts/add-to-instapaper.nix { inherit config; };
 in
 {
   # Home Manager needs a bit of information about you and the
@@ -66,7 +64,7 @@ in
     settings = { experimental-features = [ "nix-command" "flakes" ]; };
   };
 
-  imports = [ ./irssi.nix ./httpie.nix ./helix.nix ./fish.nix ]
+  imports = [ ./aria2.nix ./fish.nix ./git.nix ./helix.nix ./httpie.nix ./irssi.nix ./kitty.nix ./newsboat.nix ./nix-zsh ]
     ++ optionals isDarwin [ ./macOS.nix ] ++ optionals isLinux [ ./linux.nix ];
 
   # Disable for now, as still cannot figure now how to make it work!
@@ -75,42 +73,6 @@ in
   programs = {
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
-
-    aria2 = {
-      enable = true;
-      settings = {
-        rpc-secret = "nJszuqG+%rs";
-        enable-rpc = true;
-        # 允许所有来源, web界面跨域权限需要
-        rpc-allow-origin-all = true;
-        # 允许外部访问，false的话只监听本地端口
-        rpc-listen-all = true;
-        # 设置代理
-        # all-proxy="localhost:7890"
-        # 最大同时下载数(任务数), 路由建议值: 3
-        max-concurrent-downloads = 5;
-        # 断点续传
-        continue = true;
-        # 同服务器连接数
-        max-connection-per-server = 5;
-        # 最小文件分片大小, 下载线程数上限取决于能分出多少片, 对于小文件重要
-        min-split-size = "10M";
-        # 单文件最大线程数, 路由建议值: 5
-        split = 10;
-        # 下载速度限制
-        max-overall-download-limit = 0;
-        # 单文件速度限制
-        max-download-limit = 0;
-        # 上传速度限制
-        max-overall-upload-limit = 0;
-        # 单文件速度限制
-        max-upload-limit = 0;
-        # 断开速度过慢的连接
-        # lowest-speed-limit=0
-        # 文件保存路径, 默认为当前启动位置
-        dir = "${config.home.homeDirectory}/Downloads";
-      };
-    };
 
     bat = {
       enable = true;
@@ -122,8 +84,6 @@ in
         pager = "less -FR";
       };
     };
-
-    broot = { enable = false; };
 
     dircolors = {
       enable = true;
@@ -138,130 +98,24 @@ in
       # nix-direnv.enableFlakes = true;
     };
 
-    fzf = { enable = true; };
+    fzf.enable = true;
 
     gh = {
       enable = true;
       settings = {
         # Workaround for https://github.com/nix-community/home-manager/issues/4744
         version = 1;
-        editor = "vi";
         git_protocol = "ssh";
         prompt = "enabled";
         pager = "less -RF";
       };
     };
 
-    git = {
-      enable = true;
-      userName = "Alexander Wang";
-      userEmail = "aleadag@gmail.com";
-      aliases = {
-        hist =
-          "log --pretty=format:'%C(yellow)[%ad]%C(reset) %C(green)[%h]%C(reset) | %C(red)%s %C(bold red){{%an}}%C(reset) %C(blue)%d%C(reset)' --graph --date=short";
-      };
-      delta.enable = true;
-      delta.options.syntax-theme = "gruvbox-dark";
-      lfs.enable = true;
-      lfs.skipSmudge = true;
-      # extraConfig = {
-      #   http = {
-      #     proxy = socks5://127.0.0.1:7891;
-      #   };
-      #   https = {
-      #     proxy = socks5://127.0.0.1:7891;
-      #   };
-      # };
-    };
-
-    git-cliff = { enable = true; };
-
-    gpg = { enable = true; };
+    gpg.enable = true;
 
     htop.enable = true;
 
     jq.enable = true;
-
-    kitty = {
-      enable = true;
-      font = {
-        name = "JetBrainsMono Nerd Font";
-        size = 12;
-      };
-      theme = "Catppuccin-Frappe";
-      settings = {
-        adjust_column_width = -1;
-        macos_option_as_alt = "yes";
-        shell = "${config.programs.fish.package}/bin/fish";
-      };
-      keybindings = {
-        "kitty_mod+enter" = "launch --cwd=current";
-        "kitty_mod+t" = "new_tab_with_cwd";
-      };
-    };
-
-    newsboat = {
-      enable = true;
-      urls = [
-        {
-          url = "https://rsshub.app/cls/telegraph";
-          tags = [ "财经" ];
-        }
-        {
-          url = "https://hnrss.org/newest?points=100";
-          tags = [ "技术" ];
-        }
-        {
-          url = "http://feeds.bbci.co.uk/news/world/rss.xml";
-          tags = [ "新闻" ];
-        }
-        {
-          url = "https://news.mingpao.com/rss/pns/s00001.xml";
-          tags = [ "新闻" ];
-        }
-        {
-          url = "http://www.zhihu.com/rss";
-          tags = [ "视野" ];
-        }
-        {
-          url = "http://www.matrix67.com/blog/feed";
-          tags = [ "视野" ];
-        }
-        { url = "https://www.williamlong.info/rss.xml"; }
-        { url = "https://feeds.appinn.com/appinns/"; }
-        { url = "https://feeds.bbci.co.uk/zhongwen/simp/rss.xml"; }
-      ];
-      extraConfig = ''
-        bookmark-cmd ${add-to-instapaper}/bin/add-to-instapaper
-        bookmark-autopilot yes
-        bind-key i bookmark
-
-        # Dark solarized color scheme for newsbeuter
-        color background         default   default
-        color listnormal         default   default
-        color listnormal_unread  default   default
-        color listfocus          black     yellow
-        color listfocus_unread   black     yellow
-        color info               default   black
-        color article            default   default
-
-        # highlights
-        highlight article "^(Title):.*$" blue default
-        highlight article "https?://[^ ]+" red default
-        highlight article "\\[image\\ [0-9]+\\]" green default
-      '';
-    };
-
-    nnn = {
-      enable = true;
-      bookmarks = {
-        c = "~/hacking";
-        d = "~/Documents";
-        D = "~/Downloads";
-        p = "~/Pictures";
-        v = "~/Videos";
-      };
-    };
 
     sioyek.enable = true;
 
@@ -274,6 +128,6 @@ in
       };
     };
 
-    ripgrep = { enable = true; };
+    ripgrep.enable = true;
   };
 }

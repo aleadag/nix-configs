@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ pkgs, ... }:
 let
   # load the configuration that we was generated the first
   # time zsh were loaded with powerlevel enabled.
