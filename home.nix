@@ -61,7 +61,7 @@ in
     settings = { experimental-features = [ "nix-command" "flakes" ]; };
   };
 
-  imports = [ ./aria2.nix ./fish.nix ./git.nix ./helix.nix ./httpie.nix ./irssi.nix ./kitty.nix ./newsboat.nix ./nix-zsh ]
+  imports = [ ./aria2.nix ./fish.nix ./git.nix ./gitui.nix ./helix.nix ./httpie.nix ./irssi.nix ./kitty.nix ./newsboat.nix ./nix-zsh ]
     ++ optionals isDarwin [ ./macOS.nix ] ++ optionals isLinux [ ./linux.nix ];
 
   # Disable for now, as still cannot figure now how to make it work!
@@ -73,10 +73,22 @@ in
 
     bat = {
       enable = true;
+      themes = {
+        Catppuccin-frappe = {
+          src = pkgs.fetchFromGitHub
+            {
+              owner = "catppuccin";
+              repo = "bat";
+              rev = "ba4d16880d63e656acced2b7d4e034e4a93f74b1";
+              sha256 = "6WVKQErGdaqb++oaXnY3i6/GuH2FhTgK0v4TN4Y0Wbw=";
+            };
+          file = "Catppuccin-frappe.tmTheme";
+        };
+      };
       # This should pick up the correct colors for the generated theme. Otherwise
       # it is possible to generate a custom bat theme to ~/.config/bat/config
       config = {
-        theme = "base16";
+        theme = "Catppuccin-frappe";
         tabs = "2";
         pager = "less -FR";
       };
@@ -104,11 +116,8 @@ in
     };
 
     gpg.enable = true;
-
     htop.enable = true;
-
     jq.enable = true;
-
     sioyek.enable = true;
 
     script-directory = {

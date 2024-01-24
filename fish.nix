@@ -1,4 +1,12 @@
 { pkgs, ... }:
+let
+  catppuccin-fish = pkgs.fetchFromGitHub {
+    owner = "catppuccin";
+    repo = "fish";
+    rev = "0ce27b518e8ead555dec34dd8be3df5bd75cff8e";
+    hash = "sha256-Dc/zdxfzAUM5NX8PxzfljRbYvO9f9syuLO8yBr+R3qg=";
+  };
+in
 {
   programs.fish = {
     enable = true;
@@ -12,7 +20,7 @@
     };
 
     plugins = [
-      
+
       {
         name = "plugin-proxy";
         src = pkgs.fetchFromGitHub {
@@ -36,6 +44,8 @@
         end
       '';
   };
+
+  xdg.configFile."fish/themes/Catppuccin Frappe.theme".source = "${catppuccin-fish}/themes/Catppuccin Frappe.theme";
 
   # Better 'ls'
   programs.eza = {
