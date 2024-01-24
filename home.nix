@@ -61,7 +61,7 @@ in
     settings = { experimental-features = [ "nix-command" "flakes" ]; };
   };
 
-  imports = [ ./aria2.nix ./fish.nix ./git.nix ./gitui.nix ./helix.nix ./httpie.nix ./irssi.nix ./kitty.nix ./newsboat.nix ./nix-zsh ]
+  imports = [ ./aria2.nix ./fish.nix ./git.nix ./helix.nix ./httpie.nix ./irssi.nix ./kitty.nix ./newsboat.nix ./nix-zsh ]
     ++ optionals isDarwin [ ./macOS.nix ] ++ optionals isLinux [ ./linux.nix ];
 
   # Disable for now, as still cannot figure now how to make it work!
