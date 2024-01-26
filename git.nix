@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 {
   programs.git = {
     enable = true;
@@ -19,6 +19,11 @@
       init.defaultBranch = "main";
       pull.ff = "only";
       merge.conflictstyle = "diff3";
+
+      # for git-sync
+      # https://github.com/simonthum/git-sync?tab=readme-ov-file#options
+      branch.main.sync = true;
+      branch.main.syncNewFiles = true;
       #   http = {
       #     proxy = socks5://127.0.0.1:7891;
       #   };
@@ -76,5 +81,14 @@
 
       abort_merge: Some(( code: Char('M'), modifiers: ( bits: 1,),)),
     )'';
+  };
+
+  services.git-sync = {
+    enable = true;
+    repositories.notes = {
+      path = "${config.home.homeDirectory}/notes";
+      uri = "git@github.com:aleadag/notes.git";
+      interval = 1 * 60 * 60;
+    };
   };
 }

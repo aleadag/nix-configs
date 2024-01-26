@@ -119,16 +119,7 @@ in
     htop.enable = true;
     jq.enable = true;
     sioyek.enable = true;
-
-    script-directory = {
-      enable = true;
-      settings = {
-        # SD_ROOT = "${config.home.homeDirectory}/.sd";
-        SD_EDITOR = "hx";
-        SD_CAT = "bat";
-      };
-    };
-
+    script-directory.enable = true;
     ripgrep.enable = true;
   };
 }

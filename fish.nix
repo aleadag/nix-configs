@@ -43,6 +43,27 @@ in
             source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
         end
       '';
+
+    functions = {
+      nixify =
+        ''
+                        if [ ! -e ./.envrc ]
+                            echo "use nix" > .envrc
+                            direnv allow
+                        end
+
+                        set -l defaultNixTest "\
+          { pkgs ? import <nixpkgs> {} }:
+
+          pkgs.mkShell {
+            packages = with pkgs; [
+            ];
+          }"
+                        if not test -e default.nix
+                            echo $defaultNixTest > default.nix
+                        end
+        '';
+    };
   };
 
   xdg.configFile."fish/themes/Catppuccin Frappe.theme".source = "${catppuccin-fish}/themes/Catppuccin Frappe.theme";

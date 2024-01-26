@@ -71,6 +71,7 @@
       language = [
         {
           name = "css";
+          auto-format = true;
           language-servers = [ "vscode-css-language-server" "tailwindcss-ls" ];
         }
 
@@ -84,13 +85,15 @@
         }
 
         {
-          name = "nix";
-          language-servers = [ "nil" ];
+          name = "markdown";
+          auto-format = true;
+          formatter = { command = "${pkgs.dprint}/bin/dprint"; args = [ "fmt" "--stdin" "md" ]; };
         }
 
         {
-          name = "markdown";
-          formatter = { command = "${pkgs.dprint}/bin/dprint"; args = [ "fmt" "--stdin" "md" ]; };
+          name = "nix";
+          auto-format = true;
+          language-servers = [ "nil" ];
         }
       ];
     };
