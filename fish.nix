@@ -20,7 +20,7 @@ in
     };
 
     plugins = [
-
+      { name = "tide"; src = pkgs.fishPlugins.tide.src; }
       {
         name = "plugin-proxy";
         src = pkgs.fetchFromGitHub {
@@ -38,6 +38,10 @@ in
         set proxy_host 127.0.0.1:7890
         set proxy_auth false
         
+        # brew
+        set brewcmd (path filter /opt/homebrew/bin/brew /usr/local/bin/brew)[1]
+        and $brewcmd shellenv | source
+
         # nix
         if test -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
             source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish

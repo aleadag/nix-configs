@@ -10,7 +10,7 @@
     settings = {
       adjust_column_width = -1;
       macos_option_as_alt = "yes";
-      shell = "${config.programs.fish.package}/bin/fish";
+      shell = "${config.programs.fish.package}/bin/fish -l";
     };
     shellIntegration.enableFishIntegration = true;
     keybindings = {
