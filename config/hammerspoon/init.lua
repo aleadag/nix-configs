@@ -166,18 +166,18 @@ if spoon.ClipShow then
     end)
 
     -- Register clipshowM with modal supervisor
-    hsclipsM_keys = hsclipsM_keys or {"alt", "C"}
-    if string.len(hsclipsM_keys[2]) > 0 then
-        spoon.ModalMgr.supervisor:bind(hsclipsM_keys[1], hsclipsM_keys[2], "Enter clipshowM Environment", function()
-            -- We need to take action upon hsclipsM_keys is pressed, since pressing another key to showing ClipShow panel is redundant.
-            spoon.ClipShow:toggleShow()
-            -- Need a little trick here. Since the content type of system clipboard may be "URL", in which case we don't need to activate clipshowM.
-            if spoon.ClipShow.canvas:isShowing() then
-                spoon.ModalMgr:deactivateAll()
-                spoon.ModalMgr:activate({"clipshowM"})
-            end
-        end)
-    end
+    -- hsclipsM_keys = hsclipsM_keys or {"alt", "C"}
+    -- if string.len(hsclipsM_keys[2]) > 0 then
+    --     spoon.ModalMgr.supervisor:bind(hsclipsM_keys[1], hsclipsM_keys[2], "Enter clipshowM Environment", function()
+    --         -- We need to take action upon hsclipsM_keys is pressed, since pressing another key to showing ClipShow panel is redundant.
+    --         spoon.ClipShow:toggleShow()
+    --         -- Need a little trick here. Since the content type of system clipboard may be "URL", in which case we don't need to activate clipshowM.
+    --         if spoon.ClipShow.canvas:isShowing() then
+    --             spoon.ModalMgr:deactivateAll()
+    --             spoon.ModalMgr:activate({"clipshowM"})
+    --         end
+    --     end)
+    -- end
 end
 
 ----------------------------------------------------------------------------------------------------

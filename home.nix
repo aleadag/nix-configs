@@ -33,6 +33,7 @@ in
     # pkgs.microsoft-edge
 
     git-crypt
+    fd # simple, fast and user-friendly alternative to find
     dig
     keepassxc
     anki-bin
