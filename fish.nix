@@ -20,6 +20,7 @@ in
     };
 
     plugins = [
+      # tide configure --auto --style=Rainbow --prompt_colors='True color' --show_time=No --rainbow_prompt_separators=Angled --powerline_prompt_heads=Sharp --powerline_prompt_tails=Flat --powerline_prompt_style='Two lines, character' --prompt_connection=Disconnected --powerline_right_prompt_frame=Yes --prompt_connection_andor_frame_color=Lightest --prompt_spacing=Compact --icons='Few icons' --transient=Yes
       { name = "tide"; src = pkgs.fishPlugins.tide.src; }
       {
         name = "plugin-proxy";
