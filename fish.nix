@@ -70,6 +70,16 @@ in
                             echo $defaultNixTest > default.nix
                         end
         '';
+      flakify =
+        ''
+          if [ ! -e flake.nix ]
+            nix flake new -t github:nix-community/nix-direnv .
+          else if [ ! -e .envrc ]
+            echo "use flake" > .envrc
+          end
+          direnv allow
+          $EDITOR flake.nix
+        '';
     };
   };
 
