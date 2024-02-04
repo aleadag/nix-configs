@@ -80,6 +80,11 @@ in
           direnv allow
           $EDITOR flake.nix
         '';
+      dvt =
+        ''
+          nix flake init -t "github:the-nix-way/dev-templates#$argv[1]"
+          direnv allow
+        '';
     };
   };
 
