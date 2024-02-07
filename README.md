@@ -1,34 +1,54 @@
-# dotfiles - Configuration as Code
+# nix-configs - Configuration as Code
 
-My dotfiles to help me setup my machine in minutes using ~~[yadm](https://yadm.io/)~~
+My Nix{OS} configuration files to help me setup my machine in minutes using
 [HM](https://github.com/nix-community/home-manager).
 
-There is also an [article](https://sspai.com/post/66894) in Chinese explained why and how to use it.
+## Overview
+- nix configuration for my laptops, desktops and more
+- nix flake-powered
+- guaranteed to be reproducible
+
+## Disclaimer
+
+This config is mainly based on [nix-configs](https://github.com/thiagokokada/nix-configs). Some of the repositories that helped me to build this config:
+
+- https://github.com/thiagokokada/nix-configs
+- https://github.com/bqv/nixrc
+- https://github.com/colemickens/nixcfg
+- https://github.com/hlissner/dotfiles
+- https://github.com/Mic92/dotfiles
+- https://github.com/nrdxp/nixflk
+
+Also, some extra resources and documentation about Flakes:
+
+- [Flakes in NixOS Wiki](https://nixos.wiki/wiki/Flakes)
+- [Nix Flakes blog posts from
+  @eldostra](https://www.tweag.io/blog/2020-05-25-flakes/)
+- [Nix documentation](https://nixos.org/manual/nix/unstable/)
+
+**Remember**: Flakes is *experimental*, so you shouldn't try this approach
+until you have some experience in Nix.
 
 ## Rules
 
 - Automate everything, configuration as code.
 - Prefer to `nix` whenever possible.
   - `yay` or `brew` only for OS specific packages.
-  - Migrate to home-manager.
 
-## Additional Configs
+## Installation
 
-### `zsh`
+### Home Manager (standalone)
 
-Via https://tanguy.ortolo.eu/blog/article25/shrc
+Start by installing Nix:
 
-Zsh always executes zshenv. Then, depending on the case:
+```console
+$ sh <(curl -L https://nixos.org/nix/install) --daemon
+```
 
-- run as a login shell, it executes zprofile;
-- run as an interactive, it executes zshrc;
-- run as a login shell, it executes zlogin.
+To build the Home Manager standalone and activate its configuration, run:
 
-At the end of a login session, it executes zlogout, but in reverse order, the
-user-specific file first, then the system-wide one, constituting a chiasmus
-with the zlogin files.
-
-- https://nix-community.github.io/home-manager/options.html#opt-programs.zsh.loginExtra
-- https://nix-community.github.io/home-manager/options.html#opt-programs.zsh.logoutExtra
+```console
+$ nix run '.#homeActivations/<hostname>'
+```
 
 Happy hacking!

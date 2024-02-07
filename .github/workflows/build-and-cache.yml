@@ -1,0 +1,53 @@
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: easimon/maximize-build-space@v7
+        with:
+          overprovision-lvm: true
+          remove-android: true
+          remove-codeql: true
+          remove-docker-images: true
+          remove-dotnet: true
+          remove-haskell: true
+          root-reserve-mb: 512
+          swap-size-mb: 1024
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v22
+        with:
+          extra_nix_config: |
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+          nix_path: nixpkgs=channel:nixos-unstable
+      - uses: cachix/cachix-action@v12
+        with:
+          authToken: ${{ secrets.CACHIX_TOKEN }}
+          extraPullNames: nix-community
+          name: thiagokokada-nix-configs
+      - name: Set default git branch (to reduce log spam)
+        run: git config --global init.defaultBranch master
+      - name: 'Build Home-Manager configs for: mbx'
+        run: nix build --print-build-logs '.#homeConfigurations.mbx.activationPackage'
+      - name: 'Build NixOS configs for: '
+        run: ""
+  build-macos:
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v22
+        with:
+          extra_nix_config: |
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+          nix_path: nixpkgs=channel:nixos-unstable
+      - uses: cachix/cachix-action@v12
+        with:
+          authToken: ${{ secrets.CACHIX_TOKEN }}
+          extraPullNames: nix-community
+          name: thiagokokada-nix-configs
+      - name: Set default git branch (to reduce log spam)
+        run: git config --global init.defaultBranch master
+      - name: 'Build Home-Manager configs for: t0'
+        run: nix build --print-build-logs '.#homeConfigurations.t0.activationPackage'
+name: build-and-cache
+"on":
+  - push
+  - workflow_dispatch

@@ -1,24 +1,5 @@
 { config, lib, pkgs, ... }:
-
-let
-  # The idea comes from here:
-  # https://github.com/berbiche/dotfiles/blob/master/user/nicolas/home.nix
-  # https://github.com/treffynnon/nix-setup/blob/master/home-configs/default.nix
-  inherit (lib) mkIf optionals;
-  inherit (builtins) currentSystem;
-  inherit (lib.systems.elaborate { system = currentSystem; }) isLinux isDarwin;
-
-  secrets = import ./secrets.nix { };
-in
 {
-  # Home Manager needs a bit of information about you and the
-  # paths it should manage.
-  home.username = lib.mkMerge [ (mkIf isDarwin "alexander") (mkIf (!isDarwin) "awang") ];
-  home.homeDirectory = lib.mkMerge [
-    (mkIf isDarwin "/Users/alexander")
-    (mkIf (!isDarwin) "/home/awang")
-  ];
-
   # script-directory
   home.file."sd" = {
     source = ./sd;
@@ -43,10 +24,6 @@ in
     s = "kitty +kitten ssh";
   };
 
-  home.sessionPath = [ "$HOME/.local/bin" ];
-
-  home.sessionVariables = secrets;
-
   # This value determines the Home Manager release that your
   # configuration is compatible with. This helps avoid breakage
   # when a new Home Manager release introduces backwards
@@ -62,8 +39,7 @@ in
     settings = { experimental-features = [ "nix-command" "flakes" ]; };
   };
 
-  imports = [ ./aria2.nix ./fish.nix ./git.nix ./helix.nix ./httpie.nix ./irssi.nix ./kitty.nix ./newsboat.nix ./nix-zsh ]
-    ++ optionals isDarwin [ ./macOS.nix ] ++ optionals isLinux [ ./linux.nix ];
+  imports = [ ./aria2.nix ./fish.nix ./git.nix ./helix.nix ./httpie.nix ./irssi.nix ./kitty.nix ./nix-zsh ];
 
   # Disable for now, as still cannot figure now how to make it work!
   # i18n.inputMethod.enabled = "fcitx5";
