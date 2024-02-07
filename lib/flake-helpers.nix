@@ -96,7 +96,7 @@ in
     , username ? "awang"
     , homePath ? "/home"
     , homeDirectory ? "${homePath}/${username}"
-    , configuration ? ../home.nix
+    , configuration ? ../home-manager/home.nix
     , deviceType ? "desktop"
     , extraModules ? [ ]
     , system ? "x86_64-linux"
