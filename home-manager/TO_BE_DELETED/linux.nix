@@ -37,13 +37,6 @@ in
   home.sessionVariables = { vblank_mode = 0; };
   home.shellAliases = { kit = "GLFW_IM_MODULE=ibus nixGL kitty"; };
 
-  programs.nnn = {
-    enable = true;
-    bookmarks = {
-      c = "~/hacking";
-    };
-  };
-
   services.clipmenu.enable = true;
 
   systemd.user = {
