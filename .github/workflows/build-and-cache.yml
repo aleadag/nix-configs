@@ -22,7 +22,7 @@ jobs:
         with:
           authToken: ${{ secrets.CACHIX_TOKEN }}
           extraPullNames: nix-community
-          name: thiagokokada-nix-configs
+          name: aleadag-nix-configs
       - name: Set default git branch (to reduce log spam)
         run: git config --global init.defaultBranch master
       - name: 'Build Home-Manager configs for: mbx'
@@ -42,7 +42,7 @@ jobs:
         with:
           authToken: ${{ secrets.CACHIX_TOKEN }}
           extraPullNames: nix-community
-          name: thiagokokada-nix-configs
+          name: aleadag-nix-configs
       - name: Set default git branch (to reduce log spam)
         run: git config --global init.defaultBranch master
       - name: 'Build Home-Manager configs for: t0'
