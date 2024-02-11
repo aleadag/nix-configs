@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   options.home-manager.editor.helix.enable = lib.mkEnableOption "Helix editor config" // {
@@ -40,6 +40,25 @@
           space.q = ":q";
           esc = [ "collapse_selection" "keep_primary_selection" ];
         };
+      };
+
+      languages = {
+        language-server = {
+          nil = {
+            command = "${pkgs.nil}/bin/nil";
+            config.nil = {
+              formatting.command = [ "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt" ];
+            };
+          };
+        };
+
+        language = [
+          {
+            name = "nix";
+            auto-format = true;
+            language-servers = [ "nil" ];
+          }
+        ];
       };
     };
   };

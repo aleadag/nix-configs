@@ -1,29 +1,10 @@
 { config, pkgs, lib, flake, ... }:
 
-let
-  get-ip = pkgs.writeShellScriptBin "get-ip" ''
-    ${lib.getExe pkgs.curl} -Ss "https://ifconfig.me"
-  '';
-  get-ip' = pkgs.writeShellScriptBin "get-ip!" ''
-    ${lib.getExe pkgs.curl} -Ss "https://ipapi.co/$(${lib.getExe get-ip})/yaml"
-  '';
-  remove-symlink = pkgs.writeShellScriptBin "remove-symlink" ''
-    [[ -L "$1" ]] && \
-      ${lib.getExe' pkgs.coreutils "cp"} --remove-destination \
-      "$(${lib.getExe' pkgs.coreutils "readlink"} "$1")" "$1"
-  '';
-in
 {
-  options.home-manager.cli.zsh.enable = lib.mkEnableOption "ZSH config" // {
-    default = config.home-manager.cli.enable;
-  };
+  options.home-manager.cli.zsh.enable = lib.mkEnableOption "ZSH config";
 
   config = lib.mkIf config.home-manager.cli.zsh.enable {
-    home.packages = with pkgs; [
-      get-ip
-      get-ip'
-      remove-symlink
-    ] ++ lib.optionals (!stdenv.isDarwin) [
+    home.packages = with pkgs; lib.optionals (!stdenv.isDarwin) [
       (run-bg-alias "open" (lib.getExe' xdg-utils "xdg-open"))
     ];
 
@@ -160,19 +141,5 @@ in
         ".zshenv.zwc".source = compileZshConfig ".zshenv";
         ".zshrc.zwc".source = compileZshConfig ".zshrc";
       };
-
-    programs = {
-      eza = {
-        enable = true;
-        enableAliases = true;
-        git = true;
-      };
-      fzf = {
-        enable = true;
-        fileWidgetOptions = [ "--preview 'head {}'" ];
-        historyWidgetOptions = [ "--sort" ];
-      };
-      zoxide.enable = true;
-    };
   };
 }

@@ -12,7 +12,6 @@
     ./nixgl.nix
     ./sway
     ./theme
-    ./twenty-twenty-twenty.nix
     ./wezterm.nix
     ./xterm.nix
   ];
@@ -26,7 +25,7 @@
 
         Should allow starting programs as parameter.
       '';
-      default = lib.getExe config.programs.neovim.finalPackage;
+      default = lib.getExe config.programs.helix.package;
     };
     defaultTerminal = lib.mkOption {
       type = lib.types.str;
@@ -69,7 +68,6 @@
         pinta
         qalculate-gtk
         vlc
-        zoom-us
       ];
     };
 

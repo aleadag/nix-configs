@@ -1,10 +1,22 @@
-{ config, pkgs, lib, ... }:
+{ config, flake, pkgs, lib, ... }:
 
 let
   cfg = config.home-manager.cli;
+  get-ip = pkgs.writeShellScriptBin "get-ip" ''
+    ${lib.getExe pkgs.curl} -Ss "https://ifconfig.me"
+  '';
+  get-ip' = pkgs.writeShellScriptBin "get-ip!" ''
+    ${lib.getExe pkgs.curl} -Ss "https://ipapi.co/$(${lib.getExe get-ip})/yaml"
+  '';
+  remove-symlink = pkgs.writeShellScriptBin "remove-symlink" ''
+    [[ -L "$1" ]] && \
+      ${lib.getExe' pkgs.coreutils "cp"} --remove-destination \
+      "$(${lib.getExe' pkgs.coreutils "readlink"} "$1")" "$1"
+  '';
 in
 {
   imports = [
+    ./fish.nix
     ./git.nix
     ./htop.nix
     ./irssi.nix
@@ -26,6 +38,10 @@ in
 
   config = lib.mkIf cfg.enable {
     home.packages = with pkgs; [
+      get-ip
+      get-ip'
+      remove-symlink
+
       _7zz
       aria2
       bc
@@ -73,13 +89,7 @@ in
         enable = true;
         themes = {
           Catppuccin-frappe = {
-            src = pkgs.fetchFromGitHub
-              {
-                owner = "catppuccin";
-                repo = "bat";
-                rev = "ba4d16880d63e656acced2b7d4e034e4a93f74b1";
-                sha256 = "6WVKQErGdaqb++oaXnY3i6/GuH2FhTgK0v4TN4Y0Wbw=";
-              };
+            src = builtins.getAttr "catppuccin-bat" flake.inputs;
             file = "Catppuccin-frappe.tmTheme";
           };
         };
@@ -92,15 +102,29 @@ in
         };
         extraPackages = with pkgs.bat-extras; [ batdiff batman batgrep batwatch ];
       };
-      zsh.shellAliases = {
-        # For muscle memory...
-        archive = lib.mkIf cfg.enableOuch "${lib.getExe pkgs.ouch} compress";
-        unarchive = lib.mkIf cfg.enableOuch "${lib.getExe pkgs.ouch} decompress";
-        lsarchive = lib.mkIf cfg.enableOuch "${lib.getExe pkgs.ouch} list";
-        cal = lib.mkIf cfg.enableGnu (lib.getExe' pkgs.gcal "gcal");
-        ncdu = "${lib.getExe pkgs.dua} interactive";
-        sloccount = lib.getExe pkgs.tokei;
+      eza = {
+        enable = true;
+        enableAliases = true;
+        git = true;
       };
+      fzf = {
+        enable = true;
+        fileWidgetOptions = [ "--preview 'head {}'" ];
+        historyWidgetOptions = [ "--sort" ];
+      };
+      zoxide.enable = true;
+    };
+
+    home.shellAliases = {
+      gs = lib.mkIf cfg.git.enable "${lib.getExe config.programs.git.package} status";
+      cat = lib.getExe pkgs.bat;
+      # For muscle memory...
+      archive = lib.mkIf cfg.enableOuch "${lib.getExe pkgs.ouch} compress";
+      unarchive = lib.mkIf cfg.enableOuch "${lib.getExe pkgs.ouch} decompress";
+      lsarchive = lib.mkIf cfg.enableOuch "${lib.getExe pkgs.ouch} list";
+      cal = lib.mkIf cfg.enableGnu (lib.getExe' pkgs.gcal "gcal");
+      ncdu = "${lib.getExe pkgs.dua} interactive";
+      sloccount = lib.getExe pkgs.tokei;
     };
   };
 }

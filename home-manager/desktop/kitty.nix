@@ -1,8 +1,20 @@
 { config, pkgs, lib, ... }:
 
 {
-  options.home-manager.desktop.kitty.enable = lib.mkEnableOption "Kitty config" // {
-    default = config.home-manager.desktop.enable;
+  options.home-manager.desktop.kitty = {
+    enable = lib.mkEnableOption "Kitty config" // {
+      default = config.home-manager.desktop.enable;
+    };
+    fontSize = lib.mkOption {
+      type = lib.types.float;
+      description = "Font size.";
+      default = 12.0;
+    };
+    opacity = lib.mkOption {
+      type = lib.types.float;
+      description = "Background opacity.";
+      default = 0.9;
+    };
   };
 
   config = lib.mkIf config.home-manager.desktop.kitty.enable {
@@ -11,42 +23,10 @@
       keybindings = { "ctrl+shift+0" = "change_font_size all 0"; };
       font = {
         inherit (config.home-manager.desktop.theme.fonts.symbols) package name;
+        size = config.home-manager.desktop.kitty.fontSize;
       };
-      settings = with config.home-manager.desktop.theme.colors; {
-        # Font
-        font_size = "12.0";
-
-        # Colors
-        foreground = base05;
-        background = base00;
-        selection_background = base02;
-        selection_foreground = base05;
-        url_color = base04;
-        cursor = base05;
-        active_border_color = base01;
-        inactive_border_color = base03;
-        active_tab_background = base01;
-        active_tab_foreground = base04;
-        inactive_tab_background = base00;
-        inactive_tab_foreground = base05;
-        tab_bar_background = base00;
-        color0 = base00;
-        color1 = base08;
-        color2 = base0B;
-        color3 = base0A;
-        color4 = base0D;
-        color5 = base0E;
-        color6 = base0C;
-        color7 = base05;
-        color8 = base02;
-        color9 = base09;
-        color10 = base01;
-        color11 = base03;
-        color12 = base04;
-        color13 = base06;
-        color14 = base0F;
-        color15 = base07;
-
+      theme = "Catppuccin-Frappe";
+      settings = {
         # Scrollback
         scrollback_lines = 10000;
         scrollback_pager = "${lib.getExe' pkgs.page "page"} -f";
@@ -67,7 +47,7 @@
         strip_trailing_spaces = "smart";
         clipboard_control =
           "write-clipboard write-primary read-clipboard read-primary";
-        background_opacity = "0.9";
+        background_opacity = toString config.home-manager.desktop.kitty.opacity;
 
         # Fix for Wayland slow scrolling
         touch_scroll_multiplier = "5.0";

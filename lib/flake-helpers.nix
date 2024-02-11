@@ -97,7 +97,7 @@ in
     , homePath ? "/home"
     , homeDirectory ? "${homePath}/${username}"
     , configuration ? ../home-manager
-    , deviceType ? "desktop"
+    , deviceType ? "laptop"
     , extraModules ? [ ]
     , system ? "x86_64-linux"
     , nixpkgs ? inputs.nixpkgs

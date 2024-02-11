@@ -34,9 +34,9 @@ in
         enable = true;
         extraConfig =
           let
-            inherit (config.home-manager.desktop.theme) fonts colors;
+            inherit (config.home-manager.desktop.theme) fonts;
           in
-          with colors; /* lua */''
+            /* lua */''
             local act = wezterm.action
             local config = wezterm.config_builder()
             local scrollback_lines = ${toString cfg.scrollbackLines}
@@ -71,6 +71,10 @@ in
               )
             end)
 
+            ${lib.optionalString config.programs.fish.enable ''
+              config.default_prog = { '${lib.getExe config.programs.fish.package}', '-l' }
+            ''}
+
             ${lib.optionalString cfg.fullscreenOnStartup /* lua */ ''
               local mux = wezterm.mux
               -- Automatically maximize window on startup
@@ -86,22 +90,13 @@ in
               fade_out_duration_ms = 100,
               target = 'CursorColor',
             }
-            config.color_scheme = "Builtin Pastel Dark"
+            config.color_scheme = "Catppuccin Frappe"
             config.enable_kitty_keyboard = true
             config.font = wezterm.font("${fonts.symbols.name}")
             config.font_size = ${toString cfg.fontSize}
             config.hide_tab_bar_if_only_one_tab = true
             config.scrollback_lines = scrollback_lines
             config.window_background_opacity = ${toString cfg.opacity}
-            config.colors = {
-              foreground = "${base05}",
-              background = "${base00}",
-              cursor_bg = "${base05}",
-              cursor_border = "${base05}",
-              cursor_fg = "${base00}",
-              selection_bg = "${base02}",
-              selection_fg = "${base05}",
-            };
             config.keys = {
               {
                 key = 'H',

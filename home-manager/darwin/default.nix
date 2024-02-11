@@ -10,10 +10,8 @@
   config = lib.mkIf config.home-manager.darwin.enable {
     home-manager = {
       desktop = {
-        twenty-twenty-twenty.enable = true;
         wezterm = {
-          enable = pkgs.stdenv.isAarch64; # broken in x86_64-darwin
-          fullscreenOnStartup = false;
+          enable = true;
           fontSize = 14.0;
           opacity = 1.0;
         };
@@ -21,7 +19,7 @@
     };
 
     home.file.".hammerspoon" = {
-      source = ./config/hammerspoon;
+      source = ../config/hammerspoon;
       recursive = true;
     };
 

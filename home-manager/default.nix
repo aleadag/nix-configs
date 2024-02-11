@@ -2,11 +2,13 @@
 
 {
   imports = [
-    # ./cli
-    # ./crostini.nix
-    # ./darwin
-    # ./desktop
-    # ./editor
+    ../modules
+    ./cli
+    ./crostini.nix
+    ./darwin
+    ./desktop
+    ./dev
+    ./editor
     ./meta
   ];
 

@@ -1,9 +1,7 @@
 { config, pkgs, lib, ... }:
 
 {
-  options.home-manager.cli.tmux.enable = lib.mkEnableOption "Tmux config" // {
-    default = config.home-manager.cli.enable;
-  };
+  options.home-manager.cli.tmux.enable = lib.mkEnableOption "Tmux config";
 
   config = lib.mkIf config.home-manager.cli.tmux.enable {
     programs.tmux = {

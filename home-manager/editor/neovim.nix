@@ -481,33 +481,6 @@ in
               lspconfig.bashls.setup {}
               lspconfig.marksman.setup {}
             ''}
-            ${lib.optionalString devCfg.nix.enable /* lua */ ''
-              lspconfig.nil_ls.setup {
-                settings = {
-                  ['nil'] = {
-                    formatting = {
-                      command = { "nixpkgs-fmt" },
-                    },
-                  },
-                },
-              }
-            ''}
-            ${lib.optionalString devCfg.clojure.enable /* lua */ ''
-              lspconfig.clojure_lsp.setup {}
-            ''}
-            ${lib.optionalString devCfg.go.enable /* lua */ ''
-              lspconfig.gopls.setup {}
-            ''}
-            ${lib.optionalString devCfg.python.enable /* lua */ ''
-              lspconfig.pyright.setup {}
-              lspconfig.ruff_lsp.setup {}
-            ''}
-            ${lib.optionalString devCfg.node.enable /* lua */''
-              lspconfig.cssls.setup {}
-              lspconfig.eslint.setup {}
-              lspconfig.html.setup {}
-              lspconfig.jsonls.setup {}
-            ''}
 
             local builtin = require('telescope.builtin')
 

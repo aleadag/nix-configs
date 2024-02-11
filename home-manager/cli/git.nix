@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, flake, lib, ... }:
 
 let
   cfg = config.home-manager.cli.git;
@@ -15,15 +15,28 @@ in
 
     programs.git = {
       enable = true;
-      userName = "Alexander Wang";
-      userEmail = "aleadag@gmail.com";
+
+      userName = config.mainUser.fullname;
+      userEmail = config.mainUser.email;
       aliases = {
+        branch-cleanup = ''!git branch --merged | egrep -v "(^\*|master|main|dev|development)" | xargs git branch -d #'';
+        hist = "log --pretty=format:'%C(yellow)[%ad]%C(reset) %C(green)[%h]%C(reset) | %C(red)%s %C(bold red){{%an}}%C(reset) %C(blue)%d%C(reset)' --graph --date=short";
         lol = "log --graph --decorate --oneline --abbrev-commit";
         lola = "log --graph --decorate --oneline --abbrev-commit --all";
-        hist =
-          "log --pretty=format:'%C(yellow)[%ad]%C(reset) %C(green)[%h]%C(reset) | %C(red)%s %C(bold red){{%an}}%C(reset) %C(blue)%d%C(reset)' --graph --date=short";
         work = "log --pretty=format:'%h%x09%an%x09%ad%x09%s'";
       };
+
+      ignores = [
+        "*.swp"
+        "*~"
+        ".clj-kondo"
+        ".dir-locals.el"
+        ".DS_Store"
+        ".lsp"
+        ".projectile"
+        "Thumbs.db"
+      ];
+
       delta.enable = true;
       delta.options = {
         features = "side-by-side line-numbers decorations";
@@ -40,12 +53,6 @@ in
         # https://github.com/simonthum/git-sync?tab=readme-ov-file#options
         branch.main.sync = true;
         branch.main.syncNewFiles = true;
-        #   http = {
-        #     proxy = socks5://127.0.0.1:7891;
-        #   };
-        #   https = {
-        #     proxy = socks5://127.0.0.1:7891;
-        #   };
       };
     };
 
@@ -66,13 +73,8 @@ in
     # https://github.com/extrawurst/gitui/issues/1194
     programs.gitui = {
       enable = true;
-      theme = builtins.readFile (pkgs.fetchFromGitHub
-        {
-          owner = "catppuccin";
-          repo = "gitui";
-          rev = "39978362b2c88b636cacd55b65d2f05c45a47eb9";
-          sha256 = "sha256-kWaHQ1+uoasT8zXxOxkur+QgZu1wLsOOrP/TL+6cfII=";
-        } + "/theme/frappe.ron");
+      theme = builtins.readFile (builtins.getAttr "catppuccin-gitui" flake.inputs
+        + "/theme/frappe.ron");
       keyConfig = ''(
       focus_right: Some(( code: Char('l'), modifiers: ( bits: 0,),)),
       focus_left: Some(( code: Char('h'), modifiers: ( bits: 0,),)),
@@ -110,6 +112,7 @@ in
     )'';
     };
 
+    # TODO: make it configurable
     services.git-sync = {
       enable = true;
       repositories.notes = {
