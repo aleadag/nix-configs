@@ -29,6 +29,14 @@ in
         pkg = pkgs.mpv;
         nixGL = cfg.package;
       };
+      kitty.package = libEx.nixGLWrapper {
+        pkg = pkgs.kitty;
+        nixGL = cfg.package;
+      };
+      wezterm.package = libEx.nixGLWrapper {
+        pkg = pkgs.wezterm;
+        nixGL = cfg.package;
+      };
     };
   };
 }
