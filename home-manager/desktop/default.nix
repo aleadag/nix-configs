@@ -34,12 +34,16 @@
 
         Should allow starting programs as parameter.
       '';
-      default = "${lib.getExe config.programs.wezterm.package} start";
+      # Use kitty as the default terminal, as it supports fctix5
+      default = "${lib.getExe config.programs.kitty.package}";
     };
   };
 
   config = lib.mkIf config.home-manager.desktop.enable {
-    i18n.inputMethod.enabled = "fcitx5";
+    i18n.inputMethod = {
+      enabled = "fcitx5";
+      fcitx5.addons = with pkgs; [ fcitx5-chinese-addons ];
+    };
 
     home = {
       # Disable keyboard management via HM

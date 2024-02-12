@@ -10,16 +10,20 @@
       enable = true;
       inactiveInterval = 10;
       lockCmd = with config.home-manager.desktop.theme.fonts; toString
-        (pkgs.writeShellScript "lock-screen" ''
-          export XSECURELOCK_FORCE_GRAB=1
-          export XSECURELOCK_BLANK_DPMS_STATE="off"
-          export XSECURELOCK_DATETIME_FORMAT="%H:%M:%S - %a %d/%m"
-          export XSECURELOCK_SHOW_DATETIME=1
-          export XSECURELOCK_SHOW_HOSTNAME=0
-          export XSECURELOCK_SHOW_USERNAME=0
-          export XSECURELOCK_FONT="${gui.name}:style=Regular"
+        # TODO: xsecurelock or i3lock did not recognize my password!
+        # (pkgs.writeShellScript "lock-screen" ''
+        #   export XSECURELOCK_FORCE_GRAB=1
+        #   export XSECURELOCK_BLANK_DPMS_STATE="off"
+        #   export XSECURELOCK_DATETIME_FORMAT="%H:%M:%S - %a %d/%m"
+        #   export XSECURELOCK_SHOW_DATETIME=1
+        #   export XSECURELOCK_SHOW_HOSTNAME=0
+        #   export XSECURELOCK_SHOW_USERNAME=0
+        #   export XSECURELOCK_FONT="${gui.name}:style=Regular"
 
-          exec ${lib.getExe pkgs.xsecurelock} $@
+        #   exec ${lib.getExe pkgs.xsecurelock} $@
+        # '')
+        (pkgs.writeShellScript "lock-screen" ''
+          exec ${lib.getExe pkgs.slock} $@
         '');
       # Use xss-lock instead
       xautolock.enable = false;

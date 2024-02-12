@@ -42,6 +42,9 @@ in
         # Automatically loads the resolution
         + ''
           ${lib.getExe pkgs.change-res}
+        ''
+        + ''
+          ${lib.getExe pkgs.xorg.xset} r rate 150 50
         '';
     };
   };
