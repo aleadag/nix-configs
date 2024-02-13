@@ -24,7 +24,7 @@ jobs:
         with:
           authToken: ${{ secrets.CACHIX_TOKEN }}
           extraPullNames: nix-community
-          name: thiagokokada-nix-configs
+          name: aleadag-nix-configs
       - name: Update flake.lock
         run: |
           git config user.name "${{ github.actor }}"

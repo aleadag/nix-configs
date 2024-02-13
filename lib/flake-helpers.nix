@@ -96,8 +96,8 @@ in
     , username ? "awang"
     , homePath ? "/home"
     , homeDirectory ? "${homePath}/${username}"
-    , configuration ? ../home-manager/home.nix
-    , deviceType ? "desktop"
+    , configuration ? ../home-manager
+    , deviceType ? "laptop"
     , extraModules ? [ ]
     , system ? "x86_64-linux"
     , nixpkgs ? inputs.nixpkgs

@@ -35,7 +35,7 @@ with constants;
   cachixActionStep = {
     uses = actions.cachix-action;
     "with" = {
-      name = "thiagokokada-nix-configs";
+      name = "aleadag-nix-configs";
       extraPullNames = "nix-community";
       authToken = "\${{ secrets.CACHIX_TOKEN }}";
     };

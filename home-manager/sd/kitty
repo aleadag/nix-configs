@@ -1,3 +1,0 @@
-#!/bin/bash
-
-GLFW_IM_MODULE=ibus nixGL kitty
