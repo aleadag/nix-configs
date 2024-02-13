@@ -25,9 +25,6 @@
           # identityFile = with config.home; "${homeDirectory}/.ssh/github";
           proxyCommand = "nc -x 127.0.0.1:7890 %h %p";
         };
-        "*" = {
-          identityFile = with config.home; "${homeDirectory}/.ssh/id_rsa";
-        };
       };
     };
   };
