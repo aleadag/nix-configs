@@ -20,7 +20,7 @@ jobs:
           extraPullNames: nix-community
           name: aleadag-nix-configs
       - name: Set default git branch (to reduce log spam)
-        run: git config --global init.defaultBranch master
+        run: git config --global init.defaultBranch main
       - name: Validate Flakes
         run: nix flake check --print-build-logs
 name: validate-flakes

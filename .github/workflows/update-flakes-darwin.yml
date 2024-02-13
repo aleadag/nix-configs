@@ -15,7 +15,7 @@ jobs:
           extraPullNames: nix-community
           name: aleadag-nix-configs
       - name: Set default git branch (to reduce log spam)
-        run: git config --global init.defaultBranch master
+        run: git config --global init.defaultBranch main
       - name: 'Build Home-Manager configs for: t0'
         run: nix build --print-build-logs '.#homeConfigurations.t0.activationPackage'
 name: update-flakes-darwin

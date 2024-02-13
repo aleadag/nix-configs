@@ -42,7 +42,7 @@ with constants;
   };
   setDefaultGitBranchStep = {
     name = "Set default git branch (to reduce log spam)";
-    run = "git config --global init.defaultBranch master";
+    run = "git config --global init.defaultBranch main";
   };
   validateFlakesStep = {
     name = "Validate Flakes";
