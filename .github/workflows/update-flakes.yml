@@ -19,7 +19,7 @@ jobs:
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
           nix_path: nixpkgs=channel:nixos-unstable
       - name: Set default git branch (to reduce log spam)
-        run: git config --global init.defaultBranch master
+        run: git config --global init.defaultBranch main
       - uses: cachix/cachix-action@v12
         with:
           authToken: ${{ secrets.CACHIX_TOKEN }}
