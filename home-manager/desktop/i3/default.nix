@@ -81,7 +81,7 @@ in
     ./picom.nix
     ./rofi.nix
     ./screen-locker.nix
-    ./wallpaper.nix
+    ./wallpaper
     ./x11.nix
   ];
 

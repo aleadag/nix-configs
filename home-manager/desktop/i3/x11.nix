@@ -44,7 +44,7 @@ in
           ${lib.getExe pkgs.change-res}
         ''
         + ''
-          ${lib.getExe pkgs.xorg.xset} r rate 150 50
+          ${lib.getExe pkgs.xorg.xset} r rate 200 50
         '';
     };
   };

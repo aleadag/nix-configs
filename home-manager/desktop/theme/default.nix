@@ -71,15 +71,10 @@ in
     };
 
     wallpaper = {
-      path = lib.mkOption {
+      cachePath = lib.mkOption {
         type = lib.types.path;
-        description = "Wallpaper path";
-        default = pkgs.wallpapers.hatsune-miku_walking-4k;
-      };
-      scale = lib.mkOption {
-        type = lib.types.enum [ "tile" "center" "fill" "scale" ];
-        default = "fill";
-        description = "Wallpaper scaling";
+        description = "Wallpaper cache path";
+        default = "${config.home.homeDirectory}/Pictures/Bing/";
       };
     };
   };

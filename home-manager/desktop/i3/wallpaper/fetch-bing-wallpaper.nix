@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, cachePath, ... }:
 
 pkgs.writeShellScriptBin "fetch-bing-wp" ''
   # author: Whizzzkid (me@nishantarora.in)
@@ -30,7 +30,7 @@ pkgs.writeShellScriptBin "fetch-bing-wp" ''
   size="1920x1080"
 
   # Collection Path.
-  path="$HOME/Pictures/Bing/"
+  path="${cachePath}"
 
   ########################################################################
   #### DO NOT EDIT BELOW THIS LINE #######################################
@@ -43,23 +43,23 @@ pkgs.writeShellScriptBin "fetch-bing-wp" ''
   echo "Pinging Bing API..."
 
   # Fetching API response.
-  apiResp=$(curl -s -m 2 $reqImg)
+  apiResp=$(${lib.getExe pkgs.curl} -s -m 2 $reqImg)
   if [ $? -gt 0 ]; then
     echo "Ping failed!"
     exit 1
   fi
 
   # Default image URL in case the required is not available.
-  defImgURL=$bing$(echo $apiResp | yq -p=xml '.images.image.url')
+  defImgURL=$bing$(echo $apiResp | ${lib.getExe pkgs.yq-go} -p=xml '.images.image.url')
 
   # Req image url (raw).
-  reqImgURL=$bing$(echo $apiResp | yq -p=xml '.images.image.urlBase')"_"$size$extn
+  reqImgURL=$bing$(echo $apiResp | ${lib.getExe pkgs.yq-go} -p=xml '.images.image.urlBase')"_"$size$extn
 
   # Image copyright.
-  copyright=$(echo $apiResp | yq -p=xml '.images.image.copyright')
+  copyright=$(echo $apiResp | ${lib.getExe pkgs.yq-go} -p=xml '.images.image.copyright')
 
   # Checking if reqImgURL exists.
-  if ! wget --quiet --spider --max-redirect 0 $reqImgURL; then
+  if ! ${lib.getExe pkgs.wget} --quiet --spider --max-redirect 0 $reqImgURL; then
     reqImgURL=$defImgURL
   fi
 
@@ -74,15 +74,15 @@ pkgs.writeShellScriptBin "fetch-bing-wp" ''
 
   if ! [ -e $path$imgName ]; then
     # Saving Image to collection.
-    curl -L -s -m 2 -o $path$imgName $reqImgURL
+    ${lib.getExe pkgs.curl} -L -s -m 2 -o $path$imgName $reqImgURL
 
     # Logging.
     echo "Saving image to $path$imgName"
 
     # Writing copyright.
-    echo "$copyright" > $path$\{imgName/%.jpg/.txt\}
+    echo "$copyright" > $path''${imgName/%.jpg/.txt}
   
-    feh --bg-fill $path$imgName
+    ${lib.getExe pkgs.feh} --bg-fill $path$imgName
 
     echo "New wallpaper set successfully for $XDG_CURRENT_DESKTOP."
   else

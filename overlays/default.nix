@@ -8,8 +8,6 @@ final: prev:
     (import ../lib { lib = finalLib; pkgs = final; })
   );
 
-  wallpapers = prev.callPackage ../packages/wallpapers { };
-
   # # custom packages
   # arandr = prev.arandr.overrideAttrs (_: { src = flake.inputs.arandr; });
 

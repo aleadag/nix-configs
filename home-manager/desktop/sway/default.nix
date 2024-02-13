@@ -88,7 +88,7 @@ in
 
         output = {
           "*" = with config.home-manager.desktop.theme.wallpaper; {
-            bg = "${path} ${scale}";
+            # bg = "${path} ${scale}";
             # DPI
             scale = toString (config.home-manager.desktop.theme.fonts.dpi / 100.0);
           } // lib.optionalAttrs (osConfig ? fonts.fontconfig) {
