@@ -1,7 +1,9 @@
 { config, pkgs, lib, flake, ... }:
 
 {
-  options.home-manager.cli.zsh.enable = lib.mkEnableOption "ZSH config";
+  options.home-manager.cli.zsh.enable = lib.mkEnableOption "ZSH config" // {
+    default = config.home-manager.cli.enable;
+  };
 
   config = lib.mkIf config.home-manager.cli.zsh.enable {
     home.packages = with pkgs; lib.optionals (!stdenv.isDarwin) [
