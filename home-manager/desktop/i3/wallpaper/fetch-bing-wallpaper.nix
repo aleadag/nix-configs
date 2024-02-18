@@ -84,8 +84,9 @@ pkgs.writeShellScriptBin "fetch-bing-wp" ''
   
     ${lib.getExe pkgs.feh} --bg-fill $path$imgName
 
-    echo "New wallpaper set successfully for $XDG_CURRENT_DESKTOP."
+    echo "New wallpaper set successfully."
   else
-    echo "Wallpaper already exists."
+    ${lib.getExe pkgs.feh} --bg-fill $path$imgName
+    echo "Wallpaper already exists, set successfully."
   fi
 ''
