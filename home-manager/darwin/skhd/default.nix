@@ -152,7 +152,7 @@
 
               # Restart all services
               ctrl + alt + cmd - r : yabai --restart-service; \
-                                     launchctl kickstart -k "org.nix-community.home.sketchybar"; \
+                                     launchctl kickstart -k "gui/502/org.nix-community.home.sketchybar"; \
                                      skhd --restart-service
 
               # Close a window. Not the same as quit
@@ -417,7 +417,7 @@
 
               reload < 0            : skhd -k 'escape'; \
                                       yabai --restart-service; \
-                                      launchctl kickstart -k "org.nix-community.home.sketchybar"; \
+                                      launchctl kickstart -k "gui/502/org.nix-community.home.sketchybar"; \
                                       skhd --restart-service
 
               reload < 1            : yabai --restart-service; \
@@ -426,7 +426,7 @@
               reload < 2            : skhd -k 'escape'; \
                                       skhd --restart-service
 
-              reload < 3            : launchctl kickstart -k "org.nix-community.home.sketchybar"; \
+              reload < 3            : launchctl kickstart -k "gui/502/org.nix-community.home.sketchybar"; \
                                       skhd -k 'escape'
             '';
         };

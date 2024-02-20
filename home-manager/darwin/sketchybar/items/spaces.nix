@@ -22,7 +22,7 @@ pkgs.writeShellApplication {
                                     padding_left=2 \
                                     padding_right=2 \
                                     label.padding_right=20 \
-                                    icon.highlight_color=${fixColor colors.text} \
+                                    icon.highlight_color=${fixColor colors.green} \
                                     label.font="sketchybar-app-font:Regular:16.0" \
                                     label.background.height=26 \
                                     label.background.drawing=on \
