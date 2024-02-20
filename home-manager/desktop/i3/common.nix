@@ -19,33 +19,33 @@
 
     position = "top";
     colors = {
-      background = base00;
-      separator = base01;
-      statusline = base04;
+      background = base;
+      separator = mantle;
+      statusline = surface2;
       activeWorkspace = {
-        border = base03;
-        background = base03;
-        text = base00;
+        border = surface1;
+        background = surface1;
+        text = base;
       };
       bindingMode = {
-        border = base0A;
-        background = base0A;
-        text = base00;
+        border = yellow;
+        background = yellow;
+        text = base;
       };
       focusedWorkspace = {
-        border = base0D;
-        background = base0D;
-        text = base00;
+        border = blue;
+        background = blue;
+        text = base;
       };
       inactiveWorkspace = {
-        border = base01;
-        background = base01;
-        text = base05;
+        border = mantle;
+        background = mantle;
+        text = text;
       };
       urgentWorkspace = {
-        border = base08;
-        background = base08;
-        text = base00;
+        border = red;
+        background = red;
+        text = base;
       };
     };
   }]
@@ -153,41 +153,41 @@ in
     inherit bars fonts modifier menu terminal;
 
     colors = with config.home-manager.desktop.theme.colors; {
-      background = base07;
+      background = lavender;
       focused = {
-        background = base0D;
-        border = base0D;
-        childBorder = base0C;
-        indicator = base0D;
-        text = base00;
+        background = blue;
+        border = blue;
+        childBorder = teal;
+        indicator = blue;
+        text = base;
       };
       focusedInactive = {
-        background = base01;
-        border = base01;
-        childBorder = base01;
-        indicator = base03;
-        text = base05;
+        background = mantle;
+        border = mantle;
+        childBorder = mantle;
+        indicator = surface1;
+        text = text;
       };
       placeholder = {
-        background = base00;
-        border = base00;
-        childBorder = base00;
-        indicator = base00;
-        text = base05;
+        background = base;
+        border = base;
+        childBorder = base;
+        indicator = base;
+        text = text;
       };
       unfocused = {
-        background = base00;
-        border = base01;
-        childBorder = base01;
-        indicator = base01;
-        text = base05;
+        background = base;
+        border = mantle;
+        childBorder = mantle;
+        indicator = mantle;
+        text = text;
       };
       urgent = {
-        background = base08;
-        border = base08;
-        childBorder = base08;
-        indicator = base08;
-        text = base00;
+        background = red;
+        border = red;
+        childBorder = red;
+        indicator = red;
+        text = base;
       };
     };
 

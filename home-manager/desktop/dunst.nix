@@ -17,8 +17,8 @@
       settings = with config.home-manager.desktop.theme.colors;
         let
           theme = {
-            background = base00;
-            foreground = base05;
+            background = base;
+            foreground = text;
           };
         in
         {
@@ -43,9 +43,9 @@
             line_height = 0;
             padding = 8;
             horizontal_padding = 8;
-            separator_color = base03;
+            separator_color = surface1;
             frame_width = 1;
-            frame_color = base01;
+            frame_color = mantle;
             show_indicators = false;
             icon_position = "left";
             min_icon_size = 48;

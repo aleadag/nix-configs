@@ -64,10 +64,16 @@ in
       };
     };
 
+    flavor = lib.mkOption {
+      type = lib.types.str;
+      description = "Catppuccin flavor";
+      default = "frappe";
+    };
+
     colors = lib.mkOption {
       type = with lib.types; attrsOf str;
-      description = "Base16 colors";
-      default = lib.importJSON ./colors.json;
+      description = "Catppuccin colors";
+      default = (lib.importJSON ./colors.json)."${config.home-manager.desktop.theme.flavor}";
     };
 
     wallpaper = {

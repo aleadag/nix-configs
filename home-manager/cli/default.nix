@@ -88,15 +88,15 @@ in
       bat = {
         enable = true;
         themes = {
-          Catppuccin-frappe = {
+          catppuccin = {
             src = builtins.getAttr "catppuccin-bat" flake.inputs;
-            file = "Catppuccin-frappe.tmTheme";
+            file = "Catppuccin-${config.home-manager.desktop.theme.flavor}.tmTheme";
           };
         };
         # This should pick up the correct colors for the generated theme. Otherwise
         # it is possible to generate a custom bat theme to ~/.config/bat/config
         config = {
-          theme = "Catppuccin-frappe";
+          theme = "catppuccin";
           tabs = "2";
           pager = "less -FR";
         };

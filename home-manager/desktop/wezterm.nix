@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, libEx, pkgs, ... }:
 
 let
   cfg = config.home-manager.desktop.wezterm;
@@ -90,7 +90,7 @@ in
               fade_out_duration_ms = 100,
               target = 'CursorColor',
             }
-            config.color_scheme = "Catppuccin Frappe"
+            config.color_scheme = "Catppuccin ${libEx.capitalizeString config.home-manager.desktop.theme.flavor}"
             config.enable_kitty_keyboard = true
             config.font = wezterm.font("${fonts.symbols.name}")
             config.font_size = ${toString cfg.fontSize}

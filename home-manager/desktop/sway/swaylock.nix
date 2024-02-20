@@ -20,35 +20,35 @@
         #   '');
         # scaling = config.home-manager.desktop.theme.wallpaper.scale;
 
-        inside-color = base01;
-        line-color = base01;
-        ring-color = base05;
-        text-color = base05;
+        inside-color = mantle;
+        line-color = mantle;
+        ring-color = text;
+        text-color = text;
 
-        inside-clear-color = base0A;
-        line-clear-color = base0A;
-        ring-clear-color = base00;
-        text-clear-color = base00;
+        inside-clear-color = yellow;
+        line-clear-color = yellow;
+        ring-clear-color = base;
+        text-clear-color = base;
 
-        inside-caps-lock-color = base03;
-        line-caps-lock-color = base03;
-        ring-caps-lock-color = base00;
-        text-caps-lock-color = base00;
+        inside-caps-lock-color = surface1;
+        line-caps-lock-color = surface1;
+        ring-caps-lock-color = base;
+        text-caps-lock-color = base;
 
-        inside-ver-color = base0D;
-        line-ver-color = base0D;
-        ring-ver-color = base00;
-        text-ver-color = base00;
+        inside-ver-color = blue;
+        line-ver-color = blue;
+        ring-ver-color = base;
+        text-ver-color = base;
 
-        inside-wrong-color = base08;
-        line-wrong-color = base08;
-        ring-wrong-color = base00;
-        text-wrong-color = base00;
+        inside-wrong-color = red;
+        line-wrong-color = red;
+        ring-wrong-color = base;
+        text-wrong-color = base;
 
-        caps-lock-bs-hl-color = base08;
-        caps-lock-key-hl-color = base0C;
-        bs-hl-color = base08;
-        key-hl-color = base0C;
+        caps-lock-bs-hl-color = red;
+        caps-lock-key-hl-color = teal;
+        bs-hl-color = red;
+        key-hl-color = teal;
         separator-color = "#00000000"; # transparent
         layout-bg-color = "#00000050"; # semi-transparent black
 

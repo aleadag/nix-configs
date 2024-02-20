@@ -11,7 +11,7 @@
       defaultEditor = true;
 
       settings = {
-        theme = "catppuccin_frappe";
+        theme = "catppuccin_${config.home-manager.desktop.theme.flavor}";
 
         editor = {
           color-modes = true;

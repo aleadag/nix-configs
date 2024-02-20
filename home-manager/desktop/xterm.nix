@@ -9,22 +9,22 @@
     home.packages = with pkgs; [ hack-font xterm ];
 
     xresources.extraConfig = with config.home-manager.desktop.theme.colors; ''
-      #define base00 ${base00}
-      #define base01 ${base01}
-      #define base02 ${base02}
-      #define base03 ${base03}
-      #define base04 ${base04}
-      #define base05 ${base05}
-      #define base06 ${base06}
-      #define base07 ${base07}
-      #define base08 ${base08}
-      #define base09 ${base09}
-      #define base0A ${base0A}
-      #define base0B ${base0B}
-      #define base0C ${base0C}
-      #define base0D ${base0D}
-      #define base0E ${base0E}
-      #define base0F ${base0F}
+      #define base00 ${base}
+      #define base01 ${mantle}
+      #define base02 ${surface0}
+      #define base03 ${surface1}
+      #define base04 ${surface2}
+      #define base05 ${text}
+      #define base06 ${rosewater}
+      #define base07 ${lavender}
+      #define base08 ${red}
+      #define base09 ${peach}
+      #define base0A ${yellow}
+      #define base0B ${green}
+      #define base0C ${teal}
+      #define base0D ${blue}
+      #define base0E ${mauve}
+      #define base0F ${flamingo}
 
       *foreground:   base05
       #ifdef background_opacity

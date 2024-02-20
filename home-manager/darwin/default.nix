@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  imports = [ ./trampoline-apps.nix ];
+  imports = [ ./trampoline-apps.nix ./yabai ./sketchybar ./skhd ];
 
   options.home-manager.darwin.enable = lib.mkEnableOption "Darwin (macOS) config" // {
     default = pkgs.stdenv.isDarwin;
@@ -16,11 +16,6 @@
           opacity = 1.0;
         };
       };
-    };
-
-    home.file.".hammerspoon" = {
-      source = ../config/hammerspoon;
-      recursive = true;
     };
 
     targets.darwin.defaults = {

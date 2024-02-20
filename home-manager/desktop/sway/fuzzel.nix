@@ -22,12 +22,12 @@
           fixColor = color: "${lib.removePrefix "#" color}ff";
         in
         {
-          background = fixColor base00;
-          border = fixColor base00;
-          text = fixColor base05;
-          selection = fixColor base0D;
-          selection-text = fixColor base00;
-          selection-match = fixColor base08;
+          background = fixColor base;
+          border = fixColor base;
+          text = fixColor text;
+          selection = fixColor blue;
+          selection-text = fixColor base;
+          selection-match = fixColor red;
         };
         key-bindings = {
           delete-line = "none";
