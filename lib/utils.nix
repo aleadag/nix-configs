@@ -11,4 +11,13 @@ rec {
     (sep: path: concatStringsSep sep (map (substring 0 1) (splitString "/" path)));
 
   shortPath = shortPathWithSep "/";
+
+  capitalizeString = (str:
+    let
+      head = lib.strings.toUpper (builtins.substring 0 1 str);
+      tail = builtins.concatStringsSep "" (
+        builtins.tail (lib.stringToCharacters str)
+      );
+    in
+    head + tail);
 }

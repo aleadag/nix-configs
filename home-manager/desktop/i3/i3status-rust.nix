@@ -41,17 +41,17 @@ in
             theme = {
               theme = "plain";
               overrides = with config.home-manager.desktop.theme.colors; {
-                idle_bg = base00;
-                idle_fg = base05;
-                info_bg = base0D;
-                info_fg = base00;
-                good_bg = base00;
-                good_fg = base05;
-                warning_bg = base0A;
-                warning_fg = base00;
-                critical_bg = base08;
-                critical_fg = base00;
-                separator_bg = base00;
+                idle_bg = base;
+                idle_fg = text;
+                info_bg = blue;
+                info_fg = base;
+                good_bg = base;
+                good_fg = text;
+                warning_bg = yellow;
+                warning_fg = base;
+                critical_bg = red;
+                critical_fg = base;
+                separator_bg = base;
                 separator = " ";
               };
             };

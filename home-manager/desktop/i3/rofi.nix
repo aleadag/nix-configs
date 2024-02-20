@@ -16,9 +16,9 @@
         in
         with config.home-manager.desktop.theme.colors; {
           "*" = {
-            background-color = l base00;
-            border-color = l base01;
-            text-color = l base05;
+            background-color = l base;
+            border-color = l mantle;
+            text-color = l text;
             spacing = 0;
             width = l "512px";
           };
@@ -34,9 +34,9 @@
           };
 
           textbox = {
-            background-color = l base01;
+            background-color = l mantle;
             border = l "0 0 1px 0";
-            border-color = l base00;
+            border-color = l base;
             padding = l "8px 16px";
           };
 
@@ -50,19 +50,19 @@
 
           element = {
             border = l "2px";
-            border-color = l base00;
+            border-color = l base;
             padding = l "8px";
           };
 
           element-icon = {
             size = l "28px";
             border = l "0 4px";
-            border-color = l base00;
+            border-color = l base;
           };
 
           "element selected" = {
-            border-color = l base0D;
-            color = l base00;
+            border-color = l blue;
+            color = l base;
           };
         };
 

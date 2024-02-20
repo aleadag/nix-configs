@@ -37,10 +37,11 @@ in
         "Thumbs.db"
       ];
 
+      includes = [{ path = "${builtins.getAttr "catppuccin-delta" flake.inputs}/themes/${config.home-manager.desktop.theme.flavor}.gitconfig"; }];
+
       delta.enable = true;
       delta.options = {
-        features = "side-by-side line-numbers decorations";
-        syntax-theme = "Catppuccin-frappe";
+        features = "side-by-side line-numbers decorations catppuccin-${config.home-manager.desktop.theme.flavor}";
       };
       lfs.enable = true;
       lfs.skipSmudge = true;
@@ -74,7 +75,7 @@ in
     programs.gitui = {
       enable = true;
       theme = builtins.readFile (builtins.getAttr "catppuccin-gitui" flake.inputs
-        + "/theme/frappe.ron");
+        + "/theme/${config.home-manager.desktop.theme.flavor}.ron");
       keyConfig = ''(
       focus_right: Some(( code: Char('l'), modifiers: ( bits: 0,),)),
       focus_left: Some(( code: Char('h'), modifiers: ( bits: 0,),)),

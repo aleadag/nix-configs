@@ -1,4 +1,4 @@
-{ config, flake, lib, pkgs, ... }:
+{ config, flake, lib, libEx, pkgs, ... }:
 {
   options.home-manager.cli.fish.enable = lib.mkEnableOption "Fish config" // {
     default = config.home-manager.cli.enable;
@@ -76,7 +76,7 @@
       };
     };
 
-    xdg.configFile."fish/themes/Catppuccin Frappe.theme".source = "${builtins.getAttr "catppuccin-fish" flake.inputs}/themes/Catppuccin Frappe.theme";
+    xdg.configFile."fish/themes/catppuccin.theme".source = "${builtins.getAttr "catppuccin-fish" flake.inputs}/themes/Catppuccin ${libEx.capitalizeString config.home-manager.desktop.theme.flavor}.theme";
 
     programs.man.generateCaches = true;
   };

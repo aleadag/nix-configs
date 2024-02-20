@@ -248,12 +248,12 @@ in
           font-family: ${concatFonts [ gui.name icons.name "Symbols Nerd Font" ]};
         }
         window#waybar {
-          background: ${base00};
-          color: ${base05};
+          background: ${base};
+          color: ${text};
         }
         #mode {
-          background: ${base0A};
-          color: ${base00};
+          background: ${yellow};
+          color: ${base};
           padding: 0 7px;
         }
         #window {
@@ -263,57 +263,57 @@ in
           padding: 0 7px;
         }
         #workspaces button.focused {
-          background: ${base0D};
-          color: ${base00};
+          background: ${blue};
+          color: ${base};
         }
         #workspaces button.urgent {
-          background: ${base08};
-          color: ${base00};
+          background: ${red};
+          color: ${base};
         }
         #temperature.critical {
-          color: ${base08};
+          color: ${red};
         }
         #tray > .needs-attention {
-          color: ${base08};
+          color: ${red};
         }
         #battery.warning {
-          color: ${base0A};
+          color: ${yellow};
         }
         #battery.critical {
-          color: ${base08};
+          color: ${red};
         }
         #cpu.warning {
-          color: ${base0A};
+          color: ${yellow};
         }
         #cpu.critical {
-          color: ${base08};
+          color: ${red};
         }
         #memory.warning {
-          color: ${base0A};
+          color: ${yellow};
         }
         #memory.critical {
-          color: ${base08};
+          color: ${red};
         }
         #disk.warning {
-          color: ${base0A};
+          color: ${yellow};
         }
         #disk.critical {
-          color: ${base08};
+          color: ${red};
         }
         #pulseaudio.high {
-          color: ${base0A};
+          color: ${yellow};
         }
         #pulseaudio.muted {
-          color: ${base08};
+          color: ${red};
         }
         #idle_inhibitor.activated {
-          color: ${base08};
+          color: ${red};
         }
         #custom-dunst.disabled {
-          color: ${base08};
+          color: ${red};
         }
         #custom-separator {
-          color: ${base02};
+          color: ${surface0};
         }
       '';
     };

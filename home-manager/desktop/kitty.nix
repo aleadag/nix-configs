@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, libEx, ... }:
 
 {
   options.home-manager.desktop.kitty = {
@@ -25,7 +25,7 @@
         inherit (config.home-manager.desktop.theme.fonts.symbols) package name;
         size = config.home-manager.desktop.kitty.fontSize;
       };
-      theme = "Catppuccin-Frappe";
+      theme = "Catppuccin-${libEx.capitalizeString config.home-manager.desktop.theme.flavor}";
       settings = {
         # Scrollback
         scrollback_lines = 10000;

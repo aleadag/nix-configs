@@ -16,6 +16,22 @@
         "type": "github"
       }
     },
+    "catppuccin-delta": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1708029563,
+        "narHash": "sha256-0QQLkfLBVuB2re6tjtPNuOQZNK0MDBAIFgNGHZM8afs=",
+        "owner": "catppuccin",
+        "repo": "delta",
+        "rev": "21b37ac3138268d92cee71dfc8539d134817580a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "catppuccin",
+        "repo": "delta",
+        "type": "github"
+      }
+    },
     "catppuccin-fish": {
       "flake": false,
       "locked": {
@@ -176,6 +192,7 @@
     "root": {
       "inputs": {
         "catppuccin-bat": "catppuccin-bat",
+        "catppuccin-delta": "catppuccin-delta",
         "catppuccin-fish": "catppuccin-fish",
         "catppuccin-gitui": "catppuccin-gitui",
         "flake-utils": "flake-utils",
