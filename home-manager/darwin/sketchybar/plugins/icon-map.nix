@@ -176,6 +176,13 @@ pkgs.writeShellApplication {
       "Drafts")
         icon_result=":drafts:"
         ;;
+      # TODO: find a good icon
+      "Omnivore")
+        icon_result=":notes:"
+        ;;
+      "Dash")
+        icon_result=":book:"
+        ;;
       "Logseq")
         icon_result=":logseq:"
         ;;

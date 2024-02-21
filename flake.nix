@@ -92,12 +92,12 @@
 
   outputs = { self, nixpkgs, flake-utils, ... }@inputs:
     let
-      inherit (import ./lib/attrsets.nix { inherit (nixpkgs) lib; }) recursiveMergeAttrs;
-      inherit (import ./lib/flake-helpers.nix inputs) mkGHActionsYAMLs mkRunCmd mkNixOSConfig mkHomeConfig;
-      inherit (import ./lib/impure.nix { }) getEnvOrDefault;
+      lib = import ./lib inputs;
+      inherit (lib) recursiveMergeAttrs mkGHActionsYAMLs mkHomeConfig;
     in
     recursiveMergeAttrs [
       {
+        inherit lib;
         overlays.default = import ./overlays { flake = self; };
       }
       (mkHomeConfig {

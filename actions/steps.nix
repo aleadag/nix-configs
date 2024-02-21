@@ -4,32 +4,29 @@ let
 in
 with constants;
 {
-  maximimizeBuildSpaceStep = {
-    uses = actions.maximize-build-space;
+  freeDiskSpaceStep = {
+    uses = actions.free-disk-space;
     "with" = {
-      remove-dotnet = true;
-      remove-android = true;
-      remove-haskell = true;
-      remove-codeql = true;
-      remove-docker-images = true;
-      overprovision-lvm = true;
-      root-reserve-mb = 512;
-      swap-size-mb = 1024;
+      swap-storage = false;
+      tool-cache = true;
     };
   };
   checkoutStep = {
     uses = actions.checkout;
   };
-  installNixActionStep = { extraNixConfig ? "" }: {
+  installNixActionStep = { extraNixConfig ? [ ] }: {
     uses = actions.install-nix-action;
     "with" = {
       # Need to define a channel, otherwise it will use bash from environment
       nix_path = "nixpkgs=channel:nixos-unstable";
-      # Should avoid GitHub API rate limit
-      extra_nix_config = builtins.concatStringsSep "\n" [
-        "access-tokens = github.com=\${{ secrets.GITHUB_TOKEN }}"
-        extraNixConfig
-      ];
+      extra_nix_config = builtins.concatStringsSep "\n" (
+        [
+          "accept-flake-config = true"
+          # Should avoid GitHub API rate limit
+          "access-tokens = github.com=\${{ secrets.GITHUB_TOKEN }}"
+        ]
+        ++ extraNixConfig
+      );
     };
   };
   cachixActionStep = {
@@ -40,22 +37,18 @@ with constants;
       authToken = "\${{ secrets.CACHIX_TOKEN }}";
     };
   };
-  setDefaultGitBranchStep = {
-    name = "Set default git branch (to reduce log spam)";
-    run = "git config --global init.defaultBranch main";
-  };
   validateFlakesStep = {
     name = "Validate Flakes";
     run = "nix flake check ${toString nixFlags}";
   };
-  buildHomeManagerConfigurations = { hostnames ? constants.home-manager.linux.hostnames, extraNixFlags ? [ ] }: {
+  buildHomeManagerConfigurations = { hostnames ? [ ], extraNixFlags ? [ ] }: {
     name = "Build Home-Manager configs for: ${builtins.concatStringsSep ", " hostnames}";
     run = builtins.concatStringsSep "\n"
       (map
         (hostname: "nix build ${toString (nixFlags ++ extraNixFlags)} '.#homeConfigurations.${hostname}.activationPackage'")
         hostnames);
   };
-  buildNixOSConfigurations = { hostnames ? constants.nixos.hostnames, extraNixFlags ? [ ] }: {
+  buildNixOSConfigurations = { hostnames ? [ ], extraNixFlags ? [ ] }: {
     name = "Build NixOS configs for: ${builtins.concatStringsSep ", " hostnames}";
     run = builtins.concatStringsSep "\n"
       (map
@@ -70,15 +63,7 @@ with constants;
       nix flake update --commit-lock-file
     '';
   };
-  diffNixOutputs = id: old: new: {
-    inherit id;
-    name = "Diff Nix outputs: ${old} vs ${new}";
-    uses = actions.command-output;
-    "with".run = ''
-      nix run github:NixOS/nixpkgs/nixos-unstable#nvd -- --color never diff '${old}' '${new}'
-    '';
-  };
-  createPullRequestStep = diffIds: {
+  createPullRequestStep = {
     name = "Create Pull Request";
     uses = actions.create-pull-request;
     "with" = {
@@ -89,26 +74,15 @@ with constants;
         ## Run report
 
         https://github.com/''${{ github.repository }}/actions/runs/''${{ github.run_id }}
-      '' +
-      (builtins.concatStringsSep "\n"
-        (map
-          (id: ''
-
-            ## Changes for ${id}
-
-            ```bash
-            ''${{ steps.${id}.outputs.stdout }}
-            ```
-          '')
-          diffIds));
+      '';
     };
   };
-  setupAarch64 = {
-    name = "Setup aarch64-linux";
+  installUbuntuPackages = packages: {
+    name = "Install Ubuntu packages: ${builtins.concatStringsSep ", " packages}";
     run = ''
       DEBIAN_FRONTEND=noninteractive
       sudo apt-get update -q -y
-      sudo apt-get install -q -y qemu-system-aarch64 qemu-efi binfmt-support qemu-user-static
+      sudo apt-get install -q -y ${toString packages}
     '';
   };
 }
