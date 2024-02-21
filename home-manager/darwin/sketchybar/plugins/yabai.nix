@@ -4,6 +4,7 @@ pkgs.writeShellApplication {
   runtimeInputs = with pkgs; [ yabai jq sketchybar ];
   text =
     with config.home-manager.desktop.theme;
+    with import ../utils.nix { inherit lib; };
     let
       icons = import ../icons.nix;
       iconMap = pkgs.callPackage ./icon-map.nix { inherit pkgs; };
@@ -17,21 +18,21 @@ pkgs.writeShellApplication {
       args=()
       if [[ $CURRENT -gt 0 ]]; then
         LAST=$(yabai -m query --windows --window stack.last | jq '.["stack-index"]')
-        args+=(--set "$NAME" icon=${icons.yabai_stack} icon.color=${colors.red} label.drawing=on label.color=${colors.text} label="$(printf "[%s/%s]" "$CURRENT" "$LAST")")
+        args+=(--set "$NAME" icon=${icons.yabai_stack} icon.color=${fixColor colors.red} label.drawing=on label.color=${fixColor colors.text} label="$(printf "[%s/%s]" "$CURRENT" "$LAST")")
       else
         args+=(--set "$NAME" label.drawing=off)
         case "$(echo "$WINDOW" | jq '.["is-floating"]')" in
           "false")
             if [ "$(echo "$WINDOW" | jq '.["has-fullscreen-zoom"]')" = "true" ]; then
-              args+=(--set "$NAME" icon=${icons.yabai_fullscreen_zoom} icon.color=${colors.green})
+              args+=(--set "$NAME" icon=${icons.yabai_fullscreen_zoom} icon.color=${fixColor colors.green})
             elif [ "$(echo "$WINDOW" | jq '.["has-parent-zoom"]')" = "true" ]; then
-              args+=(--set "$NAME" icon=${icons.yabai_parent_zoom} icon.color=${colors.blue})
+              args+=(--set "$NAME" icon=${icons.yabai_parent_zoom} icon.color=${fixColor colors.blue})
             else
-              args+=(--set "$NAME" icon=${icons.yabai_grid} icon.color=${colors.yellow})
+              args+=(--set "$NAME" icon=${icons.yabai_grid} icon.color=${fixColor colors.yellow})
             fi
             ;;
           "true")
-            args+=(--set "$NAME" icon=${icons.yabai_float} icon.color=${colors.peach})
+            args+=(--set "$NAME" icon=${icons.yabai_float} icon.color=${fixColor colors.peach})
             ;;
         esac
       fi

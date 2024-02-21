@@ -3,8 +3,8 @@ pkgs.writeShellApplication {
   name = "sketchybar-items-spaces";
   runtimeInputs = with pkgs; [ sketchybar ];
   text = with config.home-manager.desktop.theme;
+    with import ../utils.nix { inherit lib; };
     let
-      fixColor = color: "0xb3${lib.removePrefix "#" color}";
       pluginsSpace = pkgs.callPackage ../plugins/space.nix { inherit pkgs; };
     in
     ''

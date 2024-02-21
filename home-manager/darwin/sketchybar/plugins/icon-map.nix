@@ -71,6 +71,9 @@ pkgs.writeShellApplication {
       "Notability")
         icon_result=":notability:"
         ;;
+      "WeChat")
+        icon_result=":wechat:"
+        ;;
       "WhatsApp")
         icon_result=":whats_app:"
         ;;
