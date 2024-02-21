@@ -3,9 +3,7 @@ pkgs.writeShellApplication {
   name = "skhd-mode-controller";
   text =
     with config.home-manager.desktop.theme;
-    let
-      fixColor = color: "0xb3${lib.removePrefix "#" color}";
-    in
+    with import ../sketchybar/utils.nix { inherit lib; };
     # bash
     ''
       case "$1" in

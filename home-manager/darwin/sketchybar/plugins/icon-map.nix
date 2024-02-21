@@ -71,6 +71,9 @@ pkgs.writeShellApplication {
       "Notability")
         icon_result=":notability:"
         ;;
+      "WeChat")
+        icon_result=":wechat:"
+        ;;
       "WhatsApp")
         icon_result=":whats_app:"
         ;;
@@ -172,6 +175,13 @@ pkgs.writeShellApplication {
         ;;
       "Drafts")
         icon_result=":drafts:"
+        ;;
+      # TODO: find a good icon
+      "Omnivore")
+        icon_result=":notes:"
+        ;;
+      "Dash")
+        icon_result=":book:"
         ;;
       "Logseq")
         icon_result=":logseq:"
