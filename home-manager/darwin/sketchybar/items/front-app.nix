@@ -3,23 +3,23 @@ pkgs.writeShellApplication {
   name = "sketchybar-items-front-app";
   runtimeInputs = with pkgs; [ sketchybar ];
   text =
-    with import ../icons.nix;
     with config.home-manager.desktop.theme;
+    with import ../icons.nix;
     with import ../utils.nix { inherit lib; };
     let
-      iconFont = "SF Pro";
+      font = "SF Pro";
       pluginsYabai = pkgs.callPackage ../plugins/yabai.nix { inherit config lib pkgs; };
     in
     # bash
     ''
       # shellcheck disable=SC2016
-      FRONT_APP_SCRIPT='sketchybar --set "$NAME" label="$INFO"'
+      FRONT_APP_SCRIPT='${lib.getExe pkgs.sketchybar} --set "$NAME" label="$INFO"'
 
       sketchybar --add       event        window_focus \
                  --add       event        windows_on_spaces \
                  --add       item         system.yabai left \
                  --set       system.yabai script="${lib.getExe pluginsYabai}" \
-                                          icon.font="${iconFont}:Normal:20.0" \
+                                          icon.font="${font}:Normal:20.0" \
                                           label.drawing=off \
                                           icon.width=40 \
                                           icon="${yabai_grid}" \
@@ -33,8 +33,8 @@ pkgs.writeShellApplication {
                  --set       front_app    script="$FRONT_APP_SCRIPT" \
                                           icon.drawing=off \
                                           padding_left=0 \
-                                          label.color="${fixColor colors.teal}" \
-                                          label.font="${iconFont}:Black:13.0" \
+                                          label.color="${fixColor colors.text}" \
+                                          label.font="${font}:Black:13.0" \
                                           associated_display=active \
                  --subscribe front_app    front_app_switched
     '';

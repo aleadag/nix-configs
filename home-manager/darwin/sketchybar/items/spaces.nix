@@ -7,6 +7,7 @@ pkgs.writeShellApplication {
     let
       pluginsSpace = pkgs.callPackage ../plugins/space.nix { inherit pkgs; };
     in
+    # bash
     ''
       SPACE_ICONS=("1" "2" "3" "4" "5" "6" "7" "8" "9" "10")
 
@@ -47,8 +48,8 @@ pkgs.writeShellApplication {
                                     padding_right=10 \
                                     label.drawing=off \
                                     associated_display=active \
-                                    click_script='yabai -m space --create
-                                                  sketchybar --trigger space_change'\
+                                    click_script='${lib.getExe pkgs.yabai} -m space --create
+                                                  ${lib.getExe pkgs.sketchybar} --trigger space_change' \
                                     icon.color=${fixColor colors.blue}
     '';
 }
