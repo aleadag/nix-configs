@@ -4,9 +4,7 @@ final: prev:
 (flake.inputs.nixgl.overlays.default final prev) //
 {
   # namespaces
-  libEx = prev.lib.extend (finalLib: prevLib:
-    (import ../lib { lib = finalLib; pkgs = final; })
-  );
+  libEx = flake.outputs.lib;
 
   # # custom packages
   # arandr = prev.arandr.overrideAttrs (_: { src = flake.inputs.arandr; });

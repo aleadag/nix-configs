@@ -10,13 +10,12 @@ with constants;
     build-linux = {
       inherit (ubuntu) runs-on;
       steps = with steps; [
-        maximimizeBuildSpaceStep
+        freeDiskSpaceStep
         checkoutStep
         (installNixActionStep { })
         cachixActionStep
-        setDefaultGitBranchStep
-        (buildHomeManagerConfigurations { })
-        (buildNixOSConfigurations { })
+        (buildHomeManagerConfigurations { inherit (home-manager.linux) hostnames; })
+        (buildNixOSConfigurations { inherit (nixos) hostnames; })
       ];
     };
     build-macos = {
@@ -25,7 +24,6 @@ with constants;
         checkoutStep
         (installNixActionStep { })
         cachixActionStep
-        setDefaultGitBranchStep
         (buildHomeManagerConfigurations { inherit (home-manager.darwin) hostnames; })
       ];
     };
