@@ -10,8 +10,7 @@ pkgs.writeShellApplication {
       font = "SF Pro";
       pluginsYabai = pkgs.callPackage ../plugins/yabai.nix { inherit config lib pkgs; };
     in
-    # bash
-    ''
+      /* bash */ ''
       # shellcheck disable=SC2016
       FRONT_APP_SCRIPT='${lib.getExe pkgs.sketchybar} --set "$NAME" label="$INFO"'
 

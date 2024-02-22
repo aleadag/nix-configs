@@ -4,8 +4,7 @@ pkgs.writeShellApplication {
   text =
     with config.home-manager.desktop.theme;
     with import ../utils.nix { inherit lib; };
-    # bash
-    ''
+    /* bash */ ''
       sketchybar   --add item               mode_indicator center \
                    --set mode_indicator     drawing=off \
                                             label.color="${fixColor colors.base}" \

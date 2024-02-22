@@ -1,6 +1,6 @@
 { pkgs, ... }:
 pkgs.writeShellApplication {
-  name = "save-recent-space";
+  name = "yabai-save-recent-space";
   runtimeInputs = with pkgs; [ yabai jq ];
   text = ''
     # Get the index of the previous space

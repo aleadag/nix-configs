@@ -1,6 +1,6 @@
 { pkgs, ... }:
 pkgs.writeShellApplication {
-  name = "float-small-windows";
+  name = "yabai-float-small-windows";
   runtimeInputs = with pkgs; [ yabai jq ];
   text = ''
     window_id=$YABAI_WINDOW_ID

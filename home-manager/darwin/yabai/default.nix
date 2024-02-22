@@ -6,15 +6,17 @@
 
   config = lib.mkIf config.home-manager.darwin.enable {
     home.packages = with pkgs; [ yabai ];
-    xdg.configFile."yabai/yabairc" =
-      let
-        saveRecentSpace = pkgs.callPackage ./save-recent-space.nix { inherit pkgs; };
-        stackSameNameApps = pkgs.callPackage ./stack-same-name-applications.nix { inherit pkgs; };
-        floatSmallWindows = pkgs.callPackage ./float-small-windows.nix { inherit pkgs; };
-        yabairc = pkgs.writeShellApplication {
-          name = "yabairc";
-          runtimeInputs = with pkgs; [ yabai sketchybar ];
-          text = ''
+    xdg.configFile."yabai/yabairc".source =
+      lib.getExe (pkgs.writeShellApplication {
+        name = "yabairc";
+        runtimeInputs = with pkgs; [ yabai sketchybar ];
+        text =
+          let
+            saveRecentSpace = pkgs.callPackage ./save-recent-space.nix { inherit pkgs; };
+            stackSameNameApps = pkgs.callPackage ./stack-same-name-applications.nix { inherit pkgs; };
+            floatSmallWindows = pkgs.callPackage ./float-small-windows.nix { inherit pkgs; };
+          in
+            /* bash */ ''
             #
             # for this to work you must configure sudo such that
             # it will be able to run the command without password
@@ -83,10 +85,6 @@
 
             echo "yabai configuration loaded.."
           '';
-        };
-      in
-      {
-        source = lib.getExe yabairc;
-      };
+      });
   };
 }

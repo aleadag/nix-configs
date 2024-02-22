@@ -1,6 +1,6 @@
 { pkgs, ... }:
 pkgs.writeShellApplication {
-  name = "stack-same-name-applications";
+  name = "yabai-stack-same-name-applications";
   runtimeInputs = with pkgs; [ yabai jq ];
   text = ''
     whitelisted_applications='(Preview|Code|Finder)'

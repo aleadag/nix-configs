@@ -21,8 +21,7 @@
             itemsFrontApp = pkgs.callPackage ./items/front-app.nix { inherit config lib pkgs; };
             itemsModeIndicator = pkgs.callPackage ./items/mode-indicator.nix { inherit config lib pkgs; };
           in
-          # bash
-          ''
+            /* bash */ ''
             # Setting up the general bar appearance and default values
             sketchybar --bar     height=30 \
                                  color=${fixColor colors.base} \

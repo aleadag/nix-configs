@@ -14,8 +14,7 @@
             modeController = pkgs.callPackage ./mode-controller.nix { inherit config lib pkgs; };
             toggleZenMode = pkgs.callPackage ./toggle-zen-mode.nix { inherit config lib pkgs; };
           in
-          # bash
-          ''
+            /* bash */ ''
             # Switch to space with window running in native full-screen mode. Only works with SIP disabled.
             # - key
             ctrl - 0x1B            :  index="$(yabai -m query --spaces --display | \
