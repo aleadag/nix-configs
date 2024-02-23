@@ -4,7 +4,7 @@
     default = pkgs.stdenv.isDarwin && config.home-manager.darwin.enable;
   };
 
-  config = lib.mkIf config.home-manager.darwin.enable {
+  config = lib.mkIf config.home-manager.darwin.yabai.enable {
     home.packages = with pkgs; [ yabai ];
     xdg.configFile."yabai/yabairc".source =
       lib.getExe (pkgs.writeShellApplication {
@@ -12,6 +12,7 @@
         runtimeInputs = with pkgs; [ yabai sketchybar ];
         text =
           let
+            padding = "10";
             saveRecentSpace = pkgs.callPackage ./save-recent-space.nix { inherit pkgs; };
             stackSameNameApps = pkgs.callPackage ./stack-same-name-applications.nix { inherit pkgs; };
             floatSmallWindows = pkgs.callPackage ./float-small-windows.nix { inherit pkgs; };
@@ -33,10 +34,10 @@
                 menubar_opacity              1.0            \
                 mouse_follows_focus          off            \
                 focus_follows_mouse          off            \
-                window_origin_display        default        \
+                window_origin_display        cursor         \
                 window_placement             second_child   \
-                window_zoom_persist          on             \
-                window_shadow                on             \
+                window_zoom_persist          off            \
+                window_shadow                float          \
                 window_animation_duration    0.0            \
                 window_opacity_duration      0.0            \
                 active_window_opacity        1.0            \
@@ -46,16 +47,18 @@
                 split_ratio                  0.50           \
                 split_type                   auto           \
                 auto_balance                 off            \
-                top_padding                  12             \
-                bottom_padding               12             \
-                left_padding                 12             \
-                right_padding                12             \
+                top_padding                  ${padding}     \
+                bottom_padding               ${padding}     \
+                left_padding                 ${padding}     \
+                right_padding                ${padding}     \
                 window_gap                   06             \
                 layout                       bsp            \
-                mouse_modifier               fn             \
+                mouse_modifier               alt            \
                 mouse_action1                move           \
                 mouse_action2                resize         \
-                mouse_drop_action            swap
+                mouse_drop_action            swap           \
+                focus_follows_mouse          off            \
+                mouse_follows_focus          on
             # Unmanaged apps
             app_titles="(Copy|Bin|About This Mac|Info|Finder Preferences|Preferences"
             app_titles+="|QuickTime Player)"
@@ -69,8 +72,8 @@
 
             # Only used when SIP is enabled. This is a in-house replacement for
             # `yabai -m window --focus recent`, used with the `switch_space.sh` script
-            yabai -m signal --add label=space_changed event=space_changed \
-                action="${lib.getExe saveRecentSpace}"
+            # yabai -m signal --add label=space_changed event=space_changed \
+            #     action="${lib.getExe saveRecentSpace}"
 
             # when a new window is created, stack it on top of the window of the same
             # application, if exists

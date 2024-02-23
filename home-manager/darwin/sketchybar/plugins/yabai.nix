@@ -9,8 +9,7 @@ pkgs.writeShellApplication {
       icons = import ../icons.nix;
       iconMap = pkgs.callPackage ./icon-map.nix { inherit pkgs; };
     in
-    # bash
-    '' 
+      /* bash */ '' 
     window_state() {
       WINDOW=$(yabai -m query --windows --window)
       CURRENT=$(echo "$WINDOW" | jq '.["stack-index"]')
