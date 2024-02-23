@@ -14,7 +14,7 @@
           with config.home-manager.desktop.theme;
           with import ./utils.nix { inherit lib; };
           let
-            paddings = "10";
+            padding = "12";
             shadow = "on";
             font = "SF Pro";
             itemsSpaces = pkgs.callPackage ./items/spaces.nix { inherit config lib pkgs; };
@@ -27,23 +27,23 @@
                                  color=${fixColor colors.base} \
                                  shadow=${shadow} \
                                  position=bottom \
-                                 padding_right=${paddings} \
-                                 padding_left=${paddings} \
+                                 padding_right=${padding} \
+                                 padding_left=${padding} \
                                  blur_radius=20 \
                                  sticky=off \
                                  \
                        --default updates=when_shown \
                                  icon.font="${font}:Bold:14.0" \
                                  icon.color=${fixColor colors.text} \
-                                 icon.padding_left=${paddings} \
-                                 icon.padding_right=${paddings} \
+                                 icon.padding_left=${padding} \
+                                 icon.padding_right=${padding} \
                                  label.font="${font}:Semibold:13.0" \
                                  label.color=${fixColor colors.text} \
-                                 label.padding_left=${paddings} \
-                                 label.padding_right=${paddings} \
+                                 label.padding_left=${padding} \
+                                 label.padding_right=${padding} \
                                  background.height=0 \
-                                 background.padding_right=${paddings} \
-                                 background.padding_left=${paddings} \
+                                 background.padding_right=${padding} \
+                                 background.padding_left=${padding} \
                                  popup.background.border_width=2 \
                                  popup.background.corner_radius=11 \
                                  popup.background.border_color=${fixColor colors.overlay0} \

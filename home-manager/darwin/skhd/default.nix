@@ -63,7 +63,7 @@
             # to run tests but trigger resize mode everywhere else
             # meh is (shift + alt + ctrl)
             default < ctrl + shift - r [
-             "code"   ~
+              "code"   ~
               * : skhd -k "meh - r"
             ]
 

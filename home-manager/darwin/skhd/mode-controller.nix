@@ -4,8 +4,7 @@ pkgs.writeShellApplication {
   text =
     with config.home-manager.desktop.theme;
     with import ../sketchybar/utils.nix { inherit lib; };
-    # bash
-    ''
+    /* bash */ ''
       case "$1" in
       default)
         sketchybar  --bar           color=${fixColor colors.base} \
