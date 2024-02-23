@@ -16,10 +16,6 @@
           in
             /* bash */ ''
             # Switch to space with window running in native full-screen mode. Only works with SIP disabled.
-            # - key
-            ctrl - 0x1B            :  index="$(yabai -m query --spaces --display | \
-                                             jq 'map(select(."is-native-fullscreen" == true))[0].index')"; \
-                                      yabai -m space --focus "$index"
               
             # = key
             ctrl - 0x18            :  index="$(yabai -m query --spaces --display | \
@@ -51,7 +47,8 @@
             ctrl + alt - 9         : yabai -m space --focus 19
             ctrl + alt - 0         : yabai -m space --focus 20
               
-            ctrl - z               : yabai -m window --focus recent
+            # - key
+            ctrl - 0x1B            : yabai -m window --focus recent
 
             ############################# Mode definitions ##################################
             :: default           : ${lib.getExe modeController} default # default mode: normal
@@ -142,11 +139,6 @@
             alt - f                : yabai -m window --toggle float; \
                                      yabai -m window --grid 4:4:1:1:2:2; \
                                      sketchybar --trigger window_focus
-
-            # Restart all services
-            ctrl + alt + cmd - r : yabai --restart-service; \
-                                   launchctl kickstart -k "gui/502/org.nix-community.home.sketchybar"; \
-                                   skhd --restart-service
 
             # Close a window. Not the same as quit
             ctrl + shift - q     : yabai -m window --close
@@ -250,7 +242,7 @@
                                      sketchybar --trigger window_focus
 
             # Swaps the recent window with the window that's currently focused by the mouse
-            resize < s              : yabai -m window mouse --swap recent; \
+            resize < p              : yabai -m window mouse --swap recent; \
                                       skhd -k 'escape'
 
 

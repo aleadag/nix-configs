@@ -88,6 +88,11 @@
       url = "github:oh-my-fish/plugin-proxy";
       flake = false;
     };
+
+    bing-wallpaper-mac = {
+      url = "github:lpikora/bing-wallpaper-daily-mac-multimonitor";
+      flake = false;
+    };
   };
 
   outputs = { self, nixpkgs, flake-utils, ... }@inputs:

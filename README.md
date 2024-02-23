@@ -4,6 +4,7 @@ My Nix{OS} configuration files to help me setup my machine in minutes using
 [HM](https://github.com/nix-community/home-manager).
 
 ## Overview
+
 - nix configuration for my laptops, desktops and more
 - nix flake-powered
 - guaranteed to be reproducible
@@ -18,6 +19,7 @@ This config is mainly based on [nix-configs](https://github.com/thiagokokada/nix
 - https://github.com/hlissner/dotfiles
 - https://github.com/Mic92/dotfiles
 - https://github.com/nrdxp/nixflk
+- https://github.com/anujc4/dotfiles
 
 Also, some extra resources and documentation about Flakes:
 

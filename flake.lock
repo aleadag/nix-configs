@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "bing-wallpaper-mac": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1693941036,
+        "narHash": "sha256-YFGKe1dMtVpXvWFO9/Q9Vkobk1nkZGNUHgIKLIBkA14=",
+        "owner": "lpikora",
+        "repo": "bing-wallpaper-daily-mac-multimonitor",
+        "rev": "c7521dfa41774af5dca81ca7cdc529a80b06206f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lpikora",
+        "repo": "bing-wallpaper-daily-mac-multimonitor",
+        "type": "github"
+      }
+    },
     "catppuccin-bat": {
       "flake": false,
       "locked": {
@@ -191,6 +207,7 @@
     },
     "root": {
       "inputs": {
+        "bing-wallpaper-mac": "bing-wallpaper-mac",
         "catppuccin-bat": "catppuccin-bat",
         "catppuccin-delta": "catppuccin-delta",
         "catppuccin-fish": "catppuccin-fish",

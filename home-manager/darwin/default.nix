@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  imports = [ ./trampoline-apps.nix ./yabai ./sketchybar ./skhd ];
+  imports = [ ./bing-wallpaper.nix ./trampoline-apps.nix ./yabai ./sketchybar ./skhd ];
 
   options.home-manager.darwin.enable = lib.mkEnableOption "Darwin (macOS) config" // {
     default = pkgs.stdenv.isDarwin;

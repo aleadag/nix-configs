@@ -11,7 +11,7 @@ pkgs.writeShellApplication {
       "FaceTime")
         icon_result=":face_time:"
         ;;
-      "Messages")
+      "Messages" | "WeCom")
         icon_result=":messages:"
         ;;
       "Twitter")
