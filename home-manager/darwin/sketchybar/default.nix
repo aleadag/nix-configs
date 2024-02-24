@@ -5,7 +5,7 @@
   };
 
   config = lib.mkIf config.home-manager.darwin.sketchybar.enable {
-    home.packages = with pkgs; [ sketchybar ];
+    home.packages = with pkgs; [ sketchybar sketchybar-app-font ];
     xdg.configFile."sketchybar/sketchybarrc".source =
       lib.getExe (pkgs.writeShellApplication {
         name = "sketchybarrc";
@@ -14,7 +14,7 @@
           with config.home-manager.desktop.theme;
           with import ./utils.nix { inherit lib; };
           let
-            padding = "12";
+            padding = "8";
             shadow = "on";
             font = "SF Pro";
             itemsSpaces = pkgs.callPackage ./items/spaces.nix { inherit config lib pkgs; };

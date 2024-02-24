@@ -12,7 +12,7 @@
         runtimeInputs = with pkgs; [ yabai sketchybar ];
         text =
           let
-            padding = "10";
+            padding = "8";
             saveRecentSpace = pkgs.callPackage ./save-recent-space.nix { inherit pkgs; };
             stackSameNameApps = pkgs.callPackage ./stack-same-name-applications.nix { inherit pkgs; };
             floatSmallWindows = pkgs.callPackage ./float-small-windows.nix { inherit pkgs; };
