@@ -26,7 +26,7 @@ pkgs.writeShellApplication {
                                     label.font="sketchybar-app-font:Regular:16.0" \
                                     label.background.height=26 \
                                     label.background.drawing=on \
-                                    label.background.color=${fixColor colors.overlay0} \
+                                    label.background.color=${fixColor colors.surface2} \
                                     label.background.corner_radius=8 \
                                     label.drawing=off \
                                     script="${lib.getExe pluginsSpace}" \
@@ -34,7 +34,7 @@ pkgs.writeShellApplication {
       done
 
       sketchybar --add bracket spaces '/space\..*/' \
-                 --set spaces  background.color=${fixColor colors.surface0} \
+                 --set spaces  background.color=${fixColor colors.surface2} \
                                background.border_color=${fixColor colors.surface2} \
                                background.border_width=2 \
                                background.drawing=on
