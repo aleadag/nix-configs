@@ -58,7 +58,7 @@
                 mouse_action2                resize         \
                 mouse_drop_action            swap           \
                 focus_follows_mouse          off            \
-                mouse_follows_focus          on
+                mouse_follows_focus          off
             # Unmanaged apps
             app_titles="(Copy|Bin|About This Mac|Info|Finder Preferences|Preferences"
             app_titles+="|QuickTime Player)"
