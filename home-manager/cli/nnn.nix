@@ -6,9 +6,7 @@ let
 in
 {
   options.home-manager.cli.nnn = {
-    enable = lib.mkEnableOption "nnn config" // {
-      default = config.home-manager.cli.enable;
-    };
+    enable = lib.mkEnableOption "nnn config";
     # Do not forget to set 'Hack Nerd Mono Font' as the terminal font
     enableIcons = lib.mkEnableOption "icons" // {
       default = config.home-manager.desktop.enable || config.home-manager.darwin.enable;

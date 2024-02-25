@@ -84,6 +84,11 @@
       flake = false;
     };
 
+    catppuccin-yazi = {
+      url = "github:catppuccin/yazi";
+      flake = false;
+    };
+
     omf-proxy = {
       url = "github:oh-my-fish/plugin-proxy";
       flake = false;
