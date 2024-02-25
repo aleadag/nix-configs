@@ -23,6 +23,7 @@ in
     ./nnn.nix
     ./ssh.nix
     ./tmux.nix
+    ./yazi.nix
     ./zsh.nix
   ];
 

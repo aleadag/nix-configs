@@ -52,8 +52,8 @@
         # Fix for Wayland slow scrolling
         touch_scroll_multiplier = "5.0";
 
-        # For nnn
-        allow_remote_control = lib.mkIf config.programs.nnn.enable true;
+        # For yazi
+        allow_remote_control = lib.mkIf config.programs.yazi.enable true;
         listen_on = "unix:/tmp/kitty";
 
         # For macOS

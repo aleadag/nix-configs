@@ -6,7 +6,7 @@
 , menu
 , browser ? (lib.getExe config.programs.firefox.package)
 , dunstctl ? (lib.getExe' pkgs.dunst "dunstctl")
-, fileManager ? "${terminal} ${lib.getExe config.programs.nnn.finalPackage} -a -P p"
+, fileManager ? "${terminal} ${lib.getExe config.programs.yazi.package}"
 , light ? "light" # needs to be installed system-wide
 , pamixer ? (lib.getExe pkgs.pamixer)
 , playerctl ? (lib.getExe pkgs.playerctl)
