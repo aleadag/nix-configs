@@ -89,5 +89,10 @@
             echo "yabai configuration loaded.."
           '';
       });
+    home.shellAliases = {
+      # refer to: https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)#configure-scripting-addition
+      # we need to run this every time yabai is updated!
+      "yabai-sudoer" = /* bash */''echo "$(whoami) ALL=(root) NOPASSWD: sha256:$(shasum -a 256 $(which yabai) | cut -d " " -f 1) $(which yabai) --load-sa" | sudo tee /private/etc/sudoers.d/yabai'';
+    };
   };
 }
