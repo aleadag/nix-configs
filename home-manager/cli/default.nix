@@ -22,6 +22,7 @@ in
     ./irssi.nix
     ./nnn.nix
     ./ssh.nix
+    ./starship.nix
     ./tmux.nix
     ./yazi.nix
     ./zsh.nix

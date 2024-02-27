@@ -10,14 +10,9 @@
       enable = true;
 
       plugins = [
-        # tide configure --auto --style=Rainbow --prompt_colors='True color' --show_time=No --rainbow_prompt_separators=Angled --powerline_prompt_heads=Sharp --powerline_prompt_tails=Flat --powerline_prompt_style='Two lines, character' --prompt_connection=Disconnected --powerline_right_prompt_frame=Yes --prompt_connection_andor_frame_color=Lightest --prompt_spacing=Compact --icons='Few icons' --transient=Yes
-        { name = "tide"; src = pkgs.fishPlugins.tide.src; }
         { name = "fzf-fish"; src = pkgs.fishPlugins.fzf-fish.src; }
         { name = "forgit"; src = pkgs.fishPlugins.forgit.src; }
-        {
-          name = "plugin-proxy";
-          src = builtins.getAttr "omf-proxy" flake.inputs;
-        }
+        { name = "plugin-proxy"; src = flake.inputs.omf-proxy; }
       ];
 
       interactiveShellInit =
@@ -106,7 +101,7 @@
       };
     };
 
-    xdg.configFile."fish/themes/catppuccin.theme".source = "${builtins.getAttr "catppuccin-fish" flake.inputs}/themes/Catppuccin ${libEx.capitalizeString config.home-manager.desktop.theme.flavor}.theme";
+    xdg.configFile."fish/themes/catppuccin.theme".source = "${flake.inputs.catppuccin-fish}/themes/Catppuccin ${libEx.capitalizeString config.home-manager.desktop.theme.flavor}.theme";
 
     programs.man.generateCaches = true;
   };

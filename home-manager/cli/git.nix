@@ -41,7 +41,7 @@ in
 
       delta.enable = true;
       delta.options = {
-        features = "side-by-side line-numbers decorations catppuccin-${config.home-manager.desktop.theme.flavor}";
+        features = "line-numbers decorations catppuccin-${config.home-manager.desktop.theme.flavor}";
         # Should match the name of the bat theme
         syntax-theme = "catppuccin";
         navigate = true; # use n and N to move between diff sections
