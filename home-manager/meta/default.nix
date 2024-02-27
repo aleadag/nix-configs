@@ -15,6 +15,7 @@
     home.packages = with pkgs; [
       nix-cleanup
       nix-whereis
+      nix-tree
     ];
 
     # To make cachix work you need add the current user as a trusted-user on Nix

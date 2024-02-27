@@ -5,6 +5,7 @@
   };
 
   config = lib.mkIf config.home-manager.cli.fish.enable {
+    home.packages = with pkgs; [ fd /* required by fzf-fish */ ];
     programs.fish = {
       enable = true;
 
