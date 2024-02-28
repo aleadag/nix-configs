@@ -111,8 +111,11 @@ in
       };
       fzf = {
         enable = true;
-        fileWidgetOptions = [ "--preview 'head {}'" ];
-        historyWidgetOptions = [ "--sort" ];
+        # fzf.fish is incompatible with other fzf plugins for fish
+        # https://github.com/PatrickF1/fzf.fish/wiki/Uninstalling-other-fzf-plugins
+        enableFishIntegration = false;
+        # fileWidgetOptions = [ "--preview 'head {}'" ];
+        # historyWidgetOptions = [ "--sort" ];
       };
       zoxide.enable = true;
     };
