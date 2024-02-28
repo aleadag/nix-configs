@@ -15,6 +15,14 @@
         { name = "plugin-proxy"; src = flake.inputs.omf-proxy; }
       ];
 
+      shellInit =
+        /* fish */ ''
+        # fzf.fish configurations, this HAS to be in shellInit
+        # https://github.com/PatrickF1/fzf.fish/issues/305
+        set fzf_preview_dir_cmd ${lib.getExe pkgs.eza} --all --color=always
+        set fzf_diff_highlighter ${lib.getExe pkgs.delta} --paging=never --width=20
+      '';
+
       interactiveShellInit =
         let
           # https://github.com/catppuccin/fzf
