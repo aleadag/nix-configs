@@ -1,4 +1,4 @@
-{ config, flake, pkgs, lib, ... }:
+{ config, flake, pkgs, lib, libEx, ... }:
 
 let
   cfg = config.home-manager.cli;
@@ -91,8 +91,8 @@ in
         enable = true;
         themes = {
           catppuccin = {
-            src = builtins.getAttr "catppuccin-bat" flake.inputs;
-            file = "Catppuccin-${config.home-manager.desktop.theme.flavor}.tmTheme";
+            src = flake.inputs.catppuccin-bat;
+            file = "/themes/Catppuccin ${libEx.capitalizeString config.home-manager.desktop.theme.flavor}.tmTheme";
           };
         };
         # This should pick up the correct colors for the generated theme. Otherwise
