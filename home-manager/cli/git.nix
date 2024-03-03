@@ -12,6 +12,10 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    home.shellAliases = {
+      g = "git";
+      gu = "gitui";
+    };
 
     programs.git = {
       enable = true;
