@@ -130,6 +130,8 @@ in
       cal = lib.mkIf cfg.enableGnu (lib.getExe' pkgs.gcal "gcal");
       ncdu = "${lib.getExe pkgs.dua} interactive";
       sloccount = lib.getExe pkgs.tokei;
+      # https://unix.stackexchange.com/questions/335648/why-does-the-reset-command-include-a-delay
+      reset = "${lib.getExe' pkgs.ncurses "tput"} reset";
     };
   };
 }
