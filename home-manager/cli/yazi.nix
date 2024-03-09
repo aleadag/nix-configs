@@ -1,4 +1,4 @@
-{ config, flake, lib, ... }:
+{ config, flake, lib, pkgs, ... }:
 
 let
   inherit (flake) inputs;
@@ -16,7 +16,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = lib.optionals cfg.enableIcons [
+    home.packages = [ pkgs.poppler ] ++ lib.optionals cfg.enableIcons [
       config.home-manager.desktop.theme.fonts.symbols.package
     ];
 
