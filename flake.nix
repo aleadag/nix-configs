@@ -8,12 +8,31 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    neovim-nightly-overlay = {
+      url = "github:nix-community/neovim-nightly-overlay";
+      inputs.flake-compat.follows = "flake-compat";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixgl = {
       url = "github:nix-community/nixGL";
       inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # build helix from the source
+    # https://github.com/helix-editor/helix/discussions/6062
+    # helix = {
+    #   url = "github:helix-editor/helix";
+    #   inputs.flake-utils.follows = "flake-utils";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
 
+    # helpers
+    flake-compat.url = "github:edolstra/flake-compat";
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
     flake-utils.url = "github:numtide/flake-utils";
 
     # nnn plugins

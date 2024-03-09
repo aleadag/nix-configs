@@ -1,9 +1,8 @@
 { config, pkgs, lib, ... }:
 
 let
-  devCfg = config.home-manager.dev;
   cfg = config.home-manager.editor.neovim;
-  toLuaBool = x: if x then "true" else "false";
+  toLua = lib.generators.toLua { };
 in
 {
   options.home-manager.editor.neovim = {
@@ -30,8 +29,9 @@ in
       fd
       ripgrep
     ]
-    # For clipboard=unnamedplus
     ++ lib.optionals stdenv.isLinux [
+      fswatch
+      # For clipboard=unnamedplus
       wl-clipboard
       xclip
     ]
@@ -41,6 +41,7 @@ in
 
     programs.neovim = {
       enable = true;
+      package = pkgs.neovim-nightly;
 
       withRuby = false;
       withNodeJs = false;
@@ -205,7 +206,7 @@ in
           plugin = lualine-nvim;
           type = "lua";
           config = /* lua */ ''
-            local enable_icons = ${toLuaBool cfg.enableIcons}
+            local enable_icons = ${toLua cfg.enableIcons}
             local function mixed_indent()
               local space_pat = [[\v^ +]]
               local tab_pat = [[\v^\t+]]
@@ -249,7 +250,7 @@ in
           plugin = nvim-autopairs;
           type = "lua";
           config = /* lua */ ''
-            local enable_ts = ${toLuaBool cfg.enableTreeSitter}
+            local enable_ts = ${toLua cfg.enableTreeSitter}
 
             require("nvim-autopairs").setup {
               check_ts = enable_ts
@@ -563,11 +564,43 @@ in
             ${lib.optionalString cfg.enableCmp /* lua */ ''
               capabilities = require("cmp_nvim_lsp").default_capabilities()
             ''}
+            local servers = {
+              { "bashls" },
+              { "marksman" },
+              { "nil_ls",
+                opts = {
+                  settings = {
+                    ["nil"] = {
+                      formatting = {
+                        command = { "nixpkgs-fmt" },
+                      },
+                      nix = {
+                        flake = {
+                          autoArchive = false,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              { "clojure_lsp" },
+              { "gopls" },
+              { "pyright" },
+              { "ruff_lsp" },
+              { "cssls" },
+              { "eslint" },
+              { "html" },
+              { "jsonls" },
+            }
+            for _, server in pairs(servers) do
+              local config = lspconfig[server[1]]
 
-            ${lib.optionalString devCfg.enable /* lua */ ''
-              lspconfig.bashls.setup { capabilities = capabilities }
-              lspconfig.marksman.setup { capabilities = capabilities }
-            ''}
+              if vim.fn.executable(config.document_config.default_config.cmd[1]) ~= 0 then
+                local shared_config = { capabilities = capabilities }
+
+                config.setup(vim.tbl_deep_extend("force", shared_config, server["opts"] or {}))
+              end
+            end
 
             local builtin = require("telescope.builtin")
 

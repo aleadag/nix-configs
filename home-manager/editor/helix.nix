@@ -8,6 +8,7 @@
   config = lib.mkIf config.home-manager.editor.helix.enable {
     programs.helix = {
       enable = true;
+      # package = flake.inputs.helix.packages.${pkgs.system}.default;
       defaultEditor = true;
 
       settings = {
