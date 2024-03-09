@@ -19,11 +19,11 @@
     "catppuccin-bat": {
       "flake": false,
       "locked": {
-        "lastModified": 1709693326,
-        "narHash": "sha256-zWRk6HaQl+2M9LuFTjz56jGzHQ8nuG7w1JXYe3cLxH4=",
+        "lastModified": 1709859202,
+        "narHash": "sha256-PWX8LR3xTgNBUpk+xBIGpEBQCNJHre8cRX4OTSWkZvs=",
         "owner": "catppuccin",
         "repo": "bat",
-        "rev": "e5c2f64eab91deb1750233cd64356b26cb985a21",
+        "rev": "a875b71dc5514b2eae9174b0591ef421887aa99f",
         "type": "github"
       },
       "original": {
@@ -233,11 +233,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1709764752,
-        "narHash": "sha256-+lM4J4JoJeiN8V+3WSWndPHj1pJ9Jc1UMikGbXLqCTk=",
+        "lastModified": 1709988192,
+        "narHash": "sha256-qxwIkl85P0I1/EyTT+NJwzbXdOv86vgZxcv4UKicjK8=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "cf111d1a849ddfc38e9155be029519b0e2329615",
+        "rev": "b0b0c3d94345050a7f86d1ebc6c56eea4389d030",
         "type": "github"
       },
       "original": {
@@ -544,11 +544,11 @@
     "zsh-autopair": {
       "flake": false,
       "locked": {
-        "lastModified": 1664801964,
-        "narHash": "sha256-PXHxPxFeoYXYMOC29YQKDdMnqTO0toyA7eJTSCV6PGE=",
+        "lastModified": 1709947643,
+        "narHash": "sha256-Y7fkpvCOC/lC2CHYui+6vOdNO8dNHGrVYTGGNf9qgdg=",
         "owner": "hlissner",
         "repo": "zsh-autopair",
-        "rev": "396c38a7468458ba29011f2ad4112e4fd35f78e6",
+        "rev": "2ec3fd3c9b950c01dbffbb2a4d191e1d34b8c58a",
         "type": "github"
       },
       "original": {
