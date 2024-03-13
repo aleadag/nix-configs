@@ -106,7 +106,6 @@ in
       };
       eza = {
         enable = true;
-        enableAliases = true;
         git = true;
       };
       fzf = {
