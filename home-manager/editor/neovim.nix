@@ -41,7 +41,6 @@ in
 
     programs.neovim = {
       enable = true;
-      package = pkgs.neovim-nightly;
 
       withRuby = false;
       withNodeJs = false;
