@@ -16,6 +16,8 @@
           truncation_length = 4;
           style = "bold lavender";
         };
+        # displays the exit code of the previous command
+        status.disabled = false;
       } // builtins.fromTOML (builtins.readFile
         "${flake.inputs.catppuccin-starship}/palettes/${config.home-manager.desktop.theme.flavor}.toml");
     };
