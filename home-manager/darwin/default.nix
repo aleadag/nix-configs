@@ -15,6 +15,10 @@
           fontSize = 14.0;
           opacity = 1.0;
         };
+        kitty = {
+          enable = true;
+          fontSize = 14.0;
+        };
       };
     };
 
