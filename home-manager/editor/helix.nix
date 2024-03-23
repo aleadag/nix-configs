@@ -50,10 +50,6 @@
 
       languages = {
         language-server = {
-          dprint = {
-            command = lib.getExe pkgs.dprint;
-            args = ["lsp"];
-          };
           nil = {
             command = lib.getExe pkgs.nil;
             config.nil.formatting.command = ["${lib.getExe pkgs.alejandra}" "-q"];
@@ -113,12 +109,14 @@
           {
             name = "javascript";
             auto-format = true;
-            language-servers = ["dprint" "typescript-language-server"];
+            formatter = deno "js";
+            language-servers = ["typescript-language-server"];
           }
           {
             name = "typescript";
             auto-format = true;
-            language-servers = ["dprint" "typescript-language-server"];
+            formatter = deno "ts";
+            language-servers = ["typescript-language-server"];
           }
           {
             name = "json";
