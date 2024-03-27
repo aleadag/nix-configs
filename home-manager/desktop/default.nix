@@ -1,6 +1,9 @@
-{ config, pkgs, lib, ... }:
-
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   imports = [
     ./chromium.nix
     ./dunst.nix
@@ -42,7 +45,7 @@
   config = lib.mkIf config.home-manager.desktop.enable {
     i18n.inputMethod = {
       enabled = "fcitx5";
-      fcitx5.addons = with pkgs; [ fcitx5-chinese-addons ];
+      fcitx5.addons = with pkgs; [fcitx5-chinese-addons];
     };
 
     home = {
@@ -52,8 +55,9 @@
       packages = with pkgs; [
         android-file-transfer
         audacious
-        (calibre.override { unrarSupport = true; })
-        (cinnamon.nemo-with-extensions.override { extensions = with cinnamon; [ nemo-fileroller ]; })
+        # Disable for now as it cannot compile
+        # (calibre.override { unrarSupport = true; })
+        (cinnamon.nemo-with-extensions.override {extensions = with cinnamon; [nemo-fileroller];})
         desktop-file-utils
         ffmpeg
         gammastep
@@ -65,7 +69,7 @@
         inkscape
         libreoffice-fresh
         open-browser
-        (mcomix.override { unrarSupport = true; })
+        (mcomix.override {unrarSupport = true;})
         pamixer
         pavucontrol
         playerctl
