@@ -69,7 +69,8 @@
         inkscape
         libreoffice-fresh
         open-browser
-        (mcomix.override {unrarSupport = true;})
+        # Disable for now as it cannot compile
+        # (mcomix.override {unrarSupport = true;})
         pamixer
         pavucontrol
         playerctl
