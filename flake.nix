@@ -29,6 +29,18 @@
     };
     flake-utils.url = "github:numtide/flake-utils";
 
+    # custom packages
+    arandr = {
+      url = "gitlab:thiagokokada/arandr";
+      flake = false;
+    };
+
+    # neovim plugins
+    oil-nvim = {
+      url = "github:pi314ever/oil.nvim";
+      flake = false;
+    };
+
     # nnn plugins
     nnn-plugins = {
       url = "github:jarun/nnn";

@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "arandr": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1696244654,
+        "narHash": "sha256-DJqNzbSLxwdblqLLtwqj4ob58FrB0RuaTgf6dfZ2TvA=",
+        "owner": "thiagokokada",
+        "repo": "arandr",
+        "rev": "4723af240be5c8e927bdff187fc611ec5099d8c9",
+        "type": "gitlab"
+      },
+      "original": {
+        "owner": "thiagokokada",
+        "repo": "arandr",
+        "type": "gitlab"
+      }
+    },
     "bing-wallpaper-mac": {
       "flake": false,
       "locked": {
@@ -240,6 +256,22 @@
         "type": "github"
       }
     },
+    "oil-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1711489494,
+        "narHash": "sha256-bYff7rAhWRrWB/Qd8geri+XazzckBA93SHC/3WKdZHY=",
+        "owner": "pi314ever",
+        "repo": "oil.nvim",
+        "rev": "8157e6b9fee810e4d0dda942a3f56cb02fc1ca44",
+        "type": "github"
+      },
+      "original": {
+        "owner": "pi314ever",
+        "repo": "oil.nvim",
+        "type": "github"
+      }
+    },
     "omf-proxy": {
       "flake": false,
       "locked": {
@@ -274,6 +306,7 @@
     },
     "root": {
       "inputs": {
+        "arandr": "arandr",
         "bing-wallpaper-mac": "bing-wallpaper-mac",
         "catppuccin-bat": "catppuccin-bat",
         "catppuccin-delta": "catppuccin-delta",
@@ -288,6 +321,7 @@
         "nixgl": "nixgl",
         "nixpkgs": "nixpkgs",
         "nnn-plugins": "nnn-plugins",
+        "oil-nvim": "oil-nvim",
         "omf-proxy": "omf-proxy",
         "pure": "pure",
         "zim-completion": "zim-completion",

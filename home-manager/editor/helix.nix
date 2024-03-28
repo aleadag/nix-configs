@@ -52,7 +52,7 @@
         language-server = {
           nil = {
             command = lib.getExe pkgs.nil;
-            config.nil.formatting.command = ["${lib.getExe pkgs.alejandra}" "-q"];
+            config.nil.formatting.command = ["${lib.getExe pkgs.nixpkgs-fmt}"];
           };
 
           typescript-language-server = {

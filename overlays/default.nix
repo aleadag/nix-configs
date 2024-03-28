@@ -10,8 +10,8 @@ outputs.lib.recursiveMergeAttrs [
     # namespaces
     libEx = flake.outputs.lib;
 
-    # # custom packages
-    # arandr = prev.arandr.overrideAttrs (_: { src = flake.inputs.arandr; });
+    # custom packages
+    arandr = prev.arandr.overrideAttrs (_: { src = flake.inputs.arandr; });
 
     anime4k = prev.callPackage ../packages/anime4k { };
 

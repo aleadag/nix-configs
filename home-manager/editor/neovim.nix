@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, flake, ... }:
 
 let
   cfg = config.home-manager.editor.neovim;
@@ -76,25 +76,36 @@ in
         vim.opt.omnifunc = "syntaxcomplete#Complete"
 
         -- live substitutions as you type
-        vim.opt.inccommand = 'nosplit'
+        vim.opt.inccommand = "nosplit"
 
         -- copy and paste use the system clipboard
-        vim.opt.clipboard:append { 'unnamedplus' }
+        vim.opt.clipboard:append { "unnamedplus" }
 
         -- show vertical colum
         vim.opt.colorcolumn:append { 81, 121 }
 
         -- threat words-with-dash as a word
-        vim.opt.iskeyword:append { '-' }
+        vim.opt.iskeyword:append { "-" }
 
-        -- avoid swapfile warning
-        vim.opt.shortmess = 'A'
+        vim.opt.shortmess = {
+          -- defaults
+          l = true,
+          t = true,
+          T = true,
+          o = true,
+          O = true,
+          C = true,
+          F = true,
+          -- avoid swapfile warning
+          A = true,
+        }
 
         -- persistent undo
-        local undodir = vim.fn.expand('~/.config/nvim/undo')
+        local undodir = vim.fn.expand("~/.config/nvim/undo")
 
         vim.opt.undofile = true
         vim.opt.undodir = undodir
+
 
         if vim.fn.isdirectory(undodir) ~= 0 then
           vim.fn.mkdir(undodir, "p", 0755)
@@ -127,7 +138,7 @@ in
         vim.keymap.set('n', '<C-g>', '<cmd>:noh<CR><CR>')
 
         -- completion
-        vim.opt.completeopt = 'menu,menuone,noinsert'
+        vim.opt.completeopt = 'menu,menuone,noinsert,noselect'
         vim.keymap.set({'i', 'c'}, '<C-j>', function()
           return vim.fn.pumvisible() ~= 0 and '<C-n>' or '<C-j>'
         end, { expr = true })
@@ -142,16 +153,22 @@ in
           vim.keymap.set('i', '<C-Space>', '<C-x><C-o>')
         ''}
 
+        -- reload file if changed
+        vim.opt.autoread = true
+        vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "CursorHoldI", "FocusGained" }, {
+          command = "if mode() != 'c' | checktime | endif",
+          pattern = { "*" },
+        })
+        -- keep comment leader when 'o' or 'O' is used in Normal mode
+        -- remove comment character when joining commented lines
+        vim.api.nvim_create_autocmd({'FileType'}, {
+          pattern = { "*" },
+          command = "set formatoptions+=oj",
+        })
         -- syntax highlight flake.lock files as json
         vim.api.nvim_create_autocmd({'BufNewFile', 'BufRead'}, {
-          pattern = 'flake.lock',
-          command = 'set filetype=json',
-        })
-
-        -- keep comment leader when 'o' or 'O' is used in Normal mode
-        vim.api.nvim_create_autocmd({'FileType'}, {
-          pattern = '*',
-          command = 'set formatoptions+=o',
+          pattern = { "flake.lock" },
+          command = "set filetype=json",
         })
       '';
 
@@ -264,23 +281,7 @@ in
           '';
         }
         {
-          plugin = oil-nvim.overrideAttrs (oldAttrs: {
-            # https://github.com/stevearc/oil.nvim/pull/305
-            patches = [
-              (fetchpatch {
-                url = "https://github.com/pi314ever/oil.nvim/commit/4e71530846202c71771d03f7d16506a87cbd86aa.patch";
-                hash = "sha256-qVFDcpthtIFSsZa/Jok/62RY0NseZaCciO4vB9H5WEM=";
-              })
-              (fetchpatch {
-                url = "https://github.com/pi314ever/oil.nvim/commit/7743b4c39a31a517fa13a01e48ae44d0cf1129a9.patch";
-                hash = "sha256-CZiwU2D5mtx6jTPJJdIVf2TKN1a5YdTWkq31oeznUwM=";
-              })
-              (fetchpatch {
-                url = "https://github.com/pi314ever/oil.nvim/commit/65b26c30f0881514acc6a6fdf1319458ed16e983.patch";
-                hash = "sha256-PdCCfcUq1lLEAOptnv8sLqW6nMa/QfO/1cpU3ompCGU=";
-              })
-            ];
-          });
+          plugin = oil-nvim.overrideAttrs (_: { src = flake.inputs.oil-nvim; });
           type = "lua";
           config = /* lua */ ''
             local oil = require("oil")
@@ -288,8 +289,11 @@ in
               default_file_explorer = true,
               skip_confirm_for_simple_edits = true,
               constrain_cursor = "name",
-              lsp_rename_autosave = true,
               experimental_watch_for_changes = true,
+              lsp_file_methods = {
+                timeout_ms = 1000,
+                autosave_changes = false,
+              },
             }
 
             vim.keymap.set("n", "-", oil.open, { desc = "Open parent directory" })
@@ -499,7 +503,9 @@ in
         mkdir-nvim
         vim-advanced-sorters
         vim-fugitive
+        vim-repeat
         vim-sleuth
+        vim-speeddating
       ]
       ++ lib.optionals cfg.enableCmp [
         cmp-nvim-lsp
@@ -513,7 +519,7 @@ in
             cmp.setup({
               completion = {
                 autocomplete = false,
-                completeopt = 'menu,menuone,noinsert'
+                completeopt = vim.opt.completeopt._value,
               },
               mapping = {
                 ['<C-b>'] = cmp.mapping.scroll_docs(-4),
