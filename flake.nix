@@ -145,6 +145,11 @@
         username = "alexander";
         system = "aarch64-darwin";
         homePath = "/Users";
+        extraModules = [{
+          home-manager = {
+            cli.git.enableGitSync = true;
+          };
+        }];
       })
 
       (mkHomeConfig {
@@ -155,6 +160,18 @@
         extraModules = [{
           home-manager = {
             desktop.enable = true;
+          };
+        }];
+      })
+
+      (mkHomeConfig {
+        hostname = "fftai";
+        username = "alexander";
+        system = "x86_64-linux";
+        homePath = "/home";
+        extraModules = [{
+          home-manager = {
+            desktop.enable = false;
           };
         }];
       })

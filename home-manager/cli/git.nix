@@ -9,6 +9,7 @@ in
       default = config.home-manager.cli.enable;
     };
     enableGh = lib.mkEnableOption "GitHub CLI config" // { default = true; };
+    enableGitSync = lib.mkEnableOption "git-sync of notes";
   };
 
   config = lib.mkIf cfg.enable {
@@ -129,9 +130,8 @@ in
       '';
     };
 
-    # TODO: make it configurable
     services.git-sync = {
-      enable = true;
+      enable = cfg.enableGitSync;
       repositories.notes = {
         path = "${config.home.homeDirectory}/notes";
         uri = "git@github.com:aleadag/notes.git";
