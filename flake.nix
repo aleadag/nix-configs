@@ -88,6 +88,10 @@
       url = "github:zsh-users/zsh-syntax-highlighting";
       flake = false;
     };
+    zsh-proxy = {
+      url = "github:SukkaW/zsh-proxy";
+      flake = false;
+    };
 
     catppuccin-fish = {
       url = "github:catppuccin/fish";

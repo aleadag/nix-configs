@@ -332,6 +332,7 @@
         "zim-utility": "zim-utility",
         "zsh-autopair": "zsh-autopair",
         "zsh-completions": "zsh-completions",
+        "zsh-proxy": "zsh-proxy",
         "zsh-syntax-highlighting": "zsh-syntax-highlighting"
       }
     },
@@ -475,6 +476,22 @@
       "original": {
         "owner": "zsh-users",
         "repo": "zsh-completions",
+        "type": "github"
+      }
+    },
+    "zsh-proxy": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1710835038,
+        "narHash": "sha256-gOOBm/7aUaBe7nZj0GrbNpHB759mHKQwJsHH6+q5R+g=",
+        "owner": "SukkaW",
+        "repo": "zsh-proxy",
+        "rev": "2ec61be1b0b97c36cb008b780eccc5f407d9d0cd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "SukkaW",
+        "repo": "zsh-proxy",
         "type": "github"
       }
     },

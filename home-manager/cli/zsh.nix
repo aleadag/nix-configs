@@ -122,6 +122,7 @@
           (zshPlugin "zsh-autopair")
           (zshPlugin "zsh-completions")
           (zshPlugin "zsh-syntax-highlighting")
+          (zshPlugin "zsh-proxy")
         ];
     };
 
