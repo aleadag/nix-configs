@@ -50,7 +50,8 @@
       packages = with pkgs; [
         android-file-transfer
         audacious
-        (calibre.override { unrarSupport = true; })
+        # Disable for now as it failed to build
+        # (calibre.override { unrarSupport = true; })
         (cinnamon.nemo-with-extensions.override { extensions = with cinnamon; [ nemo-fileroller ]; })
         desktop-file-utils
         ffmpeg
