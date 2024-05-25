@@ -90,6 +90,10 @@
               scss.validate.enable = true;
             };
           };
+
+          ruff-lsp = {
+            command = lib.getExe pkgs.ruff-lsp;
+          };
         };
 
         language =
@@ -133,6 +137,15 @@
             }
             {
               name = "svelte";
+              auto-format = true;
+            }
+            {
+              name = "python";
+              language-servers = [ "pylsp" "ruff-lsp" ];
+              formatter = {
+                command = lib.getExe pkgs.black;
+                args = [ "--quiet" "-" ];
+              };
               auto-format = true;
             }
           ];

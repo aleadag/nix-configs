@@ -13,6 +13,7 @@
         { name = "fzf-fish"; src = pkgs.fishPlugins.fzf-fish.src; }
         { name = "forgit"; src = pkgs.fishPlugins.forgit.src; }
         { name = "plugin-proxy"; src = flake.inputs.omf-proxy; }
+        { name = "bass"; src = pkgs.fishPlugins.bass.src; }
       ];
 
       shellInit =
