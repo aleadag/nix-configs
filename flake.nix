@@ -176,6 +176,7 @@
         extraModules = [{
           home-manager = {
             desktop.enable = false;
+            gui.enable = false;
           };
         }];
       })
