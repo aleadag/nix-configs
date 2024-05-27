@@ -42,7 +42,7 @@ in
         "Thumbs.db"
       ];
 
-      includes = [{ path = "${builtins.getAttr "catppuccin-delta" flake.inputs}/themes/${config.home-manager.desktop.theme.flavor}.gitconfig"; }];
+      includes = [{ path = "${flake.inputs.catppuccin-delta}/themes/${config.home-manager.desktop.theme.flavor}.gitconfig"; }];
 
       delta.enable = true;
       delta.options = {
@@ -80,8 +80,7 @@ in
 
     programs.gitui = {
       enable = true;
-      theme = builtins.readFile (builtins.getAttr "catppuccin-gitui" flake.inputs
-        + "/theme/${config.home-manager.desktop.theme.flavor}.ron");
+      theme = builtins.readFile "${flake.inputs.catppuccin-gitui}/themes/catppuccin-${config.home-manager.desktop.theme.flavor}.ron";
       # Note:
       # If the default key layout is lower case,
       # and you want to use `Shift + q` to trigger the exit event,
