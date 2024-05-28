@@ -115,11 +115,11 @@
     "catppuccin-yazi": {
       "flake": false,
       "locked": {
-        "lastModified": 1708566936,
-        "narHash": "sha256-2T41qWMe++3Qxl9veRNHMeRI3eU4+LAueKTss02gYNk=",
+        "lastModified": 1716782268,
+        "narHash": "sha256-vDvNg3emqd3D1grfJck2vWB1UVfgOY6Q+xqClDsL5LU=",
         "owner": "catppuccin",
         "repo": "yazi",
-        "rev": "0846aed69b2a62d29c98e100af0cf55ca729723d",
+        "rev": "4599abe20f243f07d31020824c053cceb524cdad",
         "type": "github"
       },
       "original": {
@@ -188,11 +188,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1716736760,
-        "narHash": "sha256-h3RmnNknKYtVA+EvUSra6QAwfZjC2q1G8YA7W0gat8Y=",
+        "lastModified": 1716908526,
+        "narHash": "sha256-Zl6e/sEVDh07K47XxDGPsXTYT4nI6llUDbQ4xMIwp7k=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "5d151429e1e79107acf6d06dcc5ace4e642ec239",
+        "rev": "373ead20606efa9181cd15ba19a5deac7ead1492",
         "type": "github"
       },
       "original": {
