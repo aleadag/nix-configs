@@ -175,7 +175,11 @@
         homePath = "/home";
         extraModules = [{
           home-manager = {
-            desktop.enable = false;
+            desktop = {
+              enable = false;
+              theme.enable = true;
+              wezterm.enable = true;
+            };
             gui.enable = false;
           };
         }];
