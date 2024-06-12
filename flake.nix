@@ -177,7 +177,11 @@
           home-manager = {
             desktop = {
               enable = false;
-              theme.enable = true;
+              theme = {
+                enable = true;
+                gtk.enable = false;
+                qt.enable = false;
+              };
               wezterm.enable = true;
             };
             gui.enable = false;
