@@ -31,9 +31,6 @@ in
 
   options.home-manager.cli = {
     enable = lib.mkEnableOption "CLI config" // { default = true; };
-    enableGnu = lib.mkEnableOption "GNU utils config" // {
-      default = !(config.targets.genericLinux.enable || pkgs.stdenv.isDarwin);
-    };
     enableOuch = lib.mkEnableOption "Ouch config" // {
       default = !pkgs.stdenv.isDarwin;
     };
@@ -51,10 +48,17 @@ in
       bind.dnsutils
       curl
       dialog
+      diffutils
       dos2unix
       dua
       each
       file
+      findutils
+      gawk
+      gcal
+      gnugrep
+      gnumake
+      gnused
       hyperfine
       ix
       jq
@@ -73,18 +77,6 @@ in
     ]
     ++ lib.optionals cfg.enableOuch [
       ouch
-    ]
-    ++ lib.optionals cfg.enableGnu [
-      coreutils
-      diffutils
-      findutils
-      gawk
-      gcal
-      gnugrep
-      gnumake
-      gnused
-      inetutils
-      netcat-gnu
     ];
 
     programs = {
@@ -137,7 +129,7 @@ in
       archive = lib.mkIf cfg.enableOuch "${lib.getExe pkgs.ouch} compress";
       unarchive = lib.mkIf cfg.enableOuch "${lib.getExe pkgs.ouch} decompress";
       lsarchive = lib.mkIf cfg.enableOuch "${lib.getExe pkgs.ouch} list";
-      cal = lib.mkIf cfg.enableGnu (lib.getExe' pkgs.gcal "gcal");
+      cal = lib.getExe' pkgs.gcal "gcal";
       ncdu = "${lib.getExe pkgs.dua} interactive";
       sloccount = lib.getExe pkgs.tokei;
       # https://unix.stackexchange.com/questions/335648/why-does-the-reset-command-include-a-delay

@@ -1,4 +1,4 @@
-{ config, lib, pkgs, osConfig, ... }:
+{ config, lib, pkgs, flake, osConfig, ... }:
 
 {
   imports = [
@@ -11,12 +11,15 @@
   };
 
   config = lib.mkIf config.home-manager.meta.enable {
-    # Add some Nix related packages
-    home.packages = with pkgs; [
-      nix-cleanup
-      nix-whereis
-      nix-tree
-    ];
+    home = {
+      # Add some Nix related packages
+      packages = with pkgs; [
+        nix-cleanup
+        nix-whereis
+        nix-tree
+      ];
+      sessionVariables.NIX_PATH = "nixpkgs=${flake.inputs.nixpkgs}";
+    };
 
     # To make cachix work you need add the current user as a trusted-user on Nix
     # sudo echo "trusted-users = $(whoami)" >> /etc/nix/nix.conf
