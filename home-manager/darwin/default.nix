@@ -24,7 +24,7 @@
 
     targets.darwin.defaults = {
       NSGlobalDomain = {
-        ApplePressAndHoldEnabled = true;
+        ApplePressAndHoldEnabled = false;
         AppleShowAllExtensions = true;
         KeyRepeat = 2;
         # Disable all automatic substitution
