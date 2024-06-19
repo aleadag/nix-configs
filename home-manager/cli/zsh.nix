@@ -8,13 +8,14 @@
   config = lib.mkIf config.home-manager.cli.zsh.enable {
     home.packages = with pkgs; lib.optionals (!stdenv.isDarwin) [
       (run-bg-alias "open" (lib.getExe' xdg-utils "xdg-open"))
-    ];
+    ] ++ [ nix-zsh-completions ];
 
     programs.zsh = {
       enable = true;
       autocd = true;
       defaultKeymap = "viins";
-      enableCompletion = true;
+      # taken care by zim-completion
+      enableCompletion = false;
       autosuggestion.enable = true;
 
       history = {
