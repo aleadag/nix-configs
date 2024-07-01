@@ -17,6 +17,8 @@
         nix-cleanup
         nix-whereis
         nix-tree
+        # Multi-tenant Nix Binary Cache
+        attic-client
       ];
       sessionVariables.NIX_PATH = "nixpkgs=${flake.inputs.nixpkgs}";
     };
