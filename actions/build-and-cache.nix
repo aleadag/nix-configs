@@ -21,6 +21,7 @@ with constants;
     build-macos = {
       inherit (constants.macos) runs-on;
       steps = with steps; [
+        selectXcodeStep
         checkoutStep
         (installNixActionStep { })
         cachixActionStep
