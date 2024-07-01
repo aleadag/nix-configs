@@ -17,6 +17,7 @@ with constants;
       inherit (macos) runs-on;
       "if" = "\${{ github.event.workflow_run.conclusion == 'success' }}";
       steps = with steps; [
+        selectXcodeStep
         checkoutStep
         (installNixActionStep { })
         cachixActionStep

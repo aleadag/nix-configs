@@ -85,4 +85,10 @@ with constants;
       sudo apt-get install -q -y ${toString packages}
     '';
   };
+  # No long needed after 22, July 2024
+  # https://github.com/actions/runner-images/issues/10121
+  selectXcodeStep = {
+    name = "Select Xcode";
+    run = ''sudo xcode-select -s "/Applications/Xcode_15.4.app"'';
+  };
 }
