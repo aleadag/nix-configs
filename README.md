@@ -11,7 +11,9 @@ My Nix{OS} configuration files to help me setup my machine in minutes using
 
 ## Disclaimer
 
-This config is mainly based on [nix-configs](https://github.com/thiagokokada/nix-configs). Some of the repositories that helped me to build this config:
+This config is mainly based on
+[nix-configs](https://github.com/thiagokokada/nix-configs). Some of the
+repositories that helped me to build this config:
 
 - https://github.com/thiagokokada/nix-configs
 - https://github.com/bqv/nixrc
@@ -24,12 +26,11 @@ This config is mainly based on [nix-configs](https://github.com/thiagokokada/nix
 Also, some extra resources and documentation about Flakes:
 
 - [Flakes in NixOS Wiki](https://nixos.wiki/wiki/Flakes)
-- [Nix Flakes blog posts from
-  @eldostra](https://www.tweag.io/blog/2020-05-25-flakes/)
+- [Nix Flakes blog posts from @eldostra](https://www.tweag.io/blog/2020-05-25-flakes/)
 - [Nix documentation](https://nixos.org/manual/nix/unstable/)
 
-**Remember**: Flakes is *experimental*, so you shouldn't try this approach
-until you have some experience in Nix.
+**Remember**: Flakes is _experimental_, so you shouldn't try this approach until
+you have some experience in Nix.
 
 ## Rules
 
@@ -50,7 +51,7 @@ $ sh <(curl -L https://nixos.org/nix/install) --daemon
 To build the Home Manager standalone and activate its configuration, run:
 
 ```console
-$ nix run '.#homeActivations/<hostname>'
+$ nix run '.#homeActivations/<hostname>' --accept-flake-config
 ```
 
 Happy hacking!

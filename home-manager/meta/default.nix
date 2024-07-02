@@ -29,10 +29,13 @@
     # sudo echo "trusted-users = @wheel" >> /etc/nix/nix.conf
     nix = {
       package = lib.mkDefault pkgs.nix;
-      settings = lib.mkMerge [
-        (import ../../shared/nix-conf.nix)
-        (import ../../shared/substituters.nix)
-      ];
+      # Move nixConfig to the flake file
+      # because `attic` need to update nix.conf as well!
+      #
+      # settings = lib.mkMerge [
+      #   (import ../../shared/nix-conf.nix)
+      #   (import ../../shared/substituters.nix)
+      # ];
     };
 
     # Config for ad-hoc nix commands invocation
