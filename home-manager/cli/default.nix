@@ -31,9 +31,6 @@ in
 
   options.home-manager.cli = {
     enable = lib.mkEnableOption "CLI config" // { default = true; };
-    enableOuch = lib.mkEnableOption "Ouch config" // {
-      default = !pkgs.stdenv.isDarwin;
-    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -65,6 +62,7 @@ in
       less
       lsof
       mediainfo
+      ouch
       page
       procps
       pv
@@ -74,9 +72,6 @@ in
       tealdeer
       tokei
       wget
-    ]
-    ++ lib.optionals cfg.enableOuch [
-      ouch
     ];
 
     programs = {
@@ -126,9 +121,9 @@ in
       gs = lib.mkIf cfg.git.enable "${lib.getExe config.programs.git.package} status";
       cat = lib.getExe pkgs.bat;
       # For muscle memory...
-      archive = lib.mkIf cfg.enableOuch "${lib.getExe pkgs.ouch} compress";
-      unarchive = lib.mkIf cfg.enableOuch "${lib.getExe pkgs.ouch} decompress";
-      lsarchive = lib.mkIf cfg.enableOuch "${lib.getExe pkgs.ouch} list";
+      archive = "${lib.getExe pkgs.ouch} compress";
+      unarchive = "${lib.getExe pkgs.ouch} decompress";
+      lsarchive = "${lib.getExe pkgs.ouch} list";
       cal = lib.getExe' pkgs.gcal "gcal";
       ncdu = "${lib.getExe pkgs.dua} interactive";
       sloccount = lib.getExe pkgs.tokei;
