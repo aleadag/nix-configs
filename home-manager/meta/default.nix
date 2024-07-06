@@ -17,6 +17,7 @@
         nix-cleanup
         nix-whereis
         nix-tree
+        nix-search-cli
         # Multi-tenant Nix Binary Cache
         attic-client
       ];
