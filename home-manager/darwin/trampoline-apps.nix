@@ -10,7 +10,7 @@
     # Install MacOS applications to the user Applications folder. Also update Docked applications
     home.extraActivationPath = with pkgs; [
       rsync
-      dockutil
+      # dockutil # FIXME: swift is currently broken
       gawk
     ];
 
