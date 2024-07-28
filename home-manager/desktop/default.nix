@@ -51,14 +51,14 @@
         android-file-transfer
         audacious
         (calibre.override { unrarSupport = true; })
-        (cinnamon.nemo-with-extensions.override { extensions = with cinnamon; [ nemo-fileroller ]; })
+        (nemo-with-extensions.override { extensions = [ nemo-fileroller ]; })
         desktop-file-utils
         ffmpeg
         gammastep
         gimp
-        gnome.evince
-        gnome.file-roller
-        gnome.gnome-disk-utility
+        evince
+        file-roller
+        gnome-disk-utility
         gthumb
         inkscape
         libreoffice-fresh
