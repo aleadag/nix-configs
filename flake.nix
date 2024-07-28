@@ -152,6 +152,7 @@
         extraModules = [{
           home-manager = {
             cli.git.enableGitSync = true;
+            darwin.bing-wallpaper.enable = false;
           };
         }];
       })
