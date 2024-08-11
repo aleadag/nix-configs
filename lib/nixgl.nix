@@ -19,7 +19,7 @@
       postBuild = ''
         mkdir -p $out/share/nixgl
         # Delete lines that start with exec
-        cat '${lib.getExe nixGL}' | sed '/^exec/d' > $out/share/nixgl/env
+        cat '${lib.getExe nixGL}' | sed '/^\s*exec/d' > $out/share/nixgl/env
 
         (
           # Prevent loop from running if no files

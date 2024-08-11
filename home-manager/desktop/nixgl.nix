@@ -2,6 +2,12 @@
 
 let
   cfg = config.home-manager.desktop.nixgl;
+  nixGLWrapper' =
+    pkg:
+    libEx.nixGLWrapper pkgs {
+      inherit pkg;
+      nixGL = cfg.package;
+    };
 in
 {
   options.home-manager.desktop.nixgl = {
@@ -18,25 +24,16 @@ in
       # This may "overwrite" some of the personalizations from the
       # home-manager.desktop.firefox module, since the nixGLWrapper is
       # incompatible with it and we are prioritizing the nixGL wrapped binary
-      (lib.hiPrio (libEx.nixGLWrapper pkgs { pkg = firefox; nixGL = cfg.package; }))
+      (lib.hiPrio (nixGLWrapper' firefox))
     ];
 
     # Needs Vapoursynth disabled so we don't wrap the package
     home-manager.desktop.mpv.enableVapoursynth = false;
 
     programs = {
-      mpv.package = libEx.nixGLWrapper pkgs {
-        pkg = pkgs.mpv;
-        nixGL = cfg.package;
-      };
-      kitty.package = libEx.nixGLWrapper pkgs {
-        pkg = pkgs.kitty;
-        nixGL = cfg.package;
-      };
-      wezterm.package = libEx.nixGLWrapper pkgs {
-        pkg = pkgs.wezterm;
-        nixGL = cfg.package;
-      };
+      mpv.package = lib.mkForce (nixGLWrapper' pkgs.mpv);
+      kitty.package = lib.mkForce (nixGLWrapper' pkgs.kitty);
+      wezterm.package = lib.mkForce (nixGLWrapper' pkgs.wezterm);
     };
   };
 }
