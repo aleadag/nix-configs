@@ -21,6 +21,9 @@
         UseKeychain yes
       '';
       matchBlocks = {
+        "*" = {
+          sendEnv = [ "COLORTERM" ];
+        };
         "github.com" = {
           identityFile = with config.home; "${homeDirectory}/.ssh/github";
           # This need to set per request

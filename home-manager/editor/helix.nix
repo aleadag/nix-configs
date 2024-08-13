@@ -99,11 +99,19 @@
         language =
           let
             deno = lang: {
-              command = "${pkgs.deno}/bin/deno";
+              command = lib.getExe pkgs.deno;
               args = [ "fmt" "-" "--ext" lang ];
             };
           in
           [
+            {
+              name = "bash";
+              auto-format = true;
+              formatter = {
+                command = lib.getExe pkgs.shfmt;
+                args = [ "-i" "2" ];
+              };
+            }
             {
               name = "nix";
               auto-format = true;
