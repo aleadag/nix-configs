@@ -1,4 +1,9 @@
-{ config, lib, libEx, pkgs, ... }:
+{ config
+, lib
+, libEx
+, pkgs
+, ...
+}:
 
 let
   cfg = config.home-manager.desktop.wezterm;
@@ -19,7 +24,7 @@ in
     opacity = lib.mkOption {
       type = lib.types.float;
       description = "Background opacity.";
-      default = 0.9;
+      default = 0.95;
     };
     scrollbackLines = lib.mkOption {
       type = lib.types.int;
@@ -62,7 +67,7 @@ in
                     '${pkgs.writeShellScript "scrollback-buffer-viewer" ''
                       cleanup() { rm -f "$1"; }
                       trap cleanup EXIT
-                      ${lib.getExe' pkgs.page "page"} -f < "$1"
+                      ${lib.getExe pkgs.page} -f < "$1"
                     ''}',
                     name,
                   },
@@ -113,6 +118,12 @@ in
                   act.SendKey { key = 'L', mods = 'CTRL' },
                 },
               },
+              -- Reload config
+              {
+                key = 'r',
+                mods = 'CMD|SHIFT',
+                action = wezterm.action.ReloadConfiguration,
+              },
             }
             config.mouse_bindings = {
               -- Change the default click behavior so that it only selects
@@ -140,7 +151,6 @@ in
                 mods = 'CTRL',
                 action = act.IncreaseFontSize,
               },
-
               -- Scrolling down while holding CTRL decreases the font size
               {
                 event = { Down = { streak = 1, button = { WheelDown = 1 } } },
@@ -149,16 +159,29 @@ in
               },
             }
 
+            -- cross-platform function to get the path from filename
+            function getPath(str)
+                return str:match("(.*[/\\])")
+            end
+
+            -- load local configuration
+            local local_config, error = loadfile(getPath(wezterm.config_file) .. "local.lua")
+            if error == nil then
+              for k, v in pairs(local_config()) do config[k] = v end
+            end
+
             return config
           '';
       };
 
-      zsh.initExtra = lib.mkIf config.programs.zsh.enable /* bash */ ''
-        # Do not enable those alias in non-wezterm terminal
-        if [[ -n "$WEZTERM_EXECUTABLE_DIR" ]]; then
-          alias imgcat="$WEZTERM_EXECUTABLE_DIR/bin/wezterm imgcat"
-        fi
-      '';
+      zsh.initExtra =
+        lib.mkIf config.programs.zsh.enable # bash
+          ''
+            # Do not enable those alias in non-wezterm terminal
+            if [[ -n "$WEZTERM_EXECUTABLE_DIR" ]]; then
+              alias imgcat="$WEZTERM_EXECUTABLE_DIR/wezterm imgcat"
+            fi
+          '';
     };
   };
 }
