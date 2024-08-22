@@ -89,6 +89,10 @@ in
               end)
             ''}
 
+            -- TODO: remove this once the following issue fixed:
+            -- https://github.com/wez/wezterm/issues/5990
+            config.front_end = "WebGpu"
+
             config.audible_bell = "Disabled"
             config.visual_bell = {
               fade_in_duration_ms = 100,
