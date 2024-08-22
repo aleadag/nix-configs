@@ -100,7 +100,9 @@ in
           tabs = "2";
           pager = "less -FR";
         };
-        extraPackages = with pkgs.bat-extras; [ batdiff batman batgrep batwatch ];
+        # remove batdiff as it failed to build
+        # https://github.com/NixOS/nixpkgs/issues/336312
+        extraPackages = with pkgs.bat-extras; [ batman batgrep batwatch ];
       };
       eza = {
         enable = true;
