@@ -81,15 +81,17 @@
               };
           };
 
-          vscode-css-language-server = {
-            command = "${pkgs.nodePackages.vscode-langservers-extracted}/bin/vscode-css-language-server";
-            args = [ "--stdio" ];
-            config = {
-              provideFormatter = true;
-              css.validate.enable = true;
-              scss.validate.enable = true;
-            };
-          };
+          # Disable until follow PR was merged to main stream
+          # https://github.com/NixOS/nixpkgs/issues/335533
+          # vscode-css-language-server = {
+          #   command = "${pkgs.nodePackages.vscode-langservers-extracted}/bin/vscode-css-language-server";
+          #   args = [ "--stdio" ];
+          #   config = {
+          #     provideFormatter = true;
+          #     css.validate.enable = true;
+          #     scss.validate.enable = true;
+          #   };
+          # };
 
           ruff-lsp = {
             command = lib.getExe pkgs.ruff-lsp;
