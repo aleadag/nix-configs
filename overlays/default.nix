@@ -18,7 +18,7 @@ outputs.lib.recursiveMergeAttrs [
     change-res = prev.callPackage ../packages/change-res { };
 
     # Build from source is broken for now!
-    dockutil = prev.dockutil.overrideAttrs (_: { fromSource = false; });
+    dockutil = prev.dockutil.override { fromSource = false; };
 
     inherit (flake.inputs.home-manager.packages.${prev.system}) home-manager;
 
