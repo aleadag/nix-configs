@@ -23,10 +23,12 @@
       keybindings = { "ctrl+shift+0" = "change_font_size all 0"; };
       font = {
         inherit (config.home-manager.desktop.theme.fonts.symbols) package name;
-        size = config.home-manager.desktop.kitty.fontSize;
       };
       theme = "Catppuccin-${libEx.capitalizeString config.home-manager.desktop.theme.flavor}";
       settings = {
+        # Font
+        font_size = "${toString config.home-manager.desktop.kitty.fontSize}";
+
         # Scrollback
         scrollback_lines = 10000;
         scrollback_pager = "${lib.getExe' pkgs.page "page"} -f";
