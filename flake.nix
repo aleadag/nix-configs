@@ -170,7 +170,7 @@
       })
 
       (mkHomeConfig {
-        hostname = "fftai";
+        hostname = "ticos-with-cuda";
         username = "ticos";
         system = "x86_64-linux";
         homePath = "/home";
@@ -182,6 +182,27 @@
                 enable = true;
                 package = self.outputs.legacyPackages."x86_64-linux".nixgl.auto.nixGLNvidia;
               };
+              theme = {
+                enable = true;
+                gtk.enable = false;
+                qt.enable = false;
+              };
+              wezterm.enable = true;
+            };
+            gui.enable = false;
+          };
+        }];
+      })
+
+      (mkHomeConfig {
+        hostname = "ticos-without-cuda";
+        username = "ticos";
+        system = "x86_64-linux";
+        homePath = "/home";
+        extraModules = [{
+          home-manager = {
+            desktop = {
+              enable = false;
               theme = {
                 enable = true;
                 gtk.enable = false;
