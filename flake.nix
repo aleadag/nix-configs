@@ -171,7 +171,7 @@
 
       (mkHomeConfig {
         hostname = "fftai";
-        username = "alexander";
+        username = "ticos";
         system = "x86_64-linux";
         homePath = "/home";
         extraModules = [{
