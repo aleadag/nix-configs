@@ -44,7 +44,10 @@
 
     programs = {
       # Let Home Manager install and manage itself
-      home-manager.enable = true;
+      home-manager = {
+        enable = true;
+        backupFileExtension = "backup";
+      };
       # Without git we may be unable to build this config
       git.enable = true;
     };
