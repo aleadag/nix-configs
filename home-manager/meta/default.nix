@@ -29,7 +29,7 @@
     # Another option is to add a group by prefixing it by @, e.g.:
     # sudo echo "trusted-users = @wheel" >> /etc/nix/nix.conf
     nix = {
-      package = lib.mkDefault pkgs.nix;
+      package = lib.mkDefault pkgs.nixVersions.latest;
       # Move nixConfig to the flake file
       # because `attic` need to update nix.conf as well!
       #
