@@ -71,6 +71,7 @@ in
       rlwrap
       tealdeer
       tokei
+      websocat
       wget
     ];
 
