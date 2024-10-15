@@ -51,11 +51,11 @@
     "catppuccin-delta": {
       "flake": false,
       "locked": {
-        "lastModified": 1725131804,
-        "narHash": "sha256-2JixR6BncgtLMBLnWor7jyneIu5VnaPbIhActuY++zo=",
+        "lastModified": 1729014005,
+        "narHash": "sha256-JvkTvAe1YltgmYSHeewzwg6xU38oGOIYoehXdHwW1zI=",
         "owner": "catppuccin",
         "repo": "delta",
-        "rev": "5c2c59991b950ce230f48cb3f2546e37ca65597b",
+        "rev": "0674ec5114c08393d808e2516d153c7e6df00d41",
         "type": "github"
       },
       "original": {
@@ -188,11 +188,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1728791962,
-        "narHash": "sha256-nr5QiXwQcZmf6/auC1UpX8iAtINMtdi2mH+OkqJQVmU=",
+        "lastModified": 1728903686,
+        "narHash": "sha256-ZHFrGNWDDriZ4m8CA/5kDa250SG1LiiLPApv1p/JF0o=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "64c6325b28ebd708653dd41d88f306023f296184",
+        "rev": "e1aec543f5caf643ca0d94b6a633101942fd065f",
         "type": "github"
       },
       "original": {
