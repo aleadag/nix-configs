@@ -24,7 +24,7 @@
       font = {
         inherit (config.home-manager.desktop.theme.fonts.symbols) package name;
       };
-      theme = "Catppuccin-${libEx.capitalizeString config.home-manager.desktop.theme.flavor}";
+      themeFile = "Catppuccin-${libEx.capitalizeString config.home-manager.desktop.theme.flavor}";
       settings = {
         # Font
         font_size = "${toString config.home-manager.desktop.kitty.fontSize}";
