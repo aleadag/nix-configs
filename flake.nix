@@ -240,6 +240,27 @@
         }];
       })
 
+      (mkHomeConfig {
+        hostname = "firefly";
+        username = "ticos";
+        system = "aarch64-linux";
+        homePath = "/home";
+        extraModules = [{
+          home-manager = {
+            desktop = {
+              enable = false;
+              theme = {
+                enable = true;
+                gtk.enable = false;
+                qt.enable = false;
+              };
+              wezterm.enable = true;
+            };
+            gui.enable = false;
+          };
+        }];
+      })
+
       # GitHub Actions
       (mkGHActionsYAMLs [
         "build-and-cache"
