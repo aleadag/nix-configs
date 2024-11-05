@@ -5,6 +5,7 @@ let
   inherit (flake) outputs inputs;
 in
 outputs.lib.recursiveMergeAttrs [
+  (inputs.nixgl.overlays.default final prev)
   {
     # namespaces
     libEx = flake.outputs.lib;
