@@ -180,7 +180,6 @@
               enable = false;
               nixgl = {
                 enable = true;
-                package = self.outputs.legacyPackages."x86_64-linux".nixgl.auto.nixGLNvidia;
               };
               theme = {
                 enable = true;
@@ -205,7 +204,6 @@
               enable = false;
               nixgl = {
                 enable = true;
-                package = self.outputs.legacyPackages."x86_64-linux".nixgl.auto.nixGLNvidia;
               };
               theme = {
                 enable = true;
