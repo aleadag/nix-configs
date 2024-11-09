@@ -3,6 +3,7 @@
 let
   inherit (flake) inputs;
   cfg = config.home-manager.cli.yazi;
+  flavor = config.home-manager.desktop.theme.flavor;
 in
 {
   options.home-manager.cli.yazi = {
@@ -22,7 +23,7 @@ in
 
     programs.yazi = {
       enable = true;
-      theme = builtins.fromTOML (builtins.readFile "${inputs.catppuccin-yazi}/themes/${config.home-manager.desktop.theme.flavor}.toml");
+      theme = builtins.fromTOML (builtins.readFile "${inputs.catppuccin-yazi}/themes/${flavor}/catppuccin-${flavor}-blue.toml");
       enableFishIntegration = config.home-manager.cli.fish.enable;
       enableZshIntegration = config.home-manager.cli.zsh.enable;
     };
