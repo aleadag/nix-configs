@@ -18,6 +18,7 @@
         nix-whereis
         nix-tree
         nix-search-cli
+        nix-proxy
         # Multi-tenant Nix Binary Cache
         attic-client
       ];

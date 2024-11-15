@@ -25,6 +25,8 @@ outputs.lib.recursiveMergeAttrs [
 
     nix-whereis = prev.callPackage ../packages/nix-whereis { };
 
+    nix-proxy = prev.callPackage ../packages/nix-proxy { };
+
     run-bg-alias = name: command: prev.callPackage ../packages/run-bg-alias { inherit name command; };
   }
 ]
