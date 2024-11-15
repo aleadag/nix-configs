@@ -7,7 +7,7 @@
   config = lib.mkIf config.home-manager.gui.enable {
     home.packages = with pkgs; [
       # https://github.com/NixOS/nixpkgs/issues/354200
-      # keepassxc
+      keepassxc
       anki-bin
     ];
   };
