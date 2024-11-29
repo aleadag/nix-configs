@@ -26,7 +26,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   checkPhase = ''
     runHook preCheck
 
-    ${lib.getExe shellcheck} set-nix-proxy.sh reset-nix-proxy.sh
+    ${lib.getExe shellcheck} nix-set-proxy.sh nix-reset-proxy.sh
 
     runHook postCheck
   '';
