@@ -4,13 +4,13 @@
 , areaScreenShot
 , fullScreenShot
 , menu
-, browser ? (lib.getExe config.programs.firefox.package)
+, browser ? config.home-manager.desktop.default.browser
 , dunstctl ? (lib.getExe' pkgs.dunst "dunstctl")
-, fileManager ? "${terminal} ${lib.getExe config.programs.yazi.package}"
+, fileManager ? config.home-manager.desktop.default.fileManager
 , light ? "light" # needs to be installed system-wide
 , pamixer ? (lib.getExe pkgs.pamixer)
 , playerctl ? (lib.getExe pkgs.playerctl)
-, terminal ? config.home-manager.desktop.defaultTerminal
+, terminal ? config.home-manager.desktop.default.terminal
 , statusCommand ? null
 , alt ? "Mod1"
 , modifier ? "Mod4"

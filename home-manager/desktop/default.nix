@@ -1,4 +1,13 @@
-{ config, pkgs, lib, ... }: {
+{ config
+, pkgs
+, lib
+, ...
+}:
+
+let
+  cfg = config.home-manager.desktop;
+in
+{
   imports = [
     ./chromium.nix
     ./dunst.nix
@@ -16,24 +25,36 @@
 
   options.home-manager.desktop = {
     enable = lib.mkEnableOption "desktop config";
-    defaultEditor = lib.mkOption {
-      type = lib.types.str;
-      description = ''
-        Default editor to be used.
+    default = {
+      browser = lib.mkOption {
+        type = lib.types.str;
+        description = "Default web browser to be used.";
+        default = lib.getExe config.programs.firefox.finalPackage;
+      };
+      editor = lib.mkOption {
+        type = lib.types.str;
+        description = "Default editor to be used.";
+        default = lib.getExe config.programs.neovim.finalPackage;
+      };
+      fileManager = lib.mkOption {
+        type = lib.types.str;
+        description = "Default file manager to be used.";
+        default = "${cfg.default.terminal} -- ${lib.getExe config.programs.yazi.package}";
+      };
+      volumeControl = lib.mkOption {
+        type = lib.types.str;
+        description = "Default volume control to be used.";
+        default = lib.getExe pkgs.pwvucontrol;
+      };
+      terminal = lib.mkOption {
+        type = lib.types.str;
+        description = ''
+          Default terminal emulator to be used.
 
-        Should allow starting programs as parameter.
-      '';
-      default = lib.getExe config.programs.helix.package;
-    };
-    defaultTerminal = lib.mkOption {
-      type = lib.types.str;
-      description = ''
-        Default terminal emulator to be used.
-
-        Should allow starting programs as parameter.
-      '';
-      # Use kitty as the default terminal, as it supports fctix5
-      default = "${lib.getExe config.programs.kitty.package}";
+          Should allow starting programs as parameter.
+        '';
+        default = lib.getExe config.programs.wezterm.package;
+      };
     };
   };
 

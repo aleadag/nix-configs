@@ -45,7 +45,7 @@
         bell_on_tab = true;
 
         # Misc
-        editor = config.home-manager.desktop.defaultEditor;
+        inherit (config.home-manager.desktop.default) editor;
         strip_trailing_spaces = "smart";
         clipboard_control =
           "write-clipboard write-primary read-clipboard read-primary";

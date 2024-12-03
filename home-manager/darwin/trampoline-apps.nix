@@ -9,9 +9,9 @@
   config = lib.mkIf config.home-manager.darwin.enable {
     # Install MacOS applications to the user Applications folder. Also update Docked applications
     home.extraActivationPath = with pkgs; [
-      rsync
       dockutil
       gawk
+      rsync
     ];
 
     home.activation.trampolineApps = lib.hm.dag.entryAfter [ "writeBoundary" ] ''

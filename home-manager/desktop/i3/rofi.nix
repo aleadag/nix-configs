@@ -8,7 +8,7 @@
   config = lib.mkIf config.home-manager.desktop.i3.rofi.enable {
     programs.rofi = {
       enable = true;
-      terminal = config.home-manager.desktop.defaultTerminal;
+      inherit (config.home-manager.desktop.default) terminal;
       package = with pkgs; rofi.override { plugins = [ rofi-calc rofi-emoji ]; };
       font = with config.home-manager.desktop.theme.fonts; "${gui.package} 14";
       theme =
