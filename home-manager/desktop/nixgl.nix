@@ -23,7 +23,7 @@ in
     programs = with config.lib.nixGL; {
       firefox.package = lib.mkForce (wrap pkgs.firefox);
       mpv.package = lib.mkForce (wrap pkgs.mpv);
-      wezterm.package = lib.mkForce (wrap pkgs.wezterm);
+      wezterm.package = lib.mkForce (wrap flake.inputs.wezterm.packages.${pkgs.system}.default);
     };
   };
 }
