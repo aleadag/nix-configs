@@ -33,7 +33,7 @@
 
       sessionVariables = {
         # Enable scroll support
-        LESS = "--RAW-CONTROL-CHARS";
+        PAGER = "less -R";
         # Reduce time to wait for multi-key sequences
         KEYTIMEOUT = 1;
         # Set right prompt to show time
