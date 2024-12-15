@@ -111,6 +111,9 @@
     };
 
     xdg.configFile."fish/themes/catppuccin.theme".source = "${flake.inputs.catppuccin-fish}/themes/Catppuccin ${libEx.capitalizeString config.home-manager.desktop.theme.flavor}.theme";
+    xdg.configFile."fish/completions/just.fish".text = ''
+      complete -c just -a (just --summary)
+    '';
 
     programs.man.generateCaches = true;
   };
