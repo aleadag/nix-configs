@@ -73,6 +73,7 @@ in
       tokei
       websocat
       wget
+      railway
     ];
 
     programs = {
