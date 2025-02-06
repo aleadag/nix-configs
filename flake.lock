@@ -309,38 +309,6 @@
         "url": "https://flakehub.com/f/NixOS/nixpkgs/0.1.0.tar.gz"
       }
     },
-    "nnn-plugins": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1738759634,
-        "narHash": "sha256-iXeZyMA5hrVloP4Ui+xGjfbvqvUJFuP+bKiCJPz8gVI=",
-        "owner": "jarun",
-        "repo": "nnn",
-        "rev": "af9bfd370faa90966cc75a93feceec7cb5bb2321",
-        "type": "github"
-      },
-      "original": {
-        "owner": "jarun",
-        "repo": "nnn",
-        "type": "github"
-      }
-    },
-    "oil-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1722454637,
-        "narHash": "sha256-0ujbM/eD+HTrcjmUTMNjGUf/DpHyY7sUYFRExcBaSS8=",
-        "owner": "pi314ever",
-        "repo": "oil.nvim",
-        "rev": "b62fee512b549e8a61dee8d595b5a13c5580537e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "pi314ever",
-        "repo": "oil.nvim",
-        "type": "github"
-      }
-    },
     "omf-proxy": {
       "flake": false,
       "locked": {
@@ -390,8 +358,6 @@
         "hyprland-go": "hyprland-go",
         "nixgl": "nixgl",
         "nixpkgs": "nixpkgs",
-        "nnn-plugins": "nnn-plugins",
-        "oil-nvim": "oil-nvim",
         "omf-proxy": "omf-proxy",
         "pure": "pure",
         "wezterm": "wezterm",

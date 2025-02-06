@@ -41,18 +41,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # neovim plugins
-    oil-nvim = {
-      url = "github:pi314ever/oil.nvim";
-      flake = false;
-    };
-
-    # nnn plugins
-    nnn-plugins = {
-      url = "github:jarun/nnn";
-      flake = false;
-    };
-
     # wezterm
     wezterm = {
       url = "github:wez/wezterm?dir=nix";

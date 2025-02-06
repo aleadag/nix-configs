@@ -27,7 +27,6 @@ in
     ./git.nix
     ./htop.nix
     ./irssi.nix
-    ./nnn.nix
     ./ssh.nix
     ./starship.nix
     ./tmux.nix

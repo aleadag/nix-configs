@@ -958,6 +958,15 @@ in
                 }
               '';
           }
+          {
+            plugin = catppuccin-nvim;
+            config = # lua
+              ''
+                require("catppuccin").setup {
+                  flavour = ${config.home-manager.desktop.theme.flavor},
+                }
+              '';
+          }
           nvim-ts-autotag
         ]
         ++ lib.optionals cfg.icons.enable [ nvim-web-devicons ];
