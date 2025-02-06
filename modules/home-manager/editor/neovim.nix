@@ -960,6 +960,7 @@ in
           }
           {
             plugin = catppuccin-nvim;
+            type = "lua";
             config = # lua
               ''
                 require("catppuccin").setup {

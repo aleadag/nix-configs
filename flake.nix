@@ -164,6 +164,7 @@
             home-manager = {
               cli.git.enableGitSync = true;
               darwin.bing-wallpaper.enable = false;
+              dev.enable = true;
             };
           }
         ];
@@ -178,6 +179,7 @@
           {
             home-manager = {
               desktop.enable = true;
+              dev.enable = true;
             };
           }
         ];
