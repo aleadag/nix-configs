@@ -7,28 +7,34 @@ with constants;
   freeDiskSpaceStep = {
     uses = actions.free-disk-space;
     "with" = {
-      swap-storage = false;
+      opt = true;
       tool-cache = true;
+      usrlocal = true;
+      usrmisc = true;
     };
   };
   checkoutStep = {
     uses = actions.checkout;
   };
-  installNixActionStep = { extraNixConfig ? [ ] }: {
-    uses = actions.install-nix-action;
-    "with" = {
-      # Need to define a channel, otherwise it will use bash from environment
-      nix_path = "nixpkgs=channel:nixos-unstable";
-      extra_nix_config = builtins.concatStringsSep "\n" (
-        [
-          "accept-flake-config = true"
-          # Should avoid GitHub API rate limit
-          "access-tokens = github.com=\${{ secrets.GITHUB_TOKEN }}"
-        ]
-        ++ extraNixConfig
-      );
+  installNixActionStep =
+    {
+      extraNixConfig ? [ ],
+    }:
+    {
+      uses = actions.install-nix-action;
+      "with" = {
+        # Need to define a channel, otherwise it will use bash from environment
+        nix_path = "nixpkgs=channel:nixos-unstable";
+        extra_nix_config = builtins.concatStringsSep "\n" (
+          [
+            "accept-flake-config = true"
+            # Should avoid GitHub API rate limit
+            "access-tokens = github.com=\${{ secrets.GITHUB_TOKEN }}"
+          ]
+          ++ extraNixConfig
+        );
+      };
     };
-  };
   cachixActionStep = {
     uses = actions.cachix-action;
     "with" = {
@@ -41,20 +47,52 @@ with constants;
     name = "Validate Flakes";
     run = "nix flake check ${toString nixFlags}";
   };
-  buildHomeManagerConfigurations = { hostnames ? [ ], extraNixFlags ? [ ] }: {
-    name = "Build Home-Manager configs for: ${builtins.concatStringsSep ", " hostnames}";
-    run = builtins.concatStringsSep "\n"
-      (map
-        (hostname: "nix build ${toString (nixFlags ++ extraNixFlags)} '.#homeConfigurations.${hostname}.activationPackage'")
-        hostnames);
-  };
-  buildNixOSConfigurations = { hostnames ? [ ], extraNixFlags ? [ ] }: {
-    name = "Build NixOS configs for: ${builtins.concatStringsSep ", " hostnames}";
-    run = builtins.concatStringsSep "\n"
-      (map
-        (hostname: "nix build ${toString (nixFlags ++ extraNixFlags)} '.#nixosConfigurations.${hostname}.config.system.build.toplevel'")
-        hostnames);
-  };
+  buildNixDarwinConfigurations =
+    {
+      hostnames ? [ ],
+      extraNixFlags ? [ ],
+    }:
+    {
+      name = "Build nix-darwin configs for: ${builtins.concatStringsSep ", " hostnames}";
+      run = builtins.concatStringsSep "\n" (
+        map (
+          hostname:
+          "nix build ${toString (nixFlags ++ extraNixFlags)} '.#darwinConfigurations.${hostname}.system'"
+        ) hostnames
+      );
+    };
+  buildHomeManagerConfigurations =
+    {
+      hostnames ? [ ],
+      extraNixFlags ? [ ],
+    }:
+    {
+      name = "Build Home-Manager configs for: ${builtins.concatStringsSep ", " hostnames}";
+      run = builtins.concatStringsSep "\n" (
+        map (
+          hostname:
+          "nix build ${
+            toString (nixFlags ++ extraNixFlags)
+          } '.#homeConfigurations.${hostname}.activationPackage'"
+        ) hostnames
+      );
+    };
+  buildNixOSConfigurations =
+    {
+      hostnames ? [ ],
+      extraNixFlags ? [ ],
+    }:
+    {
+      name = "Build NixOS configs for: ${builtins.concatStringsSep ", " hostnames}";
+      run = builtins.concatStringsSep "\n" (
+        map (
+          hostname:
+          "nix build ${
+            toString (nixFlags ++ extraNixFlags)
+          } '.#nixosConfigurations.${hostname}.config.system.build.toplevel'"
+        ) hostnames
+      );
+    };
   updateFlakeLockStep = {
     name = "Update flake.lock";
     run = ''
@@ -84,11 +122,5 @@ with constants;
       sudo apt-get update -q -y
       sudo apt-get install -q -y ${toString packages}
     '';
-  };
-  # No long needed after 22, July 2024
-  # https://github.com/actions/runner-images/issues/10121
-  selectXcodeStep = {
-    name = "Select Xcode";
-    run = ''sudo xcode-select -s "/Applications/Xcode_15.4.app"'';
   };
 }

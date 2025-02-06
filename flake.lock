@@ -235,6 +235,26 @@
         "type": "github"
       }
     },
+    "hyprland-go": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1730478348,
+        "narHash": "sha256-CyjK9+QAkryofkXOwpE3ealkUSx5Du0iazzbaQR2R6g=",
+        "owner": "thiagokokada",
+        "repo": "hyprland-go",
+        "rev": "45fad41a91ddb0d96f1cc630472c25ff05041693",
+        "type": "github"
+      },
+      "original": {
+        "owner": "thiagokokada",
+        "repo": "hyprland-go",
+        "type": "github"
+      }
+    },
     "libpng": {
       "flake": false,
       "locked": {
@@ -367,6 +387,7 @@
         "flake-parts": "flake-parts",
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
+        "hyprland-go": "hyprland-go",
         "nixgl": "nixgl",
         "nixpkgs": "nixpkgs",
         "nnn-plugins": "nnn-plugins",

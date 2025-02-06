@@ -2,18 +2,20 @@ jobs:
   update-flakes:
     runs-on: ubuntu-latest
     steps:
-      - uses: jlumbroso/free-disk-space@v1.3.1
+      - uses: thiagokokada/free-disk-space@main
         with:
-          swap-storage: false
+          opt: true
           tool-cache: true
+          usrlocal: true
+          usrmisc: true
       - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v26
+      - uses: cachix/install-nix-action@v30
         with:
           extra_nix_config: |-
             accept-flake-config = true
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
           nix_path: nixpkgs=channel:nixos-unstable
-      - uses: cachix/cachix-action@v14
+      - uses: cachix/cachix-action@v15
         with:
           authToken: ${{ secrets.CACHIX_TOKEN }}
           extraPullNames: nix-community
@@ -28,7 +30,7 @@ jobs:
       - name: 'Build NixOS configs for: '
         run: ""
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           body: |
             ## Run report

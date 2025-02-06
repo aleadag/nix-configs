@@ -35,6 +35,12 @@
       flake = false;
     };
 
+    # hyprland
+    hyprland-go = {
+      url = "github:thiagokokada/hyprland-go";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # neovim plugins
     oil-nvim = {
       url = "github:pi314ever/oil.nvim";
@@ -141,7 +147,13 @@
     };
   };
 
-  outputs = { self, nixpkgs, flake-utils, ... }@inputs:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+      ...
+    }@inputs:
     let
       lib = import ./lib inputs;
       inherit (lib) recursiveMergeAttrs mkGHActionsYAMLs mkHomeConfig;
@@ -150,18 +162,23 @@
       {
         inherit lib;
         overlays.default = import ./overlays { flake = self; };
+        darwinModules.default = import ./modules/nix-darwin;
+        homeModules.default = import ./modules/home-manager;
+        nixosModules.default = import ./modules/nixos;
       }
       (mkHomeConfig {
         hostname = "t0";
         username = "alexander";
         system = "aarch64-darwin";
         homePath = "/Users";
-        extraModules = [{
-          home-manager = {
-            cli.git.enableGitSync = true;
-            darwin.bing-wallpaper.enable = false;
-          };
-        }];
+        extraModules = [
+          {
+            home-manager = {
+              cli.git.enableGitSync = true;
+              darwin.bing-wallpaper.enable = false;
+            };
+          }
+        ];
       })
 
       (mkHomeConfig {
@@ -169,11 +186,13 @@
         username = "awang";
         system = "x86_64-linux";
         homePath = "/home";
-        extraModules = [{
-          home-manager = {
-            desktop.enable = true;
-          };
-        }];
+        extraModules = [
+          {
+            home-manager = {
+              desktop.enable = true;
+            };
+          }
+        ];
       })
 
       (mkHomeConfig {
@@ -181,23 +200,25 @@
         username = "alexander";
         system = "x86_64-linux";
         homePath = "/home";
-        extraModules = [{
-          home-manager = {
-            desktop = {
-              enable = false;
-              nixgl = {
-                enable = true;
+        extraModules = [
+          {
+            home-manager = {
+              desktop = {
+                enable = false;
+                nixgl = {
+                  enable = true;
+                };
+                theme = {
+                  enable = true;
+                  gtk.enable = false;
+                  qt.enable = false;
+                };
+                wezterm.enable = true;
               };
-              theme = {
-                enable = true;
-                gtk.enable = false;
-                qt.enable = false;
-              };
-              wezterm.enable = true;
+              gui.enable = false;
             };
-            gui.enable = false;
-          };
-        }];
+          }
+        ];
       })
 
       (mkHomeConfig {
@@ -205,23 +226,25 @@
         username = "ticos";
         system = "x86_64-linux";
         homePath = "/home";
-        extraModules = [{
-          home-manager = {
-            desktop = {
-              enable = false;
-              nixgl = {
-                enable = true;
+        extraModules = [
+          {
+            home-manager = {
+              desktop = {
+                enable = false;
+                nixgl = {
+                  enable = true;
+                };
+                theme = {
+                  enable = true;
+                  gtk.enable = false;
+                  qt.enable = false;
+                };
+                wezterm.enable = true;
               };
-              theme = {
-                enable = true;
-                gtk.enable = false;
-                qt.enable = false;
-              };
-              wezterm.enable = true;
+              gui.enable = false;
             };
-            gui.enable = false;
-          };
-        }];
+          }
+        ];
       })
 
       (mkHomeConfig {
@@ -229,20 +252,22 @@
         username = "ticos";
         system = "x86_64-linux";
         homePath = "/home";
-        extraModules = [{
-          home-manager = {
-            desktop = {
-              enable = false;
-              theme = {
-                enable = true;
-                gtk.enable = false;
-                qt.enable = false;
+        extraModules = [
+          {
+            home-manager = {
+              desktop = {
+                enable = false;
+                theme = {
+                  enable = true;
+                  gtk.enable = false;
+                  qt.enable = false;
+                };
+                wezterm.enable = true;
               };
-              wezterm.enable = true;
+              gui.enable = false;
             };
-            gui.enable = false;
-          };
-        }];
+          }
+        ];
       })
 
       (mkHomeConfig {
@@ -250,20 +275,22 @@
         username = "ticos";
         system = "aarch64-linux";
         homePath = "/home";
-        extraModules = [{
-          home-manager = {
-            desktop = {
-              enable = false;
-              theme = {
-                enable = true;
-                gtk.enable = false;
-                qt.enable = false;
+        extraModules = [
+          {
+            home-manager = {
+              desktop = {
+                enable = false;
+                theme = {
+                  enable = true;
+                  gtk.enable = false;
+                  qt.enable = false;
+                };
+                wezterm.enable = true;
               };
-              wezterm.enable = true;
+              gui.enable = false;
             };
-            gui.enable = false;
-          };
-        }];
+          }
+        ];
       })
 
       # GitHub Actions
@@ -274,17 +301,27 @@
         "validate-flakes"
       ])
 
-      (flake-utils.lib.eachDefaultSystem (system:
+      (flake-utils.lib.eachDefaultSystem (
+        system:
         let
-          pkgs = import nixpkgs {
-            inherit system;
-            config.allowUnfree = true;
-            overlays = [ self.overlays.default ];
-          };
+          inherit (import ./patches { inherit self nixpkgs system; }) pkgs;
         in
         {
+          devShells.default = pkgs.mkShell {
+            packages = with pkgs; [
+              fd
+              neovim-standalone
+              nil
+              nixfmt-rfc-style
+              ripgrep
+              statix
+            ];
+          };
+          checks = import ./checks.nix { inherit pkgs; };
+          formatter = pkgs.nixfmt-rfc-style;
           legacyPackages = pkgs;
-        }))
+        }
+      ))
     ]; # END recursiveMergeAttrs
   nixConfig = {
     extra-substituters = [

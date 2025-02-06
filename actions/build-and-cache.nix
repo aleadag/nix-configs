@@ -5,7 +5,10 @@ in
 with constants;
 {
   name = "build-and-cache";
-  on = [ "push" "workflow_dispatch" ];
+  on = [
+    "push"
+    "workflow_dispatch"
+  ];
   jobs = {
     build-linux = {
       inherit (ubuntu) runs-on;
@@ -21,7 +24,6 @@ with constants;
     build-macos = {
       inherit (constants.macos) runs-on;
       steps = with steps; [
-        selectXcodeStep
         checkoutStep
         (installNixActionStep { })
         cachixActionStep

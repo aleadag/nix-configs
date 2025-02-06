@@ -6,7 +6,7 @@ with constants;
 {
   name = "update-flakes";
   on = {
-    schedule = [{ cron = "40 20 * * 0,2,4,6"; }];
+    schedule = [ { cron = "40 20 * * 0,2,4,6"; } ];
     workflow_dispatch = null;
   };
   jobs = {

@@ -2,18 +2,20 @@ jobs:
   build-linux:
     runs-on: ubuntu-latest
     steps:
-      - uses: jlumbroso/free-disk-space@v1.3.1
+      - uses: thiagokokada/free-disk-space@main
         with:
-          swap-storage: false
+          opt: true
           tool-cache: true
+          usrlocal: true
+          usrmisc: true
       - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v26
+      - uses: cachix/install-nix-action@v30
         with:
           extra_nix_config: |-
             accept-flake-config = true
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
           nix_path: nixpkgs=channel:nixos-unstable
-      - uses: cachix/cachix-action@v14
+      - uses: cachix/cachix-action@v15
         with:
           authToken: ${{ secrets.CACHIX_TOKEN }}
           extraPullNames: nix-community
@@ -23,18 +25,16 @@ jobs:
       - name: 'Build NixOS configs for: '
         run: ""
   build-macos:
-    runs-on: macos-14
+    runs-on: macos-latest
     steps:
-      - name: Select Xcode
-        run: sudo xcode-select -s "/Applications/Xcode_15.4.app"
       - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v26
+      - uses: cachix/install-nix-action@v30
         with:
           extra_nix_config: |-
             accept-flake-config = true
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
           nix_path: nixpkgs=channel:nixos-unstable
-      - uses: cachix/cachix-action@v14
+      - uses: cachix/cachix-action@v15
         with:
           authToken: ${{ secrets.CACHIX_TOKEN }}
           extraPullNames: nix-community

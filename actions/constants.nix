@@ -1,22 +1,24 @@
 {
   actions = {
-    cachix-action = "cachix/cachix-action@v14";
+    # https://github.com/marketplace/actions/cachix
+    cachix-action = "cachix/cachix-action@v15";
+    # https://github.com/marketplace/actions/checkout
     checkout = "actions/checkout@v4";
-    create-pull-request = "peter-evans/create-pull-request@v6";
-    free-disk-space = "jlumbroso/free-disk-space@v1.3.1";
-    install-nix-action = "cachix/install-nix-action@v26";
+    # https://github.com/marketplace/actions/create-pull-request
+    create-pull-request = "peter-evans/create-pull-request@v7";
+    # https://github.com/marketplace/actions/free-disk-space-ubuntu
+    free-disk-space = "thiagokokada/free-disk-space@main";
+    # https://github.com/marketplace/actions/install-nix
+    install-nix-action = "cachix/install-nix-action@v30";
   };
   ubuntu.runs-on = "ubuntu-latest";
-  # M1 macOS
-  macos.runs-on = "macos-14";
+  macos.runs-on = "macos-latest";
   home-manager = {
     linux.hostnames = [
       "mbx"
     ];
-    darwin.hostnames = [
-      "t0"
-    ];
+    darwin.hostnames = [ "t0" ];
   };
-  nixos.hostnames = [
-  ];
+  nix-darwin.hostnames = [ ];
+  nixos.hostnames = [ ];
 }

@@ -1,7 +1,8 @@
-{ lib
-, stdenvNoCC
-, bash
-, shellcheck
+{
+  lib,
+  stdenvNoCC,
+  bash,
+  shellcheck,
 }:
 
 stdenvNoCC.mkDerivation (finalAttrs: {
