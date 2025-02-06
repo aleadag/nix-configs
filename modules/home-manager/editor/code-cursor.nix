@@ -3,7 +3,8 @@
   lib,
   config,
   ...
-}: {
+}:
+{
   options.home-manager.editor.code-cursor.enable = lib.mkEnableOption "Enable code-cursor" // {
     default = config.home-manager.editor.enable;
   };
