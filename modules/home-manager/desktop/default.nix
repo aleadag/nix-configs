@@ -84,6 +84,14 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    i18n = {
+      inputMethod = {
+        enabled = "fcitx5";
+        fcitx5.addons = with pkgs; [ fcitx5-chinese-addons ];
+        fcitx5.waylandFrontend = config.home-manager.desktop.wayland.enable;
+      };
+    };
+
     home = {
       keyboard =
         let
