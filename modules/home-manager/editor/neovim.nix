@@ -378,14 +378,6 @@ in
                 require("remember").setup {}
               '';
           }
-          {
-            plugin = tokyonight-nvim;
-            type = "lua";
-            config = # lua
-              ''
-                vim.cmd.colorscheme("tokyonight-moon")
-              '';
-          }
           # telescope
           {
             plugin = telescope-nvim;
@@ -964,8 +956,10 @@ in
             config = # lua
               ''
                 require("catppuccin").setup {
-                  flavour = ${config.home-manager.desktop.theme.flavor},
+                  flavour = "${config.home-manager.desktop.theme.flavor}",
                 }
+
+                vim.cmd.colorscheme "catppuccin"
               '';
           }
           nvim-ts-autotag
