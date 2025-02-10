@@ -3,7 +3,6 @@
   lib,
   libEx,
   pkgs,
-  flake,
   ...
 }:
 
@@ -39,7 +38,6 @@ in
     programs = {
       wezterm = {
         enable = true;
-        package = flake.inputs.wezterm.packages.${pkgs.system}.default;
         extraConfig =
           let
             inherit (config.home-manager.desktop.theme) fonts;
