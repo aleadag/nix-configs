@@ -16,21 +16,7 @@
     services.screen-locker = {
       enable = true;
       inactiveInterval = 10;
-      lockCmd =
-        with config.home-manager.desktop.theme.fonts;
-        toString (
-          pkgs.writeShellScript "lock-screen" ''
-            export XSECURELOCK_FORCE_GRAB=1
-            export XSECURELOCK_BLANK_DPMS_STATE="off"
-            export XSECURELOCK_DATETIME_FORMAT="%H:%M:%S - %a %d/%m"
-            export XSECURELOCK_SHOW_DATETIME=1
-            export XSECURELOCK_SHOW_HOSTNAME=0
-            export XSECURELOCK_SHOW_USERNAME=0
-            export XSECURELOCK_FONT="${gui.name}:style=Regular"
-
-            exec ${lib.getExe pkgs.xsecurelock} $@
-          ''
-        );
+      lockCmd = "slock"; # use self installed slock because of permission issue
       # Use xss-lock instead
       xautolock.enable = false;
       xss-lock = {
