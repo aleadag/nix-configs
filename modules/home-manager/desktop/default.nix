@@ -12,6 +12,7 @@ in
 {
   imports = [
     ./chromium.nix
+    ./clash-verge.nix
     ./dunst.nix
     ./firefox.nix
     ./gammastep.nix
