@@ -171,6 +171,7 @@
         extraModules = [
           {
             home-manager = {
+              cli.git.enableGitSync = true;
               desktop.enable = true;
               dev.enable = true;
             };
