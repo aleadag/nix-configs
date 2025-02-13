@@ -148,6 +148,11 @@ in
         uri = "git@github.com:aleadag/notes.git";
         interval = 1 * 60 * 60;
       };
+      repositories.leetcode = {
+        path = "${config.home.homeDirectory}/.local/share/nvim/leetcode";
+        uri = "git@github.com:aleadag/leetcode.git";
+        interval = 1 * 60 * 60;
+      };
     };
   };
 }
