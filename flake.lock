@@ -188,11 +188,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1738841109,
-        "narHash": "sha256-sEgE3nifaRU5gfAx33ds0tx/j+qM0/5/bHopv/w6c0c=",
+        "lastModified": 1739470101,
+        "narHash": "sha256-NxNe32VB4XI/xIXrsKmIfrcgtEx5r/5s52pL3CpEcA4=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "f99c704fe3a4cf8d72b2d568ec80bc38be1a9407",
+        "rev": "5031c6d2978109336637977c165f82aa49fa16a7",
         "type": "github"
       },
       "original": {
@@ -208,11 +208,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1730478348,
-        "narHash": "sha256-CyjK9+QAkryofkXOwpE3ealkUSx5Du0iazzbaQR2R6g=",
+        "lastModified": 1739368600,
+        "narHash": "sha256-LOd1D0l2EiUtesZ1Tkx0Yv8lPmgakQW7OqG/iRHcuL4=",
         "owner": "thiagokokada",
         "repo": "hyprland-go",
-        "rev": "45fad41a91ddb0d96f1cc630472c25ff05041693",
+        "rev": "a56680ed44a8bdc3fd4ae575dabe74d11c83c331",
         "type": "github"
       },
       "original": {
@@ -266,12 +266,12 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1738680400,
-        "narHash": "sha256-ooLh+XW8jfa+91F1nhf9OF7qhuA/y1ChLx6lXDNeY5U=",
-        "rev": "799ba5bffed04ced7067a91798353d360788b30d",
-        "revCount": 747653,
+        "lastModified": 1739214665,
+        "narHash": "sha256-26L8VAu3/1YRxS8MHgBOyOM8xALdo6N0I04PgorE7UM=",
+        "rev": "64e75cd44acf21c7933d61d7721e812eac1b5a0a",
+        "revCount": 751650,
         "type": "tarball",
-        "url": "https://api.flakehub.com/f/pinned/NixOS/nixpkgs/0.1.747653%2Brev-799ba5bffed04ced7067a91798353d360788b30d/0194d302-29da-7009-8f43-5b8a58825954/source.tar.gz"
+        "url": "https://api.flakehub.com/f/pinned/NixOS/nixpkgs/0.1.751650%2Brev-64e75cd44acf21c7933d61d7721e812eac1b5a0a/0194f7b2-2eea-747f-b06a-5ee4321a1ae4/source.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -472,11 +472,11 @@
     "zsh-completions": {
       "flake": false,
       "locked": {
-        "lastModified": 1738039771,
-        "narHash": "sha256-jamYAmvanI/upc1PsRA/6VLiER8qJ3kOCgXsPT9WkYU=",
+        "lastModified": 1739428054,
+        "narHash": "sha256-t9IgDtn1og3jw4CNTaMBaMLRrsa+7INkTdduXrvJeA4=",
         "owner": "zsh-users",
         "repo": "zsh-completions",
-        "rev": "85e041be36a33d8f6ca71746654406425d3a910f",
+        "rev": "7f0a0c44516809526dd51f1ceaa063ee4cdb079f",
         "type": "github"
       },
       "original": {
