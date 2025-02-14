@@ -145,12 +145,12 @@ in
       enable = cfg.enableGitSync;
       repositories.notes = {
         path = "${config.home.homeDirectory}/notes";
-        uri = "git@github.com:aleadag/notes.git";
+        uri = "git+ssh://git@github.com:aleadag/notes.git";
         interval = 1 * 60 * 60;
       };
       repositories.leetcode = {
         path = "${config.home.homeDirectory}/.local/share/nvim/leetcode";
-        uri = "git@github.com:aleadag/leetcode.git";
+        uri = "git+ssh://git@github.com:aleadag/leetcode.git";
         interval = 1 * 60 * 60;
       };
     };

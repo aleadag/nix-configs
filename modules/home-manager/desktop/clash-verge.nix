@@ -18,8 +18,6 @@
         Description = "clash verge rev";
       };
 
-      Install.WantedBy = [ "multi-user.target" ];
-
       Service = {
         ExecStart = "${pkgs.clash-verge-rev}/bin/clash-verge-service";
       };
