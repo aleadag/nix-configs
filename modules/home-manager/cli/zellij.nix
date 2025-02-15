@@ -2,7 +2,7 @@
 {
 
   options.home-manager.cli.zellij.enable = lib.mkEnableOption "Zellij config" // {
-    default = config.home-manager.cli.enable;
+    default = false; # config.home-manager.cli.enable;
   };
 
   config = lib.mkIf config.home-manager.cli.zellij.enable {
