@@ -221,6 +221,26 @@
         "type": "github"
       }
     },
+    "nix-darwin": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1739548217,
+        "narHash": "sha256-rlv64erpr36xdmMDPgf9rhRXBYZ0BZb5nrw2ZPSk1sQ=",
+        "owner": "LnL7",
+        "repo": "nix-darwin",
+        "rev": "678b22642abde2ee77ae2218ab41d802f010e5b0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "LnL7",
+        "repo": "nix-darwin",
+        "type": "github"
+      }
+    },
     "nixgl": {
       "inputs": {
         "flake-utils": [
@@ -305,6 +325,7 @@
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
         "hyprland-go": "hyprland-go",
+        "nix-darwin": "nix-darwin",
         "nixgl": "nixgl",
         "nixpkgs": "nixpkgs",
         "omf-proxy": "omf-proxy",
