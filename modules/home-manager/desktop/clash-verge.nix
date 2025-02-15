@@ -11,16 +11,36 @@
   };
 
   config = lib.mkIf config.home-manager.desktop.clash-verge.enable {
-    home.packages = with pkgs; [ clash-verge-rev ];
+    systemd.user.services.clash-verge-service = {
+      Install.WantedBy = [ "graphical-session.target" ];
 
-    systemd.user.services.clash-verge = {
       Unit = {
         Description = "clash verge rev";
       };
 
       Service = {
+        inherit (config.home-manager.desktop.systemd.service) RestartSec RestartSteps RestartMaxDelaySec;
         ExecStart = "${pkgs.clash-verge-rev}/bin/clash-verge-service";
       };
     };
+
+    systemd.user.services.clash-verge =
+      let
+        clash-verge-wrapped = with config.lib.nixGL; (wrap pkgs.clash-verge-rev);
+      in
+      {
+        Install.WantedBy = [ "graphical-session.target" ];
+
+        Unit = {
+          Description = "clash verge rev";
+          Requires = "clash-verge-service.service";
+          After = [ "clash-verge-service.service" ];
+        };
+
+        Service = {
+          inherit (config.home-manager.desktop.systemd.service) RestartSec RestartSteps RestartMaxDelaySec;
+          ExecStart = "${clash-verge-wrapped}/bin/clash-verge";
+        };
+      };
   };
 }
