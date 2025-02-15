@@ -10,25 +10,25 @@
     default = config.home-manager.desktop.enable;
   };
 
-  config = lib.mkIf config.home-manager.desktop.clash-verge.enable {
-    systemd.user.services.clash-verge-service = {
-      Install.WantedBy = [ "graphical-session.target" ];
+  config = lib.mkIf config.home-manager.desktop.clash-verge.enable (
+    let
+      clash-verge-wrapped = with config.lib.nixGL; (wrap pkgs.clash-verge-rev);
+    in
+    {
+      systemd.user.services.clash-verge-service = {
+        Install.WantedBy = [ "graphical-session.target" ];
 
-      Unit = {
-        Description = "clash verge rev";
+        Unit = {
+          Description = "clash verge rev";
+        };
+
+        Service = {
+          inherit (config.home-manager.desktop.systemd.service) RestartSec RestartSteps RestartMaxDelaySec;
+          ExecStart = "${clash-verge-wrapped}/bin/clash-verge-service";
+        };
       };
 
-      Service = {
-        inherit (config.home-manager.desktop.systemd.service) RestartSec RestartSteps RestartMaxDelaySec;
-        ExecStart = "${pkgs.clash-verge-rev}/bin/clash-verge-service";
-      };
-    };
-
-    systemd.user.services.clash-verge =
-      let
-        clash-verge-wrapped = with config.lib.nixGL; (wrap pkgs.clash-verge-rev);
-      in
-      {
+      systemd.user.services.clash-verge = {
         Install.WantedBy = [ "graphical-session.target" ];
 
         Unit = {
@@ -42,5 +42,6 @@
           ExecStart = "${clash-verge-wrapped}/bin/clash-verge";
         };
       };
-  };
+    }
+  );
 }
