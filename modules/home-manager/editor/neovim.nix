@@ -833,6 +833,8 @@ in
                 require("nvim-ts-autotag").setup {}
               '';
           }
+        ]
+        ++ [
           {
             plugin = catppuccin-nvim;
             type = "lua";
@@ -845,8 +847,6 @@ in
                 vim.cmd.colorscheme "catppuccin"
               '';
           }
-        ]
-        ++ [
           {
             plugin = leetcode-nvim;
             type = "lua";
