@@ -140,6 +140,44 @@ in
             end,
             desc = "Enable spellcheck for defined filetypes",
           })
+
+          -- 自动切换输入法
+          -- https://zhuanlan.zhihu.com/p/558359369
+          -- 全局变量
+          local input_toggle = 0
+
+          -- Fcitx2en 函数：切换到英文输入法
+          local function fcitx2en()
+              local input_status = tonumber(vim.fn.system("fcitx5-remote"))
+              if input_status == 2 then
+                  input_toggle = 1
+                  vim.fn.system("fcitx5-remote -c")
+              end
+          end
+
+          -- Fcitx2zh 函数：切换到中文输入法
+          local function fcitx2zh()
+              if input_toggle == 1 then
+                  vim.fn.system("fcitx5-remote -o")
+                  input_toggle = 0
+              end
+          end
+
+          -- 设置 ttimeoutlen
+          vim.opt.ttimeoutlen = 100
+
+          -- 设置自动命令
+          vim.api.nvim_create_autocmd("InsertLeave", {
+              callback = function()
+                  fcitx2en()
+              end,
+          })
+
+          vim.api.nvim_create_autocmd("InsertEnter", {
+              callback = function()
+                  fcitx2zh()
+              end,
+          })
         '';
 
       # To install non-packaged plugins, use
@@ -807,6 +845,8 @@ in
                 vim.cmd.colorscheme "catppuccin"
               '';
           }
+        ]
+        ++ [
           {
             plugin = leetcode-nvim;
             type = "lua";
