@@ -98,16 +98,9 @@ in
       };
       bat = {
         enable = true;
-        themes = {
-          catppuccin = {
-            src = flake.inputs.catppuccin-bat;
-            file = "/themes/Catppuccin ${libEx.capitalizeString config.home-manager.desktop.theme.flavor}.tmTheme";
-          };
-        };
         # This should pick up the correct colors for the generated theme. Otherwise
         # it is possible to generate a custom bat theme to ~/.config/bat/config
         config = {
-          theme = "catppuccin";
           tabs = "2";
           pager = "less -FR";
         };

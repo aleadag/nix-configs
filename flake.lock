@@ -32,99 +32,23 @@
         "type": "github"
       }
     },
-    "catppuccin-bat": {
-      "flake": false,
+    "catppuccin": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
       "locked": {
-        "lastModified": 1734996624,
-        "narHash": "sha256-6fWoCH90IGumAMc4buLRWL0N61op+AuMNN9CAR9/OdI=",
+        "lastModified": 1739934729,
+        "narHash": "sha256-PcrLk10meIJICzUJqtCMOJxoITzbH52fZg2XAB7SSsM=",
         "owner": "catppuccin",
-        "repo": "bat",
-        "rev": "699f60fc8ec434574ca7451b444b880430319941",
+        "repo": "nix",
+        "rev": "b1ff2a638afa827f1473498190a2c1cae1cf41cf",
         "type": "github"
       },
       "original": {
         "owner": "catppuccin",
-        "repo": "bat",
-        "type": "github"
-      }
-    },
-    "catppuccin-delta": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1735675170,
-        "narHash": "sha256-04po0A7bVMsmYdJcKL6oL39RlMLij1lRKvWl5AUXJ7Q=",
-        "owner": "catppuccin",
-        "repo": "delta",
-        "rev": "e9e21cffd98787f1b59e6f6e42db599f9b8ab399",
-        "type": "github"
-      },
-      "original": {
-        "owner": "catppuccin",
-        "repo": "delta",
-        "type": "github"
-      }
-    },
-    "catppuccin-fish": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1725094139,
-        "narHash": "sha256-udiU2TOh0lYL7K7ylbt+BGlSDgCjMpy75vQ98C1kFcc=",
-        "owner": "catppuccin",
-        "repo": "fish",
-        "rev": "cc8e4d8fffbdaab07b3979131030b234596f18da",
-        "type": "github"
-      },
-      "original": {
-        "owner": "catppuccin",
-        "repo": "fish",
-        "type": "github"
-      }
-    },
-    "catppuccin-gitui": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1716604863,
-        "narHash": "sha256-CRxpEDShQcCEYtSXwLV5zFB8u0HVcudNcMruPyrnSEk=",
-        "owner": "catppuccin",
-        "repo": "gitui",
-        "rev": "c7661f043cb6773a1fc96c336738c6399de3e617",
-        "type": "github"
-      },
-      "original": {
-        "owner": "catppuccin",
-        "repo": "gitui",
-        "type": "github"
-      }
-    },
-    "catppuccin-starship": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1733541952,
-        "narHash": "sha256-1w0TJdQP5lb9jCrCmhPlSexf0PkAlcz8GBDEsRjPRns=",
-        "owner": "catppuccin",
-        "repo": "starship",
-        "rev": "e99ba6b210c0739af2a18094024ca0bdf4bb3225",
-        "type": "github"
-      },
-      "original": {
-        "owner": "catppuccin",
-        "repo": "starship",
-        "type": "github"
-      }
-    },
-    "catppuccin-yazi": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1734439154,
-        "narHash": "sha256-UVcPdQFwgBxR6n3/1zRd9ZEkYADkB5nkuom5SxzPTzk=",
-        "owner": "catppuccin",
-        "repo": "yazi",
-        "rev": "5d3a1eecc304524e995fe5b936b8e25f014953e8",
-        "type": "github"
-      },
-      "original": {
-        "owner": "catppuccin",
-        "repo": "yazi",
+        "repo": "nix",
         "type": "github"
       }
     },
@@ -314,12 +238,7 @@
       "inputs": {
         "arandr": "arandr",
         "bing-wallpaper-mac": "bing-wallpaper-mac",
-        "catppuccin-bat": "catppuccin-bat",
-        "catppuccin-delta": "catppuccin-delta",
-        "catppuccin-fish": "catppuccin-fish",
-        "catppuccin-gitui": "catppuccin-gitui",
-        "catppuccin-starship": "catppuccin-starship",
-        "catppuccin-yazi": "catppuccin-yazi",
+        "catppuccin": "catppuccin",
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",
         "flake-utils": "flake-utils",

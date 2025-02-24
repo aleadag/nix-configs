@@ -797,18 +797,6 @@ in
         ]
         ++ [
           {
-            plugin = catppuccin-nvim;
-            type = "lua";
-            config = # lua
-              ''
-                require("catppuccin").setup {
-                  flavour = "${config.home-manager.desktop.theme.flavor}",
-                }
-
-                vim.cmd.colorscheme "catppuccin"
-              '';
-          }
-          {
             plugin = leetcode-nvim;
             type = "lua";
             config = # lua

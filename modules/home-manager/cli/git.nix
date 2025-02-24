@@ -49,17 +49,8 @@ in
         "Thumbs.db"
       ];
 
-      includes = [
-        {
-          path = "${flake.inputs.catppuccin-delta}/themes/${config.home-manager.desktop.theme.flavor}.gitconfig";
-        }
-      ];
-
       delta.enable = true;
       delta.options = {
-        features = "line-numbers decorations catppuccin-${config.home-manager.desktop.theme.flavor}";
-        # Should match the name of the bat theme
-        syntax-theme = "catppuccin";
         navigate = true; # use n and N to move between diff sections
       };
       lfs.enable = true;
@@ -91,7 +82,6 @@ in
 
     programs.gitui = {
       enable = true;
-      theme = builtins.readFile "${flake.inputs.catppuccin-gitui}/themes/catppuccin-${config.home-manager.desktop.theme.flavor}.ron";
       # Note:
       # If the default key layout is lower case,
       # and you want to use `Shift + q` to trigger the exit event,

@@ -16,8 +16,6 @@
       package = pkgs.evil-helix;
 
       settings = {
-        theme = "catppuccin_${config.home-manager.desktop.theme.flavor}";
-
         editor = {
           soft-wrap.enable = true;
           statusline = {

@@ -17,22 +17,6 @@
         ''
           simplified_ui true
           default_layout "compact"
-          theme "catppuccin-frappe"
-          themes {
-            catppuccin-frappe {
-              bg "#626880" // Surface2
-              fg "#c6d0f5"
-              red "#e78284"
-              green "#a6d189"
-              blue "#8caaee"
-              yellow "#e5c890"
-              magenta "#f4b8e4" // Pink
-              orange "#ef9f76" // Peach
-              cyan "#99d1db" // Sky
-              black "#292c3c" // Mantle
-              white "#c6d0f5"
-            }
-          }
         '';
     };
   };

@@ -24,6 +24,10 @@
     #   inputs.flake-utils.follows = "flake-utils";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
+    catppuccin = {
+      url = "github:catppuccin/nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # helpers
     flake-compat.url = "github:edolstra/flake-compat";
@@ -88,36 +92,6 @@
     };
     zsh-proxy = {
       url = "github:SukkaW/zsh-proxy";
-      flake = false;
-    };
-
-    catppuccin-fish = {
-      url = "github:catppuccin/fish";
-      flake = false;
-    };
-
-    catppuccin-bat = {
-      url = "github:catppuccin/bat";
-      flake = false;
-    };
-
-    catppuccin-delta = {
-      url = "github:catppuccin/delta";
-      flake = false;
-    };
-
-    catppuccin-gitui = {
-      url = "github:catppuccin/gitui";
-      flake = false;
-    };
-
-    catppuccin-starship = {
-      url = "github:catppuccin/starship";
-      flake = false;
-    };
-
-    catppuccin-yazi = {
-      url = "github:catppuccin/yazi";
       flake = false;
     };
 

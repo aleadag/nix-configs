@@ -13,6 +13,7 @@ in
     ./fonts.nix
     ./gtk.nix
     ./qt.nix
+    ./catppuccin.nix
   ];
 
   options.home-manager.desktop.theme = {
