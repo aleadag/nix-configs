@@ -1,6 +1,5 @@
 {
   config,
-  pkgs,
   lib,
   ...
 }:
@@ -17,7 +16,7 @@ in
   config = lib.mkIf cfg.enable {
     programs.swaylock = {
       enable = true;
-      settings = with config.home-manager.desktop.theme.colors; {
+      settings = {
         font = config.home-manager.desktop.theme.fonts.gui.name;
         indicator-caps-lock = true;
         show-keyboard-layout = true;
@@ -30,38 +29,6 @@ in
         #     ''
         #   );
         # scaling = config.home-manager.desktop.theme.wallpaper.scale;
-
-        inside-color = mantle;
-        line-color = mantle;
-        ring-color = text;
-        text-color = text;
-
-        inside-clear-color = yellow;
-        line-clear-color = yellow;
-        ring-clear-color = base;
-        text-clear-color = base;
-
-        inside-caps-lock-color = surface1;
-        line-caps-lock-color = surface1;
-        ring-caps-lock-color = base;
-        text-caps-lock-color = base;
-
-        inside-ver-color = blue;
-        line-ver-color = blue;
-        ring-ver-color = base;
-        text-ver-color = base;
-
-        inside-wrong-color = red;
-        line-wrong-color = red;
-        ring-wrong-color = base;
-        text-wrong-color = base;
-
-        caps-lock-bs-hl-color = red;
-        caps-lock-key-hl-color = teal;
-        bs-hl-color = red;
-        key-hl-color = teal;
-        separator-color = "#00000000"; # transparent
-        layout-bg-color = "#00000050"; # semi-transparent black
 
         # when we have 0 keyboard layouts, it probably means we are using HM
         # standalone, so we can't trust the keyboard module

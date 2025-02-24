@@ -1,6 +1,5 @@
 {
   config,
-  pkgs,
   lib,
   ...
 }:
@@ -13,18 +12,11 @@
   config = lib.mkIf config.home-manager.desktop.theme.qt.enable {
     qt = {
       enable = true;
-      platformTheme.name = "qtct";
+      platformTheme.name = "kvantum";
       style.name = "kvantum";
     };
 
     xdg.configFile = {
-      "Kvantum/kvantum.kvconfig".text = lib.generators.toINI { } {
-        General.theme = "Nordic-bluish-solid";
-      };
-      "Kvantum" = {
-        source = "${pkgs.nordic}/share/Kvantum";
-        recursive = true;
-      };
       "qt5ct/qt5ct.conf".text = lib.generators.toINI { } {
         Appearance = {
           style = "kvantum-dark";
