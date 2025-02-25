@@ -144,7 +144,10 @@
           {
             home-manager = {
               cli.git.enableGitSync = true;
-              desktop.enable = true;
+              desktop = {
+                enable = true;
+                x11.enable = false;
+              };
               dev.enable = true;
             };
           }

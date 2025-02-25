@@ -66,6 +66,7 @@ in
   config = lib.mkIf cfg.enable {
     wayland.windowManager.sway = with commonOptions; {
       enable = true;
+      package = with config.lib.nixGL; (wrap pkgs.sway);
 
       inherit extraConfig;
 
@@ -94,7 +95,7 @@ in
 
         output = {
           "*" = with config.home-manager.desktop.theme.wallpaper; {
-            # bg = "${path} ${scale}";
+            bg = "${path} ${scale}";
             # DPI
             scale = toString (config.home-manager.desktop.theme.fonts.dpi / 100.0);
             subpixel = config.home-manager.desktop.theme.fonts.fontconfig.subpixel.rgba;
@@ -108,7 +109,7 @@ in
           # Source home-manager session vars
           . "${config.home.sessionVariablesPackage}/etc/profile.d/hm-session-vars.sh"
           # Vulkan renderer
-          # export WLR_RENDERER=vulkan
+          export WLR_RENDERER=vulkan,gles2,pixman
           # Chrome/Chromium/Electron
           export NIXOS_OZONE_WL=1
           # SDL

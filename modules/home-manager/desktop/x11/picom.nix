@@ -10,27 +10,22 @@
     default = config.home-manager.desktop.x11.enable;
   };
 
-  config = lib.mkIf config.home-manager.desktop.x11.picom.enable (
-    let
-      picom-wrapped = with config.lib.nixGL; (wrap pkgs.picom);
-    in
-    {
-      services.picom = {
-        enable = true;
-        package = picom-wrapped;
-        backend = if config.home-manager.desktop.x11.nvidia.enable then "glx" else "egl";
-        fade = true;
-        fadeDelta = 2;
-        vSync = true;
-        settings = {
-          unredir-if-possible = true;
-          unredir-if-possible-exclude = [ "name *= 'Firefox'" ];
-          # https://github.com/google/xsecurelock/issues/97#issuecomment-1183086902
-          fade-exclude = [ "class_g = 'xsecurelock'" ];
-        };
+  config = lib.mkIf config.home-manager.desktop.x11.picom.enable {
+    services.picom = {
+      enable = true;
+      package = with config.lib.nixGL; (wrap pkgs.picom);
+      backend = if config.home-manager.desktop.x11.nvidia.enable then "glx" else "egl";
+      fade = true;
+      fadeDelta = 2;
+      vSync = true;
+      settings = {
+        unredir-if-possible = true;
+        unredir-if-possible-exclude = [ "name *= 'Firefox'" ];
+        # https://github.com/google/xsecurelock/issues/97#issuecomment-1183086902
+        fade-exclude = [ "class_g = 'xsecurelock'" ];
       };
-      # Avoid restarting picom indefinitely in Wayland
-      systemd.user.services.picom.Service.Restart = lib.mkForce "on-abnormal";
-    }
-  );
+    };
+    # Avoid restarting picom indefinitely in Wayland
+    systemd.user.services.picom.Service.Restart = lib.mkForce "on-abnormal";
+  };
 }

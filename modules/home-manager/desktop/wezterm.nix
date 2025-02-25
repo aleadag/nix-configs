@@ -103,15 +103,16 @@ in
             }
             config.color_scheme = "Catppuccin ${libEx.capitalizeString config.home-manager.desktop.theme.flavor}"
             config.enable_kitty_keyboard = true
-            config.font = wezterm.font_with_fallback {
-              "${fonts.symbols.name}",
-              "Noto Sans CJK HK",
-              "Noto Sans CJK JP",
-              "Noto Sans CJK KR",
-              "Noto Sans CJK SC",
-              "Noto Sans CJK TC",
-              "Noto Sans",
-            }
+            -- for some reason, it cannot find Hack Nerd Font!
+            -- config.font = wezterm.font_with_fallback {
+            --   "${fonts.symbols.name}",
+            --   "Noto Sans CJK HK",
+            --   "Noto Sans CJK JP",
+            --   "Noto Sans CJK KR",
+            --   "Noto Sans CJK SC",
+            --   "Noto Sans CJK TC",
+            --   "Noto Sans",
+            -- }
             config.font_size = ${toString cfg.fontSize}
             config.hide_tab_bar_if_only_one_tab = true
             config.scrollback_lines = scrollback_lines

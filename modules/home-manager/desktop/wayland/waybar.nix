@@ -338,7 +338,6 @@ in
           };
         };
       style =
-        with config.home-manager.desktop.theme.colors;
         with config.home-manager.desktop.theme.fonts;
         let
           concatFonts =
@@ -363,12 +362,12 @@ in
             };
           }
           window#waybar {
-            background: ${base};
-            color: ${text};
+            background: @base;
+            color: @text;
           }
           #submap, #mode {
-            background: ${yellow};
-            color: ${base};
+            background: @yellow;
+            color: @base;
             padding: 0 7px;
           }
           #window {
@@ -379,57 +378,57 @@ in
           }
           #workspaces button.active,
           #workspaces button.focused {
-            background: ${blue};
-            color: ${base};
+            background: @blue;
+            color: @base;
           }
           #workspaces button.urgent {
-            background: ${red};
-            color: ${base};
+            background: @red;
+            color: @base;
           }
           #temperature.critical {
-            color: ${red};
+            color: @red;
           }
           #tray > .needs-attention {
-            color: ${red};
+            color: @red;
           }
           #battery.warning {
-            color: ${yellow};
+            color: @yellow;
           }
           #battery.critical {
-            color: ${red};
+            color: @red;
           }
           #cpu.warning {
-            color: ${yellow};
+            color: @yellow;
           }
           #cpu.critical {
-            color: ${red};
+            color: @red;
           }
           #memory.warning {
-            color: ${yellow};
+            color: @yellow;
           }
           #memory.critical {
-            color: ${red};
+            color: @red;
           }
           #disk.warning {
-            color: ${yellow};
+            color: @yellow;
           }
           #disk.critical {
-            color: ${red};
+            color: @red;
           }
           #wireplumber.high {
-            color: ${yellow};
+            color: @yellow;
           }
           #wireplumber.muted {
-            color: ${red};
+            color: @red;
           }
           #idle_inhibitor.activated {
-            color: ${red};
+            color: @red;
           }
           #custom-dunst.disabled {
-            color: ${red};
+            color: @red;
           }
           #custom-separator {
-            color: ${surface0};
+            color: @surface0;
           }
         '';
     };
