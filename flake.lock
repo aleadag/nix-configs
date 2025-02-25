@@ -16,22 +16,6 @@
         "type": "gitlab"
       }
     },
-    "bing-wallpaper-mac": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1693941036,
-        "narHash": "sha256-YFGKe1dMtVpXvWFO9/Q9Vkobk1nkZGNUHgIKLIBkA14=",
-        "owner": "lpikora",
-        "repo": "bing-wallpaper-daily-mac-multimonitor",
-        "rev": "c7521dfa41774af5dca81ca7cdc529a80b06206f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "lpikora",
-        "repo": "bing-wallpaper-daily-mac-multimonitor",
-        "type": "github"
-      }
-    },
     "catppuccin": {
       "inputs": {
         "nixpkgs": [
@@ -237,7 +221,6 @@
     "root": {
       "inputs": {
         "arandr": "arandr",
-        "bing-wallpaper-mac": "bing-wallpaper-mac",
         "catppuccin": "catppuccin",
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",

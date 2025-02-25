@@ -17,6 +17,7 @@ in
     ./picom.nix
     ./rofi.nix
     ./screen-locker.nix
+    ./wallpaper.nix
   ];
 
   options.home-manager.desktop.x11 = {

@@ -10,7 +10,7 @@ let
 in
 {
   imports = [
-    ./fonts.nix
+    ./fonts
     ./gtk.nix
     ./qt.nix
     ./catppuccin.nix
@@ -34,10 +34,20 @@ in
     };
 
     wallpaper = {
-      cachePath = lib.mkOption {
+      path = lib.mkOption {
         type = lib.types.path;
-        description = "Wallpaper cache path";
-        default = "${config.home.homeDirectory}/Pictures/Bing/";
+        description = "Wallpaper path.";
+        default = "${pkgs.cosmic-wallpapers}/share/backgrounds/cosmic/A_stormy_stellar_nursery_esa_379309.jpg";
+      };
+      scale = lib.mkOption {
+        type = lib.types.enum [
+          "tile"
+          "center"
+          "fill"
+          "scale"
+        ];
+        default = "fill";
+        description = "Wallpaper scaling.";
       };
     };
   };

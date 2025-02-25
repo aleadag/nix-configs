@@ -7,7 +7,6 @@
 
 {
   imports = [
-    ./bing-wallpaper.nix
     ./trampoline-apps.nix
     ./yabai
     ./sketchybar
