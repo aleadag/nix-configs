@@ -252,8 +252,8 @@ in
               };
               backlight = {
                 format = " {percent}%";
-                on-scroll-up = "light -A 5%";
-                on-scroll-down = "light -U 5%";
+                on-scroll-up = "xbacklight -inc 5";
+                on-scroll-down = "xbacklight -dec 5";
               };
               battery = {
                 inherit (cfg) interval;
