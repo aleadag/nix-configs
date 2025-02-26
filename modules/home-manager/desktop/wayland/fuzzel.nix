@@ -21,19 +21,6 @@ in
           vertical-pad = 10;
           line-height = 28;
         };
-        colors =
-          with config.home-manager.desktop.theme.colors;
-          let
-            fixColor = color: "${lib.removePrefix "#" color}ff";
-          in
-          {
-            background = fixColor base;
-            border = fixColor base;
-            text = fixColor text;
-            selection = fixColor blue;
-            selection-text = fixColor base;
-            selection-match = fixColor red;
-          };
         key-bindings = {
           delete-line = "none";
           delete-prev-word = "Mod1+BackSpace Control+BackSpace Control+w";
