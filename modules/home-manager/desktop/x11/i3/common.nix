@@ -8,7 +8,7 @@
   browser ? config.home-manager.desktop.default.browser,
   dunstctl ? (lib.getExe' pkgs.dunst "dunstctl"),
   fileManager ? config.home-manager.desktop.default.fileManager,
-  light ? "light", # needs to be installed system-wide
+  light ? "xbacklight", # needs to be installed system-wide
   pamixer ? (lib.getExe pkgs.pamixer),
   playerctl ? (lib.getExe pkgs.playerctl),
   terminal ? config.home-manager.desktop.default.terminal,
@@ -255,8 +255,8 @@ in
         "XF86AudioMute" = "exec --no-startup-id ${pamixer} --toggle-mute";
         "XF86AudioMicMute" = "exec --no-startup-id ${pamixer} --toggle-mute --default-source";
 
-        "XF86MonBrightnessUp" = "exec --no-startup-id ${light} -A 5%";
-        "XF86MonBrightnessDown" = "exec --no-startup-id ${light} -U 5%";
+        "XF86MonBrightnessUp" = "exec --no-startup-id ${light} -inc 5";
+        "XF86MonBrightnessDown" = "exec --no-startup-id ${light} -dec 5";
 
         "XF86AudioPlay" = "exec --no-startup-id ${playerctl} play-pause";
         "XF86AudioStop" = "exec --no-startup-id ${playerctl} stop";

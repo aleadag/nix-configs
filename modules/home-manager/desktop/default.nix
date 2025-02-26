@@ -53,7 +53,7 @@ in
       browser = lib.mkOption {
         type = lib.types.str;
         description = "Default web browser to be used.";
-        default = lib.getExe config.programs.firefox.finalPackage;
+        default = lib.getExe config.programs.chromium.package;
       };
       editor = lib.mkOption {
         type = lib.types.str;
@@ -77,9 +77,7 @@ in
 
           Should allow starting programs as parameter.
         '';
-        # TODO: go back to wezterm once this bug is fixed
-        # https://github.com/wez/wezterm/issues/2445
-        default = lib.getExe config.programs.kitty.package;
+        default = "${lib.getExe config.programs.wezterm.package} start";
       };
     };
   };
