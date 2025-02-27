@@ -15,8 +15,6 @@ outputs.lib.recursiveMergeAttrs [
       src = flake.inputs.arandr;
     });
 
-    anime4k = prev.callPackage ../packages/anime4k { };
-
     change-res = prev.callPackage ../packages/change-res { };
 
     inherit (flake.inputs.home-manager.packages.${prev.system}) home-manager;
