@@ -19,9 +19,6 @@ in
     icons.enable = lib.mkEnableOption "icons" // {
       default = config.home-manager.desktop.enable || config.home-manager.darwin.enable;
     };
-    markdownPreview.enable = lib.mkEnableOption "markdown-preview.nvim" // {
-      default = config.home-manager.desktop.enable || config.home-manager.darwin.enable;
-    };
     lsp.enable = lib.mkEnableOption "LSP" // {
       default = config.home-manager.dev.enable;
     };
@@ -51,7 +48,7 @@ in
       defaultEditor = true;
 
       withRuby = false;
-      withNodeJs = cfg.markdownPreview.enable;
+      withNodeJs = false;
       withPython3 = false;
 
       viAlias = true;
@@ -98,7 +95,7 @@ in
           })
 
           -- unsets the 'last search pattern'
-          vim.keymap.set('n', '<C-g>', '<cmd>:noh<CR><CR>', { desc = "Clear highlight" })
+          vim.keymap.set('n', '<C-g>', '<cmd>:noh<CR>', { desc = "Clear highlight" })
 
           -- completion
           vim.keymap.set({'i', 'c'}, '<C-j>', function()
@@ -175,6 +172,35 @@ in
                   fcitx2zh()
               end,
           })
+
+          local function preview_markdown()
+            local file = vim.fn.expand("%")
+            local on_exit_cb = function(out)
+              print("Process gh-markdown-preview exited with code:", out.code)
+            end
+            local process = vim.system(
+              {"${lib.getExe pkgs.gh-markdown-preview}", file},
+              on_exit_cb
+            )
+
+            vim.api.nvim_create_autocmd({ "BufUnload", "BufDelete" }, {
+              buffer = vim.api.nvim_get_current_buf(),
+              callback = function()
+                process:kill("sigterm")
+                -- timeout (in ms), will call KILL upon timeout
+                process:wait(500)
+              end,
+            })
+          end
+
+          vim.api.nvim_create_autocmd({ "FileType" }, {
+            pattern = { "markdown" },
+            callback = function()
+              vim.keymap.set("n", "<Leader>P", preview_markdown, {
+                desc = "Markdown preview", buffer = true
+              })
+            end,
+          })
         '';
 
       # To install non-packaged plugins, use
@@ -212,6 +238,42 @@ in
                 vim.keymap.set("v", "g<C-x>", function()
                     dial_map.manipulate("decrement", "gvisual")
                 end, { desc = "Decrement" })
+              '';
+          }
+          {
+            plugin = fzf-lua;
+            type = "lua";
+            config = # lua
+              ''
+                local enable_icons = ${toLua cfg.icons.enable}
+                local fzf = require("fzf-lua")
+                fzf.setup {
+                  "telescope",
+                  defaults = {
+                    file_icons = enable_icons,
+                    git_icons = enable_icons,
+                  },
+                  winopts = {
+                    height = 0.4,
+                    width = 1.0,
+                    row = 1.0,
+                  },
+                  fzf_opts = {
+                    ["--layout"] = "reverse",
+                  },
+                }
+
+                vim.keymap.set("n", "<Leader><Leader>", fzf.files, { desc = "Find files" })
+                vim.keymap.set("n", "<Leader>/", fzf.live_grep, { desc = "Live grep" })
+                vim.keymap.set("n", "<Leader>*", fzf.grep_cword, { desc = "Grep word under cursor" })
+                vim.keymap.set("n", "<Leader>b", fzf.buffers, { desc = "Buffers" })
+                vim.keymap.set("n", "<Leader>c", fzf.commands, { desc = "Commands" })
+                vim.keymap.set("n", "<Leader>gc", fzf.git_commits, { desc = "Git commits" })
+                vim.keymap.set("n", "<Leader>gC", fzf.git_bcommits, { desc = "Git buffer commits" })
+                vim.keymap.set("n", "<Leader>gb", fzf.git_branches, { desc = "Git branches" })
+                vim.keymap.set("n", "<Leader>gs", fzf.git_status, { desc = "Git status" })
+                vim.keymap.set("n", "<Leader>gS", fzf.git_stash, { desc = "Git stash" })
+                vim.keymap.set("n", "z=", fzf.spell_suggest, { desc = "Spell suggest" })
               '';
           }
           {
@@ -344,9 +406,15 @@ in
                   },
                 }
 
+                local hi_words = require('mini.extra').gen_highlighter.words
                 local hipatterns = require('mini.hipatterns')
                 hipatterns.setup {
                   highlighters = {
+                    fixme = hi_words({ 'FIXME' }, 'MiniHipatternsFixme'),
+                    hack = hi_words({ 'HACK' }, 'MiniHipatternsHack'),
+                    todo = hi_words({ 'TODO' }, 'MiniHipatternsTodo'),
+                    note = hi_words({ 'TODO' }, 'MiniHipatternsNote'),
+                    xxx = hi_words({ 'XXX' }, 'MiniHipatternsFixme'),
                     -- Highlight hex color strings (`#rrggbb`) using that color
                     hex_color = hipatterns.gen_highlighter.hex_color(),
                   },
@@ -358,6 +426,28 @@ in
                 vim.keymap.set('n', '<Leader>wl', trailspace.trim_last_lines, { desc = "Trim last lines" })
               '';
           }
+          {
+            plugin = neotest;
+            type = "lua";
+            config = # lua
+              ''
+                local neotest = require("neotest")
+
+                neotest.setup {
+                  adapters = {
+                    require("neotest-go") {},
+                    require("neotest-python") {},
+                  },
+                }
+
+                vim.keymap.set("n", "<Leader>tt", neotest.run.run, { desc = "Test nearest" })
+                vim.keymap.set("n", "<Leader>ta", neotest.run.attach, { desc = "Attach nearest" })
+                vim.keymap.set("n", "<Leader>ts", neotest.run.stop, { desc = "Stop test" })
+                vim.keymap.set("n", "<Leader>tT", function() neotest.run.run(vim.fn.expand("%")) end, { desc = "Test file" })
+              '';
+          }
+          neotest-python
+          neotest-go
           {
             plugin = oil-nvim;
             type = "lua";
@@ -413,145 +503,10 @@ in
                 end , { desc = "Open URL" })
               '';
           }
-          {
-            plugin = vim-test;
-            type = "lua";
-            config = # lua
-              ''
-                vim.g["test#strategy"] = "neovim"
-                vim.g["test#neovim#start_normal"] = 1
-                vim.g["test#neovim#term_position"] = "vert botright"
-
-                vim.keymap.set('n', '<Leader>tt', ':TestNearest<CR>', { desc = "Test nearest" })
-                vim.keymap.set('n', '<Leader>tT', ':TestFile<CR>', { desc = "Test file" })
-                vim.keymap.set('n', '<Leader>ts', ':TestSuite<CR>', { desc = "Test suite" })
-                vim.keymap.set('n', '<Leader>tl', ':TestLast<CR>', { desc = "Test last" })
-                vim.keymap.set('n', '<Leader>tv', ':TestVisit<CR>', { desc = "Test visit" })
-              '';
-          }
           lexima-vim
           mkdir-nvim
           vim-advanced-sorters
           vim-nix
-        ]
-        # telescope
-        ++ [
-          {
-            plugin = telescope-nvim;
-            type = "lua";
-            config = # lua
-              ''
-                local actions = require("telescope.actions")
-                local builtin = require("telescope.builtin")
-                local themes = require("telescope.themes")
-                local telescope = require("telescope")
-                local undo_actions = require("telescope-undo.actions")
-                -- Exclude some patterns from search
-                local rg_common_args = {
-                  "--hidden", -- Search for hidden files
-
-                  "--glob=!**/.git/*",
-                  "--glob=!**/.hg/*",
-                  "--glob=!**/.svn/*",
-                  "--glob=!**/.bzr/*",
-
-                  "--glob=!**/.DS_Store/*",
-                  "--glob=!**/node_modules/*",
-                  "--glob=!**/.idea/*",
-                  "--glob=!**/.vscode/*",
-                }
-
-                telescope.setup {
-                  defaults = themes.get_ivy {
-                    preview = {
-                      -- set timeout low enough that it never feels too slow
-                      timeout = 50,
-                    },
-                    mappings = {
-                      i = {
-                        ["<C-j>"] = actions.move_selection_next,
-                        ["<C-k>"] = actions.move_selection_previous,
-                      },
-                    },
-                    -- configure to use ripgrep
-                    vimgrep_arguments = {
-                      "${lib.getExe pkgs.ripgrep}",
-                      "--follow",        -- Follow symbolic links
-                      "--no-heading",    -- Don't group matches by each file
-                      "--with-filename", -- Print the file path with the matched lines
-                      "--line-number",   -- Show line numbers
-                      "--column",        -- Show column numbers
-                      "--smart-case",    -- Smart case search
-                      unpack(rg_common_args)
-                    },
-                  },
-                  pickers = {
-                    find_files = {
-                      -- needed to exclude some files & dirs from general search
-                      -- when not included or specified in .gitignore
-                      find_command = {
-                        "${lib.getExe pkgs.ripgrep}",
-                        "--files",
-                        unpack(rg_common_args)
-                      },
-                    },
-                  },
-                  extensions = {
-                    undo = {
-                      mappings = {
-                        i = {
-                          ["<cr>"] = undo_actions.restore,
-                          ["<S-cr>"] = undo_actions.yank_deletions,
-                          ["<C-cr>"] = undo_actions.yank_additions,
-                          ["<C-y>"] = undo_actions.yank_deletions,
-                          ["<C-r>"] = undo_actions.restore,
-                        },
-                        n = {
-                          ["u"] = undo_actions.restore,
-                          ["y"] = undo_actions.yank_additions,
-                          ["Y"] = undo_actions.yank_deletions,
-                        },
-                      },
-                    },
-                  },
-                }
-
-                require("project_nvim").setup {}
-
-                telescope.load_extension('fzf')
-                telescope.load_extension('projects')
-                telescope.load_extension('ui-select')
-                telescope.load_extension('undo')
-
-                vim.keymap.set('n', '<Leader><Leader>', builtin.find_files, { desc = "Find files" })
-                vim.keymap.set('n', '<Leader>/', builtin.live_grep, { desc = "Live grep" })
-                vim.keymap.set({'n', 'v'}, '<Leader>*', builtin.grep_string, { desc = "Grep string" })
-                vim.keymap.set('n', '<Leader>b', builtin.buffers, { desc = "Buffers" })
-                vim.keymap.set('n', '<Leader>c', builtin.commands, { desc = "Commands" })
-                vim.keymap.set('n', '<Leader>gc', builtin.git_commits, { desc = "Git commits" })
-                vim.keymap.set('n', '<Leader>gC', builtin.git_bcommits, { desc = "Git buffer commits" })
-                vim.keymap.set('n', '<Leader>gb', builtin.git_branches, { desc = "Git branches" })
-                vim.keymap.set('n', '<Leader>gs', builtin.git_status, { desc = "Git status" })
-                vim.keymap.set('n', '<Leader>gS', builtin.git_stash, { desc = "Git stash" })
-                vim.keymap.set('n', '<Leader>u', telescope.extensions.undo.undo, { desc = "Undo history" })
-                vim.keymap.set('n', '<Leader>p', telescope.extensions.projects.projects, { desc = "Projects" })
-                vim.keymap.set('n', 'z=', builtin.spell_suggest, { desc = "Spell suggest" })
-              '';
-          }
-          project-nvim
-          telescope-fzf-native-nvim
-          telescope-ui-select-nvim
-          telescope-undo-nvim
-        ]
-        ++ lib.optionals cfg.markdownPreview.enable [
-          {
-            plugin = markdown-preview-nvim;
-            type = "lua";
-            config = # lua
-              ''
-                vim.keymap.set("n", "<Leader>P", "<Plug>MarkdownPreviewToggle", { desc = "Markdown Preview toggle" })
-              '';
-          }
         ]
         ++ lib.optionals cfg.lsp.enable [
           {
@@ -659,19 +614,19 @@ in
                   },
                   { "ruff" },
                 }
-                local shared_config = {
-                  on_attach = function(client, bufnr)
-                    -- semantic tokens conflicts with treesitter
-                    client.server_capabilities.semanticTokensProvider = nil
-                  end
-                }
+
+                -- for future use
+                -- lspconfig.util.default_config = {}
                 for _, server in pairs(servers_configs) do
                   local config = lspconfig[server[1]]
 
                   if vim.fn.executable(config.document_config.default_config.cmd[1]) ~= 0 then
-                    config.setup(vim.tbl_deep_extend("force", shared_config, server["opts"] or {}))
+                    config.setup(server["opts"] or {})
                   end
                 end
+
+                -- conflicts with mini-hipatterns
+                vim.api.nvim_set_hl(0, "@comment.todo", { link = "None" })
 
                 -- https://gist.github.com/RaafatTurki/64d89abf326e9fce6eb717f7c1f8a97e
                 function LspRename()
@@ -717,24 +672,24 @@ in
                   end)
                 end
 
-                local builtin = require("telescope.builtin")
+                local fzf = require("fzf-lua")
                 -- Use LspAttach autocommand to only map the following keys
                 -- after the language server attaches to the current buffer
-                vim.api.nvim_create_autocmd('LspAttach', {
-                  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+                vim.api.nvim_create_autocmd("LspAttach", {
+                  group = vim.api.nvim_create_augroup("UserLspConfig", {}),
                   callback = function(ev)
                     -- Buffer local mappings.
                     -- See `:help vim.lsp.*` for documentation on any of the below functions
-                    -- or telescope documentation
-                    vim.keymap.set('n', 'gD', builtin.lsp_references, { buffer = ev.buf, desc = "LSP references" })
-                    vim.keymap.set('n', 'gd', builtin.lsp_definitions, { buffer = ev.buf, desc = "LSP definitions" })
-                    vim.keymap.set('n', 'gi', builtin.lsp_implementations, { buffer = ev.buf, desc = "LSP implementations" })
-                    vim.keymap.set('n', '<Leader>ld', builtin.diagnostics, { buffer = ev.buf, desc = "LSP diagnostics" })
-                    vim.keymap.set('n', '<Leader>ls', builtin.lsp_document_symbols, { buffer = ev.buf, desc = "LSP document symbols" })
-                    vim.keymap.set('n', '<Leader>lt', builtin.lsp_type_definitions, { buffer = ev.buf, desc = "LSP type definitions" })
-                    vim.keymap.set('n', '<Leader>lr', LspRename, { buffer = ev.buf, desc = "LSP rename" })
-                    vim.keymap.set('n', '<Leader>lf', function() vim.lsp.buf.format { async = true } end, { buffer = ev.buf, desc = "LSP format" })
-                    vim.keymap.set({'n', 'v'}, '<Leader>la', vim.lsp.buf.code_action, { buffer = ev.buf, desc = "LSP code action" })
+                    -- or fzf-lua documentation
+                    vim.keymap.set("n", "gD", fzf.lsp_references, { desc = "LSP references" })
+                    vim.keymap.set("n", "gd", fzf.lsp_definitions, { desc = "LSP definitions" })
+                    vim.keymap.set("n", "gi", fzf.lsp_implementations, { desc = "LSP implementations" })
+                    vim.keymap.set("n", "<Leader>ld", fzf.diagnostics_document, { desc = "LSP document diagnostics" })
+                    vim.keymap.set("n", "<Leader>ls", fzf.lsp_document_symbols, { desc = "LSP document symbols" })
+                    vim.keymap.set("n", "<Leader>lt", fzf.lsp_typedefs, { desc = "LSP type definitions" })
+                    vim.keymap.set("n", "<Leader>lr", LspRename, { desc = "LSP rename" })
+                    vim.keymap.set("n", "<Leader>lf", function() vim.lsp.buf.format { async = true } end, { desc = "LSP format" })
+                    vim.keymap.set("n", "<Leader>la", fzf.lsp_code_actions, { desc = "LSP code action" })
                   end,
                 })
               '';
