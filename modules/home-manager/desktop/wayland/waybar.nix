@@ -106,7 +106,7 @@ in
                 format = "{icon}";
                 format-icons = {
                   deactivated = "";
-                  activated = "";
+                  activated = "󰊷";
                 };
                 tooltip = false;
               };
@@ -145,7 +145,7 @@ in
             // {
               memory = {
                 inherit (cfg) interval;
-                format = " {avail:0.0f}G";
+                format = " {avail:0.0f}G";
                 format-alt = " {swapAvail:0.0f}G";
                 states = {
                   warning = 75;
