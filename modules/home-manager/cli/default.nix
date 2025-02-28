@@ -127,6 +127,11 @@ in
       zoxide.enable = true;
     };
 
+    home.sessionVariables = {
+      # https://github.com/sharkdp/bat/issues/2578
+      LESSUTFCHARDEF = "E000-F8FF:p,F0000-FFFFD:p,100000-10FFFD:p";
+    };
+
     home.shellAliases = {
       gs = lib.mkIf cfg.git.enable "${lib.getExe config.programs.git.package} status";
       cat = lib.getExe pkgs.bat;
