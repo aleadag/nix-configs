@@ -258,16 +258,14 @@ in
               battery = {
                 inherit (cfg) interval;
                 format = "{icon} {capacity}%";
-                format-icons = {
-                  default = [
-                    ""
-                    ""
-                    ""
-                    ""
-                    ""
-                  ];
-                  plugged = "";
-                };
+                format-icons = [
+                  ""
+                  ""
+                  ""
+                  ""
+                  ""
+                ];
+                format-charging = " {capacity}%";
                 states = {
                   warning = 20;
                   critical = 10;
