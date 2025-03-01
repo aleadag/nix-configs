@@ -263,6 +263,8 @@ in
         "XF86AudioNext" = "exec --no-startup-id ${playerctl} next";
         "XF86AudioPrev" = "exec --no-startup-id ${playerctl} previous";
 
+        "XF86Tools" = "input type:touchpad events toggle enabled disabled";
+
         "Print" = "exec --no-startup-id ${fullScreenShot}";
         "Shift+Print" = "exec --no-startup-id ${areaScreenShot}";
 
