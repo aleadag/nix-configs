@@ -122,6 +122,7 @@ in
         pwvucontrol
         playerctl
         qalculate-gtk
+        wechat-uos
       ];
     };
 
