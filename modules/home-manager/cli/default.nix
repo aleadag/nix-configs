@@ -1,9 +1,7 @@
 {
   config,
-  flake,
   pkgs,
   lib,
-  libEx,
   ...
 }:
 
@@ -23,6 +21,7 @@ let
 in
 {
   imports = [
+    ./btop.nix
     ./fish.nix
     ./git.nix
     ./htop.nix
