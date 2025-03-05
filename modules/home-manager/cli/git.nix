@@ -1,6 +1,6 @@
 {
   config,
-  flake,
+  pkgs,
   lib,
   ...
 }:
@@ -13,10 +13,10 @@ in
     enable = lib.mkEnableOption "Git config" // {
       default = config.home-manager.cli.enable;
     };
-    enableGh = lib.mkEnableOption "GitHub CLI config" // {
+    gh.enable = lib.mkEnableOption "GitHub CLI config" // {
       default = true;
     };
-    enableGitSync = lib.mkEnableOption "git-sync of notes";
+    git-sync.enable = lib.mkEnableOption "git-sync of notes";
   };
 
   config = lib.mkIf cfg.enable {
@@ -70,13 +70,18 @@ in
     programs.git-cliff.enable = true;
 
     programs.gh = {
-      enable = cfg.enableGh;
+      inherit (cfg.gh) enable;
+      extensions = with pkgs; [
+        gh-dash
+        gh-markdown-preview
+      ];
       settings = {
-        # Workaround for https://github.com/nix-community/home-manager/issues/4744
-        version = 1;
         git_protocol = "ssh";
+        editor = "nvim";
         prompt = "enabled";
-        pager = "less -RF";
+        aliases = {
+          co = "pr checkout";
+        };
       };
     };
 
@@ -132,7 +137,7 @@ in
     };
 
     services.git-sync = {
-      enable = cfg.enableGitSync;
+      inherit (cfg.git-sync) enable;
       repositories.notes = {
         path = "${config.home.homeDirectory}/notes";
         uri = "git+ssh://git@github.com:aleadag/notes.git";

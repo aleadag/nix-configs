@@ -128,7 +128,7 @@
         extraModules = [
           {
             home-manager = {
-              cli.git.enableGitSync = true;
+              cli.git.git-sync.enable = true;
               dev.enable = true;
             };
           }
@@ -143,7 +143,7 @@
         extraModules = [
           {
             home-manager = {
-              cli.git.enableGitSync = true;
+              cli.git.git-sync.enable = true;
               desktop = {
                 enable = true;
                 x11.enable = false;
