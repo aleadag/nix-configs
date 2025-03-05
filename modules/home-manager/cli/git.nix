@@ -49,21 +49,75 @@ in
         "Thumbs.db"
       ];
 
-      delta.enable = true;
-      delta.options = {
-        navigate = true; # use n and N to move between diff sections
+      delta = {
+        enable = true;
+        options = {
+          navigate = true; # use n and N to move between diff sections
+        };
       };
-      lfs.enable = true;
-      lfs.skipSmudge = true;
+
+      lfs = {
+        enable = true;
+        skipSmudge = true;
+      };
+
+      includes = [ { path = "~/.config/git/local"; } ];
+
       extraConfig = {
         init.defaultBranch = "main";
-        pull.ff = "only";
-        merge.conflictstyle = "diff3";
+        branch.sort = "-committerdate";
+        color.ui = true;
+        column.ui = "auto";
+        commit.verbose = true;
+        core = {
+          editor = "nvim";
+          untrackedCache = true;
+          whitespace = "trailing-space,space-before-tab,indent-with-non-tab";
+        };
+        checkout = {
+          defaultRemote = "origin";
+        };
+        diff = {
+          algorithm = "histogram";
+          colorMoved = "plain";
+          mnemonicPrefix = true;
+          renames = true;
+        };
+        fetch = {
+          prune = true;
+          pruneTags = true;
+        };
+        github = {
+          user = "aleadag";
+        };
+        merge = {
+          conflictstyle = "zdiff3";
+          tool = "nvim -d";
+        };
+        pull.rebase = true;
+        push = {
+          autoSetupRemote = true;
+          followTags = true;
+          default = "simple";
+        };
+        rebase = {
+          autoSquash = true;
+          autoStash = true;
+          updateRefs = true;
+        };
+        rerere = {
+          enabled = true;
+          autoupdate = true;
+        };
+        tag.sort = "-version:refname";
+        safe.bareRepository = "explicit";
 
         # for git-sync
         # https://github.com/simonthum/git-sync?tab=readme-ov-file#options
-        branch.main.sync = true;
-        branch.main.syncNewFiles = true;
+        branch.main = {
+          sync = true;
+          syncNewFiles = true;
+        };
       };
     };
 
@@ -87,66 +141,35 @@ in
 
     programs.gitui = {
       enable = true;
-      # Note:
-      # If the default key layout is lower case,
-      # and you want to use `Shift + q` to trigger the exit event,
-      # the setting should like this `exit: Some(( code: Char('Q'), modifiers: "SHIFT")),`
-      # The Char should be upper case, and the modifier should be set to "SHIFT".
-      #
-      # Note:
-      # find `KeysList` type in src/keys/key_list.rs for all possible keys.
-      # every key not overwritten via the config file will use the default specified there
-      keyConfig = # rust
-        ''
-          (
-              focus_right: Some(( code: Char('l'), modifiers: "")),
-              focus_left: Some(( code: Char('h'), modifiers: "")),
-              focus_above: Some(( code: Char('k'), modifiers: "")),
-              focus_below: Some(( code: Char('j'), modifiers: "")),
-
-              open_help: Some(( code: F(1), modifiers: "")),
-
-              move_left: Some(( code: Char('h'), modifiers: "")),
-              move_right: Some(( code: Char('l'), modifiers: "")),
-              move_up: Some(( code: Char('k'), modifiers: "")),
-              move_down: Some(( code: Char('j'), modifiers: "")),
-              popup_up: Some(( code: Char('p'), modifiers: "CONTROL")),
-              popup_down: Some(( code: Char('n'), modifiers: "CONTROL")),
-              page_up: Some(( code: Char('b'), modifiers: "CONTROL")),
-              page_down: Some(( code: Char('f'), modifiers: "CONTROL")),
-              home: Some(( code: Char('g'), modifiers: "")),
-              end: Some(( code: Char('G'), modifiers: "SHIFT")),
-              shift_up: Some(( code: Char('K'), modifiers: "SHIFT")),
-              shift_down: Some(( code: Char('J'), modifiers: "SHIFT")),
-
-              edit_file: Some(( code: Char('I'), modifiers: "SHIFT")),
-
-              status_reset_item: Some(( code: Char('U'), modifiers: "SHIFT")),
-
-              diff_reset_lines: Some(( code: Char('u'), modifiers: "")),
-              diff_stage_lines: Some(( code: Char('s'), modifiers: "")),
-
-              stashing_save: Some(( code: Char('w'), modifiers: "")),
-              stashing_toggle_index: Some(( code: Char('m'), modifiers: "")),
-
-              stash_open: Some(( code: Char('l'), modifiers: "")),
-
-              abort_merge: Some(( code: Char('M'), modifiers: "SHIFT")),
-            )
-        '';
+      keyConfig = builtins.readFile (
+        pkgs.fetchurl {
+          url = "https://raw.githubusercontent.com/extrawurst/gitui/8876c1d0f616d55a0c0957683781fd32af815ae3/vim_style_key_config.ron";
+          hash = "sha256-uYL9CSCOlTdW3E87I7GsgvDEwOPHoz1LIxo8DARDX1Y=";
+        }
+      );
     };
 
     services.git-sync = {
       inherit (cfg.git-sync) enable;
-      repositories.notes = {
-        path = "${config.home.homeDirectory}/notes";
-        uri = "git+ssh://git@github.com:aleadag/notes.git";
-        interval = 1 * 60 * 60;
-      };
-      repositories.leetcode = {
-        path = "${config.home.homeDirectory}/.local/share/nvim/leetcode";
-        uri = "git+ssh://git@github.com:aleadag/leetcode.git";
-        interval = 1 * 60 * 60;
+
+      repositories = {
+        leetcode = {
+          path = "${config.home.homeDirectory}/.local/share/nvim/leetcode";
+          uri = "git+ssh://git@github.com:aleadag/leetcode.git";
+          interval = 1 * 60 * 60;
+        };
+
+        notes = {
+          path = "${config.home.homeDirectory}/notes";
+          uri = "git+ssh://git@github.com:aleadag/notes.git";
+          interval = 1 * 60 * 60;
+        };
+
+        pass = {
+          path = "${config.home.homeDirectory}/.pass";
+          uri = "git+ssh://git@github.com:aleadag/pass.git";
+          interval = 1 * 60 * 60;
+        };
       };
     };
   };
