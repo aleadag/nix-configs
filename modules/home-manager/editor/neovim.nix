@@ -613,6 +613,7 @@ in
                     },
                   },
                   { "ruff" },
+                  { "ts_ls" },
                 }
 
                 -- for future use
