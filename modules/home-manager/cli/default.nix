@@ -123,6 +123,7 @@ in
         # fileWidgetOptions = [ "--preview 'head {}'" ];
         # historyWidgetOptions = [ "--sort" ];
       };
+      nix-your-shell.enable = true;
       zoxide.enable = true;
     };
 
