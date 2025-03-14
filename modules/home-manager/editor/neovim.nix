@@ -613,6 +613,7 @@ in
                     },
                   },
                   { "ruff" },
+                  { "rust_analyzer" },
                   { "ts_ls" },
                 }
 
