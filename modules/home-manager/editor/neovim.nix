@@ -624,6 +624,7 @@ in
                   },
                   { "ruff" },
                   { "rust_analyzer" },
+                  { "svelte" },
                   { "ts_ls" },
                 }
 
