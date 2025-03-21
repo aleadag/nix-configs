@@ -77,7 +77,7 @@ in
 
           Should allow starting programs as parameter.
         '';
-        default = "${lib.getExe config.programs.wezterm.package} start";
+        default = lib.getExe config.programs.kitty.package;
       };
     };
   };

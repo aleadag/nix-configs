@@ -9,13 +9,14 @@
   imports = [
     ../shared
     ./cli
-    ./gui
     ./crostini.nix
     ./darwin
     ./desktop
     ./dev
     ./editor
+    ./gui
     ./meta
+    ./nix
   ];
 
   # Inherit config from NixOS or homeConfigurations

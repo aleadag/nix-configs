@@ -20,14 +20,15 @@
   config = lib.mkIf config.home-manager.darwin.enable {
     home-manager = {
       desktop = {
-        wezterm = {
+        kitty = {
           enable = true;
           fontSize = 14.0;
           opacity = 1.0;
         };
-        kitty = {
-          enable = false;
+        wezterm = {
+          enable = true;
           fontSize = 14.0;
+          opacity = 1.0;
         };
       };
     };

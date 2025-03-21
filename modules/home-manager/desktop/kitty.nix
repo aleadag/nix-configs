@@ -2,14 +2,23 @@
   config,
   pkgs,
   lib,
-  libEx,
   ...
 }:
 
+let
+  inherit (config.home-manager.desktop.theme) fonts;
+  cfg = config.home-manager.desktop.kitty;
+in
 {
   options.home-manager.desktop.kitty = {
     enable = lib.mkEnableOption "Kitty config" // {
       default = config.home-manager.desktop.enable;
+    };
+    scrollback-nvim.enable = lib.mkEnableOption "kitty-scrollback.nvim" // {
+      default = config.home-manager.editor.neovim.enable;
+    };
+    useSuperKeybindings = lib.mkEnableOption "keybindings with Super/Command" // {
+      default = pkgs.stdenv.isDarwin;
     };
     fontSize = lib.mkOption {
       type = lib.types.float;
@@ -19,26 +28,58 @@
     opacity = lib.mkOption {
       type = lib.types.float;
       description = "Background opacity.";
-      default = 0.9;
+      default = 0.95;
     };
   };
 
-  config = lib.mkIf config.home-manager.desktop.kitty.enable {
+  config = lib.mkIf cfg.enable {
     programs.kitty = {
       enable = true;
-      keybindings = {
-        "ctrl+shift+0" = "change_font_size all 0";
+      actionAliases = {
+        "kitty_scrollback_nvim" =
+          lib.optionalString cfg.scrollback-nvim.enable "kitten ${pkgs.kitty-scrollback-nvim}/python/kitty_scrollback_nvim.py";
       };
+      keybindings =
+        {
+          "kitty_mod+t" = "new_tab_with_cwd";
+          "kitty_mod+enter" = "new_window_with_cwd";
+          "kitty_mod+backspace" = "change_font_size all 0";
+          "kitty_mod+1" = "goto_tab 1";
+          "kitty_mod+2" = "goto_tab 2";
+          "kitty_mod+3" = "goto_tab 3";
+          "kitty_mod+4" = "goto_tab 4";
+          "kitty_mod+5" = "goto_tab 5";
+          "kitty_mod+6" = "goto_tab 6";
+          "kitty_mod+7" = "goto_tab 7";
+          "kitty_mod+8" = "goto_tab 8";
+          "kitty_mod+9" = "goto_tab 9";
+          "kitty_mod+0" = "goto_tab 10";
+        }
+        // lib.optionalAttrs cfg.scrollback-nvim.enable {
+          "kitty_mod+h" = "kitty_scrollback_nvim";
+          "kitty_mode+g" = "kitty_scrollback_nvim --config ksb_builtin_last_cmd_output";
+        }
+        // lib.optionalAttrs cfg.useSuperKeybindings {
+          "super+t" = "new_tab_with_cwd";
+          "super+enter" = "new_window_with_cwd";
+          "super+1" = "goto_tab 1";
+          "super+2" = "goto_tab 2";
+          "super+3" = "goto_tab 3";
+          "super+4" = "goto_tab 4";
+          "super+5" = "goto_tab 5";
+          "super+6" = "goto_tab 6";
+          "super+7" = "goto_tab 7";
+          "super+8" = "goto_tab 8";
+          "super+9" = "goto_tab 9";
+          "super+0" = "goto_tab 10";
+        };
       font = {
-        inherit (config.home-manager.desktop.theme.fonts.symbols) package name;
+        inherit (fonts.symbols) package name;
+        size = cfg.fontSize;
       };
       settings = {
-        # Font
-        font_size = "${toString config.home-manager.desktop.kitty.fontSize}";
-
         # Scrollback
         scrollback_lines = 10000;
-        scrollback_pager = "${lib.getExe' pkgs.page "page"} -f";
 
         # Reduce lag
         sync_to_monitor = false;
@@ -51,24 +92,31 @@
         window_alert_on_bell = true;
         bell_on_tab = true;
 
+        # Tabs
+        tab_bar_edge = "top";
+        tab_bar_style = "powerline";
+        tab_powerline_style = "slanted";
+        tab_title_template = "{fmt.fg.red}{bell_symbol}{activity_symbol}{fmt.fg.tab}{tab.last_focused_progress_percent}{index}:{title[:30]}";
+
         # Misc
         inherit (config.home-manager.desktop.default) editor;
         strip_trailing_spaces = "smart";
         clipboard_control = "write-clipboard write-primary read-clipboard read-primary";
-        background_opacity = toString config.home-manager.desktop.kitty.opacity;
-
-        # Fix for Wayland slow scrolling
-        touch_scroll_multiplier = "5.0";
-
-        # For yazi
-        allow_remote_control = lib.mkIf config.programs.yazi.enable true;
+        background_opacity = toString cfg.opacity;
+        window_padding_width = 5;
+        allow_remote_control = "socket-only";
         listen_on = "unix:/tmp/kitty";
 
-        # For macOS
-        macos_option_as_alt = "yes";
-
-        shell = lib.mkIf config.programs.fish.enable "${config.programs.fish.package}/bin/fish -l";
+        # Fix for Wayland slow scrolling
+        touch_scroll_multiplier = lib.optionalString pkgs.stdenv.isLinux "5.0";
       };
+
+      darwinLaunchOptions = [
+        "--single-instance"
+        (lib.getExe config.programs.zsh.package)
+      ];
+
+      shellIntegration.mode = "enabled";
     };
 
     programs.zsh.initExtra =
