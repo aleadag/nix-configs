@@ -129,5 +129,11 @@ in
             alias ssh-compat="TERM=xterm-256color \ssh"
           fi
         '';
+
+    programs.fish.shellAbbrs = lib.mkIf config.programs.fish.enable rec {
+      imgcat = "kitty +kitten icat";
+      kssh = "kitty +kitten ssh";
+      kssh-compat = "TERM=xterm-256color ${kssh}";
+    };
   };
 }
