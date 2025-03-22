@@ -26,7 +26,6 @@ in
 {
   imports = [
     ./btop.nix
-    ./fish.nix
     ./git.nix
     ./htop.nix
     ./irssi.nix
@@ -34,7 +33,6 @@ in
     ./starship.nix
     ./tmux.nix
     ./yazi.nix
-    ./zellij.nix
     ./zsh.nix
   ];
 
@@ -89,17 +87,6 @@ in
     ];
 
     programs = {
-      bash = {
-        enable = true;
-        initExtra = # bash
-          ''
-            if [[ $(${pkgs.procps}/bin/ps --no-header --pid=$PPID --format=comm) != "fish" && -z ''${BASH_EXECUTION_STRING} ]]
-            then
-              shopt -q login_shell && LOGIN_OPTION='--login' || LOGIN_OPTION=""
-              exec ${pkgs.fish}/bin/fish $LOGIN_OPTION
-            fi
-          '';
-      };
       bat = {
         enable = true;
         # This should pick up the correct colors for the generated theme. Otherwise
