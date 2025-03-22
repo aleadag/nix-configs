@@ -109,11 +109,12 @@ in
 
         # Fix for Wayland slow scrolling
         touch_scroll_multiplier = lib.optionalString pkgs.stdenv.isLinux "5.0";
+
+        shell = lib.mkIf config.programs.zsh.enable "${lib.getExe config.programs.zsh.package}";
       };
 
       darwinLaunchOptions = [
         "--single-instance"
-        (lib.getExe config.programs.zsh.package)
       ];
 
       shellIntegration.mode = "enabled";

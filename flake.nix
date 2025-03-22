@@ -49,47 +49,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # ZSH plugins
-    zim-completion = {
-      url = "github:zimfw/completion";
-      flake = false;
-    };
-    zim-environment = {
-      url = "github:zimfw/environment";
-      flake = false;
-    };
-    zim-input = {
-      url = "github:zimfw/input";
-      flake = false;
-    };
-    zim-git = {
-      url = "github:zimfw/git";
-      flake = false;
-    };
-    zim-ssh = {
-      url = "github:zimfw/ssh";
-      flake = false;
-    };
-    zim-utility = {
-      url = "github:zimfw/utility";
-      flake = false;
-    };
-    pure = {
-      url = "github:sindresorhus/pure";
-      flake = false;
-    };
-    zsh-autopair = {
-      url = "github:hlissner/zsh-autopair";
-      flake = false;
-    };
-    zsh-completions = {
-      url = "github:zsh-users/zsh-completions";
-      flake = false;
-    };
-    zsh-syntax-highlighting = {
-      url = "github:zsh-users/zsh-syntax-highlighting";
-      flake = false;
-    };
     zsh-proxy = {
       url = "github:SukkaW/zsh-proxy";
       flake = false;
