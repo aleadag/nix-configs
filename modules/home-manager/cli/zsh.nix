@@ -145,7 +145,6 @@ in
 
         prezto = {
           enable = true;
-          prompt.theme = "pure";
           editor.keymap = "vi";
           pmodules = [
             "environment"
@@ -156,7 +155,6 @@ in
             "spectrum"
             "utility"
             "completion"
-            # "prompt"
             "autosuggestions"
           ];
         };
