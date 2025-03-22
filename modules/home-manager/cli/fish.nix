@@ -67,45 +67,6 @@
               # https://developer.apple.com/forums/thread/735798
               ulimit -Sn 524288
             '';
-
-      functions = {
-        nixify =
-          # fish
-          ''
-            if [ ! -e ./.envrc ]
-               echo "use nix" > .envrc
-               direnv allow
-            end
-
-            set -l defaultNixTest "\
-            { pkgs ? import <nixpkgs> {} }:
-
-            pkgs.mkShell {
-              packages = with pkgs; [
-              ];
-            }"
-            if not test -e default.nix
-               echo $defaultNixTest > default.nix
-            end
-          '';
-        flakify =
-          # fish
-          ''
-            if [ ! -e flake.nix ]
-               nix flake new -t github:nix-community/nix-direnv .
-            else if [ ! -e .envrc ]
-               echo "use flake" > .envrc
-            end
-            direnv allow
-            $EDITOR flake.nix
-          '';
-        dvt =
-          # fish
-          ''
-            nix flake init -t "github:the-nix-way/dev-templates#$argv[1]"
-            direnv allow
-          '';
-      };
     };
 
     xdg.configFile."fish/completions/just.fish".text = ''

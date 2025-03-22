@@ -203,6 +203,11 @@ in
             file = "zsh-proxy.plugin.zsh";
             src = flake.inputs.zsh-proxy;
           }
+          {
+            name = "forgit";
+            file = "share/zsh/zsh-forgit/forgit.plugin.zsh";
+            src = zsh-forgit;
+          }
         ];
 
         sessionVariables = {

@@ -7,6 +7,10 @@
 
 let
   cfg = config.home-manager.cli;
+  dvt = pkgs.writeShellScriptBin "dvt" ''
+    nix flake init -t "github:the-nix-way/dev-templates#$1"
+    direnv allow
+  '';
   get-ip = pkgs.writeShellScriptBin "get-ip" ''
     ${lib.getExe pkgs.curl} -Ss "https://ifconfig.me"
   '';
@@ -42,6 +46,7 @@ in
 
   config = lib.mkIf cfg.enable {
     home.packages = with pkgs; [
+      dvt
       get-ip
       get-ip'
       remove-symlink
