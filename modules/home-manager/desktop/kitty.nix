@@ -117,6 +117,7 @@ in
 
       darwinLaunchOptions = [
         "--single-instance"
+        (lib.getExe config.programs.zsh.package)
       ];
 
       shellIntegration.mode = "enabled";
