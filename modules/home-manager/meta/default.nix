@@ -10,8 +10,9 @@ let
 in
 {
   imports = [
-    ./home-manager-auto-expire.nix
     ./diff.nix
+    ./home-manager-auto-expire.nix
+    ./mutable-config.nix
   ];
 
   options.home-manager.meta = {
