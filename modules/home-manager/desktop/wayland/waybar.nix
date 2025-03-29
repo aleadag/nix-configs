@@ -129,7 +129,7 @@ in
                   ];
                 };
             }
-            // (libEx.mergeAttrsList (
+            // (lib.mergeAttrsList (
               map (m: {
                 "${shortPathName m}" = {
                   inherit (cfg) interval;
