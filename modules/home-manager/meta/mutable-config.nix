@@ -1,41 +1,39 @@
-{ config
-, pkgs
-, lib
-, ...
+{
+  config,
+  pkgs,
+  lib,
+  ...
 }:
 
 let
   cfg = config.mutableConfig;
 
   # Helper to generate activation script for a single file
-  makeActivationScript = filePath: settings: let
-    jsonFormat = pkgs.formats.json {};
-  in ''
-    tmp="$(mktemp)"
-    touch "${filePath}"
-    if [[ -v DRY_RUN ]]; then
-      echo tmp="\$(mktemp)"
-      echo ${pkgs.jq}/bin/jq -s "'reduce .[] as \$x ({}; . * \$x)'" "${filePath}" "${
-        jsonFormat.generate "user-settings" settings
-      }" ">" "$tmp"
-    else
-      ${pkgs.jq}/bin/jq -s 'reduce .[] as $x ({}; . * $x)' "${filePath}" "${
-        jsonFormat.generate "user-settings" settings
-      }" > "$tmp"
-    fi
-    $DRY_RUN_CMD mv "$tmp" "${filePath}"
-  '';
+  makeActivationScript =
+    filePath: settings:
+    let
+      jsonFormat = pkgs.formats.json { };
+    in
+    ''
+      tmp="$(mktemp)"
+      touch "${filePath}"
+      if [[ -v DRY_RUN ]]; then
+        echo tmp="\$(mktemp)"
+        echo ${pkgs.jq}/bin/jq -s "'reduce .[] as \$x ({}; . * \$x)'" "${filePath}" "${jsonFormat.generate "user-settings" settings}" ">" "$tmp"
+      else
+        ${pkgs.jq}/bin/jq -s 'reduce .[] as $x ({}; . * $x)' "${filePath}" "${jsonFormat.generate "user-settings" settings}" > "$tmp"
+      fi
+      $DRY_RUN_CMD mv "$tmp" "${filePath}"
+    '';
 
   # Convert the attribute set of file configs into activation scripts
-  allActivationScripts = lib.concatStrings (
-    lib.mapAttrsToList makeActivationScript cfg.files
-  );
+  allActivationScripts = lib.concatStrings (lib.mapAttrsToList makeActivationScript cfg.files);
 in
 {
   options.mutableConfig = {
     files = lib.mkOption {
       type = lib.types.attrsOf lib.types.attrs;
-      default = {};
+      default = { };
       description = "Attribute set mapping file paths to their settings";
     };
   };

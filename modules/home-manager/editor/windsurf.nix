@@ -46,7 +46,9 @@
       };
 
       mutableConfig.files = {
-        "${if enableXdgConfig then config.xdg.configHome else "Library/Application Support"}/${configDir}/User/settings.json" =
+        "${
+          if enableXdgConfig then config.xdg.configHome else "Library/Application Support"
+        }/${configDir}/User/settings.json" =
           config.programs.vscode.profiles.default.userSettings;
       };
     }
