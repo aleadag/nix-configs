@@ -36,6 +36,10 @@
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
     flake-utils.url = "github:numtide/flake-utils";
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # custom packages
     arandr = {
@@ -65,6 +69,7 @@
       self,
       nixpkgs,
       flake-utils,
+      treefmt-nix,
       ...
     }@inputs:
     let
@@ -79,6 +84,30 @@
         homeModules.default = import ./modules/home-manager;
         nixosModules.default = import ./modules/nixos;
       }
+
+      (flake-utils.lib.eachDefaultSystem (
+        system:
+        let
+          inherit (import ./patches { inherit self system; }) pkgs;
+          treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
+        in
+        {
+          devShells.default = pkgs.mkShell {
+            packages = with pkgs; [
+              fd
+              neovim-standalone
+              nil
+              nixfmt-rfc-style
+              ripgrep
+              statix
+            ];
+          };
+          checks.formatting = treefmtEval.config.build.check self;
+          formatter = treefmtEval.config.build.wrapper;
+          legacyPackages = pkgs;
+        }
+      ))
+
       (mkHomeConfig {
         hostname = "t0";
         username = "alexander";
@@ -219,27 +248,6 @@
         "validate-flakes"
       ])
 
-      (flake-utils.lib.eachDefaultSystem (
-        system:
-        let
-          inherit (import ./patches { inherit self system; }) pkgs;
-        in
-        {
-          devShells.default = pkgs.mkShell {
-            packages = with pkgs; [
-              fd
-              neovim-standalone
-              nil
-              nixfmt-rfc-style
-              ripgrep
-              statix
-            ];
-          };
-          checks = import ./checks.nix { inherit pkgs; };
-          formatter = pkgs.nixfmt-rfc-style;
-          legacyPackages = pkgs;
-        }
-      ))
     ]; # END recursiveMergeAttrs
   nixConfig = {
     extra-substituters = [
