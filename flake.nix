@@ -160,8 +160,9 @@
                   gtk.enable = false;
                   qt.enable = false;
                 };
-                wezterm.enable = true;
+                wezterm.enable = false;
               };
+              editor.enable = false;
               gui.enable = false;
             };
           }
