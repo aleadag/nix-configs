@@ -162,6 +162,7 @@
                 };
                 wezterm.enable = false;
               };
+              dev.enable = true;
               editor.enable = false;
               gui.enable = false;
             };
