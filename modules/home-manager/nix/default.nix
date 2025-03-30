@@ -38,7 +38,7 @@ in
         (import ../../shared/config/substituters.nix)
       ];
       extraOptions = ''
-        include ${config.home.homeDirectory}/.config/nix/nix.local.conf
+        !include nix.local.conf
       '';
     };
 
