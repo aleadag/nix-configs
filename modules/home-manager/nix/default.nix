@@ -37,6 +37,9 @@ in
         (import ../../shared/config/nix.nix)
         (import ../../shared/config/substituters.nix)
       ];
+      extraOptions = ''
+        include ${config.home.homeDirectory}/.config/nix/nix.local.conf
+      '';
     };
 
     # Config for ad-hoc nix commands invocation
