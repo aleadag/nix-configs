@@ -4,7 +4,7 @@ let
 in
 {
   imports = [
-    flake.inputs.catppuccin.homeManagerModules.catppuccin
+    flake.inputs.catppuccin.homeModules.catppuccin
   ];
 
   catppuccin.flavor = cfg.flavor;
