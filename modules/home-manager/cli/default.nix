@@ -61,12 +61,14 @@ in
       each
       file
       findutils
+      ffmpeg
       gawk
       gcal
       gnugrep
       gnumake
       gnused
       hyperfine
+      imagemagick
       ix
       jq
       less
