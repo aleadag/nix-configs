@@ -5,6 +5,7 @@
   areaScreenShot,
   fullScreenShot,
   menu,
+  msg,
   browser ? config.home-manager.desktop.default.browser,
   dunstctl ? (lib.getExe' pkgs.dunst "dunstctl"),
   fileManager ? config.home-manager.desktop.default.fileManager,
@@ -58,7 +59,7 @@
       icons.name
     ];
     style = "Regular";
-    size = 8.0;
+    size = 10.0;
   },
   extraBindings ? { },
   extraWindowOptions ? { },
@@ -167,7 +168,9 @@ let
     ));
 in
 {
-  helpers = { inherit mapDirection mapDirectionDefault mapWorkspacesStr; };
+  helpers = {
+    inherit mapDirection mapDirectionDefault mapWorkspacesStr;
+  };
 
   config = {
     inherit
@@ -301,17 +304,27 @@ in
             rightCmd = "resize grow width 10px or 10ppt";
           })
           // exitMode;
-        ${powerManagementMode} = {
-          l = "mode default, exec loginctl lock-session";
-          e = "mode default, exec loginctl terminate-session $XDG_SESSION_ID";
-          s = "mode default, exec systemctl suspend";
-          h = "mode default, exec systemctl hibernate";
-          "Shift+r" = "mode default, exec systemctl reboot";
-          "Shift+s" = "mode default, exec systemctl poweroff";
-        } // exitMode;
+        ${powerManagementMode} =
+          let
+            # $ swaymsg exec "loginctl lock-session &>/tmp/out"
+            # $ cat /tmp/out
+            # Failed to issue method call: Unknown object '/org/freedesktop/login1/session/auto'.
+            systemctl = "systemd-run --user systemctl";
+            loginctl = "systemd-run --user loginctl";
+          in
+          {
+            l = "mode default, exec ${loginctl} lock-session";
+            e = "mode default, exec ${msg} exit";
+            s = "mode default, exec ${systemctl} suspend";
+            h = "mode default, exec ${systemctl} hibernate";
+            "Shift+r" = "mode default, exec ${systemctl} reboot";
+            "Shift+s" = "mode default, exec ${systemctl} poweroff";
+          }
+          // exitMode;
       }
       // extraModes;
 
+    defaultWorkspace = (builtins.head workspaces).name;
     workspaceAutoBackAndForth = true;
     workspaceLayout = "tabbed";
 

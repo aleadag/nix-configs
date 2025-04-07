@@ -285,6 +285,21 @@ in
               '';
           }
           {
+            plugin = gx-nvim;
+            type = "lua";
+            config = # lua
+              ''
+
+                 require("gx").setup {
+                   handler_options = {
+                     search_engine = "duckduckgo"
+                   }
+                }
+
+                 vim.keymap.set({"n", "x"}, "gx", "<CMD>Browse<CR>", { desc = "Open in Browse" })
+              '';
+          }
+          {
             plugin = mini-nvim;
             type = "lua";
             config = # lua
@@ -316,7 +331,6 @@ in
                 require('mini.diff').setup {}
                 require('mini.git').setup {}
                 require('mini.jump').setup {}
-                require('mini.operators').setup {}
                 require('mini.starter').setup {}
                 require('mini.statusline').setup {
                   use_icons = enable_icons,
@@ -495,22 +509,6 @@ in
             config = # lua
               ''
                 require("remember").setup {}
-              '';
-          }
-          {
-            plugin = url-open;
-            type = "lua";
-            config = # lua
-              ''
-                require("url-open").setup {
-                  open_only_when_cursor_on_url = false,
-                  highlight_url = {
-                    cursor_move = { enabled = false, }
-                  }
-                }
-                vim.keymap.set("n", "<Leader>o", function()
-                  vim.cmd("URLOpenUnderCursor")
-                end , { desc = "Open URL" })
               '';
           }
           lexima-vim

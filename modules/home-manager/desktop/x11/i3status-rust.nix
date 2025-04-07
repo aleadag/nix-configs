@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  libEx,
   pkgs,
   ...
 }:
@@ -24,11 +23,6 @@ in
     };
     battery.enable = lib.mkEnableOption "battery block" // {
       default = config.device.type == "laptop";
-    };
-    mount.points = lib.mkOption {
-      type = with lib.types; listOf path;
-      description = "Mount points to show in disk block.";
-      default = config.device.mount.points;
     };
     net.ifaces = lib.mkOption {
       type = with lib.types; listOf str;
@@ -73,47 +67,20 @@ in
             };
           };
 
-          windowBlock = {
-            block = "focused_window";
-            format = " $title.str(max_w:26) |";
-          };
-
           netBlocks = map (d: {
             inherit (cfg) interval;
             block = "net";
             device = d;
-            format =
-              " {$icon $ssid ($signal_strength) |^icon_ethernet } "
-              + "^icon_net_up $speed_up.eng(prefix:K) "
-              + "^icon_net_down $speed_down.eng(prefix:K) ";
-            format_alt =
-              " {$icon $ssid ($signal_strength) |^icon_ethernet } "
-              + "^icon_net_up $graph_up.str(max_w:3) "
-              + "^icon_net_down$graph_down.str(max_w:3) ";
+            format = " {$icon|^icon_ethernet} $speed_down.eng(prefix:K) ";
             inactive_format = "";
             missing_format = "";
           }) cfg.net.ifaces;
-
-          disksBlocks = map (m: {
-            inherit (cfg) interval;
-            block = "disk_space";
-            path = m;
-            info_type = "available";
-            format = " $icon ${libEx.shortPath m} $available ";
-          }) cfg.mount.points;
 
           memoryBlock = {
             inherit (cfg) interval;
             block = "memory";
             format = " $icon $mem_avail ";
             format_alt = " $icon_swap $swap_free ";
-          };
-
-          cpuBlock = {
-            inherit (cfg) interval;
-            block = "cpu";
-            format = " $icon " + "{$max_frequency.eng(prefix:G,w:3)} ";
-            format_alt = " ^icon_microchip $barchart.str(max_w:3) $utilization ";
           };
 
           loadBlock = {
@@ -159,10 +126,7 @@ in
 
           notificationBlock = {
             block = "notify";
-            format =
-              " ^icon_notification "
-              + "{$paused{^icon_toggle_off}|^icon_toggle_on} "
-              + "{($notification_count.eng(w:1)) |}";
+            format = " ^icon_notification {$paused{^icon_toggle_off}|^icon_toggle_on} ";
           };
 
           dpmsBlock =
@@ -183,8 +147,8 @@ in
           timeBlock = {
             inherit (cfg) interval;
             block = "time";
+            format = " $icon $timestamp.datetime(f:'%H:%M, %a %d') ";
           };
-
         in
         {
           i3 = {
@@ -193,18 +157,15 @@ in
             blocks =
               lib.pipe
                 [
-                  windowBlock
                   netBlocks
-                  disksBlocks
                   memoryBlock
-                  cpuBlock
                   temperatureBlock
                   loadBlock
-                  notificationBlock
-                  dpmsBlock
                   backlightBlock
                   batteryBlock
                   soundBlock
+                  notificationBlock
+                  dpmsBlock
                   timeBlock
                 ]
                 [
