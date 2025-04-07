@@ -21,9 +21,6 @@ in
     autoExpire.enable = lib.mkEnableOption "auto expire Home-Manager generations" // {
       default = pkgs.stdenv.isLinux;
     };
-    sdSwitch.enable = lib.mkEnableOption "more reliable user service restart" // {
-      default = pkgs.stdenv.isLinux;
-    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -42,6 +39,6 @@ in
     };
 
     # More reliable user service restart
-    systemd.user.startServices = lib.mkIf cfg.sdSwitch.enable "sd-switch";
+    systemd.user.startServices = lib.mkDefault "sd-switch";
   };
 }
