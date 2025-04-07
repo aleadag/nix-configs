@@ -11,7 +11,6 @@ in
 {
   imports = [
     ./diff.nix
-    ./home-manager-auto-expire.nix
     ./mutable-config.nix
   ];
 
@@ -35,8 +34,8 @@ in
       git.enable = true;
     };
 
-    services.home-manager.autoExpire = lib.mkIf cfg.autoExpire.enable {
-      enable = true;
+    services.home-manager.autoExpire = {
+      inherit (cfg.autoExpire) enable;
       timestamp = "-7 days";
       frequency = "3:05";
       store.cleanup = true;
