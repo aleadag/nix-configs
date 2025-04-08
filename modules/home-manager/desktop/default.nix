@@ -123,6 +123,7 @@ in
         playerctl
         qalculate-gtk
         wechat-uos
+        zeal
       ];
     };
 
