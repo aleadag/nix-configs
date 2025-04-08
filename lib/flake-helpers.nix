@@ -1,12 +1,8 @@
-{
-  self,
-  nixpkgs,
-  flake-utils,
-  ...
-}@inputs:
+{ self, nixpkgs, ... }@inputs:
 
 let
-  inherit (flake-utils.lib) eachDefaultSystem mkApp;
+  attrsets = import ./attrsets.nix { inherit (nixpkgs) lib; };
+  inherit (attrsets) eachDefaultSystem;
 in
 {
   mkGHActionsYAMLs =
@@ -14,50 +10,36 @@ in
     eachDefaultSystem (
       system:
       let
-        inherit (nixpkgs) lib;
         pkgs = self.outputs.legacyPackages.${system};
         mkGHActionsYAML =
           name:
-          let
-            file = import (../actions/${name}.nix);
-            json = builtins.toJSON file;
-          in
-          pkgs.runCommand name { } ''
-            mkdir -p $out
-            echo ${lib.escapeShellArg json} | ${lib.getExe' pkgs.yj "yj"} -jy > $out/${name}.yml
-            ${lib.getExe pkgs.action-validator} -v $out/${name}.yml
-          '';
+          pkgs.runCommand name
+            {
+              buildInputs = with pkgs; [
+                actionlint
+                yj
+              ];
+              json = builtins.toJSON (import ../actions/${name}.nix);
+              passAsFile = [ "json" ];
+            }
+            ''
+              mkdir -p $out
+              yj -jy < "$jsonPath" > $out/${name}.yml
+              actionlint -verbose $out/${name}.yml
+            '';
         ghActionsYAMLs = map mkGHActionsYAML names;
       in
       {
-        apps.githubActions = mkApp {
-          drv = pkgs.writeShellScriptBin "generate-gh-actions" ''
-            for dir in ${builtins.toString ghActionsYAMLs}; do
-              cp -f $dir/*.yml .github/workflows/
-            done
-            echo Done!
-          '';
-        };
-      }
-    );
-
-  mkRunCmd =
-    {
-      name,
-      text,
-      deps ? pkgs: [ ],
-    }:
-    eachDefaultSystem (
-      system:
-      let
-        pkgs = self.outputs.legacyPackages.${system};
-      in
-      {
-        apps.${name} = mkApp {
-          drv = pkgs.writeShellApplication {
-            inherit name text;
-            runtimeInputs = deps pkgs;
-          };
+        apps.githubActions = {
+          type = "app";
+          program = nixpkgs.lib.getExe (
+            pkgs.writeShellScriptBin "generate-gh-actions" ''
+              for dir in ${builtins.toString ghActionsYAMLs}; do
+                cp -f $dir/*.yml .github/workflows/
+              done
+              echo Done!
+            ''
+          );
         };
       }
     );
@@ -65,17 +47,72 @@ in
   mkNixOSConfig =
     {
       hostname,
-      system ? null, # get from hardware-configuration.nix by default
+      system ? "x86_64-linux",
       nixpkgs ? inputs.nixpkgs,
       extraModules ? [ ],
     }:
     let
-      inherit (self.outputs.nixosConfigurations.${hostname}) config pkgs;
+      inherit (self.outputs.nixosConfigurations.${hostname}) config;
+      n = import ../patches { inherit self nixpkgs system; };
+
+      nixosSystem =
+        if n.patched then
+          (import (n.nixpkgs + "/nixos/lib/eval-config.nix"))
+        else
+          n.nixpkgs.lib.nixosSystem;
     in
     {
-      nixosConfigurations.${hostname} = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.${hostname} = nixosSystem {
         inherit system;
-        modules = [ ../hosts/${hostname} ] ++ extraModules;
+        modules = [
+          (
+            { lib, ... }:
+            {
+              networking.hostName = lib.mkDefault hostname;
+            }
+          )
+          ../hosts/${hostname}
+        ] ++ extraModules;
+        specialArgs = {
+          flake = self;
+          libEx = self.outputs.lib;
+        };
+      };
+
+      apps.${system} = {
+        "nixosActivations/${hostname}" = {
+          type = "app";
+          program = "${config.system.build.toplevel}/activate";
+        };
+
+        "nixosVMs/${hostname}" = {
+          type = "app";
+          program = nixpkgs.lib.getExe config.system.build.vm;
+        };
+      };
+    };
+
+  mkNixDarwinConfig =
+    {
+      hostname,
+      nix-darwin ? inputs.nix-darwin,
+      extraModules ? [ ],
+    }:
+    let
+      # TODO: use self.outputs.legacyPackages instead to allow for patching
+      inherit (self.outputs.darwinConfigurations.${hostname}) pkgs;
+    in
+    {
+      darwinConfigurations.${hostname} = nix-darwin.lib.darwinSystem {
+        modules = [
+          (
+            { lib, ... }:
+            {
+              networking.hostName = lib.mkDefault hostname;
+            }
+          )
+          ../hosts/${hostname}
+        ] ++ extraModules;
         specialArgs = {
           flake = self;
           libEx = self.outputs.lib;
@@ -83,16 +120,15 @@ in
       };
 
       apps.${pkgs.system} = {
-        "nixosActivations/${hostname}" = mkApp {
-          drv = config.system.build.toplevel;
-          exePath = "/activate";
-        };
-
-        "nixosVMs/${hostname}" = mkApp {
-          drv = pkgs.writeShellScriptBin "run-${hostname}-vm" ''
-            env QEMU_OPTS="''${QEMU_OPTS:--cpu max -smp 4 -m 4096M -machine type=q35}" \
-              ${config.system.build.vm}/bin/run-${hostname}-vm
-          '';
+        "darwinActivations/${hostname}" = {
+          type = "app";
+          program = nixpkgs.lib.getExe (
+            pkgs.writeShellScriptBin "activate" ''
+              ${
+                pkgs.lib.getExe' nix-darwin.packages.${pkgs.system}.darwin-rebuild "darwin-rebuild"
+              } switch --flake '.#${hostname}'
+            ''
+          );
         };
       };
     };
@@ -127,7 +163,9 @@ in
           (
             { ... }:
             {
-              home = { inherit username homeDirectory stateVersion; };
+              home = {
+                inherit username homeDirectory stateVersion;
+              };
               imports = [ configuration ];
             }
           )
@@ -137,14 +175,14 @@ in
           libEx = self.outputs.lib;
           osConfig = {
             device.type = deviceType;
-            mainUser.username = username;
+            meta.username = username;
           };
         };
       };
 
-      apps.${system}."homeActivations/${hostname}" = mkApp {
-        drv = self.outputs.homeConfigurations.${hostname}.activationPackage;
-        exePath = "/activate";
+      apps.${system}."homeActivations/${hostname}" = {
+        type = "app";
+        program = "${self.outputs.homeConfigurations.${hostname}.activationPackage}/activate";
       };
     };
 }

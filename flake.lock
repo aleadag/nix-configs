@@ -151,9 +151,7 @@
     },
     "nixgl": {
       "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
+        "flake-utils": "flake-utils",
         "nixpkgs": [
           "nixpkgs"
         ]
@@ -208,7 +206,6 @@
         "catppuccin": "catppuccin",
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",
-        "flake-utils": "flake-utils",
         "home-manager": "home-manager",
         "hyprland-go": "hyprland-go",
         "nix-darwin": "nix-darwin",

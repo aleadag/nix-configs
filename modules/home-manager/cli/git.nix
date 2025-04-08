@@ -28,8 +28,8 @@ in
     programs.git = {
       enable = true;
 
-      userName = config.mainUser.fullname;
-      userEmail = config.mainUser.email;
+      userName = config.meta.fullname;
+      userEmail = config.meta.email;
       aliases = {
         branch-cleanup = ''!git branch --merged | egrep -v "(^\*|master|main|dev|development)" | xargs git branch -d #'';
         hist = "log --pretty=format:'%C(yellow)[%ad]%C(reset) %C(green)[%h]%C(reset) | %C(red)%s %C(bold red){{%an}}%C(reset) %C(blue)%d%C(reset)' --graph --date=short";

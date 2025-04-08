@@ -14,7 +14,6 @@
     };
     nixgl = {
       url = "github:nix-community/nixGL";
-      inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # build helix from the source
@@ -35,7 +34,6 @@
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
-    flake-utils.url = "github:numtide/flake-utils";
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -68,7 +66,6 @@
     {
       self,
       nixpkgs,
-      flake-utils,
       treefmt-nix,
       ...
     }@inputs:
@@ -85,7 +82,7 @@
         nixosModules.default = import ./modules/nixos;
       }
 
-      (flake-utils.lib.eachDefaultSystem (
+      (lib.eachDefaultSystem (
         system:
         let
           inherit (import ./patches { inherit self system; }) pkgs;
