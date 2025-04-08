@@ -5,17 +5,17 @@
     username = lib.mkOption {
       description = "Main username.";
       type = lib.types.str;
-      default = "thiagoko";
+      default = "awang";
     };
     fullname = lib.mkOption {
       description = "Main user full name.";
       type = lib.types.str;
-      default = "Thiago Kenji Okada";
+      default = "Alexander Wang";
     };
     email = lib.mkOption {
       description = "Main e-mail.";
       type = lib.types.str;
-      default = "thiagokokada@gmail.com";
+      default = "aleadag@gmail.com";
     };
   };
 }
