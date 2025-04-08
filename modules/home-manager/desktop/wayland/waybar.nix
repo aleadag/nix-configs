@@ -13,6 +13,7 @@ let
   dunstctl = lib.getExe' pkgs.dunst "dunstctl";
   hyprctl = lib.getExe' config.wayland.windowManager.hyprland.finalPackage "hyprctl";
   pamixer = lib.getExe pkgs.pamixer;
+  light = lib.getExe pkgs.acpilight;
 in
 {
   options.home-manager.desktop.wayland.waybar = {
@@ -251,8 +252,8 @@ in
             };
             backlight = {
               format = " {percent}%";
-              on-scroll-up = "xbacklight -inc 5";
-              on-scroll-down = "xbacklight -dec 5";
+              on-scroll-up = "${light} -inc 5";
+              on-scroll-down = "${light} -dec 5";
             };
             battery = {
               inherit (cfg) interval;
@@ -292,7 +293,6 @@ in
           };
       };
       style =
-        with config.home-manager.desktop.theme.colors;
         with config.home-manager.desktop.theme.fonts;
         let
           concatFonts =

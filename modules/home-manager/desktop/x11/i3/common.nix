@@ -9,7 +9,7 @@
   browser ? config.home-manager.desktop.default.browser,
   dunstctl ? (lib.getExe' pkgs.dunst "dunstctl"),
   fileManager ? config.home-manager.desktop.default.fileManager,
-  light ? "xbacklight", # needs to be installed system-wide
+  light ? (lib.getExe pkgs.acpilight),
   pamixer ? (lib.getExe pkgs.pamixer),
   playerctl ? (lib.getExe pkgs.playerctl),
   terminal ? config.home-manager.desktop.default.terminal,
