@@ -22,8 +22,6 @@ jobs:
           name: aleadag-nix-configs
       - name: 'Build Home-Manager configs for: mbx'
         run: nix build --print-build-logs '.#homeConfigurations.mbx.activationPackage'
-      - name: 'Build NixOS configs for: '
-        run: ""
   build-macos:
     runs-on: macos-latest
     steps:

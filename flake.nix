@@ -70,184 +70,58 @@
       ...
     }@inputs:
     let
-      lib = import ./lib inputs;
-      inherit (lib) recursiveMergeAttrs mkGHActionsYAMLs mkHomeConfig;
+      libEx = import ./lib inputs;
     in
-    recursiveMergeAttrs [
-      {
-        inherit lib;
-        overlays.default = import ./overlays { flake = self; };
-        darwinModules.default = import ./modules/nix-darwin;
-        homeModules.default = import ./modules/home-manager;
-        # nixosModules.default = import ./modules/nixos;
-      }
-
-      (lib.eachDefaultSystem (
-        system:
-        let
-          inherit (import ./patches { inherit self system; }) pkgs;
-          treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
-        in
+    libEx.recursiveMergeAttrs (
+      [
         {
-          devShells.default = pkgs.mkShell {
-            packages = with pkgs; [
-              fd
-              neovim-standalone
-              nil
-              nixfmt-rfc-style
-              ripgrep
-              statix
-            ];
-          };
-          checks.formatting = treefmtEval.config.build.check self;
-          formatter = treefmtEval.config.build.wrapper;
-          legacyPackages = pkgs;
+          lib = libEx;
+          overlays.default = import ./overlays { flake = self; };
+          darwinModules.default = import ./modules/nix-darwin;
+          homeModules.default = import ./modules/home-manager;
+          # nixosModules.default = import ./modules/nixos;
         }
-      ))
 
-      (mkHomeConfig {
-        hostname = "t0";
-        username = "alexander";
-        system = "aarch64-darwin";
-        homePath = "/Users";
-        extraModules = [
-          {
-            home-manager = {
-              cli.git.git-sync.enable = true;
-              dev.enable = true;
+        (libEx.eachDefaultSystem (
+          system:
+          let
+            pkgs = import nixpkgs {
+              inherit system;
+              config = import ./modules/shared/config/nixpkgs.nix;
+              overlays = [ self.overlays.default ];
             };
-          }
-        ];
-      })
-
-      (mkHomeConfig {
-        hostname = "mbx";
-        username = "awang";
-        system = "x86_64-linux";
-        homePath = "/home";
-        extraModules = [
+            treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
+          in
           {
-            home-manager = {
-              cli.git.git-sync.enable = true;
-              desktop = {
-                enable = true;
-                x11.enable = false;
-              };
-              dev.enable = true;
+            devShells.default = pkgs.mkShell {
+              packages = with pkgs; [
+                fd
+                neovim-standalone
+                nil
+                nixfmt-rfc-style
+                ripgrep
+                statix
+              ];
             };
+            checks.formatting = treefmtEval.config.build.check self;
+            formatter = treefmtEval.config.build.wrapper;
+            legacyPackages = pkgs;
           }
-        ];
-      })
+        ))
 
-      (mkHomeConfig {
-        hostname = "with-cuda";
-        username = "alexander";
-        system = "x86_64-linux";
-        homePath = "/home";
-        extraModules = [
-          {
-            home-manager = {
-              desktop = {
-                enable = false;
-                nixgl = {
-                  enable = true;
-                };
-                theme = {
-                  enable = true;
-                  gtk.enable = false;
-                  qt.enable = false;
-                };
-                wezterm.enable = false;
-              };
-              dev.enable = true;
-              editor.enable = false;
-              gui.enable = false;
-            };
-          }
-        ];
-      })
+        # GitHub Actions
+        (libEx.mkGHActionsYAMLs [
+          "build-and-cache"
+          "update-flakes"
+          "update-flakes-darwin"
+          "validate-flakes"
+        ])
+      ]
+      ++
+        # Home-Manager configs
+        (libEx.mapDir (hostname: libEx.mkHomeConfig { inherit hostname; }) ./hosts/home-manager)
+    );
 
-      (mkHomeConfig {
-        hostname = "ticos-with-cuda";
-        username = "ticos";
-        system = "x86_64-linux";
-        homePath = "/home";
-        extraModules = [
-          {
-            home-manager = {
-              desktop = {
-                enable = false;
-                nixgl = {
-                  enable = true;
-                };
-                theme = {
-                  enable = true;
-                  gtk.enable = false;
-                  qt.enable = false;
-                };
-                wezterm.enable = true;
-              };
-              gui.enable = false;
-            };
-          }
-        ];
-      })
-
-      (mkHomeConfig {
-        hostname = "ticos-without-cuda";
-        username = "ticos";
-        system = "x86_64-linux";
-        homePath = "/home";
-        extraModules = [
-          {
-            home-manager = {
-              desktop = {
-                enable = false;
-                theme = {
-                  enable = true;
-                  gtk.enable = false;
-                  qt.enable = false;
-                };
-                wezterm.enable = true;
-              };
-              gui.enable = false;
-            };
-          }
-        ];
-      })
-
-      (mkHomeConfig {
-        hostname = "firefly";
-        username = "ticos";
-        system = "aarch64-linux";
-        homePath = "/home";
-        extraModules = [
-          {
-            home-manager = {
-              desktop = {
-                enable = false;
-                theme = {
-                  enable = true;
-                  gtk.enable = false;
-                  qt.enable = false;
-                };
-                wezterm.enable = true;
-              };
-              gui.enable = false;
-            };
-          }
-        ];
-      })
-
-      # GitHub Actions
-      (mkGHActionsYAMLs [
-        "build-and-cache"
-        "update-flakes"
-        "update-flakes-darwin"
-        "validate-flakes"
-      ])
-
-    ]; # END recursiveMergeAttrs
   nixConfig = {
     extra-substituters = [
       "https://nix-community.cachix.org"

@@ -47,23 +47,14 @@ in
   mkNixOSConfig =
     {
       hostname,
-      system ? "x86_64-linux",
+      configuration ? ../hosts/nixos/${hostname},
       nixpkgs ? inputs.nixpkgs,
-      extraModules ? [ ],
     }:
     let
-      inherit (self.outputs.nixosConfigurations.${hostname}) config;
-      n = import ../patches { inherit self nixpkgs system; };
-
-      nixosSystem =
-        if n.patched then
-          (import (n.nixpkgs + "/nixos/lib/eval-config.nix"))
-        else
-          n.nixpkgs.lib.nixosSystem;
+      inherit (self.outputs.nixosConfigurations.${hostname}) config pkgs;
     in
     {
-      nixosConfigurations.${hostname} = nixosSystem {
-        inherit system;
+      nixosConfigurations.${hostname} = nixpkgs.lib.nixosSystem {
         modules = [
           (
             { lib, ... }:
@@ -71,15 +62,15 @@ in
               networking.hostName = lib.mkDefault hostname;
             }
           )
-          ../hosts/${hostname}
-        ] ++ extraModules;
+          configuration
+        ];
         specialArgs = {
           flake = self;
           libEx = self.outputs.lib;
         };
       };
 
-      apps.${system} = {
+      apps.${pkgs.system} = {
         "nixosActivations/${hostname}" = {
           type = "app";
           program = "${config.system.build.toplevel}/activate";
@@ -95,11 +86,10 @@ in
   mkNixDarwinConfig =
     {
       hostname,
+      configuration ? ../hosts/nix-darwin/${hostname},
       nix-darwin ? inputs.nix-darwin,
-      extraModules ? [ ],
     }:
     let
-      # TODO: use self.outputs.legacyPackages instead to allow for patching
       inherit (self.outputs.darwinConfigurations.${hostname}) pkgs;
     in
     {
@@ -111,8 +101,8 @@ in
               networking.hostName = lib.mkDefault hostname;
             }
           )
-          ../hosts/${hostname}
-        ] ++ extraModules;
+          configuration
+        ];
         specialArgs = {
           flake = self;
           libEx = self.outputs.lib;
@@ -137,46 +127,23 @@ in
   mkHomeConfig =
     {
       hostname,
-      username ? "awang",
-      homePath ? "/home",
-      homeDirectory ? "${homePath}/${username}",
-      configuration ? self.outputs.homeModules.default,
-      deviceType ? "laptop",
-      extraModules ? [ ],
-      system ? "x86_64-linux",
+      username ? "alexander",
+      configuration ? ../hosts/home-manager/${hostname},
+      system ? import ../hosts/home-manager/${hostname}/system.nix,
       nixpkgs ? inputs.nixpkgs,
       home-manager ? inputs.home-manager,
-      # This value determines the Home Manager release that your
-      # configuration is compatible with. This helps avoid breakage
-      # when a new Home Manager release introduces backwards
-      # incompatible changes.
-      #
-      # You can update Home Manager without changing this value. See
-      # the Home Manager release notes for a list of state version
-      # changes in each release.
-      stateVersion ? "24.05",
     }:
     {
       homeConfigurations.${hostname} = home-manager.lib.homeManagerConfiguration {
         pkgs = self.outputs.legacyPackages.${system};
         modules = [
-          (
-            { ... }:
-            {
-              home = {
-                inherit username homeDirectory stateVersion;
-              };
-              imports = [ configuration ];
-            }
-          )
-        ] ++ extraModules;
+          self.outputs.homeModules.default
+          configuration
+        ];
         extraSpecialArgs = {
           flake = self;
           libEx = self.outputs.lib;
-          osConfig = {
-            device.type = deviceType;
-            meta.username = username;
-          };
+          osConfig = { };
         };
       };
 

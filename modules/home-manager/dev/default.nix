@@ -2,7 +2,6 @@
   config,
   pkgs,
   lib,
-  osConfig,
   ...
 }:
 
@@ -13,7 +12,7 @@
   ];
 
   options.home-manager.dev.enable = lib.mkEnableOption "dev config" // {
-    default = osConfig.nixos.dev.enable or false;
+    default = true;
   };
 
   config = lib.mkIf config.home-manager.dev.enable {

@@ -5,7 +5,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: 'Install Ubuntu packages: binfmt-support, qemu-user-static'
         run: |
-          DEBIAN_FRONTEND=noninteractive
+          export DEBIAN_FRONTEND=noninteractive
           sudo apt-get update -q -y
           sudo apt-get install -q -y binfmt-support qemu-user-static
       - uses: cachix/install-nix-action@v30
@@ -21,7 +21,7 @@ jobs:
           extraPullNames: nix-community
           name: aleadag-nix-configs
       - name: Validate Flakes
-        run: nix flake check --print-build-logs
+        run: nix flake check --all-systems --print-build-logs
 name: validate-flakes
 "on":
   - push

@@ -27,8 +27,6 @@ jobs:
           nix flake update --commit-lock-file
       - name: 'Build Home-Manager configs for: mbx'
         run: nix build --print-build-logs '.#homeConfigurations.mbx.activationPackage'
-      - name: 'Build NixOS configs for: '
-        run: ""
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
