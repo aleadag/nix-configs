@@ -7,7 +7,7 @@
 
   home-manager = {
     cli.git.git-sync.enable = true;
-    desktop.wayland.enable = true;
+    desktop.enable = true;
   };
 
   targets.genericLinux.enable = true;
