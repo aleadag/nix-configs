@@ -59,6 +59,8 @@ outputs.lib.recursiveMergeAttrs [
 
     nix-cleanup = prev.callPackage ../packages/nix-cleanup { };
 
+    nixos-cleanup = prev.callPackage ../packages/nix-cleanup { isNixOS = true; };
+
     nix-whereis = prev.callPackage ../packages/nix-whereis { };
 
     nix-proxy = prev.callPackage ../packages/nix-proxy { };
