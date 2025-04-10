@@ -46,10 +46,6 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # Use ultrawide wallpaper
-  home-manager.users.${config.meta.username}.home-manager.desktop.theme.wallpaper.path =
-    pkgs.wallpapers.hatsune-miku_stylized-ultrawide;
-
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database
   # servers. You should change this only after NixOS release notes say you
