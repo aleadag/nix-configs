@@ -2,8 +2,9 @@
   description = "My configuration files";
 
   inputs = {
-    # Specify the source of Home Manager and Nixpkgs.
+    # main
     nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1.0.tar.gz";
+    hardware.url = "github:NixOS/nixos-hardware";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -79,7 +80,7 @@
           overlays.default = import ./overlays { flake = self; };
           darwinModules.default = import ./modules/nix-darwin;
           homeModules.default = import ./modules/home-manager;
-          # nixosModules.default = import ./modules/nixos;
+          nixosModules.default = import ./modules/nixos;
         }
 
         (libEx.eachDefaultSystem (
@@ -117,6 +118,9 @@
           "validate-flakes"
         ])
       ]
+      ++
+        # NixOS configs
+        (libEx.mapDir (hostname: libEx.mkNixOSConfig { inherit hostname; }) ./hosts/nixos)
       ++
         # nix-darwin configs
         (libEx.mapDir (hostname: libEx.mkNixDarwinConfig { inherit hostname; }) ./hosts/nix-darwin)

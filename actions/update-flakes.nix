@@ -19,7 +19,7 @@ with constants;
         cachixActionStep
         updateFlakeLockStep
         (buildHomeManagerConfigurations { inherit (home-manager.linux) hostnames; })
-        # (buildNixOSConfigurations { inherit (nixos) hostnames; })
+        (buildNixOSConfigurations { inherit (nixos) hostnames; })
         createPullRequestStep
       ];
     };

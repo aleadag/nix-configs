@@ -70,6 +70,7 @@ in
               networking.hostName = lib.mkDefault hostname;
             }
           )
+          self.outputs.nixosModules.default
           configuration
         ];
         specialArgs = {

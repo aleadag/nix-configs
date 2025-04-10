@@ -15,8 +15,10 @@ jobs:
           authToken: ${{ secrets.CACHIX_TOKEN }}
           extraPullNames: nix-community
           name: aleadag-nix-configs
-      - name: 'Build Home-Manager configs for: t0'
-        run: nix build --print-build-logs '.#homeConfigurations.t0.activationPackage'
+      - name: 'Build Home-Manager configs for: dummy-mac'
+        run: nix build --print-build-logs '.#homeConfigurations.dummy-mac.activationPackage'
+      - name: 'Build nix-darwin configs for: t0'
+        run: nix build --print-build-logs '.#darwinConfigurations.t0.system'
 name: update-flakes-darwin
 "on":
   workflow_dispatch: null
