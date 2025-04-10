@@ -1,4 +1,4 @@
-{ ... }:
+{ lib, ... }:
 
 {
   imports = [
@@ -13,4 +13,10 @@
     ./meta
     ./nix
   ];
+
+  home = {
+    username = lib.mkDefault "awang";
+    homeDirectory = lib.mkDefault "/home/awang";
+    stateVersion = lib.mkDefault "25.05";
+  };
 }

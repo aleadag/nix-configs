@@ -118,6 +118,9 @@
         ])
       ]
       ++
+        # nix-darwin configs
+        (libEx.mapDir (hostname: libEx.mkNixDarwinConfig { inherit hostname; }) ./hosts/nix-darwin)
+      ++
         # Home-Manager configs
         (libEx.mapDir (hostname: libEx.mkHomeConfig { inherit hostname; }) ./hosts/home-manager)
     );

@@ -17,8 +17,6 @@ in
 
   config = lib.mkIf cfg.enable {
     nix = {
-      useDaemon = true;
-
       gc = {
         automatic = true;
         options = "--delete-older-than 7d";
@@ -29,10 +27,10 @@ in
 
       settings =
         let
-          substituters = import ../../shared/substituters.nix;
+          substituters = import ../../shared/config/substituters.nix;
         in
         lib.mkMerge [
-          (import ../../shared/nix-conf.nix)
+          (import ../../shared/config/nix.nix)
           {
             trusted-users = [
               "root"
@@ -47,7 +45,6 @@ in
         ];
     };
 
-    # Enable unfree packages
-    nixpkgs.config.allowUnfree = true;
+    nixpkgs.config = import ../../shared/config/nixpkgs.nix;
   };
 }

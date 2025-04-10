@@ -7,10 +7,12 @@
 
 {
   imports = [
-    ./trampoline-apps.nix
-    ./yabai
+    ./homebrew.nix
+    ./remap-keys.nix
     ./sketchybar
     ./skhd
+    ./trampoline-apps.nix
+    ./yabai
   ];
 
   options.home-manager.darwin.enable = lib.mkEnableOption "Darwin (macOS) config" // {

@@ -41,11 +41,6 @@ outputs.lib.recursiveMergeAttrs [
             inherit hostname;
             inherit (prev) system;
             configuration = {
-              home = {
-                username = "neovim-standalone";
-                homeDirectory = "/tmp";
-                stateVersion = "24.05";
-              };
               home-manager = {
                 dev.nix.enable = true;
                 editor.neovim = {

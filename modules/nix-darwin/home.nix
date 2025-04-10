@@ -34,10 +34,11 @@ in
       useUserPackages = true;
       useGlobalPkgs = true;
       users.${username} = {
+        inherit (config) meta device;
         imports = [ ../home-manager ] ++ cfg.extraModules;
         # Can't set the same as nix-darwin, since it uses a different state
         # format
-        home.stateVersion = lib.mkDefault "24.05";
+        home.stateVersion = "24.05";
       };
       extraSpecialArgs = {
         inherit flake libEx;
