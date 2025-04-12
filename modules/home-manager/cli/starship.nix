@@ -1,11 +1,12 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 {
   options.home-manager.cli.starship.enable = lib.mkEnableOption "Starship config" // {
-    default = config.home-manager.cli.enable;
+    default = (pkgs.stdenv.hostPlatform.system != "aarch64-linux") && config.home-manager.cli.enable;
   };
 
   config = lib.mkIf config.home-manager.cli.starship.enable {

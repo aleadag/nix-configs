@@ -6,7 +6,7 @@
 }:
 {
   options.home-manager.editor.windsurf.enable = lib.mkEnableOption "Enable WindSurf" // {
-    default = config.home-manager.editor.enable;
+    default = (pkgs.stdenv.hostPlatform.system != "aarch64-linux") && config.home-manager.editor.enable;
   };
 
   config = lib.mkIf config.home-manager.editor.windsurf.enable (

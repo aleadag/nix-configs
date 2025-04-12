@@ -11,6 +11,4 @@
     ./server
     ./system
   ];
-
-  nixpkgs.overlays = [ (import ../../overlays { inherit flake; }) ];
 }
