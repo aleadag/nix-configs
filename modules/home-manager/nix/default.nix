@@ -23,6 +23,7 @@ in
         nix-whereis
         # Multi-tenant Nix Binary Cache
         attic-client
+        nix-proxy-manager
       ];
       # For standalone HM usage to make e.g.: nix-shell work as expected
       sessionVariables.NIX_PATH = "nixpkgs=${flake.inputs.nixpkgs}";

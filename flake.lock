@@ -161,6 +161,26 @@
         "type": "github"
       }
     },
+    "nix-proxy-manager": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1744472554,
+        "narHash": "sha256-kbeex/5OMa3c8mJqY71Psq9F4FBJR8wKiZxDSN/Xxfc=",
+        "owner": "aleadag",
+        "repo": "nix-proxy-manager",
+        "rev": "b77aa2bb9d97dd8d3914cfece7c42a50971f3387",
+        "type": "github"
+      },
+      "original": {
+        "owner": "aleadag",
+        "repo": "nix-proxy-manager",
+        "type": "github"
+      }
+    },
     "nixgl": {
       "inputs": {
         "flake-utils": "flake-utils",
@@ -224,6 +244,7 @@
         "home-manager": "home-manager",
         "hyprland-go": "hyprland-go",
         "nix-darwin": "nix-darwin",
+        "nix-proxy-manager": "nix-proxy-manager",
         "nixgl": "nixgl",
         "nixpkgs": "nixpkgs",
         "omf-proxy": "omf-proxy",

@@ -14,6 +14,8 @@ final: prev:
 
   inherit (inputs.gh-gfm-preview.packages.${prev.system}) gh-gfm-preview;
 
+  inherit (inputs.nix-proxy-manager.packages.${prev.system}) nix-proxy-manager;
+
   open-browser = prev.callPackage ../packages/open-browser { };
 
   neovim-standalone =
@@ -46,8 +48,6 @@ final: prev:
   nixos-cleanup = prev.callPackage ../packages/nix-cleanup { isNixOS = true; };
 
   nix-whereis = prev.callPackage ../packages/nix-whereis { };
-
-  nix-proxy = prev.callPackage ../packages/nix-proxy { };
 
   run-bg-alias = name: command: prev.callPackage ../packages/run-bg-alias { inherit name command; };
 }

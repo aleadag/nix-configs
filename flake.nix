@@ -54,6 +54,11 @@
       url = "github:oh-my-fish/plugin-proxy";
       flake = false;
     };
+
+    nix-proxy-manager = {
+      url = "github:aleadag/nix-proxy-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
