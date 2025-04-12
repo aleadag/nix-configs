@@ -39,8 +39,8 @@ jobs:
           authToken: ${{ secrets.CACHIX_TOKEN }}
           extraPullNames: nix-community
           name: aleadag-nix-configs
-      - name: 'Build Home-Manager configs for: dummy-mac'
-        run: nix build --print-build-logs '.#homeConfigurations.dummy-mac.activationPackage'
+      - name: 'Build Home-Manager configs for: t0'
+        run: nix build --print-build-logs '.#homeConfigurations.t0.activationPackage'
 name: build-and-cache
 "on":
   - push
