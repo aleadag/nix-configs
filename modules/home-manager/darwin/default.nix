@@ -27,11 +27,6 @@
           fontSize = 14.0;
           opacity = 1.0;
         };
-        wezterm = {
-          enable = true;
-          fontSize = 14.0;
-          opacity = 1.0;
-        };
       };
     };
 

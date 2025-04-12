@@ -17,8 +17,8 @@
     linux.hostnames = [
       "mbx"
     ];
-    darwin.hostnames = [ "dummy-mac" ];
+    darwin.hostnames = [ "t0" ];
   };
-  nix-darwin.hostnames = [ "t0" ];
+  nix-darwin.hostnames = [ "dummy-mac" ];
   nixos.hostnames = [ "dummy-nixos" ];
 }

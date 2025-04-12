@@ -25,6 +25,7 @@ final: prev:
           inherit (prev) system;
           configuration = {
             home-manager = {
+              cli.starship.enable = false;
               dev.nix.enable = true;
               editor.neovim = {
                 icons.enable = false;
