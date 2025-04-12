@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  libEx,
   pkgs,
   flake,
   ...
@@ -33,16 +34,18 @@ in
     # sudo echo "trusted-users = @wheel" >> /etc/nix/nix.conf
     nix = {
       package = lib.mkDefault pkgs.nix;
-      settings = lib.mkMerge [
-        (import ../../shared/config/nix.nix)
-        (import ../../shared/config/substituters.nix)
-      ];
+      # Needs to use extra-substituters/extra-trusted-public-keys to avoid
+      # overwriting the base one (cache.nixos.org)
+      settings = libEx.translateKeys {
+        "substituters" = "extra-substituters";
+        "trusted-public-keys" = "extra-trusted-public-keys";
+      } flake.outputs.configs.nix;
       extraOptions = ''
         !include nix.local.conf
       '';
     };
 
     # Config for ad-hoc nix commands invocation
-    xdg.configFile."nixpkgs/config.nix".source = ../../shared/config/nixpkgs.nix;
+    xdg.configFile."nixpkgs/config.nix".source = ./nixpkgs-config.nix;
   };
 }

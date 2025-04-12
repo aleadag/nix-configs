@@ -1,4 +1,10 @@
-{ self, nixpkgs, ... }@inputs:
+{
+  self,
+  nixpkgs,
+  nix-darwin,
+  home-manager,
+  ...
+}:
 
 let
   attrsets = import ./attrsets.nix { inherit (nixpkgs) lib; };
@@ -56,7 +62,6 @@ in
     {
       hostname,
       configuration ? ../hosts/nixos/${hostname},
-      nixpkgs ? inputs.nixpkgs,
     }:
     let
       inherit (self.outputs.nixosConfigurations.${hostname}) config pkgs;
@@ -64,12 +69,7 @@ in
     {
       nixosConfigurations.${hostname} = nixpkgs.lib.nixosSystem {
         modules = [
-          (
-            { lib, ... }:
-            {
-              networking.hostName = lib.mkDefault hostname;
-            }
-          )
+          (setHostname hostname)
           self.outputs.nixosModules.default
           configuration
         ];
@@ -96,7 +96,6 @@ in
     {
       hostname,
       configuration ? ../hosts/nix-darwin/${hostname},
-      nix-darwin ? inputs.nix-darwin,
     }:
     let
       inherit (self.outputs.darwinConfigurations.${hostname}) pkgs;
@@ -135,8 +134,6 @@ in
       username ? "alexander",
       configuration ? ../hosts/home-manager/${hostname},
       system ? import ../hosts/home-manager/${hostname}/system.nix,
-      nixpkgs ? inputs.nixpkgs,
-      home-manager ? inputs.home-manager,
     }:
     {
       homeConfigurations.${hostname} = home-manager.lib.homeManagerConfiguration {

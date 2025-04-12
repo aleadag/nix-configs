@@ -9,6 +9,4 @@
     ./nix
     ./system.nix
   ];
-
-  nixpkgs.overlays = [ (import ../../overlays { inherit flake; }) ];
 }
