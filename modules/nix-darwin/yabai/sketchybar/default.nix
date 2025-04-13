@@ -9,22 +9,6 @@ with lib;
 
 let
   cfg = config.nix-darwin.yabai;
-  space-sh = pkgs.writeShellScriptBin "space.sh" ''
-    if [ "$SELECTED" = "true" ]
-    then
-      sketchybar -m --set $NAME background.color=0xff81a1c1
-    else
-      sketchybar -m --set $NAME background.color=0xff57627A
-    fi
-  '';
-  window-title-sh = pkgs.writeShellScriptBin "window_title.sh" ''
-    WINDOW_TITLE=$(${pkgs.yabai}/bin/yabai -m query --windows --window | ${pkgs.jq}/bin/jq -r '.app')
-    if [[ $WINDOW_TITLE != "" ]]; then
-      sketchybar -m --set title label="$WINDOW_TITLE"
-    else
-      sketchybar -m --set title label=None
-    fi
-  '';
   date-time-sh = pkgs.writeShellScriptBin "date-time.sh" ''
     sketchybar -m --set $NAME label="$(date '+%a %d %b %H:%M')"
   '';
