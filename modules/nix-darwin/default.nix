@@ -8,5 +8,6 @@
     ./homebrew.nix
     ./nix
     ./system.nix
+    ./yabai
   ];
 }
