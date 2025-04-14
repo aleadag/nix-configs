@@ -24,7 +24,7 @@ pkgs.writeShellApplication {
       yabai -m window --toggle zoom-fullscreen
       sketchybar --trigger window_focus
       space=$(yabai -m query --windows --window | jq -r ".space")
-      yabai -m config --space "$space" external_bar all:0:30
+      yabai -m config --space "$space" external_bar all:32:0
       yabai -m space --toggle padding
       yabai -m space --toggle gap
     else
