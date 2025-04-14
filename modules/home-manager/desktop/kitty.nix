@@ -108,6 +108,7 @@ in
         window_padding_width = 5;
         allow_remote_control = "socket-only";
         listen_on = "unix:/tmp/kitty";
+        hide_window_decorations = "titlebar-only";
 
         # Fix for Wayland slow scrolling
         touch_scroll_multiplier = lib.mkIf pkgs.stdenv.isLinux "5.0";
