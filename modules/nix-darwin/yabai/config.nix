@@ -7,6 +7,7 @@
 let
   cfg = config.nix-darwin.yabai;
   borders = pkgs.callPackage ./borders { };
+  catppuccin = import ./catppuccin.nix;
 in
 {
   config = lib.mkIf cfg.enable {
@@ -32,9 +33,9 @@ in
         window_border_hidpi = "off";
         window_border_radius = "0";
         window_animation_duration = "0.22";
-        active_window_border_color = "0xffe1e3e4";
-        normal_window_border_color = "0xff2a2f38";
-        insert_feedback_color = "0xff9dd274";
+        active_window_border_color = catppuccin.frappe.mauve;
+        normal_window_border_color = catppuccin.frappe.surface0;
+        insert_feedback_color = catppuccin.frappe.green;
         split_ratio = "0.50";
         auto_balance = "off";
         mouse_modifier = "cmd";
@@ -77,7 +78,7 @@ in
           echo "yabai configuration loaded.."
 
           # Load JankyBorders
-          ${lib.getExe borders} active_color=0xffe1e3e4 inactive_color=0xff494d64 style=squared width=5.0 &
+          ${lib.getExe borders} active_color=${catppuccin.frappe.mauve} inactive_color=${catppuccin.frappe.surface1} style=squared width=5.0 &
         '';
     };
   };

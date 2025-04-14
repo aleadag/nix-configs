@@ -9,8 +9,46 @@ with lib;
 
 let
   cfg = config.nix-darwin.yabai;
+  catppuccin = import ../catppuccin.nix;
   date-time-sh = pkgs.writeShellScriptBin "date-time.sh" ''
     sketchybar -m --set $NAME label="$(date '+%a %d %b %H:%M')"
+  '';
+  spaces-sh = pkgs.writeShellScriptBin "spaces.sh" ''
+    SPACE_ICONS=("" "" "" "" "")
+    SPACE_CLICK_SCRIPTS=(
+      "open -a 'Google Chrome.app'"
+      "$HOME/.nix-profile/bin/kitty"
+      "open -a Cursor.app"
+      "open -a WeChat.app"
+      "open -a Finder.app"
+    )
+
+    for i in "''${!SPACE_ICONS[@]}"
+    do
+      sid=$(($i+1))
+
+      # 设置padding，第一个空间使用12，其他使用7
+      if [ $i -eq 0 ]; then
+        padding_left=12
+      else
+        padding_left=7
+      fi
+
+      sketchybar -m --add space space.$sid left \
+        --set space.$sid associated_space=$sid \
+        --set space.$sid icon="''${SPACE_ICONS[$i]}" \
+        --set space.$sid icon.padding_left=8 \
+        --set space.$sid icon.padding_right=0 \
+        --set space.$sid icon.highlight_color=${catppuccin.frappe.red} \
+        --set space.$sid label="$sid" \
+        --set space.$sid label.padding_right=8 \
+        --set space.$sid label.padding_left=6 \
+        --set space.$sid label.highlight_color=${catppuccin.frappe.red} \
+        --set space.$sid background.color=${catppuccin.frappe.surface1} \
+        --set space.$sid background.height=21 \
+        --set space.$sid background.padding_left=$padding_left \
+        --set space.$sid click_script="yabai -m space --focus $sid; ''${SPACE_CLICK_SCRIPTS[$i]}"
+    done
   '';
   top-mem-sh = pkgs.writeShellScriptBin "top-mem.sh" ''
     TOPPROC=$(ps axo "%cpu,ucomm" | sort -nr | tail +1 | head -n1 | awk '{printf "%.0f%% %s\n", $1, $2}' | sed -e 's/com.apple.//g')
@@ -48,38 +86,42 @@ let
     then
       sketchybar \
         --set $NAME \
-          icon.color="0xFFFFFFFF" \
+          icon.color=${catppuccin.frappe.teal} \
           icon="󰚥" \
           label="AC"
     else
       data=$(pmset -g batt)
-      battery_percent=$(echo $data | grep -Eo "\d+%" | cut -d% -f1)
+      battery_percent=$(echo $data | grep -Eo "[0-9]+%" | cut -d% -f1)
       charging=$(echo $data | grep 'AC Power')
 
+      # 根据电量选择颜色和图标
       case "$battery_percent" in
-        100)    icon="󰁹" color=0xFFFFFFFF ;;
-        9[0-9]) icon="󰂂" color=0xFFFFFFFF ;;
-        8[0-9]) icon="󰂁" color=0xFFFFFFFF ;;
-        7[0-9]) icon="󰂀" color=0xFFFFFFFF ;;
-        6[0-9]) icon="󰁿" color=0xFFFFFFFF ;;
-        5[0-9]) icon="󰁾" color=0xFFFFFFFF ;;
-        4[0-9]) icon="󰁽" color=0xFFFFFFFF ;;
-        3[0-9]) icon="󰁼" color=0xFFFFFFFF ;;
-        2[0-9]) icon="󰁻" color=0xFFFFFFFF ;;
-        1[0-9]) icon="󰁺" color=0xFFFFFFFF ;;
-        *)      icon="󰂃" color=0xFFFFFFFF ;;
+        100)    icon="󰁹"; color=${catppuccin.frappe.green} ;;
+        9[0-9]) icon="󰂂"; color=${catppuccin.frappe.green} ;;
+        8[0-9]) icon="󰂁"; color=${catppuccin.frappe.green} ;;
+        7[0-9]) icon="󰂀"; color=${catppuccin.frappe.teal} ;;
+        6[0-9]) icon="󰁿"; color=${catppuccin.frappe.teal} ;;
+        5[0-9]) icon="󰁾"; color=${catppuccin.frappe.blue} ;;
+        4[0-9]) icon="󰁽"; color=${catppuccin.frappe.blue} ;;
+        3[0-9]) icon="󰁼"; color=${catppuccin.frappe.yellow} ;;
+        2[0-9]) icon="󰁻"; color=${catppuccin.frappe.yellow} ;;
+        1[0-9]) icon="󰁺"; color=${catppuccin.frappe.peach} ;;
+        *)      icon="󰂃"; color=${catppuccin.frappe.red} ;;
       esac
 
-      # if is charging
+      # 如果正在充电，添加充电图标
       if ! [ -z "$charging" ]; then
         icon="$icon 󰚥"
+        label_text="$battery_percent%"
+      else
+        label_text="$battery_percent%"
       fi
 
       sketchybar \
         --set $NAME \
           icon.color="$color" \
           icon="$icon" \
-          label="$battery_percent%"
+          label="$label_text"
     fi
   '';
   top-proc-sh = pkgs.writeShellScriptBin "top-proc.sh" ''
@@ -89,38 +131,6 @@ let
       sketchybar -m --set $NAME label="$TOPPROC"
     else
       sketchybar -m --set $NAME label=""
-    fi
-  '';
-  spotify-indicator-sh = pkgs.writeShellScriptBin "spotify-indicator.sh" ''
-    RUNNING="$(osascript -e 'if application "Spotify" is running then return 0')"
-    if [ $RUNNING != 0 ]
-    then
-      RUNNING=1
-    fi
-    PLAYING=1
-    TRACK=""
-    ALBUM=""
-    ARTIST=""
-    if [[ $RUNNING -eq 0 ]]
-    then
-      [[ "$(osascript -e 'if application "Spotify" is running then tell application "Spotify" to get player state')" == "playing" ]] && PLAYING=0
-      TRACK="$(osascript -e 'tell application "Spotify" to get name of current track')"
-      ARTIST="$(osascript -e 'tell application "Spotify" to get artist of current track')"
-      ALBUM="$(osascript -e 'tell application "Spotify" to get album of current track')"
-    fi
-    if [[ -n "$TRACK" ]]
-    then
-      sketchybar -m --set "$NAME" drawing=on
-      [[ "$PLAYING" -eq 0 ]] && ICON=""
-      [[ "$PLAYING" -eq 1 ]] && ICON=""
-      if [ "$ARTIST" == "" ]
-      then
-        sketchybar -m --set "$NAME" label="''${ICON} ''${TRACK} - ''${ALBUM}"
-      else
-        sketchybar -m --set "$NAME" label="''${ICON} ''${TRACK} - ''${ARTIST}"
-      fi
-    else
-      sketchybar -m --set "$NAME" label="" drawing=off
     fi
   '';
 in
@@ -148,7 +158,7 @@ in
               position=top \
               padding_left=5 \
               padding_right=5 \
-              color=0xff2e3440 \
+              color=${catppuccin.frappe.base} \
               shadow=off \
               sticky=on \
               topmost=off
@@ -157,12 +167,10 @@ in
             sketchybar -m --default \
               updates=when_shown \
               drawing=on \
-              cache_scripts=on \
               icon.font="Hack Nerd Font Mono:Bold:18.0" \
-              icon.color=0xffffffff \
+              icon.color=${catppuccin.frappe.text} \
               label.font="Hack Nerd Font Mono:Bold:12.0" \
-              label.color=0xffeceff4 \
-              label.highlight_color=0xff8CABC8
+              label.color=${catppuccin.frappe.text}
 
           ############## SPACE DEFAULTS ##############
             sketchybar -m --default \
@@ -178,62 +186,8 @@ in
               --set apple icon.font="Hack Nerd Font Mono:Regular:20.0" \
               --set apple label.padding_right=0 \
 
-            # SPACE 1: WEB ICON
-            sketchybar -m --add space web left \
-              --set web icon= \
-              --set web icon.highlight_color=0xff8CABC8 \
-              --set web associated_space=1 \
-              --set web icon.padding_left=5 \
-              --set web icon.padding_right=5 \
-              --set web label.padding_right=0 \
-              --set web label.padding_left=0 \
-              --set web label.color=0xffeceff4 \
-              --set web background.color=0xff57627A  \
-              --set web background.height=21 \
-              --set web background.padding_left=12 \
-              --set web click_script="open -a Firefox.app" \
-
-            # SPACE 2: CODE ICON
-            sketchybar -m --add space code left \
-              --set code icon= \
-              --set code associated_space=2 \
-              --set code icon.padding_left=5 \
-              --set code icon.padding_right=5 \
-              --set code label.padding_right=0 \
-              --set code label.padding_left=0 \
-              --set code label.color=0xffeceff4 \
-              --set code background.color=0xff57627A  \
-              --set code background.height=21 \
-              --set code background.padding_left=7 \
-              --set code click_script="$HOME/.nix-profile/bin/wezterm" \
-
-            # SPACE 3: MUSIC ICON
-            #sketchybar -m --add space music left \
-            #  --set music icon= \
-            #  --set music icon.highlight_color=0xff8CABC8 \
-            #  --set music associated_display=1 \
-            #  --set music associated_space=5 \
-            #  --set music icon.padding_left=5 \
-            #  --set music icon.padding_right=5 \
-            #  --set music label.padding_right=0 \
-            #  --set music label.padding_left=0 \
-            #  --set music label.color=0xffeceff4 \
-            #  --set music background.color=0xff57627A  \
-            #  --set music background.height=21 \
-            #  --set music background.padding_left=7 \
-            #  --set music click_script="open -a Spotify.app" \
-
-            # SPOTIFY STATUS
-            # CURRENT SPOTIFY SONG
-            # Adding custom events which can listen on distributed notifications from other running processes
-            #sketchybar -m --add event spotify_change "com.spotify.client.PlaybackStateChanged" \
-            #  --add item spotify_indicator left \
-            #  --set spotify_indicator background.color=0xff57627A  \
-            #  --set spotify_indicator background.height=21 \
-            #  --set spotify_indicator background.padding_left=7 \
-            #  --set spotify_indicator script="${spotify-indicator-sh}/bin/spotify-indicator.sh" \
-            #  --set spotify_indicator click_script="osascript -e 'tell application \"Spotify\" to pause'" \
-            #  --subscribe spotify_indicator spotify_change \
+            # SETUP SPACES WITH NUMBERS AND ICONS
+            ${lib.getExe spaces-sh}
 
           ############## ITEM DEFAULTS ###############
             sketchybar -m --default \
@@ -250,9 +204,9 @@ in
               --set date_time icon.padding_right=0 \
               --set date_time label.padding_right=9 \
               --set date_time label.padding_left=6 \
-              --set date_time label.color=0xffeceff4 \
+              --set date_time label.color=${catppuccin.frappe.text} \
               --set date_time update_freq=20 \
-              --set date_time background.color=0xff57627A \
+              --set date_time background.color=${catppuccin.frappe.surface1} \
               --set date_time background.height=21 \
               --set date_time background.padding_right=12 \
               --set date_time script="${date-time-sh}/bin/date-time.sh" \
@@ -264,8 +218,8 @@ in
               --set battery icon.padding_right=8 \
               --set battery label.padding_right=8 \
               --set battery label.padding_left=0 \
-              --set battery label.color=0xffffffff \
-              --set battery background.color=0xff57627A  \
+              --set battery label.color=${catppuccin.frappe.text} \
+              --set battery background.color=${catppuccin.frappe.surface1} \
               --set battery background.height=21 \
               --set battery background.padding_right=7 \
               --set battery update_freq=10 \
@@ -278,8 +232,8 @@ in
               --set topmem icon.padding_right=0 \
               --set topmem label.padding_right=8 \
               --set topmem label.padding_left=6 \
-              --set topmem label.color=0xffeceff4 \
-              --set topmem background.color=0xff57627A  \
+              --set topmem label.color=${catppuccin.frappe.text} \
+              --set topmem background.color=${catppuccin.frappe.surface1} \
               --set topmem background.height=21 \
               --set topmem background.padding_right=7 \
               --set topmem update_freq=2 \
@@ -292,8 +246,8 @@ in
               --set cpu_percent icon.padding_right=0 \
               --set cpu_percent label.padding_right=8 \
               --set cpu_percent label.padding_left=6 \
-              --set cpu_percent label.color=0xffeceff4 \
-              --set cpu_percent background.color=0xff57627A  \
+              --set cpu_percent label.color=${catppuccin.frappe.text} \
+              --set cpu_percent background.color=${catppuccin.frappe.surface1} \
               --set cpu_percent background.height=21 \
               --set cpu_percent background.padding_right=7 \
               --set cpu_percent update_freq=2 \
@@ -305,8 +259,8 @@ in
               --set caffeine icon.padding_right=0 \
               --set caffeine label.padding_right=0 \
               --set caffeine label.padding_left=6 \
-              --set caffeine label.color=0xffeceff4 \
-              --set caffeine background.color=0xff57627A  \
+              --set caffeine label.color=${catppuccin.frappe.text} \
+              --set caffeine background.color=${catppuccin.frappe.surface1} \
               --set caffeine background.height=21 \
               --set caffeine background.padding_right=7 \
               --set caffeine script="${caffeine-sh}/bin/caffeine.sh" \
@@ -317,12 +271,12 @@ in
               --set topproc drawing=on \
               --set topproc label.padding_right=10 \
               --set topproc update_freq=15 \
-              --set topproc script="${top-proc-sh}/bin/topproc.sh"
+              --set topproc script="${top-proc-sh}/bin/top-proc.sh"
 
           ###################### CENTER ITEMS ###################
             sketchybar   --add item               mode_indicator center \
                --set mode_indicator     drawing=off \
-                                        label.color="0xff57627A" \
+                                        label.color=${catppuccin.frappe.surface1} \
                                         label.font="SF Pro:Bold:14.0" \
                                         background.padding_left=15 \
                                         background.padding_right=15

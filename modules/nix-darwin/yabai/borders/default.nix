@@ -6,13 +6,13 @@
 
 darwin.apple_sdk.stdenv.mkDerivation rec {
   pname = "JankyBorders";
-  version = "dev";
+  version = "unstable-2024-12-17";
 
   src = fetchFromGitHub {
     owner = "FelixKratz";
     repo = pname;
-    rev = "e2af0248fa40ead3f17f1d16c6288b8ddfd9f505";
-    hash = "sha256-rYA6b6d3c4pJVUIV77z/JMcgKbZ+4qZdxkI21LwZcG4=";
+    rev = "522a2d3f9ef22263e79bc7fa696fed911b0faa3b";
+    hash = "sha256-qH1ectK4avjQ7XaDXAUjsgVqCzr+JBCx46wz+Y1uIbY=";
   };
 
   buildInputs = with darwin.apple_sdk.frameworks; [
