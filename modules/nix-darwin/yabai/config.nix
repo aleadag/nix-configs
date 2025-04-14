@@ -1,3 +1,7 @@
+# Refer to:
+# - https://github.com/anujc4/dotfiles/tree/master/macos_wm
+# - https://github.com/heywoodlh/nixos-configs/tree/master/darwin/modules
+# - https://github.com/reo101/rix101/tree/master/modules/nix-darwin/yabai
 {
   config,
   lib,
