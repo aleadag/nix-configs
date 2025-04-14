@@ -20,6 +20,7 @@ in
         "firefox"
         "google-chrome"
         "linearmouse"
+        "microsoft-edge"
         "rectangle"
       ];
     };
