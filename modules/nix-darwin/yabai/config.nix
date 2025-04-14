@@ -54,9 +54,6 @@ in
         layout = "bsp";
       };
       extraConfig =
-        let
-          sketchybarCmd = lib.getExe config.services.sketchybar.package;
-        in
         # bash
         ''
           # Unload the macOS WindowManager process
@@ -64,13 +61,13 @@ in
 
           sudo yabai --load-sa
           yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
-          yabai -m signal --add event=window_focused action="${sketchybarCmd} --trigger window_focus"
-          yabai -m signal --add event=window_created action="${sketchybarCmd} --trigger windows_on_spaces"
-          yabai -m signal --add event=window_destroyed action="${sketchybarCmd} --trigger windows_on_spaces"
+          yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus"
+          yabai -m signal --add event=window_created action="sketchybar --trigger windows_on_spaces"
+          yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces"
           yabai -m signal --add event=window_destroyed action="yabai -m query --windows --window &> /dev/null || yabai -m window --focus mouse"
           yabai -m signal --add event=application_terminated action="yabai -m query --windows --window &> /dev/null || yabai -m window --focus mouse"
           yabai -m signal --add event=display_resized action="launchctl stop org.nixos.sketchybar && launchctl start org.nixos.sketchybar"
-          yabai -m signal --add event=system_woke action="sh -c 'sleep 1; ${sketchybarCmd} --reload'"
+          yabai -m signal --add event=system_woke action="sh -c 'sleep 1; sketchybar --reload'"
 
           # Exclude problematic apps from being managed:
           yabai -m rule --add app="^(LuLu|Vimac|Calculator|Software Update|Dictionary|VLC|System Preferences|System Settings|zoom.us|Photo Booth|Archive Utility|Python|LibreOffice|App Store|Steam|Alfred|Activity Monitor)$" manage=off

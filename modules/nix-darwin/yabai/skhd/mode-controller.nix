@@ -1,6 +1,5 @@
 {
   pkgs,
-  sketchybar,
   ...
 }:
 let
@@ -8,9 +7,6 @@ let
 in
 pkgs.writeShellApplication {
   name = "skhd-mode-controller";
-  runtimeInputs = [
-    sketchybar
-  ];
   text =
     # bash
     ''

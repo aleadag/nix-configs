@@ -1,14 +1,10 @@
 {
   pkgs,
-  yabai,
-  sketchybar,
   ...
 }:
 pkgs.writeShellApplication {
   name = "skhd-toggle-zen-mode";
   runtimeInputs = with pkgs; [
-    yabai
-    sketchybar
     jq
   ];
   text = ''
