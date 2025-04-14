@@ -24,4 +24,16 @@ darwin.apple_sdk.stdenv.mkDerivation rec {
     mkdir -p $out/bin
     cp ./bin/borders $out/bin/
   '';
+
+  meta = {
+    description = "Fancy borders for macOS windows";
+    homepage = "https://github.com/FelixKratz/JankyBorders";
+    license = "MIT";
+    platforms = [
+      "aarch64-darwin"
+      "x86_64-darwin"
+    ];
+    maintainers = [ "aleadag" ];
+    mainProgram = "borders";
+  };
 }
