@@ -21,7 +21,6 @@ in
         "google-chrome"
         "linearmouse"
         "microsoft-edge"
-        "rectangle"
       ];
     };
 
