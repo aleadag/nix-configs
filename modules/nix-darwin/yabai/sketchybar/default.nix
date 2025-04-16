@@ -11,7 +11,7 @@ let
   cfg = config.nix-darwin.yabai;
   catppuccin = import ../catppuccin.nix;
   date-time-sh = pkgs.writeShellScriptBin "date-time.sh" ''
-    sketchybar -m --set $NAME label="$(date '+%a %d %b %H:%M')"
+    sketchybar -m --set $NAME label="$(date '+%H:%M, %a %d')"
   '';
   spaces-sh = pkgs.writeShellScriptBin "spaces.sh" ''
     SPACE_ICONS=("" "" "" "" "")
