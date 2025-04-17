@@ -16,6 +16,7 @@ This config is mainly based on
 repositories that helped me to build this config:
 
 - https://github.com/thiagokokada/nix-configs
+- https://github.com/wimpysworld/nix-config
 - https://github.com/bqv/nixrc
 - https://github.com/colemickens/nixcfg
 - https://github.com/hlissner/dotfiles
