@@ -157,6 +157,14 @@ in
             };
           }
           // {
+            disk = {
+              inherit (cfg) interval;
+              format = "  {percentage_free}%";
+              states = {
+                warning = 75;
+                critical = 95;
+              };
+            };
             memory = {
               inherit (cfg) interval;
               format = " {avail:0.0f}G";
