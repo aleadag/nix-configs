@@ -64,6 +64,7 @@ in
               lib.pipe
                 [
                   "network"
+                  "disk"
                   "memory"
                   "cpu#load"
                   "temperature"
