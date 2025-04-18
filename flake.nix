@@ -75,7 +75,10 @@
       [
         {
           lib = libEx;
-          configs = import ./configs;
+          internal = {
+            configs = import ./configs;
+            sharedModules.default = import ./modules/shared;
+          };
           darwinModules.default = import ./modules/nix-darwin;
           homeModules.default = import ./modules/home-manager;
           nixosModules.default = import ./modules/nixos;
@@ -87,7 +90,7 @@
           let
             pkgs = import nixpkgs {
               inherit system;
-              config = self.outputs.configs.nixpkgs;
+              config = self.outputs.internal.configs.nixpkgs;
               overlays = [ self.overlays.default ];
             };
             treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
@@ -108,14 +111,6 @@
             legacyPackages = pkgs;
           }
         ))
-
-        # GitHub Actions
-        (libEx.mkGHActionsYAMLs [
-          "build-and-cache"
-          "update-flakes"
-          "update-flakes-darwin"
-          "validate-flakes"
-        ])
       ]
       ++
         # NixOS configs

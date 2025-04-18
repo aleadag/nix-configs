@@ -16,6 +16,44 @@ final: prev:
 
   inherit (inputs.nix-proxy-manager.packages.${prev.system}) nix-proxy-manager;
 
+  generate-gh-actions =
+    let
+      mkGHActionsYAML =
+        name:
+        prev.runCommand name
+          {
+            buildInputs = with prev; [
+              actionlint
+              yj
+            ];
+            json = builtins.toJSON (import ../actions/${name}.nix);
+            passAsFile = [ "json" ];
+          }
+          ''
+            mkdir -p $out
+            yj -jy < "$jsonPath" > $out/${name}.yml
+            actionlint -verbose $out/${name}.yml
+          '';
+      ghActionsYAMLs = map mkGHActionsYAML [
+        "build-and-cache"
+        "update-flakes"
+        "update-flakes-darwin"
+        "validate-flakes"
+      ];
+      resultDir = ".github/workflows";
+    in
+    prev.writeShellApplication {
+      name = "generate-gh-actions";
+      text = ''
+        rm -rf "${resultDir}"
+        mkdir -p "${resultDir}"
+        for dir in ${builtins.toString ghActionsYAMLs}; do
+          cp -f $dir/*.yml "${resultDir}"
+        done
+        echo Done!
+      '';
+    };
+
   open-browser = prev.callPackage ../packages/open-browser { };
 
   neovim-standalone =

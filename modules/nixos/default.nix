@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ../shared
+    flake.outputs.internal.sharedModules.default
     ./desktop
     ./games
     ./home.nix

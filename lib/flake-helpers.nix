@@ -19,45 +19,6 @@ let
     );
 in
 {
-  mkGHActionsYAMLs =
-    names:
-    eachDefaultSystem (
-      system:
-      let
-        pkgs = self.outputs.legacyPackages.${system};
-        mkGHActionsYAML =
-          name:
-          pkgs.runCommand name
-            {
-              buildInputs = with pkgs; [
-                actionlint
-                yj
-              ];
-              json = builtins.toJSON (import ../actions/${name}.nix);
-              passAsFile = [ "json" ];
-            }
-            ''
-              mkdir -p $out
-              yj -jy < "$jsonPath" > $out/${name}.yml
-              actionlint -verbose $out/${name}.yml
-            '';
-        ghActionsYAMLs = map mkGHActionsYAML names;
-      in
-      {
-        apps.githubActions = {
-          type = "app";
-          program = nixpkgs.lib.getExe (
-            pkgs.writeShellScriptBin "generate-gh-actions" ''
-              for dir in ${builtins.toString ghActionsYAMLs}; do
-                cp -f $dir/*.yml .github/workflows/
-              done
-              echo Done!
-            ''
-          );
-        };
-      }
-    );
-
   mkNixOSConfig =
     {
       hostname,
@@ -83,11 +44,13 @@ in
         "nixosActivations/${hostname}" = {
           type = "app";
           program = "${config.system.build.toplevel}/activate";
+          meta.description = "NixOS activation script for ${hostname}";
         };
 
         "nixosVMs/${hostname}" = {
           type = "app";
           program = nixpkgs.lib.getExe config.system.build.vm;
+          meta.description = "NixOS VM test for ${hostname}";
         };
       };
     };
@@ -123,6 +86,7 @@ in
               } switch --flake '.#${hostname}'
             ''
           );
+          meta.description = "nix-darwin activation script for ${hostname}";
         };
       };
     };
@@ -152,6 +116,7 @@ in
       apps.${system}."homeActivations/${hostname}" = {
         type = "app";
         program = "${self.outputs.homeConfigurations.${hostname}.activationPackage}/activate";
+        meta.description = "Home activation script for ${hostname}";
       };
     };
 }
