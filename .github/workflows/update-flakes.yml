@@ -13,7 +13,7 @@ jobs:
         with:
           authToken: ${{ secrets.CACHIX_TOKEN }}
           extraPullNames: nix-community
-          name: thiagokokada-nix-configs
+          name: aleadag-nix-configs
       - uses: thiagokokada/free-disk-space@main
         with:
           opt: true
