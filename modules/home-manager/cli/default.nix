@@ -69,7 +69,6 @@ in
       gnused
       hyperfine
       imagemagick
-      ix
       jq
       less
       lsof
