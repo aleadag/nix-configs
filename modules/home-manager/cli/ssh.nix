@@ -35,7 +35,7 @@
           # proxyCommand = "nc -x 127.0.0.1:7890 %h %p";
         };
         "hf.co" = {
-          identityFile = with config.home; "${homeDirectory}/.ssh/hugging_face";
+          identityFile = with config.home; "${homeDirectory}/.ssh/huggingface";
         };
       };
     };
