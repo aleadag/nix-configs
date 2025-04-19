@@ -25,8 +25,6 @@ in
       };
       defaultSopsFile = ../../secrets/secrets.yaml;
       secrets = {
-        attic.path = "${config.home.homeDirectory}/.config/attic/config.toml";
-
         ssh_key.path = "${config.home.homeDirectory}/.ssh/id_rsa";
         ssh_pub.path = "${config.home.homeDirectory}/.ssh/id_rsa.pub";
 
