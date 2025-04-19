@@ -12,6 +12,7 @@
     ./gui
     ./meta
     ./nix
+    ./sops.nix
   ];
 
   home = {
