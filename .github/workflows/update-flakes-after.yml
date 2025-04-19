@@ -1,5 +1,6 @@
 jobs:
-  build-aarch64-darwin:
+  update-flakes-aarch64-darwin:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,7 +19,8 @@ jobs:
         run: nix build --print-build-logs '.#homeConfigurations.home-mac.activationPackage'
       - name: 'Build nix-darwin configs for: t0'
         run: nix build --print-build-logs '.#darwinConfigurations.t0.system'
-  build-aarch64-linux:
+  update-flakes-aarch64-linux:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
@@ -43,32 +45,11 @@ jobs:
         run: nix build --print-build-logs '.#homeConfigurations.lckfb.activationPackage'
       - name: 'Build NixOS configs for: jetson-nixos'
         run: nix build --print-build-logs '.#nixosConfigurations.jetson-nixos.config.system.build.toplevel'
-  build-x86_64-linux:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v31
-        with:
-          extra_nix_config: |-
-            accept-flake-config = true
-            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
-          nix_path: nixpkgs=channel:nixos-unstable
-      - uses: cachix/cachix-action@v16
-        with:
-          authToken: ${{ secrets.CACHIX_TOKEN }}
-          extraPullNames: nix-community
-          name: thiagokokada-nix-configs
-      - uses: thiagokokada/free-disk-space@main
-        with:
-          opt: true
-          tool-cache: true
-          usrlocal: true
-          usrmisc: true
-      - name: 'Build Home-Manager configs for: mbx'
-        run: nix build --print-build-logs '.#homeConfigurations.mbx.activationPackage'
-      - name: 'Build NixOS configs for: pvg1-nixos'
-        run: nix build --print-build-logs '.#nixosConfigurations.pvg1-nixos.config.system.build.toplevel'
-name: build-and-cache
+name: update-flakes-after
 "on":
-  - push
-  - workflow_dispatch
+  workflow_dispatch: null
+  workflow_run:
+    types:
+      - completed
+    workflows:
+      - update-flakes

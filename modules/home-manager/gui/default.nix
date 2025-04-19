@@ -10,10 +10,14 @@
   };
 
   config = lib.mkIf config.home-manager.gui.enable {
-    home.packages = with pkgs; [
-      # https://github.com/NixOS/nixpkgs/issues/354200
-      keepassxc
-      anki-bin
-    ];
+    home.packages =
+      with pkgs;
+      [
+        # https://github.com/NixOS/nixpkgs/issues/354200
+        keepassxc
+      ]
+      ++ (lib.optionals (stdenv.hostPlatform.system != "aarch64-linux") [
+        anki-bin
+      ]);
   };
 }

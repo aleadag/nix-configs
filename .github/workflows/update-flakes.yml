@@ -1,25 +1,25 @@
 jobs:
-  update-flakes:
+  update-flakes-x86_64-linux:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |-
+            accept-flake-config = true
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+          nix_path: nixpkgs=channel:nixos-unstable
+      - uses: cachix/cachix-action@v16
+        with:
+          authToken: ${{ secrets.CACHIX_TOKEN }}
+          extraPullNames: nix-community
+          name: thiagokokada-nix-configs
       - uses: thiagokokada/free-disk-space@main
         with:
           opt: true
           tool-cache: true
           usrlocal: true
           usrmisc: true
-      - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v30
-        with:
-          extra_nix_config: |-
-            accept-flake-config = true
-            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
-          nix_path: nixpkgs=channel:nixos-unstable
-      - uses: cachix/cachix-action@v15
-        with:
-          authToken: ${{ secrets.CACHIX_TOKEN }}
-          extraPullNames: nix-community
-          name: aleadag-nix-configs
       - name: Update flake.lock
         run: |
           git config user.name "${{ github.actor }}"
@@ -27,8 +27,8 @@ jobs:
           nix flake update --commit-lock-file
       - name: 'Build Home-Manager configs for: mbx'
         run: nix build --print-build-logs '.#homeConfigurations.mbx.activationPackage'
-      - name: 'Build NixOS configs for: dummy-nixos'
-        run: nix build --print-build-logs '.#nixosConfigurations.dummy-nixos.config.system.build.toplevel'
+      - name: 'Build NixOS configs for: pvg1-nixos'
+        run: nix build --print-build-logs '.#nixosConfigurations.pvg1-nixos.config.system.build.toplevel'
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:

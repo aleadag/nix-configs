@@ -1,9 +1,11 @@
 let
   constants = import ./constants.nix;
-  nixFlags = [ "--print-build-logs" ];
+  utils = import ./utils.nix;
+  sharedNixFlags = [ "--print-build-logs" ];
 in
 with constants;
-{
+with utils;
+rec {
   freeDiskSpaceStep = {
     uses = actions.free-disk-space;
     "with" = {
@@ -13,40 +15,47 @@ with constants;
       usrmisc = true;
     };
   };
+
   checkoutStep = {
     uses = actions.checkout;
   };
-  installNixActionStep =
-    {
-      extraNixConfig ? [ ],
-    }:
-    {
-      uses = actions.install-nix-action;
-      "with" = {
-        # Need to define a channel, otherwise it will use bash from environment
-        nix_path = "nixpkgs=channel:nixos-unstable";
-        extra_nix_config = builtins.concatStringsSep "\n" (
-          [
-            "accept-flake-config = true"
-            # Should avoid GitHub API rate limit
-            "access-tokens = github.com=\${{ secrets.GITHUB_TOKEN }}"
-          ]
-          ++ extraNixConfig
-        );
-      };
+
+  installNixActionStep = {
+    uses = actions.install-nix-action;
+    "with" = {
+      # Need to define a channel, otherwise it will use bash from environment
+      nix_path = "nixpkgs=channel:nixos-unstable";
+      extra_nix_config = builtins.concatStringsSep "\n" [
+        "accept-flake-config = true"
+        # Should avoid GitHub API rate limit
+        "access-tokens = github.com=${escapeGhVar "secrets.GITHUB_TOKEN"}"
+      ];
     };
+  };
+
   cachixActionStep = {
     uses = actions.cachix-action;
     "with" = {
-      name = "aleadag-nix-configs";
+      name = "thiagokokada-nix-configs";
       extraPullNames = "nix-community";
-      authToken = "\${{ secrets.CACHIX_TOKEN }}";
+      authToken = escapeGhVar "secrets.CACHIX_TOKEN";
     };
   };
+
+  withSharedSteps =
+    steps:
+    [
+      checkoutStep
+      installNixActionStep
+      cachixActionStep
+    ]
+    ++ steps;
+
   validateFlakesStep = {
     name = "Validate Flakes";
-    run = "nix flake check --all-systems ${toString nixFlags}";
+    run = "nix flake check --all-systems ${toString sharedNixFlags}";
   };
+
   buildNixDarwinConfigurations =
     {
       hostnames ? [ ],
@@ -57,10 +66,13 @@ with constants;
       run = builtins.concatStringsSep "\n" (
         map (
           hostname:
-          "nix build ${toString (nixFlags ++ extraNixFlags)} '.#darwinConfigurations.${hostname}.system'"
+          "nix build ${
+            toString (sharedNixFlags ++ extraNixFlags)
+          } '.#darwinConfigurations.${hostname}.system'"
         ) hostnames
       );
     };
+
   buildHomeManagerConfigurations =
     {
       hostnames ? [ ],
@@ -72,11 +84,12 @@ with constants;
         map (
           hostname:
           "nix build ${
-            toString (nixFlags ++ extraNixFlags)
+            toString (sharedNixFlags ++ extraNixFlags)
           } '.#homeConfigurations.${hostname}.activationPackage'"
         ) hostnames
       );
     };
+
   buildNixOSConfigurations =
     {
       hostnames ? [ ],
@@ -88,19 +101,21 @@ with constants;
         map (
           hostname:
           "nix build ${
-            toString (nixFlags ++ extraNixFlags)
+            toString (sharedNixFlags ++ extraNixFlags)
           } '.#nixosConfigurations.${hostname}.config.system.build.toplevel'"
         ) hostnames
       );
     };
+
   updateFlakeLockStep = {
     name = "Update flake.lock";
     run = ''
-      git config user.name "''${{ github.actor }}"
-      git config user.email "''${{ github.actor }}@users.noreply.github.com"
+      git config user.name "${escapeGhVar "github.actor"}"
+      git config user.email "${escapeGhVar "github.actor"}@users.noreply.github.com"
       nix flake update --commit-lock-file
     '';
   };
+
   createPullRequestStep = {
     name = "Create Pull Request";
     uses = actions.create-pull-request;
@@ -111,16 +126,8 @@ with constants;
       body = ''
         ## Run report
 
-        https://github.com/''${{ github.repository }}/actions/runs/''${{ github.run_id }}
+        https://github.com/${escapeGhVar "github.repository"}/actions/runs/${escapeGhVar "github.run_id"}
       '';
     };
-  };
-  installUbuntuPackages = packages: {
-    name = "Install Ubuntu packages: ${builtins.concatStringsSep ", " packages}";
-    run = ''
-      export DEBIAN_FRONTEND=noninteractive
-      sudo apt-get update -q -y
-      sudo apt-get install -q -y ${toString packages}
-    '';
   };
 }
