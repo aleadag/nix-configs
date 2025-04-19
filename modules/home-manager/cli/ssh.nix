@@ -30,13 +30,26 @@
           sendEnv = [ "COLORTERM" ];
         };
         "github.com" = {
-          identityFile = with config.home; "${homeDirectory}/.ssh/github";
+          identityFile = config.sops.secrets.ssh_gh_key.path;
           # This need to set per request
           # proxyCommand = "nc -x 127.0.0.1:7890 %h %p";
         };
         "hf.co" = {
-          identityFile = with config.home; "${homeDirectory}/.ssh/huggingface";
+          identityFile = config.sops.secrets.ssh_hf_key.path;
         };
+      };
+    };
+
+    sops = {
+      secrets = {
+        ssh_key.path = "${config.home.homeDirectory}/.ssh/id_rsa";
+        ssh_pub.path = "${config.home.homeDirectory}/.ssh/id_rsa.pub";
+
+        ssh_gh_key = { };
+        ssh_gh_pub = { };
+
+        ssh_hf_key = { };
+        ssh_hf_pub = { };
       };
     };
   };

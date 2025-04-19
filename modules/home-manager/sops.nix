@@ -25,15 +25,6 @@ in
       };
       defaultSopsFile = ../../secrets/secrets.yaml;
       secrets = {
-        ssh_key.path = "${config.home.homeDirectory}/.ssh/id_rsa";
-        ssh_pub.path = "${config.home.homeDirectory}/.ssh/id_rsa.pub";
-
-        ssh_gh_key.path = "${config.home.homeDirectory}/.ssh/github";
-        ssh_gh_pub.path = "${config.home.homeDirectory}/.ssh/github.pub";
-
-        ssh_hf_key.path = "${config.home.homeDirectory}/.ssh/huggingface";
-        ssh_hf_pub.path = "${config.home.homeDirectory}/.ssh/huggingface.pub";
-
         clash_remotes = { };
       };
     };
