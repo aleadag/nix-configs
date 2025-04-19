@@ -36,8 +36,26 @@ in
       package = lib.mkDefault pkgs.nix;
       settings = flake.outputs.internal.configs.nix;
       extraOptions = ''
+        netrc-file = ${config.sops.secrets.netrc.path}
         !include nix.local.conf
       '';
+    };
+
+    # https://dl.thalheim.io/
+    sops = {
+      secrets =
+        let
+          sopsFile = ../../../secrets/attic.yaml;
+        in
+        {
+          attic = {
+            inherit sopsFile;
+            path = "${config.home.homeDirectory}/.config/attic/config.toml";
+          };
+          netrc = {
+            inherit sopsFile;
+          };
+        };
     };
 
     # Config for ad-hoc nix commands invocation
