@@ -74,9 +74,7 @@ in
           "super+0" = "goto_tab 10";
         };
       font = {
-        inherit (fonts.symbols) package;
-        # macOS, it cannot find Hack Nerd Font, have to use 'Hack Nerd Font Mono'!
-        name = "Hack Nerd Font Mono";
+        inherit (fonts.symbols) package name;
         size = cfg.fontSize;
       };
       settings = {
@@ -118,7 +116,8 @@ in
 
       darwinLaunchOptions = [
         "--single-instance"
-        (lib.getExe config.programs.zsh.package)
+        # It seems macOS sometimes start a non-login shell, force it here
+        "${lib.getExe config.programs.zsh.package} --login"
       ];
 
       shellIntegration.mode = "enabled";
