@@ -81,14 +81,15 @@ in
             "type:keyboard" = {
               xkb_layout = lib.mkIf (layout != null) layout;
               xkb_variant = lib.mkIf (variant != null) variant;
-              # xkb_options = lib.mkIf (options != [ ]) (lib.concatStringsSep "," options);
+              xkb_options = lib.mkIf (options != [ "" ]) (lib.concatStringsSep "," options);
               repeat_delay = "300";
             };
             "type:pointer" = {
               accel_profile = "flat";
             };
             "type:touchpad" = {
-              middle_emulation = "enabled";
+              # if enable this, it may cause toggle touchpad behave strangely
+              # middle_emulation = "enabled";
               natural_scroll = "enabled";
               scroll_method = "two_finger";
               tap = "enabled";
