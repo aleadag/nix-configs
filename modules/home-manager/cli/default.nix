@@ -29,7 +29,7 @@ in
     ./git.nix
     ./htop.nix
     ./irssi.nix
-    ./ssh.nix
+    ./ssh
     ./starship.nix
     ./tmux.nix
     ./yazi.nix

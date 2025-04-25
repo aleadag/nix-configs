@@ -24,11 +24,36 @@
     ];
 
     # Use direnv to manage development environments
-    programs.direnv = {
-      enable = true;
-      nix-direnv.enable = true;
-      # optional for nix flakes support in home-manager 21.11, not required in home-manager unstable or 22.05
-      # nix-direnv.enableFlakes = true;
+    programs = {
+      direnv = {
+        enable = true;
+        enableZshIntegration = false;
+      };
+
+      tealdeer = {
+        enable = true;
+        settings = {
+          display = {
+            compact = false;
+            use_pager = true;
+          };
+          updates = {
+            auto_update = false;
+          };
+        };
+      };
+
+      zsh.initContent =
+        # manually creating integrations since this is faster than calling
+        # the `direnv hook zsh` itself during startup
+        # bash
+        ''
+          source ${
+            pkgs.runCommand "direnv-hook-zsh" { buildInputs = [ config.programs.direnv.package ]; } ''
+              direnv hook zsh > $out
+            ''
+          }
+        '';
     };
   };
 }

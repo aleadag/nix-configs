@@ -180,7 +180,7 @@ in
           '';
       };
 
-      zsh.initExtra =
+      zsh.initContent =
         lib.mkIf config.programs.zsh.enable # bash
           ''
             # Do not enable those alias in non-wezterm terminal

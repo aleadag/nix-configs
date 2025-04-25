@@ -106,14 +106,6 @@ in
               ulimit -Sn 524288
             ''
           )
-          (lib.optionalString config.home-manager.crostini.enable # bash
-            ''
-              # Force truecolor support in Crostini
-              export COLORTERM=truecolor
-              # https://github.com/nix-community/home-manager/issues/3711
-              export LC_CTYPE=C.UTF-8
-            ''
-          )
           # bash
           ''
             # Source .profile
@@ -121,31 +113,35 @@ in
           ''
         ];
 
-        initExtraBeforeCompInit = # bash
-          ''
-            # try to correct the spelling of commands
-            setopt correct
-            # disable C-S/C-Q
-            setopt noflowcontrol
-            # disable "no matches found" check
-            unsetopt nomatch
+        initContent = lib.mkMerge [
+          (lib.mkOrder 900
+            # bash
+            ''
+              # try to correct the spelling of commands
+              setopt correct
+              # disable C-S/C-Q
+              setopt noflowcontrol
+              # disable "no matches found" check
+              unsetopt nomatch
 
-            # source contents from ~/.zshrc.d/*.zsh
-            for file in "$HOME/.zshrc.d/"*.zsh; do
-              [[ -f "$file" ]] && source "$file"
-            done
-          '';
+              # disable clock
+              unset RPROMPT
 
-        initExtra =
-          # bash
-          ''
-            # disable clock
-            unset RPROMPT
-
-            # prezto default matching does annoying partial matching
-            # e.g.: something-|.json
-            zstyle ':completion:*' matcher-list 'm:{[:lower:]}={[:upper:]}' 'm:{[:upper:]}={[:lower:]}' 'r:|=* r:|=*'
-          '';
+              # prezto default matching does annoying partial matching
+              # e.g.: something-|.json
+              zstyle ':completion:*' matcher-list 'm:{[:lower:]}={[:upper:]}' 'm:{[:upper:]}={[:lower:]}' 'r:|=* r:|=*'
+            ''
+          )
+          (lib.mkOrder 1200
+            # bash
+            ''
+              # source contents from ~/.zshrc.d/*.zsh
+              for file in "$HOME/.zshrc.d/"*.zsh; do
+                [[ -f "$file" ]] && source "$file"
+              done
+            ''
+          )
+        ];
 
         prezto = {
           enable = true;
