@@ -27,7 +27,7 @@
     programs = {
       direnv = {
         enable = true;
-        enableZshIntegration = false;
+        nix-direnv.enable = true;
       };
 
       tealdeer = {
@@ -42,18 +42,6 @@
           };
         };
       };
-
-      zsh.initContent =
-        # manually creating integrations since this is faster than calling
-        # the `direnv hook zsh` itself during startup
-        # bash
-        ''
-          source ${
-            pkgs.runCommand "direnv-hook-zsh" { buildInputs = [ config.programs.direnv.package ]; } ''
-              direnv hook zsh > $out
-            ''
-          }
-        '';
     };
   };
 }
