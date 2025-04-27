@@ -9,6 +9,7 @@
   imports = [
     ./httpie.nix
     ./nix.nix
+    ./node.nix
   ];
 
   options.home-manager.dev.enable = lib.mkEnableOption "dev config" // {
