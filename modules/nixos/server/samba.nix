@@ -42,26 +42,40 @@ in
                 "preferred master" = true;
                 "server string" = hostName;
                 "netbios name" = hostName;
-                "use sendfile" = "yes";
-                "hosts allow" = "192.168.0.0/16 172.16.0.0/12 10.0.0.0/8 localhost";
+                "use sendfile" = true;
+                "hosts allow" = lib.concatStringsSep " " [
+                  "192.168.0.0/16"
+                  "172.16.0.0/12"
+                  "10.0.0.0/8"
+                  (lib.optionalString config.nixos.server.tailscale.enable "100.64.0.0/10")
+                  "localhost"
+                ];
                 "hosts deny" = "0.0.0.0/0";
+                "bind interfaces only" = lib.mkIf config.nixos.server.tailscale.enable false;
                 "guest account" = "nobody";
                 "map to guest" = "bad user";
                 "mangled names" = false;
-                "vfs objects" = "catia";
-                "catia:mappings" =
-                  "0x22:0xa8,0x2a:0xa4,0x2f:0xf8,0x3a:0xf7,0x3c:0xab,0x3e:0xbb,0x3f:0xbf,0x5c:0xff,0x7c:0xa6,0x20:0xb1";
+                "vfs objects" = "catia fruit";
               };
             }
             // (lib.mapAttrs (_: path: {
-              browseable = "yes";
-              "read only" = "no";
-              "guest ok" = "no";
+              inherit path;
+              "browseable" = true;
+              "read only" = false;
+              "guest ok" = false;
               "create mask" = "0644";
               "directory mask" = "0755";
+              # Needs to manually add the password for a new user using:
+              # smbpasswd -a <username>
               "force user" = username;
               "force group" = group;
             }) cfg.shares);
+        };
+
+        # advertise to Windows hosts
+        samba-wsdd = {
+          enable = true;
+          openFirewall = true;
         };
       };
     };
