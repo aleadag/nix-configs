@@ -24,9 +24,6 @@ in
         generateKey = false;
       };
       defaultSopsFile = ../../secrets/secrets.yaml;
-      secrets = {
-        clash_remotes = { };
-      };
     };
   };
 }

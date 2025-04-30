@@ -11,6 +11,7 @@
     ./editor
     ./gui
     ./meta
+    ./mihomo
     ./nix
     ./sops.nix
   ];

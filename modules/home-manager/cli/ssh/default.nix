@@ -50,17 +50,15 @@
         '';
     };
 
-    sops = {
-      secrets = {
-        ssh_key.path = "${config.home.homeDirectory}/.ssh/id_rsa";
-        ssh_pub.path = "${config.home.homeDirectory}/.ssh/id_rsa.pub";
+    sops.secrets = {
+      ssh_key.path = "${config.home.homeDirectory}/.ssh/id_rsa";
+      ssh_pub.path = "${config.home.homeDirectory}/.ssh/id_rsa.pub";
 
-        ssh_gh_key = { };
-        ssh_gh_pub = { };
+      ssh_gh_key = { };
+      ssh_gh_pub = { };
 
-        ssh_hf_key = { };
-        ssh_hf_pub = { };
-      };
+      ssh_hf_key = { };
+      ssh_hf_pub = { };
     };
   };
 }
