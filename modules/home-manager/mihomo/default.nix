@@ -19,7 +19,7 @@ let
 
     Service = {
       ExecStart = "${getExe package}";
-      Restart = "on-abort";
+      Restart = "on-failure";
     };
   };
 
