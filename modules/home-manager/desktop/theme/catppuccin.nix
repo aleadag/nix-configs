@@ -13,5 +13,6 @@ in
     cache.enable = true;
     # Workaround: https://github.com/catppuccin/nix/issues/552
     mako.enable = false;
+    fcitx5.enable = false;
   };
 }
