@@ -7,6 +7,11 @@ in
     flake.inputs.catppuccin.homeModules.catppuccin
   ];
 
-  catppuccin.flavor = cfg.flavor;
-  catppuccin.enable = true;
+  catppuccin = {
+    inherit (cfg) flavor;
+    enable = true;
+    cache.enable = true;
+    # Workaround: https://github.com/catppuccin/nix/issues/552
+    mako.enable = false;
+  };
 }
