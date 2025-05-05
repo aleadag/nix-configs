@@ -27,6 +27,8 @@ let
     enable = true;
     config = {
       ProgramArguments = [ "${getExe package}" ];
+      KeepAlive = true;
+      RunAtLoad = true;
     };
   };
 
