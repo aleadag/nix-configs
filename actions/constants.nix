@@ -1,5 +1,7 @@
 {
   actions = {
+    # https://github.com/ryanccn/attic-action
+    attic-action = "ryanccn/attic-action@v0";
     # https://github.com/marketplace/actions/cachix
     cachix-action = "cachix/cachix-action@v16";
     # https://github.com/marketplace/actions/checkout

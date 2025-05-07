@@ -33,12 +33,12 @@ rec {
     };
   };
 
-  cachixActionStep = {
-    uses = actions.cachix-action;
+  atticActionStep = {
+    uses = actions.attic-action;
     "with" = {
-      name = "aleadag-nix-configs";
-      extraPullNames = "nix-community";
-      authToken = escapeGhVar "secrets.CACHIX_TOKEN";
+      endpoint = "https://attic.tisvc.cc";
+      cache = "nix-configs";
+      token = escapeGhVar "secrets.ATTIC_TOKEN";
     };
   };
 
@@ -47,7 +47,7 @@ rec {
     [
       checkoutStep
       installNixActionStep
-      cachixActionStep
+      atticActionStep
     ]
     ++ steps;
 
