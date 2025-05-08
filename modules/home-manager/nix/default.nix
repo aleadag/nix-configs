@@ -36,26 +36,33 @@ in
       package = lib.mkDefault pkgs.nix;
       settings = flake.outputs.internal.configs.nix;
       extraOptions = ''
-        netrc-file = ${config.sops.secrets.netrc.path}
+        netrc-file = ${config.sops.templates."netrc".path}
         !include nix.local.conf
       '';
     };
 
     # https://dl.thalheim.io/
     sops = {
-      secrets =
-        let
-          sopsFile = ../../../secrets/attic.yaml;
-        in
-        {
-          attic = {
-            inherit sopsFile;
-            path = "${config.home.homeDirectory}/.config/attic/config.toml";
-          };
-          netrc = {
-            inherit sopsFile;
-          };
+      secrets.attic_token = { };
+
+      templates = {
+        "netrc".content = # netrc
+          ''
+            machine attic.tisvc.cc
+            password ${config.sops.placeholder.attic_token}
+          '';
+        "attic.toml" = {
+          content = # toml
+            ''
+              default-server = "tisvc"
+
+              [servers.tisvc]
+              endpoint = "https://attic.tisvc.cc"
+              token = "${config.sops.placeholder.attic_token}"
+            '';
+          path = "${config.home.homeDirectory}/.config/attic/config.toml";
         };
+      };
     };
 
     # Config for ad-hoc nix commands invocation
