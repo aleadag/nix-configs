@@ -57,7 +57,10 @@ in
         # 注意规则在满足自己需求情况下，尽量做到精简，不要过度复杂，以免影响性能。
         # https://github.com/qichiyuhub/rule/blob/main/config/mihomo/config.yaml
         sops = {
-          secrets.airport1 = { };
+          secrets = {
+            airport1 = { };
+            mihomo_secret = { };
+          };
           templates."mihomo.yaml".content = # yaml
             ''
               # 锚点定义
@@ -158,7 +161,7 @@ in
 
               # 控制面板
               external-controller: 0.0.0.0:9090
-              secret: 3Di6yzhP
+              secret: ${config.sops.placeholder.mihomo_secret}
               external-ui: ./ui
               external-ui-url: https://github.com/Zephyruso/zashboard/archive/refs/heads/gh-pages.zip
 
@@ -337,6 +340,7 @@ in
               # 此规则部分没有做防泄露处理，因为弊严重大于利！
               rules:
                 - DOMAIN-SUFFIX,qichiyu.com,🚀 默认代理
+                - RULE-SET,private_ip,🔰 直连
                 - RULE-SET,private_domain,🔰 直连
                 - RULE-SET,apple_domain,🍎 Apple
                 - RULE-SET,proxylite,🚀 默认代理
@@ -362,6 +366,9 @@ in
 
               # 规则集
               rule-providers:
+                private_ip:
+                  <<: *ip_rule_provider
+                  url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.mrs
                 private_domain:
                   <<: *domain_rule_provider
                   url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs
