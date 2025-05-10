@@ -19,6 +19,7 @@ in
     ./kitty.nix
     ./mpv
     ./nixgl.nix
+    ./nyxt
     ./theme
     ./wayland
     ./wezterm.nix

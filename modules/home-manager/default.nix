@@ -14,6 +14,7 @@
     ./mihomo
     ./nix
     ./sops.nix
+    ./syncthing.nix
   ];
 
   home = {
