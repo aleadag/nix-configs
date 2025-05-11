@@ -9,7 +9,8 @@ let
 in
 {
   options.home-manager.desktop.nyxt.enable = lib.mkEnableOption "Nyxt config" // {
-    default = config.home-manager.desktop.enable;
+    # not stable for now
+    default = false;
   };
 
   config = lib.mkIf cfg.enable {

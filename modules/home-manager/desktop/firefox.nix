@@ -2,6 +2,7 @@
   config,
   lib,
   osConfig,
+  pkgs,
   ...
 }:
 
@@ -14,18 +15,29 @@ in
     enable = lib.mkEnableOption "Firefox config" // {
       default = config.home-manager.desktop.enable;
     };
-    subpixelRender.enable = lib.mkEnableOption {
+    subpixelRender.enable = lib.mkEnableOption "Subpixel render" // {
       default =
         (osConfig.fonts.fontconfig.antialias or false)
         && (osConfig.fonts.fontconfig.subpixel.rgba != "none");
+    };
+    proxy.enable = lib.mkEnableOption "Enable proxy" // {
+      default = config.home-manager.mihomo.enable;
     };
   };
 
   config = lib.mkIf cfg.enable {
     programs.firefox = {
       enable = true;
+      # in darwin, firefox is installed by homebrew
+      package = lib.mkIf pkgs.stdenv.isDarwin null;
       profiles.${username} = {
         settings =
+          let
+            extensions = {
+              "extensions.update.autoUpdateDefault" = false;
+              "extensions.update.enabled" = false;
+            };
+          in
           {
             # disable annoyinh Ctrl+Q shortcut
             "browser.quitShortcut.disabled" = true;
@@ -50,7 +62,49 @@ in
             # https://pandasauce.org/get-fonts-done/
             "gfx.text.subpixel-position.force-enabled" = true;
             "gfx.webrender.quality.force-subpixel-aa-where-possible" = true;
-          };
+          }
+          // lib.optionalAttrs cfg.proxy.enable (
+            let
+              host = "localhost";
+              port = 7890;
+            in
+            {
+              "network.proxy.http" = host;
+              "network.proxy.http_port" = port;
+              "network.proxy.share_proxy_settings" = true;
+              "network.proxy.socks" = host;
+              "network.proxy.socks_port" = port;
+              "network.proxy.ssl" = host;
+              "network.proxy.ssl_port" = port;
+              "network.proxy.type" = 1;
+            }
+          )
+          // extensions;
+
+        extensions = {
+          force = true;
+          packages =
+            with pkgs.nur.repos.rycee.firefox-addons;
+            let
+              firefoxTheme = buildFirefoxXpiAddon {
+                pname = "catppuccin";
+                addonId = "{f5525f34-4102-4f6e-8478-3cf23cfeff7a}";
+                version = "1.0";
+                url = "https://addons.mozilla.org/firefox/downloads/file/3880040/catppuccin-1.0.xpi";
+                sha256 = "sha256-1myVNsTPpC5o1fGw/1Tsfnj5NzE0lfEWy8jHKDVRIfg=";
+
+                meta = with lib; {
+                  description = "Catppuccin theme";
+                  license = licenses.cc-by-30;
+                  platforms = platforms.all;
+                };
+              };
+            in
+            [
+              firefoxTheme
+              tridactyl
+            ];
+        };
       };
     };
   };

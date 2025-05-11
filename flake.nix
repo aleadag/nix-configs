@@ -4,6 +4,14 @@
   inputs = {
     # main
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nur = {
+      url = "github:nix-community/NUR";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+        treefmt-nix.follows = "treefmt-nix";
+      };
+    };
     hardware.url = "github:NixOS/nixos-hardware";
     disko = {
       url = "github:nix-community/disko";
@@ -101,7 +109,10 @@
             pkgs = import nixpkgs {
               inherit system;
               config = self.outputs.internal.configs.nixpkgs;
-              overlays = [ self.overlays.default ];
+              overlays = [
+                self.overlays.default
+                inputs.nur.overlays.default
+              ];
             };
             treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
           in

@@ -24,6 +24,7 @@
           fontSize = 14.0;
           opacity = 1.0;
         };
+        firefox.enable = true;
       };
     };
 
