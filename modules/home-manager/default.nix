@@ -1,7 +1,13 @@
-{ flake, lib, ... }:
+{
+  config,
+  flake,
+  lib,
+  ...
+}:
 
 {
   imports = [
+    flake.inputs.catppuccin.homeModules.default
     flake.outputs.internal.sharedModules.default
     ./cli
     ./crostini.nix
@@ -15,7 +21,14 @@
     ./nix
     ./sops.nix
     ./syncthing.nix
+    ./window-manager
   ];
+
+  catppuccin = {
+    inherit (config.theme) flavor;
+    enable = true;
+    fcitx5.enable = false;
+  };
 
   home = {
     username = lib.mkOptionDefault "awang";

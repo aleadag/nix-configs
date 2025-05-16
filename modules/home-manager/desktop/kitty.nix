@@ -6,7 +6,6 @@
 }:
 
 let
-  inherit (config.home-manager.desktop.theme) fonts;
   cfg = config.home-manager.desktop.kitty;
 in
 {
@@ -60,7 +59,7 @@ in
           "kitty_mod+g" = "kitty_scrollback_nvim --config ksb_builtin_last_cmd_output";
         };
       font = {
-        inherit (fonts.symbols) package name;
+        inherit (config.theme.fonts.symbols) package name;
         size = cfg.fontSize;
       };
       settings = {
@@ -87,7 +86,7 @@ in
         tab_title_template = "{fmt.fg.red}{bell_symbol}{activity_symbol}{fmt.fg.tab}{tab.last_focused_progress_percent}{index}:{title[:30]}";
 
         # Misc
-        inherit (config.home-manager.desktop.default) editor;
+        editor = lib.mkIf config.home-manager.window-manager.enable config.home-manager.window-manager.default.editor;
         strip_trailing_spaces = "smart";
         clipboard_control = "write-clipboard write-primary read-clipboard read-primary";
         background_opacity = toString cfg.opacity;

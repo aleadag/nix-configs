@@ -2,6 +2,7 @@
 
 {
   imports = [
+    flake.inputs.catppuccin.nixosModules.default
     flake.outputs.internal.sharedModules.default
     ./desktop
     ./games

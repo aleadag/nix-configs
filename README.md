@@ -56,3 +56,38 @@ $ nix run '.#homeActivations/<hostname>' --accept-flake-config
 ```
 
 Happy hacking!
+
+## Setting up swaylock on non-NixOS systems
+
+If you're using swaylock on a non-NixOS system, you'll need to perform the following setup:
+
+1. Install PAM configuration:
+```console
+$ cp $(nix path-info nixpkgs#swaylock.out)/etc/pam.d/swaylock /etc/pam.d/swaylock
+```
+
+2. Set up the `/run/wrappers/bin/unix_chkpwd` suid binary. Since some distributions mount `/run` with the nosuid flag, you need to:
+
+   a. Add the following to `/etc/fstab`:
+   ```
+   tmpfs /run/wrappers tmpfs defaults,nodev,noatime,mode=755 0 0
+   ```
+
+   b. Create a systemd oneshot unit to create a symlink from `/sbin/unix_chkpwd` to `/run/wrappers/bin`:
+   ```console
+   $ cat <<EOF > /usr/local/lib/systemd/system/install-unix_chkpwd-wrapper.service
+   [Unit]
+   After=run-wrappers.mount
+   Wants=run-wrappers.mount
+
+   [Service]
+   Type=oneshot
+   ExecStart=/usr/bin/mkdir -p /run/wrappers/bin
+   ExecStart=/usr/bin/ln -sf /sbin/unix_chkpwd /run/wrappers/bin/unix_chkpwd
+
+   [Install]
+   WantedBy=multi-user.target
+   EOF
+   ```
+
+Reference: [NixOS/nixpkgs#158025](https://github.com/NixOS/nixpkgs/issues/158025#issuecomment-1616807870)

@@ -20,7 +20,7 @@ in
       type = "fcitx5";
       fcitx5 = {
         addons = with pkgs; [ fcitx5-chinese-addons ];
-        waylandFrontend = config.home-manager.desktop.wayland.enable;
+        waylandFrontend = config.home-manager.window-manager.wayland.enable;
         settings = {
           globalOptions = {
             Hotkey = {
