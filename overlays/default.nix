@@ -65,7 +65,11 @@ final: prev:
           inherit (prev) system;
           configuration = {
             home-manager = {
-              cli.icons.enable = false;
+              cli = {
+                icons.enable = false;
+                # starship will cause interesting errors
+                starship.enable = false;
+              };
               dev.nix.enable = true;
               editor.neovim = {
                 lsp.enable = true;

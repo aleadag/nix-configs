@@ -6,10 +6,6 @@
   };
 
   home-manager = {
-    desktop = {
-      nixgl.enable = true;
-      theme.enable = true;
-    };
     editor = {
       enable = false;
       neovim.enable = true;
