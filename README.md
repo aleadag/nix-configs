@@ -98,6 +98,10 @@ If you're using this configuration on a non-NixOS system, you'll need to manuall
 
 - greetd: The login manager
 - tuigreeter: The TUI greeter for greetd
+  ```bash
+  # Catppuccin Frappe Theme
+  tuigreet --time --cmd sway --theme 'text=lightcyan;prompt=green;input=lightblue;border=lightmagenta;title=magenta;greet=lightmagenta;action=lightblue;button=lightred;container=black;time=lightgreen'
+  ```
 
 Please refer to your distribution's package manager to install these dependencies.
 
