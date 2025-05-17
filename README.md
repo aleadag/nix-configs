@@ -91,3 +91,45 @@ $ cp $(nix path-info nixpkgs#swaylock.out)/etc/pam.d/swaylock /etc/pam.d/swayloc
    ```
 
 Reference: [NixOS/nixpkgs#158025](https://github.com/NixOS/nixpkgs/issues/158025#issuecomment-1616807870)
+
+## Note for non-NixOS systems
+
+If you're using this configuration on a non-NixOS system, you'll need to manually install the following packages:
+
+- greetd: The login manager
+- tuigreeter: The TUI greeter for greetd
+
+Please refer to your distribution's package manager to install these dependencies.
+
+## Installing Catppuccin GRUB theme
+
+To install the [Catppuccin GRUB theme](https://github.com/catppuccin/grub), follow these steps:
+
+1. Clone the repository:
+   ```console
+   $ git clone https://github.com/catppuccin/grub.git && cd grub
+   ```
+
+2. Install the theme:
+   ```console
+   $ sudo cp -r src/* /boot/grub/themes/
+   ```
+
+3. Edit your GRUB configuration (`/etc/default/grub`):
+   ```console
+   $ sudo nano /etc/default/grub
+   ```
+   Add or modify these lines:
+   ```
+   GRUB_THEME="/boot/grub/themes/catppuccin-frappe-grub-theme/theme.txt"
+   GRUB_GFXMODE="1920x1080,auto"
+   ```
+
+4. Update GRUB configuration:
+   ```console
+   $ sudo update-grub  # For Debian/Ubuntu
+   # OR
+   $ sudo grub-mkconfig -o /boot/grub/grub.cfg  # For other distributions
+   ```
+
+Note: The default flavor is `frappe`. You can replace it with other flavors if preferred (latte, macchiato, or mocha).
