@@ -30,6 +30,8 @@ in
     home.packages = with pkgs; [
       android-file-transfer
       audacious
+      # if installed by yay, fcitx5 doesn't work!
+      code-cursor
       libreoffice-fresh
       (mcomix.override {
         unrarSupport = true;

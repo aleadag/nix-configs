@@ -51,7 +51,22 @@ in
 
   config = mkIf cfg.enable (
     lib.mkMerge [
-      (mkIf pkgs.stdenv.isLinux { systemd.user.services = services; })
+      (mkIf pkgs.stdenv.isLinux {
+        systemd.user.services = services;
+        xdg.desktopEntries.mihomo-web-ui = {
+          name = "Mihomo Web UI";
+          genericName = "Web UI";
+          exec = "open-browser http://127.0.0.1:9090/ui";
+          terminal = false;
+          categories = [
+            "Application"
+            "Network"
+          ];
+          mimeType = [
+            "text/html"
+          ];
+        };
+      })
       (mkIf pkgs.stdenv.isDarwin { launchd.agents = services; })
       {
         # 注意规则在满足自己需求情况下，尽量做到精简，不要过度复杂，以免影响性能。
