@@ -1,4 +1,4 @@
-{ flake, ... }:
+{ config, flake, ... }:
 
 {
   imports = [
@@ -10,4 +10,6 @@
     ./system.nix
     ./yabai
   ];
+
+  system.primaryUser = config.meta.username;
 }
