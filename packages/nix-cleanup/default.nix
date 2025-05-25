@@ -119,7 +119,7 @@ writeShellApplication {
         if isNixOS || isNixDarwin then
           # bash
           ''
-            sudo --login bash -c "$(declare -f cleanup); cleanup $AUTO $OPTIMIZE"
+            sudo bash -lc "$(declare -f cleanup); cleanup $AUTO $OPTIMIZE"
           ''
         else
           # bash
