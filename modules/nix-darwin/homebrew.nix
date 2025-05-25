@@ -21,6 +21,7 @@ in
         "firefox"
         "google-chrome"
         "linearmouse"
+        "macpass"
         "microsoft-edge"
       ];
     };

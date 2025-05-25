@@ -12,10 +12,10 @@
   config = lib.mkIf config.home-manager.gui.enable {
     home.packages =
       with pkgs;
-      [
-        # https://github.com/NixOS/nixpkgs/issues/354200
+      (lib.optionals (stdenv.hostPlatform.isLinux) [
+        # keepassxc is broken on macOS, use macpass instead
         keepassxc
-      ]
+      ])
       ++ (lib.optionals (stdenv.hostPlatform.system != "aarch64-linux") [
         anki-bin
       ]);
