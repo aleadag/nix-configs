@@ -12,7 +12,7 @@
   config = lib.mkIf config.home-manager.gui.enable {
     home.packages =
       with pkgs;
-      (lib.optionals (stdenv.hostPlatform.isLinux) [
+      (lib.optionals stdenv.hostPlatform.isLinux [
         # keepassxc is broken on macOS, use macpass instead
         keepassxc
       ])
