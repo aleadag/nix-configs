@@ -8,7 +8,6 @@
 {
   imports = [
     ./homebrew.nix
-    ./remap-keys.nix
     ./trampoline-apps.nix
   ];
 
