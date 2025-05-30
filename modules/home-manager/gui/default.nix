@@ -15,6 +15,7 @@
       (lib.optionals stdenv.hostPlatform.isLinux [
         # keepassxc is broken on macOS, use macpass instead
         keepassxc
+        logseq
       ])
       ++ (lib.optionals (stdenv.hostPlatform.system != "aarch64-linux") [
         anki-bin

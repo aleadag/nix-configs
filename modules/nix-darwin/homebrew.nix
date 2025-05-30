@@ -21,6 +21,7 @@ in
         "firefox"
         "google-chrome"
         "linearmouse"
+        "logseq"
         "macpass"
         "microsoft-edge"
       ];
