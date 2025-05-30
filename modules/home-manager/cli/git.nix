@@ -158,18 +158,6 @@ in
           uri = "git+ssh://git@github.com:aleadag/leetcode.git";
           interval = 1 * 60 * 60;
         };
-
-        notes = {
-          path = "${config.home.homeDirectory}/notes";
-          uri = "git+ssh://git@github.com:aleadag/notes.git";
-          interval = 1 * 60 * 60;
-        };
-
-        pass = {
-          path = "${config.home.homeDirectory}/.pass";
-          uri = "git+ssh://git@github.com:aleadag/pass.git";
-          interval = 1 * 60 * 60;
-        };
       };
     };
   };
