@@ -18,6 +18,9 @@ in
         mbx = {
           id = "SBCCPEE-3TV6WBK-TBSXAQD-6JCZQ6E-JKUJ7OH-QZL462Y-GRAEYZE-FATVIQ2";
         };
+        t0 = {
+          id = "AULBO4N-7IFZFNV-4JAIL6G-5XL3KFY-WWR5BEH-UXOPALL-4XK5CE6-AORWDQL";
+        };
       };
       allDevices = builtins.attrNames devices;
     in
