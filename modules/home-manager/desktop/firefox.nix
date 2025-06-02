@@ -26,6 +26,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    home.packages = [ pkgs.tridactyl-native ];
+
     programs.firefox = {
       enable = true;
       # in darwin, firefox is installed by homebrew
