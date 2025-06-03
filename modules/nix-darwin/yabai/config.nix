@@ -84,8 +84,9 @@ in
         enable = true;
         active_color = catppuccin.frappe.mauve;
         inactive_color = catppuccin.frappe.surface1;
-        style = "squared";
-        width = 5.0;
+        style = "round";
+        width = 6.0;
+        hidpi = false;
       };
     };
   };
