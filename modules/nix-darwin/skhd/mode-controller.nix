@@ -3,7 +3,7 @@
   ...
 }:
 let
-  catppuccin = import ../catppuccin.nix;
+  catppuccin = import ../shared/catppuccin.nix;
 in
 pkgs.writeShellApplication {
   name = "skhd-mode-controller";

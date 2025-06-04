@@ -10,7 +10,7 @@
 }:
 let
   cfg = config.nix-darwin.yabai;
-  catppuccin = import ./catppuccin.nix;
+  catppuccin = import ../shared/catppuccin.nix;
 in
 {
   options.nix-darwin.yabai.enable = lib.mkEnableOption "yabai config" // {
