@@ -9,6 +9,7 @@
     ./nix
     ./system.nix
 
+    ./borders
     ./yabai
     ./sketchybar
     ./skhd
