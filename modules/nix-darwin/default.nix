@@ -8,7 +8,10 @@
     ./homebrew.nix
     ./nix
     ./system.nix
+
     ./yabai
+    ./sketchybar
+    ./skhd
   ];
 
   system.primaryUser = config.meta.username;

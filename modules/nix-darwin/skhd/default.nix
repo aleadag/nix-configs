@@ -5,9 +5,13 @@
   ...
 }:
 let
-  cfg = config.nix-darwin.yabai;
+  cfg = config.nix-darwin.skhd;
 in
 {
+  options.nix-darwin.skhd.enable = lib.mkEnableOption "skhd config" // {
+    default = config.nix-darwin.yabai.enable;
+  };
+
   config = lib.mkIf cfg.enable (
     let
       modeControllerCmd = lib.getExe (import ./mode-controller.nix { inherit pkgs; });

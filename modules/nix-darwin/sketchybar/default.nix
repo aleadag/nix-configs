@@ -8,7 +8,7 @@
 with lib;
 
 let
-  cfg = config.nix-darwin.yabai;
+  cfg = config.nix-darwin.sketchybar;
   sketchybar-helpers =
     pkgs.callPackage
       (
@@ -54,6 +54,10 @@ let
   ]);
 in
 {
+  options.nix-darwin.sketchybar.enable = lib.mkEnableOption "sketchybar config" // {
+    default = config.nix-darwin.yabai.enable;
+  };
+
   config = mkIf cfg.enable {
     fonts.packages = with pkgs; [ sketchybar-app-font ];
     system.defaults.NSGlobalDomain._HIHideMenuBar = true; # Disable menu bar
