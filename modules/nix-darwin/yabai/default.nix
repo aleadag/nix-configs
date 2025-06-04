@@ -61,6 +61,7 @@ in
           # bash
           ''
             # Unload the macOS WindowManager process
+            # This will make minimize / close button NOT working
             launchctl unload -F /System/Library/LaunchAgents/com.apple.WindowManager.plist > /dev/null 2>&1 &
 
             sudo yabai --load-sa

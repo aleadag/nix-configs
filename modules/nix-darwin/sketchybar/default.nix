@@ -66,6 +66,7 @@ in
       extraPackages = [
         sketchybar-helpers
       ];
+      # https://github.com/FelixKratz/dotfiles
       config = # bash
         ''
           #!${lua}/bin/lua
