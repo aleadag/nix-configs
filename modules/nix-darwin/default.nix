@@ -7,6 +7,7 @@
     ./home.nix
     ./homebrew.nix
     ./nix
+    ./preferences.nix
     ./system.nix
 
     ./borders
