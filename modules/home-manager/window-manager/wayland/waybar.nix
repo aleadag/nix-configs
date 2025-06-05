@@ -112,7 +112,6 @@ in
               format = "{icon}";
               on-click = "activate";
               on-click-middle = "close";
-              icon = true;
             };
             idle_inhibitor = {
               format = "{icon}";
