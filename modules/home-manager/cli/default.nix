@@ -89,6 +89,10 @@ in
       websocat
       wget
       railway
+
+      # modern unix: https://github.com/ibraheemdev/modern-unix
+      duf
+      dust
     ];
 
     programs = {

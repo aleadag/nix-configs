@@ -23,6 +23,7 @@ in
     home.shellAliases = {
       g = "git";
       gu = "gitui";
+      lg = "lazygit";
     };
 
     programs.git = {
@@ -147,6 +148,10 @@ in
           hash = "sha256-uYL9CSCOlTdW3E87I7GsgvDEwOPHoz1LIxo8DARDX1Y=";
         }
       );
+    };
+
+    programs.lazygit = {
+      enable = true;
     };
 
     services.git-sync = {
