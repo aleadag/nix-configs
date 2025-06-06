@@ -23,8 +23,7 @@ in
       package = pkgs.yabai;
       enableScriptingAddition = true;
       config = {
-        external_bar = "all:32:0";
-        window_border = "on";
+        external_bar = "all:40:0";
         mouse_follows_focus = "off";
         focus_follows_mouse = "off";
         window_zoom_persist = "off";
@@ -34,14 +33,9 @@ in
         window_opacity = "on";
         window_opacity_duration = "0.15";
         active_window_opacity = "1.0";
-        normal_window_opacity = "0.95";
-        window_border_blur = "off";
-        window_border_width = "2";
-        window_border_hidpi = "off";
-        window_border_radius = "0";
+        normal_window_opacity = "0.8";
         window_animation_duration = "0.22";
-        active_window_border_color = catppuccin.frappe.mauve;
-        normal_window_border_color = catppuccin.frappe.surface0;
+        window_animation_easing = "ease_out_quint";
         insert_feedback_color = catppuccin.frappe.green;
         split_ratio = "0.50";
         auto_balance = "off";
@@ -49,11 +43,11 @@ in
         mouse_action1 = "move";
         mouse_action2 = "resize";
         mouse_drop_action = "swap";
-        top_padding = "10";
-        bottom_padding = "10";
-        left_padding = "10";
-        right_padding = "10";
-        window_gap = "8";
+        top_padding = "8";
+        bottom_padding = "8";
+        left_padding = "8";
+        right_padding = "8";
+        window_gap = "10";
         layout = "bsp";
       };
       extraConfig =
