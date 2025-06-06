@@ -44,7 +44,8 @@
     };
 
     spaces = {
-      spans-displays = true;
+      # yabai requires this to be false
+      spans-displays = false;
     };
 
     # dock settings
