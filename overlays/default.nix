@@ -64,12 +64,13 @@ final: prev:
           inherit hostname;
           inherit (prev) system;
           configuration = {
+            catppuccin = {
+              # to make flake check happy
+              lazygit.enable = false;
+              starship.enable = false;
+            };
             home-manager = {
-              cli = {
-                icons.enable = false;
-                # starship will cause interesting errors
-                starship.enable = false;
-              };
+              cli.icons.enable = false;
               dev.nix.enable = true;
               editor.neovim = {
                 lsp.enable = true;
