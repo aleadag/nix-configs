@@ -1,6 +1,5 @@
 {
   config,
-  flake,
   lib,
   ...
 }:
@@ -40,6 +39,8 @@ in
           options = {
             relaysEnabled = true;
             localAnnounceEnabled = true;
+            # https://docs.syncthing.net/users/config.html#config-option-options.uraccepted
+            urAccepted = -1;
           };
         };
       };
