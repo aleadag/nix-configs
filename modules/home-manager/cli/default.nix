@@ -55,7 +55,6 @@ in
       remove-symlink
 
       _7zz
-      aria2
       bc
       bind.dnsutils
       curl
@@ -74,8 +73,6 @@ in
       gnused
       hyperfine
       imagemagick
-      jq
-      less
       lsof
       mediainfo
       ouch
@@ -83,7 +80,6 @@ in
       procps
       pv
       python3
-      ripgrep
       rlwrap
       tealdeer
       tokei
@@ -97,6 +93,11 @@ in
     ];
 
     programs = {
+      aria2.enable = true;
+      jq.enable = true;
+      less.enable = true;
+      ripgrep.enable = true;
+
       bat = {
         enable = true;
         # This should pick up the correct colors for the generated theme. Otherwise
