@@ -45,7 +45,7 @@ in
       };
 
       browserpass = {
-        enable = cfg.enable;
+        inherit (cfg) enable;
         browsers = [ "firefox" ];
       };
     };
