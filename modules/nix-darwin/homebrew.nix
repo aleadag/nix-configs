@@ -22,7 +22,6 @@ in
         "google-chrome"
         "linearmouse"
         "logseq"
-        "macpass"
         "microsoft-edge"
       ];
     };

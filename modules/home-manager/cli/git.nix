@@ -22,7 +22,6 @@ in
   config = lib.mkIf cfg.enable {
     home.shellAliases = {
       g = "git";
-      gu = "gitui";
       lg = "lazygit";
     };
 
@@ -138,16 +137,6 @@ in
           co = "pr checkout";
         };
       };
-    };
-
-    programs.gitui = {
-      enable = true;
-      keyConfig = builtins.readFile (
-        pkgs.fetchurl {
-          url = "https://raw.githubusercontent.com/extrawurst/gitui/8876c1d0f616d55a0c0957683781fd32af815ae3/vim_style_key_config.ron";
-          hash = "sha256-uYL9CSCOlTdW3E87I7GsgvDEwOPHoz1LIxo8DARDX1Y=";
-        }
-      );
     };
 
     programs.lazygit = {
