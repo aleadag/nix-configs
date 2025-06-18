@@ -207,6 +207,7 @@ in
             "--chop-long-lines"
             "--hilite-unread"
             "--window=4"
+            "--quit-if-one-screen"
           ];
           # Reduce time to wait for multi-key sequences
           KEYTIMEOUT = 1;
