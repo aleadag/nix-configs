@@ -21,7 +21,7 @@ local function update_caffeine_state(is_running)
   caffeine:set({
     icon = {
       string = is_running and icons.caffeine.on or icons.caffeine.off,
-      color = is_running and colors.white or colors.grey,
+      color = is_running and colors.red or colors.grey,
     }
   })
 end
