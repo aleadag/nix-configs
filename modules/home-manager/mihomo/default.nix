@@ -92,12 +92,18 @@ in
                   - "🚀 默认代理"
                   - "⚡ 香港故转"
                   - "⚡ 日本故转"
+                  - "⚡ 台湾故转"
+                  - "⚡ 新加坡故转"
                   - "🔄 香港自动"
                   - "🔄 日本自动"
+                  - "🔄 台湾自动"
+                  - "🔄 新加坡自动"
                   - "🔄 美国自动"
                   - "🔄 自动选择"
                   - "🇭🇰 香港节点"
                   - "🇯🇵 日本节点"
+                  - "🇹🇼 台湾节点"
+                  - "🇸🇬 新加坡节点"
                   - "🇺🇸 美国节点"
                   - "🌍 全部节点"
                   - "直连"
@@ -251,12 +257,18 @@ in
                   proxies:
                     - "⚡ 香港故转"
                     - "⚡ 日本故转"
+                    - "⚡ 台湾故转"
+                    - "⚡ 新加坡故转"
                     - "🔄 香港自动"
                     - "🔄 日本自动"
+                    - "🔄 台湾自动"
+                    - "🔄 新加坡自动"
                     - "🔄 美国自动"
                     - "🔄 自动选择"
                     - "🇭🇰 香港节点"
                     - "🇯🇵 日本节点"
+                    - "🇹🇼 台湾节点"
+                    - "🇸🇬 新加坡节点"
                     - "🇺🇸 美国节点"
                     - "🌍 全部节点"
                     - "直连"
@@ -319,6 +331,16 @@ in
                   include-all: true
                   filter: (?i)日|jp|japan
 
+                - name: "🇹🇼 台湾节点"
+                  type: select
+                  include-all: true
+                  filter: (?i)台|tw|taiwan
+
+                - name: "🇸🇬 新加坡节点"
+                  type: select
+                  include-all: true
+                  filter: (?i)新|sg|singapore
+
                 - name: "🇺🇸 美国节点"
                   type: select
                   include-all: true
@@ -334,6 +356,16 @@ in
                   <<: *auto_test
                   filter: (?=.*(日|JP|(?i)Japan))^((?!(港|台|韩|新|美)).)*$
 
+                - name: "⚡ 台湾故转"
+                  type: fallback
+                  <<: *auto_test
+                  filter: (?=.*(台|TW|(?i)Taiwan))^((?!(港|日|韩|新|深|美)).)*$
+
+                - name: "⚡ 新加坡故转"
+                  type: fallback
+                  <<: *auto_test
+                  filter: (?=.*(新|SG|(?i)Singapore))^((?!(港|台|日|韩|美)).)*$
+
                 - name: "🔄 香港自动"
                   type: url-test
                   <<: *auto_test
@@ -343,6 +375,16 @@ in
                   type: url-test
                   <<: *auto_test
                   filter: (?=.*(日|JP|(?i)Japan))^((?!(港|台|韩|新|美)).)*$
+
+                - name: "🔄 台湾自动"
+                  type: url-test
+                  <<: *auto_test
+                  filter: (?=.*(台|TW|(?i)Taiwan))^((?!(港|日|韩|新|深|美)).)*$
+
+                - name: "🔄 新加坡自动"
+                  type: url-test
+                  <<: *auto_test
+                  filter: (?=.*(新|SG|(?i)Singapore))^((?!(港|台|日|韩|美)).)*$
 
                 - name: "🔄 美国自动"
                   type: url-test
