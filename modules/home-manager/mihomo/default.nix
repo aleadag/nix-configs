@@ -74,6 +74,7 @@ in
         sops = {
           secrets = {
             airport1 = { };
+            airport2 = { };
             mihomo_secret = { };
           };
           templates."mihomo.yaml".content = # yaml
@@ -144,6 +145,12 @@ in
                   health-check: *health_check
                 Airport1:
                   url: "${config.sops.placeholder.airport1}"
+                  type: http
+                  interval: 86400
+                  health-check: *health_check
+                  proxy: 直连
+                Airport2:
+                  url: "${config.sops.placeholder.airport2}"
                   type: http
                   interval: 86400
                   health-check: *health_check
