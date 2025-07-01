@@ -34,6 +34,7 @@ in
     ./starship.nix
     ./tmux.nix
     ./yazi.nix
+    ./zellij.nix
     ./zsh.nix
   ];
 
