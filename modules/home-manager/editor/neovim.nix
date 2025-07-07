@@ -50,6 +50,22 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # Claude Code settings from sops
+    sops = lib.mkIf cfg.claudeCode.enable {
+      secrets = {
+        anthropic_base_url = { };
+        anthropic_auth_token = { };
+      };
+      templates."claude-settings.json" = {
+        content = builtins.toJSON {
+          env = {
+            ANTHROPIC_BASE_URL = config.sops.placeholder.anthropic_base_url;
+            ANTHROPIC_AUTH_TOKEN = config.sops.placeholder.anthropic_auth_token;
+          };
+        };
+        path = "${config.home.homeDirectory}/.claude/settings.json";
+      };
+    };
     home.packages =
       with pkgs;
       [
