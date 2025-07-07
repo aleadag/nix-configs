@@ -30,7 +30,6 @@
 # export CLAUDE_HOOKS_RUST_ENABLED=false
 # export CLAUDE_HOOKS_NIX_ENABLED=false
 
-
 # ============================================================================
 # NOTIFICATION SETTINGS
 # ============================================================================
