@@ -22,6 +22,31 @@ in
     treeSitter.enable = lib.mkEnableOption "TreeSitter" // {
       default = config.home-manager.dev.enable;
     };
+    avante = {
+      enable = lib.mkEnableOption "Avante AI plugin" // {
+        default = config.home-manager.dev.enable;
+      };
+      provider = lib.mkOption {
+        type = lib.types.str;
+        default = "openai";
+        description = "AI provider for Avante";
+      };
+      endpoint = lib.mkOption {
+        type = lib.types.str;
+        default = "https://api.gptsapi.net/v1";
+        description = "API endpoint for the provider";
+      };
+      model = lib.mkOption {
+        type = lib.types.str;
+        default = "claude-3-7-sonnet-20250219";
+        description = "Model to use for AI completions";
+      };
+    };
+    claudeCode = {
+      enable = lib.mkEnableOption "Claude Code plugin" // {
+        default = config.home-manager.dev.enable;
+      };
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -39,6 +64,9 @@ in
       ]
       ++ lib.optionals enableIcons [
         config.theme.fonts.symbols.package
+      ]
+      ++ lib.optionals cfg.claudeCode.enable [
+        pkgs.claude-code
       ];
 
     programs.neovim = {
@@ -515,6 +543,36 @@ in
           mkdir-nvim
           vim-advanced-sorters
           vim-nix
+        ]
+        ++ lib.optionals cfg.avante.enable [
+          {
+            plugin = avante-nvim;
+            type = "lua";
+            config = # lua
+              ''
+                require("avante_lib").load()
+                require("avante").setup {
+                  provider = "${cfg.avante.provider}",
+                  providers = {
+                      ${cfg.avante.provider} = {
+                        endpoint = "${cfg.avante.endpoint}",
+                        model = "${cfg.avante.model}",
+                      },
+                    },
+                }
+              '';
+          }
+        ]
+        ++ lib.optionals cfg.claudeCode.enable [
+          {
+            plugin = claude-code-nvim;
+            type = "lua";
+            config = # lua
+              ''
+                require("claude-code").setup()
+                vim.keymap.set('n', '<leader>cc', '<cmd>ClaudeCode<CR>', { desc = 'Toggle Claude Code' })
+              '';
+          }
         ]
         ++ lib.optionals cfg.lsp.enable [
           {
