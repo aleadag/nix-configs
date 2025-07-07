@@ -44,28 +44,12 @@ in
     };
     claudeCode = {
       enable = lib.mkEnableOption "Claude Code plugin" // {
-        default = config.home-manager.dev.enable;
+        default = config.home-manager.dev.claude-code.enable;
       };
     };
   };
 
   config = lib.mkIf cfg.enable {
-    # Claude Code settings from sops
-    sops = lib.mkIf cfg.claudeCode.enable {
-      secrets = {
-        anthropic_base_url = { };
-        anthropic_auth_token = { };
-      };
-      templates."claude-settings.json" = {
-        content = builtins.toJSON {
-          env = {
-            ANTHROPIC_BASE_URL = config.sops.placeholder.anthropic_base_url;
-            ANTHROPIC_AUTH_TOKEN = config.sops.placeholder.anthropic_auth_token;
-          };
-        };
-        path = "${config.home.homeDirectory}/.claude/settings.json";
-      };
-    };
     home.packages =
       with pkgs;
       [
@@ -80,9 +64,6 @@ in
       ]
       ++ lib.optionals enableIcons [
         config.theme.fonts.symbols.package
-      ]
-      ++ lib.optionals cfg.claudeCode.enable [
-        pkgs.claude-code
       ];
 
     programs.neovim = {
@@ -585,7 +566,11 @@ in
             type = "lua";
             config = # lua
               ''
-                require("claude-code").setup()
+                require("claude-code").setup {
+                  window = {
+                    position = "vertical",
+                  },
+                }
                 vim.keymap.set('n', '<leader>cc', '<cmd>ClaudeCode<CR>', { desc = 'Toggle Claude Code' })
               '';
           }

@@ -7,6 +7,7 @@
 
 {
   imports = [
+    ./claude-code
     ./httpie.nix
     ./nix.nix
     ./node.nix
