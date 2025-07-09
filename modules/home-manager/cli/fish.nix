@@ -53,8 +53,6 @@
           set proxy_host 127.0.0.1:7890
           set proxy_auth false
 
-          fish_add_path ~/.codeium/windsurf/bin
-
           # nix
           if test -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
               source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
