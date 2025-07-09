@@ -406,6 +406,7 @@ in
                 - DOMAIN-SUFFIX,qichiyu.com,🚀 默认代理
                 - RULE-SET,private_ip,🔰 直连
                 - RULE-SET,private_domain,🔰 直连
+                - RULE-SET,anthropic_domain,🎬 Anthropic
                 - RULE-SET,apple_domain,🍎 Apple
                 - RULE-SET,proxylite,🚀 默认代理
                 - RULE-SET,ai,🤖 ChatGPT
@@ -417,7 +418,6 @@ in
                 - RULE-SET,tiktok_domain,📱 TikTok
                 - RULE-SET,speedtest_domain,🚄 Speedtest
                 - RULE-SET,telegram_domain,✈️ Telegram
-                - RULE-SET,anthropic_domain,🎬 Anthropic
                 - RULE-SET,paypal_domain,💰 PayPal
                 - RULE-SET,gfw_domain,🚀 默认代理
                 - RULE-SET,geolocation-!cn,🚀 默认代理
