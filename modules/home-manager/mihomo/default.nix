@@ -297,7 +297,7 @@ in
                 - name: "✈️ Telegram"
                   <<: *standard_proxy_group
 
-                - name: "🎬 NETFLIX"
+                - name: "🎬 Anthropic"
                   <<: *standard_proxy_group
 
                 - name: "🚄 Speedtest"
@@ -417,13 +417,12 @@ in
                 - RULE-SET,tiktok_domain,📱 TikTok
                 - RULE-SET,speedtest_domain,🚄 Speedtest
                 - RULE-SET,telegram_domain,✈️ Telegram
-                - RULE-SET,netflix_domain,🎬 NETFLIX
+                - RULE-SET,anthropic_domain,🎬 Anthropic
                 - RULE-SET,paypal_domain,💰 PayPal
                 - RULE-SET,gfw_domain,🚀 默认代理
                 - RULE-SET,geolocation-!cn,🚀 默认代理
                 - RULE-SET,cn_domain,🔰 直连
                 - RULE-SET,google_ip,🔎 Google,no-resolve
-                - RULE-SET,netflix_ip,🎬 NETFLIX,no-resolve
                 - RULE-SET,telegram_ip,✈️ Telegram,no-resolve
                 - RULE-SET,cn_ip,🔰 直连
                 - MATCH,🐠 漏网之鱼
@@ -461,9 +460,9 @@ in
                   <<: *domain_rule_provider
                   url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/telegram.mrs
 
-                netflix_domain:
+                anthropic_domain:
                   <<: *domain_rule_provider
-                  url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/netflix.mrs
+                  url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/anthropic.mrs
 
                 paypal_domain:
                   <<: *domain_rule_provider
@@ -512,10 +511,6 @@ in
                 telegram_ip:
                   <<: *ip_rule_provider
                   url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/telegram.mrs
-
-                netflix_ip:
-                  <<: *ip_rule_provider
-                  url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/netflix.mrs
             '';
         };
       }

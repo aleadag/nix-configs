@@ -22,47 +22,34 @@ in
     ];
 
     # Claude Code settings from sops
-    sops = {
-      secrets = {
-        anthropic_base_url = { };
-        anthropic_auth_token = { };
-      };
-      templates."claude-settings.json" = {
-        content = builtins.toJSON {
-          env = {
-            ANTHROPIC_BASE_URL = config.sops.placeholder.anthropic_base_url;
-            ANTHROPIC_AUTH_TOKEN = config.sops.placeholder.anthropic_auth_token;
-          };
-          hooks = {
-            PostToolUse = [
+    home.file.".claude/settings.json".text = builtins.toJSON {
+      hooks = {
+        PostToolUse = [
+          {
+            matcher = "Write|Edit|MultiEdit";
+            hooks = [
               {
-                matcher = "Write|Edit|MultiEdit";
-                hooks = [
-                  {
-                    type = "command";
-                    command = "~/.claude/hooks/smart-lint.sh";
-                  }
-                  {
-                    type = "command";
-                    command = "~/.claude/hooks/smart-test.sh";
-                  }
-                ];
+                type = "command";
+                command = "~/.claude/hooks/smart-lint.sh";
+              }
+              {
+                type = "command";
+                command = "~/.claude/hooks/smart-test.sh";
               }
             ];
-            Stop = [
+          }
+        ];
+        Stop = [
+          {
+            matcher = "";
+            hooks = [
               {
-                matcher = "";
-                hooks = [
-                  {
-                    type = "command";
-                    command = "~/.claude/hooks/ntfy-notifier.sh notification";
-                  }
-                ];
+                type = "command";
+                command = "~/.claude/hooks/ntfy-notifier.sh notification";
               }
             ];
-          };
-        };
-        path = "${config.home.homeDirectory}/.claude/settings.json";
+          }
+        ];
       };
     };
 
