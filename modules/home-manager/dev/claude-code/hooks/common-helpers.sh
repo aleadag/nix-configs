@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # common-helpers.sh - Shared utilities for Claude Code hooks
+# shellcheck disable=SC2317  # Functions may be called indirectly
 #
 # This file provides common functions, colors, and patterns used across
 # multiple hooks to ensure consistency and reduce duplication.
@@ -66,9 +67,11 @@ command_exists() {
 # Load project configuration
 load_project_config() {
   # User-level config
+  # shellcheck disable=SC1091
   [[ -f "$HOME/.claude-hooks.conf" ]] && source "$HOME/.claude-hooks.conf"
 
   # Project-level config (highest priority)
+  # shellcheck disable=SC1091
   [[ -f ".claude-hooks-config.sh" ]] && source ".claude-hooks-config.sh"
 
   # Always return success

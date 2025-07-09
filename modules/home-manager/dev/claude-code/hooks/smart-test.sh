@@ -25,6 +25,7 @@ set -euo pipefail
 
 # Source common helpers
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
 source "${SCRIPT_DIR}/common-helpers.sh"
 
 # ============================================================================
@@ -141,8 +142,10 @@ setup_go_test_command
 
 should_skip_test_requirement() {
   local file="$1"
-  local base=$(basename "$file")
-  local dir=$(dirname "$file")
+  local base
+  local dir
+  base=$(basename "$file")
+  dir=$(dirname "$file")
 
   # Files that typically don't have tests
   local skip_patterns=(
@@ -158,7 +161,7 @@ should_skip_test_requirement() {
 
   # Check patterns
   for pattern in "${skip_patterns[@]}"; do
-    if [[ $base == $pattern ]]; then
+    if [[ $base == "$pattern" ]]; then
       return 0
     fi
   done
@@ -182,7 +185,7 @@ should_skip_test_requirement() {
 
 format_test_output() {
   local output="$1"
-  local test_type="$2"
+  # local test_type="$2"  # Unused parameter
 
   # If output is empty, say so
   if [[ -z $output ]]; then
@@ -354,8 +357,10 @@ run_go_tests() {
 
 run_python_tests() {
   local file="$1"
-  local dir=$(dirname "$file")
-  local base=$(basename "$file" .py)
+  local dir
+  local base
+  dir=$(dirname "$file")
+  base=$(basename "$file" .py)
 
   # If this IS a test file, run it directly
   if [[ $file =~ (test_.*|.*_test)\.py$ ]]; then
@@ -489,8 +494,10 @@ run_python_tests() {
 
 run_javascript_tests() {
   local file="$1"
-  local dir=$(dirname "$file")
-  local base=$(basename "$file" | sed 's/\.[tj]sx\?$//' | sed 's/\.(test|spec)$//')
+  local dir
+  local base
+  dir=$(dirname "$file")
+  base=$(basename "$file" | sed 's/\.[tj]sx\?$//' | sed 's/\.(test|spec)$//')
 
   # If this IS a test file, run it directly
   if [[ $file =~ \.(test|spec)\.[tj]sx?$ ]]; then

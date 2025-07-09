@@ -89,7 +89,7 @@ if [[ -f $RATE_LIMIT_FILE ]]; then
     exit 0
   fi
 fi
-echo "$(date +%s)" >"$RATE_LIMIT_FILE"
+date +%s >"$RATE_LIMIT_FILE"
 
 # Get context information
 CWD=$(pwd)
@@ -112,8 +112,10 @@ get_terminal_title() {
     # Check if we're in a tmux session
     if [[ -n ${TMUX:-} ]]; then
       # Get the current pane's window name
-      local window_name=$(tmux display-message -p '#W' 2>/dev/null || echo "")
-      local pane_title=$(tmux display-message -p '#{pane_title}' 2>/dev/null || echo "")
+      local window_name
+      local pane_title
+      window_name=$(tmux display-message -p '#W' 2>/dev/null || echo "")
+      pane_title=$(tmux display-message -p '#{pane_title}' 2>/dev/null || echo "")
 
       if [[ -n $window_name ]]; then
         title="$window_name"
@@ -132,7 +134,8 @@ get_terminal_title() {
     fi
   elif [[ -n ${DISPLAY:-} ]] && command -v xprop >/dev/null 2>&1; then
     # Linux with X11: Get window title
-    local window_id=$(xprop -root _NET_ACTIVE_WINDOW 2>/dev/null | awk '{print $5}')
+    local window_id
+    window_id=$(xprop -root _NET_ACTIVE_WINDOW 2>/dev/null | awk '{print $5}')
     if [[ -n $window_id && $window_id != "0x0" ]]; then
       title=$(xprop -id "$window_id" WM_NAME 2>/dev/null | cut -d'"' -f2 || echo "")
     fi
