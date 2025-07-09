@@ -7,7 +7,6 @@
 }:
 
 let
-  inherit (config.home) username;
   cfg = config.home-manager.desktop.firefox;
 in
 {
@@ -32,7 +31,7 @@ in
       enable = true;
       # in darwin, firefox is installed by homebrew
       package = lib.mkIf pkgs.stdenv.isDarwin null;
-      profiles.${username} = {
+      profiles.default = {
         settings =
           let
             extensions = {
