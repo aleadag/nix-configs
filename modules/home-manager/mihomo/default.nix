@@ -154,7 +154,7 @@ in
                   type: http
                   interval: 86400
                   health-check: *health_check
-                  proxy: 直连
+                  proxy: "🚀 默认代理"
                 Airport2:
                   url: "${config.sops.placeholder.airport2}"
                   type: http
