@@ -536,6 +536,7 @@ in
                 require("remember").setup {}
               '';
           }
+          diffview-nvim
           lexima-vim
           mkdir-nvim
           vim-advanced-sorters
