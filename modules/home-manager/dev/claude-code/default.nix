@@ -106,6 +106,8 @@ in
 
     # Copy command files
     home.file.".claude/commands/check.md".source = ./commands/check.md;
+    home.file.".claude/commands/commit.md".source = ./commands/commit.md;
+    home.file.".claude/commands/fix-gh-issue.md".source = ./commands/fix-gh-issue.md;
     home.file.".claude/commands/next.md".source = ./commands/next.md;
     home.file.".claude/commands/prompt.md".source = ./commands/prompt.md;
 
