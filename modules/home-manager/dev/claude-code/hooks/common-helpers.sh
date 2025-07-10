@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 # common-helpers.sh - Shared utilities for Claude Code hooks
-# shellcheck disable=SC2317  # Functions may be called indirectly
 #
 # This file provides common functions, colors, and patterns used across
 # multiple hooks to ensure consistency and reduce duplication.
@@ -87,7 +86,7 @@ declare -i CLAUDE_HOOKS_ERROR_COUNT=0
 
 add_error() {
   local message="$1"
-  CLAUDE_HOOKS_ERROR_COUNT+=1
+  ((CLAUDE_HOOKS_ERROR_COUNT++))
   CLAUDE_HOOKS_ERRORS+=("${RED}❌${NC} $message")
 }
 
@@ -155,6 +154,52 @@ exit_with_test_failure() {
   echo -e "${YELLOW}  3. Or revert your changes if the tests are correct${NC}" >&2
   echo -e "${YELLOW}  4. Continue ONLY after all tests are ✅ GREEN${NC}" >&2
   exit 2
+}
+
+# ============================================================================
+# FILE FILTERING
+# ============================================================================
+
+# Check if we should skip a file based on .claude-hooks-ignore
+should_skip_file() {
+  local file="$1"
+
+  # Check .claude-hooks-ignore if it exists
+  if [[ -f ".claude-hooks-ignore" ]]; then
+    while IFS= read -r pattern; do
+      # Skip comments and empty lines
+      [[ -z $pattern || $pattern =~ ^[[:space:]]*# ]] && continue
+
+      # Check if pattern ends with /** for directory matching
+      if [[ $pattern == */** ]]; then
+        local dir_pattern="${pattern%/**}"
+        if [[ $file == $dir_pattern/* ]]; then
+          log_debug "Skipping $file due to .claude-hooks-ignore directory pattern: $pattern"
+          return 0
+        fi
+      # Check for glob patterns - use case statement for proper glob matching
+      elif [[ $pattern == *[*?]* ]]; then
+        case "$file" in
+        "$pattern")
+          log_debug "Skipping $file due to .claude-hooks-ignore glob pattern: $pattern"
+          return 0
+          ;;
+        esac
+      # Exact match
+      elif [[ $file == "$pattern" ]]; then
+        log_debug "Skipping $file due to .claude-hooks-ignore pattern: $pattern"
+        return 0
+      fi
+    done <".claude-hooks-ignore"
+  fi
+
+  # Check for inline skip comments
+  if [[ -f $file ]] && head -n 5 "$file" 2>/dev/null | grep -q "claude-hooks-disable"; then
+    log_debug "Skipping $file due to inline claude-hooks-disable comment"
+    return 0
+  fi
+
+  return 1
 }
 
 # ============================================================================

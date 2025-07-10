@@ -29,47 +29,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/common-helpers.sh"
 
 # ============================================================================
-# SETUP FUNCTIONS
-# ============================================================================
-
-# Set up the Go test command based on available tools
-setup_go_test_command() {
-  local base_cmd=""
-  local race_flag=""
-
-  # Set up base command
-  if command -v gotestsum >/dev/null 2>&1; then
-    # Use gotestsum with dots format for clean output
-    base_cmd="gotestsum --format dots --"
-    if [[ ${CLAUDE_HOOKS_DEBUG:-0} == "1" ]]; then
-      echo "DEBUG: Found gotestsum at $(command -v gotestsum)" >&2
-    fi
-  else
-    # Fall back to standard go test
-    base_cmd="go test -v"
-    if [[ ${CLAUDE_HOOKS_DEBUG:-0} == "1" ]]; then
-      echo "DEBUG: gotestsum not found, using go test" >&2
-    fi
-  fi
-
-  # Add race detection if enabled
-  if [[ ${CLAUDE_HOOKS_DEBUG:-0} == "1" ]]; then
-    echo "DEBUG: CLAUDE_HOOKS_ENABLE_RACE='${CLAUDE_HOOKS_ENABLE_RACE}'" >&2
-  fi
-
-  if [[ ${CLAUDE_HOOKS_ENABLE_RACE} == "true" ]]; then
-    race_flag=" -race"
-    GO_TEST_CMD="$base_cmd$race_flag"
-  else
-    GO_TEST_CMD="$base_cmd"
-  fi
-
-  if [[ ${CLAUDE_HOOKS_DEBUG:-0} == "1" ]]; then
-    echo "DEBUG: GO_TEST_CMD='$GO_TEST_CMD'" >&2
-  fi
-}
-
-# ============================================================================
 # CONFIGURATION LOADING
 # ============================================================================
 
@@ -133,9 +92,6 @@ fi
 # Load configuration
 load_config
 
-# Initialize the test command after config is loaded
-setup_go_test_command
-
 # ============================================================================
 # TEST EXCLUSION PATTERNS
 # ============================================================================
@@ -143,8 +99,8 @@ setup_go_test_command
 should_skip_test_requirement() {
   local file="$1"
   local base
-  local dir
   base=$(basename "$file")
+  local dir
   dir=$(dirname "$file")
 
   # Files that typically don't have tests
@@ -185,7 +141,7 @@ should_skip_test_requirement() {
 
 format_test_output() {
   local output="$1"
-  # local test_type="$2"  # Unused parameter
+  # local test_type="$2" (parameter not used)
 
   # If output is empty, say so
   if [[ -z $output ]]; then
@@ -201,166 +157,33 @@ format_test_output() {
 # TEST RUNNERS BY LANGUAGE
 # ============================================================================
 
-run_go_tests() {
-  local target="$1"
+# Source language-specific testing functions
+HOOK_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-  # Determine if target is a package path or a file
-  local is_package_path=false
-  local dir=""
-  local base=""
-  local test_file=""
+# Source Go testing if available
+if [[ -f "${HOOK_SCRIPT_DIR}/test-go.sh" ]]; then
+  # shellcheck disable=SC1091
+  source "${HOOK_SCRIPT_DIR}/test-go.sh"
+fi
 
-  if [[ $target == "./..." ]] || [[ $target =~ ^\.(/|$) ]] || [[ ! $target =~ \.go$ ]]; then
-    # It's a package path (like ./..., ., ./pkg, etc.)
-    is_package_path=true
-    dir="$target"
-  else
-    # It's a Go file
-    dir=$(dirname "$target")
-    base=$(basename "$target" .go)
-    test_file="${dir}/${base}_test.go"
-
-    # If this IS a test file, run it directly
-    if [[ $target =~ _test\.go$ ]]; then
-      echo -e "${BLUE}🧪 Running test file directly: $target${NC}" >&2
-      local test_output
-      if ! test_output=$($GO_TEST_CMD "$target" 2>&1); then
-        echo -e "${RED}❌ Tests failed in $target${NC}" >&2
-        echo -e "\n${RED}Failed test output:${NC}" >&2
-        format_test_output "$test_output" "go" >&2
-        return 1
-      fi
-      echo -e "${GREEN}✅ Tests passed in $target${NC}" >&2
-      return 0
-    fi
-  fi
-
-  # Check if we should require tests (only for specific files, not package paths)
-  local require_tests=false
-  if [[ $is_package_path == "false" ]] && ! should_skip_test_requirement "$target"; then
-    require_tests=true
-  fi
-
-  # Parse test modes
-  IFS=',' read -ra TEST_MODES <<<"$CLAUDE_HOOKS_TEST_MODES"
-
-  local failed=0
-  local tests_run=0
-  local test_file_exists=false
-
-  [[ -f $test_file ]] && test_file_exists=true
-
-  for mode in "${TEST_MODES[@]}"; do
-    mode=$(echo "$mode" | xargs) # Trim whitespace
-
-    case "$mode" in
-    "focused")
-      # Focused tests only make sense for specific files
-      if [[ $is_package_path == "false" ]]; then
-        if [[ $test_file_exists == "true" ]]; then
-          echo -e "${BLUE}🧪 Running focused tests for $base...${NC}" >&2
-          tests_run=$((tests_run + 1))
-
-          local test_output
-          if ! test_output=$($GO_TEST_CMD -run "Test.*${base}" "$dir" 2>&1); then
-            failed=1
-            echo -e "${RED}❌ Focused tests failed for $base${NC}" >&2
-            echo -e "\n${RED}Failed test output:${NC}" >&2
-            format_test_output "$test_output" "go" >&2
-            add_error "Focused tests failed for $base"
-          fi
-        elif [[ $require_tests == "true" ]]; then
-          echo -e "${RED}❌ Missing required test file: $test_file${NC}" >&2
-          echo -e "${YELLOW}📝 This file should have tests!${NC}" >&2
-          add_error "Missing required test file: $test_file"
-          return 2
-        fi
-      fi
-      ;;
-
-    "package")
-      local race_msg=""
-      if [[ ${CLAUDE_HOOKS_ENABLE_RACE} == "true" ]]; then
-        race_msg=" (with race detection)"
-      fi
-      echo -e "${BLUE}📦 Running package tests${race_msg} in $dir...${NC}" >&2
-      tests_run=$((tests_run + 1))
-
-      # Debug: show the actual command being run
-      if [[ ${CLAUDE_HOOKS_DEBUG:-0} == "1" ]]; then
-        echo "DEBUG: Running command: $GO_TEST_CMD -short \"$dir\"" >&2
-      fi
-
-      local test_output
-      if ! test_output=$($GO_TEST_CMD -short "$dir" 2>&1); then
-        failed=1
-        echo -e "${RED}❌ Package tests failed in $dir${NC}" >&2
-        echo -e "\n${RED}Failed test output:${NC}" >&2
-        format_test_output "$test_output" "go" >&2
-        add_error "Package tests failed in $dir"
-      fi
-      ;;
-
-    "all")
-      # Run all tests in the project
-      local race_msg=""
-      if [[ ${CLAUDE_HOOKS_ENABLE_RACE} == "true" ]]; then
-        race_msg=" (with race detection)"
-      fi
-      echo -e "${BLUE}🌍 Running all project tests${race_msg}...${NC}" >&2
-      tests_run=$((tests_run + 1))
-
-      local test_output
-      if ! test_output=$($GO_TEST_CMD -short "./..." 2>&1); then
-        failed=1
-        echo -e "${RED}❌ Project tests failed${NC}" >&2
-        echo -e "\n${RED}Failed test output:${NC}" >&2
-        format_test_output "$test_output" "go" >&2
-        add_error "Project tests failed"
-      fi
-      ;;
-
-    "integration")
-      # Check if integration tests exist
-      if go test -tags=integration -list . "$dir" >/dev/null 2>&1; then
-        echo -e "${BLUE}🔗 Running integration tests...${NC}" >&2
-        tests_run=$((tests_run + 1))
-
-        local test_output
-        if ! test_output=$($GO_TEST_CMD -tags=integration "$dir" 2>&1); then
-          failed=1
-          echo -e "${RED}❌ Integration tests failed${NC}" >&2
-          echo -e "\n${RED}Failed test output:${NC}" >&2
-          format_test_output "$test_output" "go" >&2
-          add_error "Integration tests failed"
-        fi
-      fi
-      ;;
-    esac
-  done
-
-  # Summary
-  if [[ $tests_run -eq 0 ]]; then
-    if [[ $require_tests == "true" && $test_file_exists == "false" ]]; then
-      echo -e "${RED}❌ No tests found for $target (tests required)${NC}" >&2
-      add_error "No tests found for $target (tests required)"
-      return 2
-    elif [[ $CLAUDE_HOOKS_TEST_VERBOSE == "true" ]]; then
-      echo -e "${YELLOW}⚠️  No tests run for $target${NC}" >&2
-    fi
-  elif [[ $failed -eq 0 ]]; then
-    log_success "All tests passed for $target"
-  fi
-
-  return $failed
-}
+# Source Tilt testing if available
+if [[ -f "${HOOK_SCRIPT_DIR}/test-tilt.sh" ]]; then
+  # shellcheck disable=SC1091
+  source "${HOOK_SCRIPT_DIR}/test-tilt.sh"
+fi
 
 run_python_tests() {
   local file="$1"
   local dir
-  local base
   dir=$(dirname "$file")
+  local base
   base=$(basename "$file" .py)
+
+  # Check if the file should be skipped
+  if should_skip_file "$file"; then
+    log_debug "Skipping tests for $file due to .claude-hooks-ignore"
+    return 0
+  fi
 
   # If this IS a test file, run it directly
   if [[ $file =~ (test_.*|.*_test)\.py$ ]]; then
@@ -495,9 +318,15 @@ run_python_tests() {
 run_javascript_tests() {
   local file="$1"
   local dir
-  local base
   dir=$(dirname "$file")
+  local base
   base=$(basename "$file" | sed 's/\.[tj]sx\?$//' | sed 's/\.(test|spec)$//')
+
+  # Check if the file should be skipped
+  if should_skip_file "$file"; then
+    log_debug "Skipping tests for $file due to .claude-hooks-ignore"
+    return 0
+  fi
 
   # If this IS a test file, run it directly
   if [[ $file =~ \.(test|spec)\.[tj]sx?$ ]]; then
@@ -645,11 +474,28 @@ main() {
 
   # Language-specific test runners
   if [[ $FILE_PATH =~ \.go$ ]] || [[ $FILE_PATH == "./..." ]]; then
-    run_go_tests "$FILE_PATH" || failed=1
+    # Check if Go testing function is available
+    if type -t run_go_tests &>/dev/null; then
+      run_go_tests "$FILE_PATH" || failed=1
+    else
+      log_debug "Go testing function not available"
+    fi
   elif [[ $FILE_PATH =~ \.py$ ]]; then
     run_python_tests "$FILE_PATH" || failed=1
   elif [[ $FILE_PATH =~ \.[jt]sx?$ ]]; then
     run_javascript_tests "$FILE_PATH" || failed=1
+  elif [[ $FILE_PATH =~ (Tiltfile|.*\.tiltfile|.*\.star|.*\.bzl)$ ]]; then
+    # Check if Tilt testing function is available
+    if type -t run_tilt_tests &>/dev/null; then
+      run_tilt_tests "$FILE_PATH" || failed=1
+    else
+      log_debug "Tilt testing function not available"
+    fi
+  elif type -t should_run_tilt_tests &>/dev/null && should_run_tilt_tests "$FILE_PATH"; then
+    # Additional check for Tilt-related files
+    if type -t run_tilt_tests &>/dev/null; then
+      run_tilt_tests "$FILE_PATH" || failed=1
+    fi
   else
     # No tests for this file type
     exit 0

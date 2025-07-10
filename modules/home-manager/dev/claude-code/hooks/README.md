@@ -98,16 +98,83 @@ CLAUDE_HOOKS_PYTHON_ENABLED=false
 ```
 
 ### Excluding Files
-Create `.claude-hooks-ignore` in your project root using gitignore syntax:
 
-```
-vendor/**
-node_modules/**
+#### Using .claude-hooks-ignore
+Create `.claude-hooks-ignore` in your project root to exclude files from all hooks. This file uses gitignore syntax with support for:
+- Glob patterns (`*.pb.go`, `*_generated.go`)
+- Directory patterns (`vendor/**`, `node_modules/**`)
+- Specific files (`legacy/old_api.go`)
+
+**Example .claude-hooks-ignore:**
+```gitignore
+# Generated files that shouldn't be linted
 *.pb.go
 *_generated.go
+*.min.js
+dist/**
+build/**
+
+# Third-party code
+vendor/**
+node_modules/**
+
+# Files with special formatting
+migrations/*.sql
+testdata/**
+*.golden
+
+# Temporary exclusions (document why!)
+# TODO: Remove after migration (ticket #123)
+legacy/old_api.go
 ```
 
-Add `// claude-hooks-disable` to the top of any file to skip hooks.
+Create `.claude-hooks-ignore` in your project root using gitignore syntax:
+```gitignore
+# Generated code
+*.pb.go
+*_generated.go
+
+# Vendor dependencies
+vendor/**
+node_modules/**
+
+# Legacy code being refactored
+legacy/**
+```
+
+See `example-claude-hooks-ignore` for a comprehensive template with detailed explanations.
+
+#### Inline Exclusions
+Add a comment to the first 5 lines of any file to skip it:
+```go
+// claude-hooks-disable - Legacy code, will be removed in v2.0
+package old
+```
+
+Language-specific comments:
+- Go: `// claude-hooks-disable`
+- Python: `# claude-hooks-disable`
+- JavaScript: `// claude-hooks-disable`
+- Rust: `// claude-hooks-disable`
+- Tilt: `# claude-hooks-disable`
+
+**Always document WHY** the file is excluded!
+
+#### Important: Use Exclusions Sparingly!
+The goal is 100% clean code. Only exclude:
+- **Generated code** - Protocol buffers, code generators
+- **Vendor directories** - Third-party code you don't control
+- **Test fixtures** - Intentionally malformed code for testing
+- **Database migrations** - Often have different formatting standards
+- **Legacy code** - Only with a clear migration plan
+
+**Never exclude** to avoid fixing issues:
+- ❌ Your source code
+- ❌ Test files (they should meet standards too)
+- ❌ New features you're writing
+- ❌ Code you're too lazy to fix
+
+The `.claude-hooks-ignore` is for code you **can't** fix, not code you **won't** fix.
 
 ## Usage
 

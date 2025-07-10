@@ -77,6 +77,27 @@ in
       executable = true;
     };
 
+    # Language-specific hook files
+    home.file.".claude/hooks/lint-go.sh" = {
+      source = ./hooks/lint-go.sh;
+      executable = true;
+    };
+
+    home.file.".claude/hooks/test-go.sh" = {
+      source = ./hooks/test-go.sh;
+      executable = true;
+    };
+
+    home.file.".claude/hooks/lint-tilt.sh" = {
+      source = ./hooks/lint-tilt.sh;
+      executable = true;
+    };
+
+    home.file.".claude/hooks/test-tilt.sh" = {
+      source = ./hooks/test-tilt.sh;
+      executable = true;
+    };
+
     # Copy documentation and examples (not executable)
     home.file.".claude/hooks/README.md".source = ./hooks/README.md;
     home.file.".claude/hooks/example-claude-hooks-config.sh".source =
