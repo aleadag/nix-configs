@@ -102,7 +102,7 @@ in
                   - "🔄 自动选择"
                   - "🇭🇰 香港节点"
                   - "🇯🇵 日本节点"
-                  - "🇹🇼 台湾节点"
+                  - "🇨🇳 台湾节点"
                   - "🇸🇬 新加坡节点"
                   - "🇺🇸 美国节点"
                   - "🌍 全部节点"
@@ -267,7 +267,7 @@ in
                     - "🔄 自动选择"
                     - "🇭🇰 香港节点"
                     - "🇯🇵 日本节点"
-                    - "🇹🇼 台湾节点"
+                    - "🇨🇳 台湾节点"
                     - "🇸🇬 新加坡节点"
                     - "🇺🇸 美国节点"
                     - "🌍 全部节点"
@@ -297,9 +297,6 @@ in
                 - name: "✈️ Telegram"
                   <<: *standard_proxy_group
 
-                - name: "🎬 Anthropic"
-                  <<: *standard_proxy_group
-
                 - name: "🚄 Speedtest"
                   <<: *standard_proxy_group
 
@@ -321,6 +318,11 @@ in
                 - name: "🐠 漏网之鱼"
                   <<: *standard_proxy_group
 
+                - name: "👨🏻‍💻 Vibe Coding"
+                  type: select
+                  include-all: true
+                  filter: (?i)pro-us1
+
                 - name: "🇭🇰 香港节点"
                   type: select
                   include-all: true
@@ -331,7 +333,7 @@ in
                   include-all: true
                   filter: (?i)日|jp|japan
 
-                - name: "🇹🇼 台湾节点"
+                - name: "🇨🇳 台湾节点"
                   type: select
                   include-all: true
                   filter: (?i)台|tw|taiwan
@@ -406,7 +408,8 @@ in
                 - DOMAIN-SUFFIX,qichiyu.com,🚀 默认代理
                 - RULE-SET,private_ip,🔰 直连
                 - RULE-SET,private_domain,🔰 直连
-                - RULE-SET,anthropic_domain,🎬 Anthropic
+                # Order matters, MUST before ChatGPT
+                - RULE-SET,cc_domain,👨🏻‍💻 Vibe Coding
                 - RULE-SET,apple_domain,🍎 Apple
                 - RULE-SET,proxylite,🚀 默认代理
                 - RULE-SET,ai,🤖 ChatGPT
@@ -460,7 +463,7 @@ in
                   <<: *domain_rule_provider
                   url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/telegram.mrs
 
-                anthropic_domain:
+                cc_domain:
                   <<: *domain_rule_provider
                   url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/anthropic.mrs
 

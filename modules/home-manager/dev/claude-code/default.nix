@@ -23,6 +23,20 @@ in
 
     # Claude Code settings from sops
     home.file.".claude/settings.json".text = builtins.toJSON {
+      env =
+        {
+          CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
+        }
+        // lib.optionalAttrs config.home-manager.mihomo.enable (
+          let
+            # Claude Code does not support SOCKS proxies.
+            proxy = "http://127.0.0.1:7890";
+          in
+          {
+            HTTP_PROXY = proxy;
+            HTTPS_PROXY = proxy;
+          }
+        );
       hooks = {
         PostToolUse = [
           {
