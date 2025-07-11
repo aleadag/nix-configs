@@ -90,16 +90,16 @@ in
                 # 代理选择列表
                 proxy_choices: &proxy_choices
                   - "🚀 默认代理"
-                  - "⚡ 香港故转"
-                  - "⚡ 日本故转"
-                  - "⚡ 台湾故转"
-                  - "⚡ 新加坡故转"
-                  - "🔄 香港自动"
-                  - "🔄 日本自动"
-                  - "🔄 台湾自动"
-                  - "🔄 新加坡自动"
-                  - "🔄 美国自动"
-                  - "🔄 自动选择"
+                  - "🔄 香港故转"
+                  - "🔄 日本故转"
+                  - "🔄 台湾故转"
+                  - "🔄 新加坡故转"
+                  - "⚡ 香港自动"
+                  - "⚡ 日本自动"
+                  - "⚡ 台湾自动"
+                  - "⚡ 新加坡自动"
+                  - "⚡ 美国自动"
+                  - "⚡ 自动选择"
                   - "🇭🇰 香港节点"
                   - "🇯🇵 日本节点"
                   - "🇨🇳 台湾节点"
@@ -255,16 +255,16 @@ in
                 - name: "🚀 默认代理"
                   type: select
                   proxies:
-                    - "⚡ 香港故转"
-                    - "⚡ 日本故转"
-                    - "⚡ 台湾故转"
-                    - "⚡ 新加坡故转"
-                    - "🔄 香港自动"
-                    - "🔄 日本自动"
-                    - "🔄 台湾自动"
-                    - "🔄 新加坡自动"
-                    - "🔄 美国自动"
-                    - "🔄 自动选择"
+                    - "🔄 香港故转"
+                    - "🔄 日本故转"
+                    - "🔄 台湾故转"
+                    - "🔄 新加坡故转"
+                    - "⚡ 香港自动"
+                    - "⚡ 日本自动"
+                    - "⚡ 台湾自动"
+                    - "⚡ 新加坡自动"
+                    - "⚡ 美国自动"
+                    - "⚡ 自动选择"
                     - "🇭🇰 香港节点"
                     - "🇯🇵 日本节点"
                     - "🇨🇳 台湾节点"
@@ -297,7 +297,7 @@ in
                 - name: "✈️ Telegram"
                   <<: *standard_proxy_group
 
-                - name: "🚄 Speedtest"
+                - name: "🎯 Speedtest"
                   <<: *standard_proxy_group
 
                 - name: "💰 PayPal"
@@ -309,13 +309,13 @@ in
                     - 直连
                     - "🚀 默认代理"
 
-                - name: "🔰 直连"
+                - name: "🔗 直连"
                   type: select
                   proxies:
                     - 直连
                     - "🚀 默认代理"
 
-                - name: "🐠 漏网之鱼"
+                - name: "❓ 漏网之鱼"
                   <<: *standard_proxy_group
 
                 - name: "👨🏻‍💻 Vibe Coding"
@@ -348,52 +348,52 @@ in
                   include-all: true
                   filter: (?i)美|us|unitedstates|united states
 
-                - name: "⚡ 香港故转"
+                - name: "🔄 香港故转"
                   type: fallback
                   <<: *auto_test
                   filter: (?=.*(港|HK|(?i)Hong))^((?!(台|日|韩|新|深|美)).)*$
 
-                - name: "⚡ 日本故转"
+                - name: "🔄 日本故转"
                   type: fallback
                   <<: *auto_test
                   filter: (?=.*(日|JP|(?i)Japan))^((?!(港|台|韩|新|美)).)*$
 
-                - name: "⚡ 台湾故转"
+                - name: "🔄 台湾故转"
                   type: fallback
                   <<: *auto_test
                   filter: (?=.*(台|TW|(?i)Taiwan))^((?!(港|日|韩|新|深|美)).)*$
 
-                - name: "⚡ 新加坡故转"
+                - name: "🔄 新加坡故转"
                   type: fallback
                   <<: *auto_test
                   filter: (?=.*(新|SG|(?i)Singapore))^((?!(港|台|日|韩|美)).)*$
 
-                - name: "🔄 香港自动"
+                - name: "⚡ 香港自动"
                   type: url-test
                   <<: *auto_test
                   filter: (?=.*(港|HK|(?i)Hong))^((?!(台|日|韩|新|深|美)).)*$
 
-                - name: "🔄 日本自动"
+                - name: "⚡ 日本自动"
                   type: url-test
                   <<: *auto_test
                   filter: (?=.*(日|JP|(?i)Japan))^((?!(港|台|韩|新|美)).)*$
 
-                - name: "🔄 台湾自动"
+                - name: "⚡ 台湾自动"
                   type: url-test
                   <<: *auto_test
                   filter: (?=.*(台|TW|(?i)Taiwan))^((?!(港|日|韩|新|深|美)).)*$
 
-                - name: "🔄 新加坡自动"
+                - name: "⚡ 新加坡自动"
                   type: url-test
                   <<: *auto_test
                   filter: (?=.*(新|SG|(?i)Singapore))^((?!(港|台|日|韩|美)).)*$
 
-                - name: "🔄 美国自动"
+                - name: "⚡ 美国自动"
                   type: url-test
                   <<: *auto_test
                   filter: (?=.*(美|US|(?i)States|America))^((?!(港|台|日|韩|新)).)*$
 
-                - name: "🔄 自动选择"
+                - name: "⚡ 自动选择"
                   type: url-test
                   <<: *auto_test
                   filter: ^((?!(直连|应急续费使用|倍率:)).)*$
@@ -406,8 +406,8 @@ in
               # 此规则部分没有做防泄露处理，因为弊严重大于利！
               rules:
                 - DOMAIN-SUFFIX,qichiyu.com,🚀 默认代理
-                - RULE-SET,private_ip,🔰 直连
-                - RULE-SET,private_domain,🔰 直连
+                - RULE-SET,private_ip,🔗 直连
+                - RULE-SET,private_domain,🔗 直连
                 # Order matters, MUST before ChatGPT
                 - RULE-SET,cc_domain,👨🏻‍💻 Vibe Coding
                 - RULE-SET,apple_domain,🍎 Apple
@@ -419,16 +419,16 @@ in
                 - RULE-SET,onedrive_domain,☁️ OneDrive
                 - RULE-SET,microsoft_domain,🪟 Microsoft
                 - RULE-SET,tiktok_domain,📱 TikTok
-                - RULE-SET,speedtest_domain,🚄 Speedtest
+                - RULE-SET,speedtest_domain,🎯 Speedtest
                 - RULE-SET,telegram_domain,✈️ Telegram
                 - RULE-SET,paypal_domain,💰 PayPal
                 - RULE-SET,gfw_domain,🚀 默认代理
                 - RULE-SET,geolocation-!cn,🚀 默认代理
-                - RULE-SET,cn_domain,🔰 直连
+                - RULE-SET,cn_domain,🔗 直连
                 - RULE-SET,google_ip,🔎 Google,no-resolve
                 - RULE-SET,telegram_ip,✈️ Telegram,no-resolve
-                - RULE-SET,cn_ip,🔰 直连
-                - MATCH,🐠 漏网之鱼
+                - RULE-SET,cn_ip,🔗 直连
+                - MATCH,❓ 漏网之鱼
 
               # 规则集
               rule-providers:
