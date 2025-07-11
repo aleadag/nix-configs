@@ -152,4 +152,4 @@ Example of splitting commits:
 - Before committing, the command will review the diff to identify if multiple commits would be more appropriate
 - If suggesting multiple commits, it will help you stage and commit the changes separately
 - Always reviews the commit diff to ensure the message matches the changes
-- Do not include co-author section, because there could be multiple co-authors and if not specify all of them, it may look unfair to others
+- The commit message will not include "co-authored-by" unless user asks to
