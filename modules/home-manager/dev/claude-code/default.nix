@@ -80,6 +80,7 @@ in
           }
         ];
       };
+      includeCoAuthoredBy = false;
     };
 
     # Create and manage ~/.claude directory
