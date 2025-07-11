@@ -13,13 +13,28 @@ in
     enable = lib.mkEnableOption "Claude Code CLI tool" // {
       default = config.home-manager.dev.enable;
     };
+    ccusage = {
+      enable = lib.mkEnableOption "ccusage - Claude Code token usage analyzer" // {
+        default = cfg.enable;
+      };
+    };
   };
 
   config = lib.mkIf cfg.enable {
-    # Install Claude Code package
+    # Install Claude Code package and ccusage
     home.packages = with pkgs; [
       claude-code
+      nodejs # Required for ccusage
     ];
+
+    # Install ccusage to user npm directory
+    home.activation.ccusage = lib.mkIf cfg.ccusage.enable (
+      lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+        $DRY_RUN_CMD mkdir -p ~/.npm-packages/bin
+        $DRY_RUN_CMD ${pkgs.nodejs}/bin/npm config set prefix ~/.npm-packages
+        $DRY_RUN_CMD ${pkgs.nodejs}/bin/npm install -g ccusage
+      ''
+    );
 
     # Claude Code settings from sops
     home.file.".claude/settings.json".text = builtins.toJSON {
