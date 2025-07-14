@@ -104,6 +104,9 @@ in
             [
               firefoxTheme
               tridactyl
+              sponsorblock
+              ublock-origin
+              ublacklist
             ];
         };
       };
