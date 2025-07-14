@@ -41,6 +41,7 @@ in
       env =
         {
           CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
+          TZ = "America/Los_Angeles";
         }
         // lib.optionalAttrs config.home-manager.mihomo.enable (
           let
