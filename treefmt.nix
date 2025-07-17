@@ -25,7 +25,7 @@
       "*.plist"
       "*.toml"
       "*.zsh"
-      "modules/home-manager/editor/emacs/doom-emacs/*"
+      "modules/home-manager/dev/claude-code/hooks/*"
       # auto-generated
       ".github/workflows/*.yml"
     ];
