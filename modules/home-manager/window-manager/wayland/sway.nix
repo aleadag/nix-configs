@@ -10,6 +10,29 @@ let
   alt = "Mod1";
   modifier = "Mod4";
 
+  terminal-cwd = pkgs.writeShellApplication {
+    name = "terminal-cwd";
+
+    runtimeInputs = with pkgs; [
+      coreutils
+      jq
+      procps
+      sway
+    ];
+
+    text = ''
+      set +o errexit
+      terminal='${config.home-manager.window-manager.default.terminal}'
+      terminal_name="''${terminal##*/}"
+      pid="$(swaymsg -t get_tree | jq -e ".. | select(.type? and .focused? and .app_id==\"$terminal_name\") | .pid")"
+      if [[ -n "$pid" ]]; then
+        ppid="$(pgrep --newest --parent "$pid")"
+        exec "$terminal" "$(readlink "/proc/$ppid/cwd" || echo "$HOME")"
+      fi
+      exec "$terminal"
+    '';
+  };
+
   commonOptions =
     let
       screenShotName =
@@ -58,6 +81,8 @@ let
         # XCURSOR_SIZE
         seat * xcursor_theme ${name} ${toString size}
       '';
+
+      terminal = lib.getExe terminal-cwd;
     };
 in
 {
