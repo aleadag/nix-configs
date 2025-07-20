@@ -291,7 +291,7 @@ in
                 - name: "🪟 Microsoft"
                   <<: *standard_proxy_group
 
-                - name: "📱 TikTok"
+                - name: "₿ Binance"
                   <<: *standard_proxy_group
 
                 - name: "✈️ Telegram"
@@ -418,7 +418,7 @@ in
                 - RULE-SET,google_domain,🔎 Google
                 - RULE-SET,onedrive_domain,☁️ OneDrive
                 - RULE-SET,microsoft_domain,🪟 Microsoft
-                - RULE-SET,tiktok_domain,📱 TikTok
+                - RULE-SET,binance_domain,₿ Binance
                 - RULE-SET,speedtest_domain,🎯 Speedtest
                 - RULE-SET,telegram_domain,✈️ Telegram
                 - RULE-SET,paypal_domain,💰 PayPal
@@ -487,9 +487,9 @@ in
                   <<: *domain_rule_provider
                   url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/ookla-speedtest.mrs
 
-                tiktok_domain:
+                binance_domain:
                   <<: *domain_rule_provider
-                  url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/tiktok.mrs
+                  url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/binance.mrs
 
                 gfw_domain:
                   <<: *domain_rule_provider
