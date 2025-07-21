@@ -58,6 +58,7 @@ in
       _7zz
       bc
       bind.dnsutils
+      clock-rs
       curl
       dialog
       diffutils
