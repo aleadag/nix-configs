@@ -107,6 +107,7 @@ in
               sponsorblock
               ublock-origin
               ublacklist
+              metamask
             ];
         };
       };
