@@ -13,6 +13,9 @@ in
     enable = lib.mkEnableOption "Git config" // {
       default = config.home-manager.cli.enable;
     };
+    fsmonitor.enable = lib.mkEnableOption "fsmonitor config" // {
+      default = true;
+    };
     gh.enable = lib.mkEnableOption "GitHub CLI config" // {
       default = true;
     };
@@ -71,7 +74,8 @@ in
         commit.verbose = true;
         core = {
           editor = "nvim";
-          untrackedCache = true;
+          fsmonitor = cfg.fsmonitor.enable;
+          untrackedCache = cfg.fsmonitor.enable;
           whitespace = "trailing-space,space-before-tab,indent-with-non-tab";
         };
         checkout = {
