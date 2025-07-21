@@ -7,8 +7,8 @@
 
 {
   imports = [
+    ./copy-apps.nix
     ./homebrew.nix
-    ./trampoline-apps.nix
   ];
 
   options.home-manager.darwin.enable = lib.mkEnableOption "Darwin (macOS) config" // {
