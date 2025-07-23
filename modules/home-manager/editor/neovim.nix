@@ -150,12 +150,12 @@ in
             desc = "Enable spellcheck for defined filetypes",
           })
 
-          -- 自动切换输入法
+          -- Auto-switch input method
           -- https://zhuanlan.zhihu.com/p/558359369
-          -- 全局变量
+          -- Global variable
           local input_toggle = 0
 
-          -- Fcitx2en 函数：切换到英文输入法
+          -- Fcitx2en function: switch to English input method
           local function fcitx2en()
               local input_status = tonumber(vim.fn.system("fcitx5-remote"))
               if input_status == 2 then
@@ -164,7 +164,7 @@ in
               end
           end
 
-          -- Fcitx2zh 函数：切换到中文输入法
+          -- Fcitx2zh function: switch to Chinese input method
           local function fcitx2zh()
               if input_toggle == 1 then
                   vim.fn.system("fcitx5-remote -o")
@@ -172,10 +172,10 @@ in
               end
           end
 
-          -- 设置 ttimeoutlen
+          -- Set ttimeoutlen
           vim.opt.ttimeoutlen = 100
 
-          -- 设置自动命令
+          -- Set auto commands
           vim.api.nvim_create_autocmd("InsertLeave", {
               callback = function()
                   fcitx2en()
