@@ -29,6 +29,7 @@ in
     ./git.nix
     ./htop.nix
     ./irssi.nix
+    ./jujutsu.nix
     ./pass.nix
     ./ssh
     ./starship.nix
