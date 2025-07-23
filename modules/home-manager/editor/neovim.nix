@@ -26,21 +26,6 @@ in
       enable = lib.mkEnableOption "Avante AI plugin" // {
         default = config.home-manager.dev.enable;
       };
-      provider = lib.mkOption {
-        type = lib.types.str;
-        default = "openai";
-        description = "AI provider for Avante";
-      };
-      endpoint = lib.mkOption {
-        type = lib.types.str;
-        default = "https://api.gptsapi.net/v1";
-        description = "API endpoint for the provider";
-      };
-      model = lib.mkOption {
-        type = lib.types.str;
-        default = "wild-sonnet-4-20250514";
-        description = "Model to use for AI completions";
-      };
     };
     claudeCode = {
       enable = lib.mkEnableOption "Claude Code plugin" // {
@@ -65,6 +50,12 @@ in
       ++ lib.optionals enableIcons [
         config.theme.fonts.symbols.package
       ];
+
+    sops.secrets.qwen_api_key = { };
+
+    home.sessionVariables = lib.optionalAttrs cfg.avante.enable {
+      AVANTE_OPENAI_API_KEY = "$(cat ${config.sops.secrets.qwen_api_key.path})";
+    };
 
     programs.neovim = {
       enable = true;
@@ -550,13 +541,13 @@ in
               ''
                 require("avante_lib").load()
                 require("avante").setup {
-                  provider = "${cfg.avante.provider}",
+                  provider = "openai",
                   providers = {
-                      ${cfg.avante.provider} = {
-                        endpoint = "${cfg.avante.endpoint}",
-                        model = "${cfg.avante.model}",
-                      },
+                    openai = {
+                      endpoint = "https://dashscope.aliyuncs.com/compatible-mode/v1",
+                      model = "qwen3-coder-plus",
                     },
+                  },
                 }
               '';
           }
