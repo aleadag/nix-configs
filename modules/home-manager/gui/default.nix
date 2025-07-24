@@ -14,6 +14,7 @@
       with pkgs;
       (lib.optionals stdenv.hostPlatform.isLinux [
         logseq
+        telegram-desktop
       ])
       ++ (lib.optionals (stdenv.hostPlatform.system != "aarch64-linux") [
         anki-bin
