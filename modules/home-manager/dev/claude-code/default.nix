@@ -38,21 +38,20 @@ in
 
     # Claude Code settings from sops
     home.file.".claude/settings.json".text = builtins.toJSON {
-      env =
+      env = {
+        CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
+        TZ = "America/Los_Angeles";
+      }
+      // lib.optionalAttrs config.home-manager.mihomo.enable (
+        let
+          # Claude Code does not support SOCKS proxies.
+          proxy = "http://127.0.0.1:7890";
+        in
         {
-          CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
-          TZ = "America/Los_Angeles";
+          HTTP_PROXY = proxy;
+          HTTPS_PROXY = proxy;
         }
-        // lib.optionalAttrs config.home-manager.mihomo.enable (
-          let
-            # Claude Code does not support SOCKS proxies.
-            proxy = "http://127.0.0.1:7890";
-          in
-          {
-            HTTP_PROXY = proxy;
-            HTTPS_PROXY = proxy;
-          }
-        );
+      );
       hooks = {
         PostToolUse = [
           {
@@ -77,7 +76,13 @@ in
                 type = "command";
                 command = "~/.claude/hooks/ntfy-notifier.sh";
               }
-            ];
+            ]
+            ++ (lib.optionals config.home-manager.cli.jujutsu.enable [
+              {
+                type = "command";
+                command = "jj new";
+              }
+            ]);
           }
         ];
       };
