@@ -554,16 +554,33 @@ in
         ]
         ++ lib.optionals cfg.claudeCode.enable [
           {
-            plugin = claude-code-nvim;
+            plugin = claudecode-nvim;
             type = "lua";
             config = # lua
               ''
-                require("claude-code").setup {
-                  window = {
-                    position = "vertical",
+                require("claudecode").setup {
+                  port_range = { min = 10000, max = 65535 },
+                  auto_start = true,
+                  log_level = "info",
+
+                  track_selection = true,
+                  visual_demotion_delay_ms = 50,
+
+                  terminal = {
+                    split_side = "right",
                   },
                 }
-                vim.keymap.set('n', '<leader>cc', '<cmd>ClaudeCode<CR>', { desc = 'Toggle Claude Code' })
+
+                -- Claude Code keymaps
+                vim.keymap.set("n", "<leader>d", "<nop>", { desc = "AI/Claude Code", noremap = true, silent = true })
+                vim.keymap.set("n", "<leader>dc", "<cmd>ClaudeCode<cr>", { desc = "Toggle Claude" })
+                vim.keymap.set("n", "<leader>df", "<cmd>ClaudeCodeFocus<cr>", { desc = "Focus Claude" })
+                vim.keymap.set("n", "<leader>dr", "<cmd>ClaudeCode --resume<cr>", { desc = "Resume Claude" })
+                vim.keymap.set("n", "<leader>dC", "<cmd>ClaudeCode --continue<cr>", { desc = "Continue Claude" })
+                vim.keymap.set("n", "<leader>db", "<cmd>ClaudeCodeAdd %<cr>", { desc = "Add current buffer" })
+                vim.keymap.set("v", "<leader>ds", "<cmd>ClaudeCodeSend<cr>", { desc = "Send to Claude" })
+                vim.keymap.set("n", "<leader>da", "<cmd>ClaudeCodeDiffAccept<cr>", { desc = "Accept diff" })
+                vim.keymap.set("n", "<leader>dd", "<cmd>ClaudeCodeDiffDeny<cr>", { desc = "Deny diff" })
               '';
           }
         ]
