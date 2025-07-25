@@ -72,10 +72,6 @@ in
           {
             matcher = "";
             hooks = [
-              {
-                type = "command";
-                command = "~/.claude/hooks/ntfy-notifier.sh";
-              }
             ]
             ++ (lib.optionals config.home-manager.cli.jujutsu.enable [
               {
