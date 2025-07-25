@@ -21,6 +21,14 @@
         };
         # displays the exit code of the previous command
         status.disabled = false;
+
+        # for jj
+        git_branch.disabled = true;
+        custom.git_branch = {
+          when = true;
+          command = "jj root >/dev/null 2>&1 || starship module git_branch";
+          description = "Only show git_branch if we're not in a jj repo";
+        };
       };
     };
   };
