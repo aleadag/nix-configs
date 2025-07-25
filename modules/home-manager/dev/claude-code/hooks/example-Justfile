@@ -1,0 +1,75 @@
+# Example justfile for Claude Code Hooks Integration
+# Copy this to your project root and customize for your needs
+
+# Lint target - called by smart-lint.sh after file edits
+# Receives file paths as arguments
+lint *files:
+    #!/usr/bin/env bash
+    echo "Running project lint with files: $*"
+    if [[ $# -gt 0 ]]; then
+        echo "Linting specific files: $*"
+        # Example: Run your file-specific linters here
+        # golangci-lint run "$@"
+        # black "$@"
+        # eslint --fix "$@"
+    else
+        echo "Linting all files"
+        # Example: Run your project-wide linters here
+        # golangci-lint run ./...
+        # black .
+        # npm run lint
+    fi
+
+# Test target - called by smart-test.sh after file edits
+# Receives file paths as arguments
+test *files:
+    #!/usr/bin/env bash
+    echo "Running project tests with files: $*"
+    if [[ $# -gt 0 ]]; then
+        echo "Testing specific files: $*"
+        # Example: Run tests for the specific files
+        for file in "$@"; do
+            # go test -v "$(dirname "$file")"
+            # pytest -xvs "$file"
+            # jest "$file"
+            echo "Would test: $file"
+        done
+    else
+        echo "Running all tests"
+        # Example: Run all project tests
+        # go test -v ./...
+        # pytest
+        # npm test
+    fi
+
+# Optional: Add more specific recipes that the main recipes can call
+lint-go:
+    golangci-lint run ./...
+    gofmt -w .
+
+lint-python:
+    black .
+    ruff check --fix .
+
+lint-js:
+    npm run lint
+    npm run format
+
+test-go:
+    go test -v -race ./...
+
+test-python:
+    pytest -xvs
+
+test-js:
+    npm test
+
+# Optional: Helper recipe to check if this justfile is being detected
+check-integration:
+    @echo "✓ justfile detected by Claude Code hooks"
+    @echo "  - 'just lint' recipe: available"
+    @echo "  - 'just test' recipe: available"
+    @echo ""
+    @echo "Test with:"
+    @echo "  just lint example.go"
+    @echo "  just test example_test.go"

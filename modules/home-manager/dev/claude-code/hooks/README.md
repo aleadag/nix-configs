@@ -22,7 +22,7 @@ The `integrate.sh` script automatically:
 
 - **[QUICK_START.md](QUICK_START.md)** - Get started in 5 minutes
 - **[INTEGRATION.md](INTEGRATION.md)** - Detailed integration guide
-- **[example-Makefile](example-Makefile)** - Copy-paste Makefile template
+- **[justfile](justfile)** - Just command runner for development tasks
 - **[example-claude-hooks-config.sh](example-claude-hooks-config.sh)** - Configuration options
 
 ## Hook Protocol
@@ -150,7 +150,7 @@ The hooks prioritize project-specific commands over generic language tools. When
 ### 1. Search for Project Root
 
 Starting from the edited file's directory, the hook searches upward for:
-- A `Makefile` containing `lint` or `test` targets
+- A `Makefile` or `justfile` containing `lint` or `test` targets
 - A `scripts/` directory with executable `lint` or `test` scripts
 - The project root (indicated by `.git/`, `go.mod`, `package.json`, etc.)
 
@@ -159,12 +159,12 @@ The search stops at the first match or when reaching the filesystem root.
 ### 2. Priority Order
 
 For linting (`smart-lint.sh`):
-1. **Make target**: If `make lint` exists, use it
+1. **Just/Make target**: If `just lint` or `make lint` exists, use it
 2. **Script**: If `scripts/lint` is executable, use it
 3. **Language tools**: Fall back to language-specific tools (golangci-lint, black, etc.)
 
 For testing (`smart-test.sh`):
-1. **Make target**: If `make test` exists, use it
+1. **Just/Make target**: If `just test` or `make test` exists, use it
 2. **Script**: If `scripts/test` is executable, use it
 3. **Language tools**: Fall back to language-specific test runners
 
@@ -173,6 +173,9 @@ For testing (`smart-test.sh`):
 When project commands are used, the edited file path is passed as an argument:
 
 ```bash
+# For just recipes:
+just lint path/to/edited/file.go
+
 # For make targets:
 make lint FILE="path/to/edited/file.go"
 
@@ -187,14 +190,16 @@ scripts/lint path/to/edited/file.go
 
 ### 4. Working Directory
 
-Commands are executed from the project root (where the Makefile or scripts directory was found), with file paths relative to that root.
+Commands are executed from the project root (where the justfile, Makefile, or scripts directory was found), with file paths relative to that root.
 
 ### 5. Configuration
 
 You can customize the target/script names via `.claude-hooks-config.sh`:
 
 ```bash
-# Custom make target names (space-separated, checked in order)
+# Custom just/make target names (space-separated, checked in order)
+CLAUDE_HOOKS_JUST_LINT_TARGETS="lint check lint-all"
+CLAUDE_HOOKS_JUST_TEST_TARGETS="test test-unit tests"
 CLAUDE_HOOKS_MAKE_LINT_TARGETS="lint check lint-all"
 CLAUDE_HOOKS_MAKE_TEST_TARGETS="test test-unit tests"
 
@@ -210,7 +215,30 @@ CLAUDE_HOOKS_GO_USE_PROJECT_COMMANDS=false  # Always use golangci-lint directly
 
 ### 6. Examples
 
-#### Example: Go Project with Makefile
+#### Example: Go Project with Justfile
+
+```just
+# Project's justfile
+lint *files:
+    #!/usr/bin/env bash
+    if [[ $# -gt 0 ]]; then
+        golangci-lint run "$@"
+    else
+        golangci-lint run ./...
+    fi
+
+test *files:
+    #!/usr/bin/env bash
+    if [[ $# -gt 0 ]]; then
+        for file in "$@"; do
+            go test -v "$(dirname "$file")"
+        done
+    else
+        go test -v ./...
+    fi
+```
+
+#### Example: Go Project with Makefile (Legacy)
 
 ```makefile
 # Project's Makefile
@@ -251,7 +279,7 @@ If your project's make/scripts don't handle single-file arguments well:
 
 ```bash
 # .claude-hooks-config.sh
-# Use language tools directly instead of make targets
+# Use language tools directly instead of just/make targets
 CLAUDE_HOOKS_USE_PROJECT_COMMANDS=false
 ```
 
@@ -417,7 +445,7 @@ The hooks automatically detect and handle Tilt projects by looking for:
 ### Tilt Linting
 
 When Tiltfiles are detected, smart-lint will:
-1. Check for `make lint-tilt` target and use it if available
+1. Check for `just lint-tilt` or `make lint-tilt` target and use it if available
 2. Run buildifier for formatting and linting (if installed)
 3. Validate syntax using Python
 4. Run custom linters (`scripts/lint-tiltfiles.sh` or `scripts/tiltfile-custom-lint.py`)
@@ -426,7 +454,7 @@ When Tiltfiles are detected, smart-lint will:
 ### Tilt Testing
 
 When Tiltfiles are edited, smart-test will:
-1. Check for `make test-tilt` target and use it if available
+1. Check for `just test-tilt` or `make test-tilt` target and use it if available
 2. Look for and run pytest tests (e.g., `tests/test_tiltfiles.py`)
 3. Validate Tiltfile with `tilt alpha tiltfile-result` (if tilt is installed)
 4. Run basic syntax validation

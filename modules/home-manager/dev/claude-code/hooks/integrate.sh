@@ -57,7 +57,7 @@ detect_project_structure() {
 detect_build_tools() {
     local tools=()
     
-    [[ -f "Makefile" ]] && tools+=("make")
+    [[ -f "justfile" ]] && tools+=("just")
     [[ -f "package.json" ]] && tools+=("npm")
     [[ -f "go.mod" ]] && tools+=("go")
     [[ -f "requirements.txt" ]] && tools+=("pip")
@@ -105,7 +105,7 @@ generate_prompt() {
     
     echo "=== COPY THIS PROMPT TO CLAUDE ==="
     echo ""
-    echo "Please integrate Claude Code hooks into this project by updating the Makefile according to ~/.claude/hooks/INTEGRATION.md."
+    echo "Please integrate Claude Code hooks into this project by creating a justfile according to ~/.claude/hooks/INTEGRATION.md."
     echo ""
     echo "Project analysis:"
     echo "- Structure: $structure project"
@@ -143,20 +143,20 @@ generate_prompt() {
     else
         echo ""
         echo "Requirements:"
-        echo "- Add 'make lint' target that runs appropriate linters for: ${languages[*]}"
-        echo "- Add 'make test' target that runs tests for all languages"
-        echo "- Ensure FILE parameter is handled correctly for focused operations"
+        echo "- Add 'just lint' recipe that runs appropriate linters for: ${languages[*]}"
+        echo "- Add 'just test' recipe that runs tests for all languages"
+        echo "- Ensure file arguments are handled correctly for focused operations"
     fi
     
     echo ""
     echo "Key integration points:"
-    echo "1. The Makefile must accept FILE=path/to/file for targeted operations"
+    echo "1. The justfile recipes should accept file arguments for targeted operations"
     echo "2. Exit codes must be preserved (0 for success, non-zero for failure)"
     echo "3. All output goes to stderr"
     
-    if [[ ! -f "Makefile" ]]; then
+    if [[ ! -f "justfile" ]]; then
         echo ""
-        echo "Note: No Makefile exists yet. Create one based on ~/.claude/hooks/example-Makefile"
+        echo "Note: No justfile exists yet. Create one based on ~/.claude/hooks/example-Justfile"
     fi
     
     echo ""
@@ -182,8 +182,8 @@ main() {
     echo ""
     log_info "💡 Tips:"
     echo "  1. Copy the prompt above and paste it to Claude"
-    echo "  2. Review the generated Makefile before accepting"
-    echo "  3. Test with: make lint && make test"
+    echo "  2. Review the generated justfile before accepting"
+    echo "  3. Test with: just lint && just test"
     echo "  4. For custom configuration, see: ~/.claude/hooks/example-claude-hooks-config.sh"
 }
 
