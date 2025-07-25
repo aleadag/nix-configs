@@ -39,6 +39,8 @@ in
         # Claude Code settings from sops
         ".claude/settings.json".text = builtins.toJSON {
           env = {
+            BASH_DEFAULT_TIMEOUT_MS = "300000";
+            BASH_MAX_TIMEOUT_MS = "600000";
             CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
             TZ = "America/Los_Angeles";
           }
