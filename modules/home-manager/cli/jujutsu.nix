@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 let
   cfg = config.home-manager.cli.jujutsu;
@@ -11,6 +16,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    home.packages = with pkgs; [ jjui ];
+
     programs.jujutsu = {
       enable = true;
       settings = {
