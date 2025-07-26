@@ -6,16 +6,26 @@ This command helps you create well-formatted change descriptions with convention
 
 To describe a change, just type:
 ```
-/describe
+/describe [REVSET]
 ```
+
+Where `[REVSET]` is an optional jujutsu revision specification (defaults to `@` - the current working copy).
 
 ## What This Command Does
 
-1. Checks the current change with `jj status`
-2. Performs a `jj diff` to understand what changes are being described
-3. Analyzes the diff to determine if multiple distinct logical changes are present
-4. If multiple distinct changes are detected, suggests splitting the change into multiple smaller changes with `jj split`
-5. For each change (or the single change if not split), creates a description using emoji conventional commit format
+1. Performs a `jj diff` on the revision to understand what changes are being described
+2. Analyzes the diff to determine if multiple distinct logical changes are present
+3. If multiple distinct changes are detected, suggests splitting the change into multiple smaller changes
+4. For each change (or the single change if not split), creates a description using emoji conventional commit format
+
+### Splitting Changes
+
+When changes need to be split, the command will guide you through a manual split process since `jj split -i` may not work in all environments:
+
+1. Create a new empty commit: `jj new`
+2. Use `jj squash --from @- <file_pattern>` to move specific files to the new commit
+3. Describe each commit with appropriate conventional commit messages
+4. Rebase commits as needed to maintain logical order
 
 ## Best Practices for Change Descriptions
 
@@ -140,13 +150,16 @@ Example of splitting changes:
 
 ## Command Options
 
+- `[REVSET]`: Optional jujutsu revision to describe (defaults to `@`)
+  - Examples: `@`, `@-`, `x`, `main~2`, etc.
 - `--no-verify`: Skip running the pre-describe checks (lint, build, generate:docs)
 
 ## Important Notes
 
 - If these checks fail, you'll be asked if you want to proceed with the description anyway or fix the issues first
-- The description will apply to the current change in the working copy
+- The description will apply to the specified revision (or current change if no revset provided)
 - The description message will be constructed based on the changes detected
 - Before describing, the command will review the diff to identify if multiple changes would be more appropriate
-- If suggesting multiple changes, it will help you split and describe the changes separately using `jj split`
+- If suggesting multiple changes, it will help you split and describe the changes separately using manual split techniques
 - Always reviews the change diff to ensure the description matches the changes
+- If `jj split -i` fails in your environment, the command will use manual split workarounds
