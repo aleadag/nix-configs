@@ -25,6 +25,9 @@ in
     programs.jujutsu = {
       enable = true;
       settings = {
+        template-aliases = {
+          "format_short_id(id)" = "id.shortest()";
+        };
         ui.editor = "nvim";
         user = {
           name = config.meta.fullname;
