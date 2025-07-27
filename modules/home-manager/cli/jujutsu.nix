@@ -16,7 +16,10 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = with pkgs; [ jjui ];
+    home.packages = with pkgs; [
+      jjui
+      jj-fzf
+    ];
 
     home.file.".config/jjui/config.toml".source = (pkgs.formats.toml { }).generate "jjui-config" {
       ui.auto_refresh_interval = 10; # seconds
