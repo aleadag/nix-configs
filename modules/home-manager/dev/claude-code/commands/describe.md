@@ -1,6 +1,11 @@
+---
+allowed-tools: Bash(jj status:*), Bash(jj diff:*), Bash(jj describe:*), Bash(jj log:*), Bash(jj show:*)
+description: Create well-formatted change descriptions with conventional commit messages and emoji, then apply them
+---
+
 # Claude Command: Describe
 
-This command helps you create well-formatted change descriptions with conventional commit messages and emoji.
+This command helps you create well-formatted change descriptions with conventional commit messages and emoji, and automatically applies them using `jj describe`.
 
 ## Usage
 
@@ -11,12 +16,13 @@ To describe a change, just type:
 
 Where `[REVSET]` is an optional jujutsu revision specification (defaults to `@` - the current working copy).
 
+## Current State
+
+Current jujutsu status: !`jj status`
+
 ## What This Command Does
 
-1. Performs a `jj diff` on the revision to understand what changes are being described
-2. Analyzes the diff to determine if multiple distinct logical changes are present
-3. If multiple distinct changes are detected, suggests splitting the change into multiple smaller changes
-4. For each change (or the single change if not split), creates a description using emoji conventional commit format
+Analyzes your changes and automatically applies well-formatted conventional commit descriptions with emoji using `jj describe`.
 
 ### Splitting Changes
 
@@ -163,3 +169,16 @@ Example of splitting changes:
 - If suggesting multiple changes, it will help you split and describe the changes separately using manual split techniques
 - Always reviews the change diff to ensure the description matches the changes
 - If `jj split -i` fails in your environment, the command will use manual split workarounds
+
+## Task Instructions
+
+Your task is to:
+
+1. **Analyze the current changes** by running `jj diff -r $ARGUMENTS` (where $ARGUMENTS is the revset, defaulting to `@`)
+2. **Review the diff** to understand what changes were made
+3. **Generate an appropriate commit message** using the conventional commit format with emoji from the guidelines above
+4. **Apply the description** by running `jj describe -m "your generated message" $ARGUMENTS`
+
+If the changes are complex and should be split into multiple commits, guide the user through the manual splitting process first, then describe each commit separately.
+
+Always ensure the commit message accurately reflects the changes and follows the emoji conventional commit format specified in this document.
