@@ -358,18 +358,35 @@ lint_rust() {
     fi
     
     if command_exists cargo; then
+        # Find the root Cargo.toml
+        local cargo_root=""
+        local current_dir="$PWD"
+        while [[ "$current_dir" != "/" ]]; do
+            if [[ -f "$current_dir/Cargo.toml" ]]; then
+                cargo_root="$current_dir"
+                break
+            fi
+            current_dir="$(dirname "$current_dir")"
+        done
+        
+        if [[ -z "$cargo_root" ]]; then
+            log_debug "No Cargo.toml found in parent directories"
+            return 0
+        fi
+        
+        # Run cargo commands from the root directory
         local fmt_output
-        if ! fmt_output=$(cargo fmt -- --check 2>&1); then
+        if ! fmt_output=$(cd "$cargo_root" && cargo fmt -- --check 2>&1); then
             # Apply formatting and capture any errors
             local format_output
-            if ! format_output=$(cargo fmt 2>&1); then
+            if ! format_output=$(cd "$cargo_root" && cargo fmt 2>&1); then
                 add_error "Rust formatting failed"
                 echo "$format_output" >&2
             fi
         fi
         
         local clippy_output
-        if ! clippy_output=$(cargo clippy --quiet -- -D warnings 2>&1); then
+        if ! clippy_output=$(cd "$cargo_root" && cargo clippy --quiet -- -D warnings 2>&1); then
             add_error "Clippy found issues"
             echo "$clippy_output" >&2
         fi
