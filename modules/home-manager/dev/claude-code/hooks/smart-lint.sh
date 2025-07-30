@@ -835,35 +835,35 @@ try_project_lint_command() {
     make_targets=$(echo "$config_output" | head -1)
     script_names=$(echo "$config_output" | tail -1)
     
-    # Try make targets first
-    if [[ -f "$cmd_root/Makefile" ]]; then
-        log_debug "Checking make targets: $make_targets"
+    # Try just recipes first
+    if [[ -f "$cmd_root/justfile" ]] || [[ -f "$cmd_root/Justfile" ]]; then
+        log_debug "Checking just recipes: $make_targets"
         for target in $make_targets; do
-            if check_make_target "$target" "$cmd_root"; then
-                # Run make command with FILE argument
-                local make_output
-                local make_exit_code
+            if check_just_target "$target" "$cmd_root"; then
+                # Run just command with FILE argument
+                local just_output
+                local just_exit_code
                 
-                # Change to command root and run make
-                if make_output=$(cd "$cmd_root" && make "$target" FILE="$rel_path" 2>&1); then
-                    make_exit_code=0
-                    log_debug "Make command succeeded"
+                # Change to command root and run just
+                if just_output=$(cd "$cmd_root" && just "$target" "$rel_path" 2>&1); then
+                    just_exit_code=0
+                    log_debug "Just command succeeded"
                 else
-                    make_exit_code=$?
-                    log_debug "Make command failed with exit code: $make_exit_code"
+                    just_exit_code=$?
+                    log_debug "Just command failed with exit code: $just_exit_code"
                 fi
                 
                 # Output and track errors if it failed
-                if [[ $make_exit_code -ne 0 ]]; then
-                    log_info "🔨 Running 'make $target' from $cmd_root"
-                    if [[ -n "$make_output" ]]; then
-                        echo "$make_output" >&2
+                if [[ $just_exit_code -ne 0 ]]; then
+                    log_info "⚡ Running 'just $target' from $cmd_root"
+                    if [[ -n "$just_output" ]]; then
+                        echo "$just_output" >&2
                     fi
-                    add_error "make $target found issues"
-                elif [[ "${CLAUDE_HOOKS_TEST_MODE:-0}" == "1" ]] && [[ -n "$make_output" ]]; then
+                    add_error "just $target found issues"
+                elif [[ "${CLAUDE_HOOKS_TEST_MODE:-0}" == "1" ]] && [[ -n "$just_output" ]]; then
                     # In test mode, show output even on success
-                    log_info "🔨 Running 'make $target' from $cmd_root"
-                    echo "$make_output" >&2
+                    log_info "⚡ Running 'just $target' from $cmd_root"
+                    echo "$just_output" >&2
                 fi
                 
                 # Return 0 to indicate project command was found and executed
@@ -872,7 +872,7 @@ try_project_lint_command() {
         done
     fi
     
-    # Try scripts if no make target worked
+    # Try scripts if no just recipe worked
     if [[ -d "$cmd_root/scripts" ]]; then
         log_debug "Checking scripts: $script_names"
         for script in $script_names; do
