@@ -26,11 +26,6 @@
       };
     };
 
-    catppuccin.gtk = {
-      enable = true;
-      icon.enable = true;
-    };
-
     services.xsettingsd = {
       enable = true;
       settings = with config; {
