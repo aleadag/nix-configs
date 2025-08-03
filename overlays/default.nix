@@ -68,6 +68,7 @@ final: prev:
               # to make flake check happy
               lazygit.enable = false;
               starship.enable = false;
+              firefox.enable = false;
             };
             home-manager = {
               cli.icons.enable = false;

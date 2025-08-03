@@ -84,31 +84,13 @@ in
 
         extensions = {
           force = true;
-          packages =
-            with pkgs.nur.repos.rycee.firefox-addons;
-            let
-              firefoxTheme = buildFirefoxXpiAddon {
-                pname = "catppuccin";
-                addonId = "{f5525f34-4102-4f6e-8478-3cf23cfeff7a}";
-                version = "1.0";
-                url = "https://addons.mozilla.org/firefox/downloads/file/3880040/catppuccin-1.0.xpi";
-                sha256 = "sha256-1myVNsTPpC5o1fGw/1Tsfnj5NzE0lfEWy8jHKDVRIfg=";
-
-                meta = with lib; {
-                  description = "Catppuccin theme";
-                  license = licenses.cc-by-30;
-                  platforms = platforms.all;
-                };
-              };
-            in
-            [
-              firefoxTheme
-              tridactyl
-              sponsorblock
-              ublock-origin
-              ublacklist
-              metamask
-            ];
+          packages = with pkgs.nur.repos.rycee.firefox-addons; [
+            tridactyl
+            sponsorblock
+            ublock-origin
+            ublacklist
+            metamask
+          ];
         };
       };
     };
