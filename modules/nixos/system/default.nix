@@ -94,10 +94,10 @@ in
 
     systemd = {
       # Reduce default service stop timeouts for faster shutdown
-      extraConfig = ''
-        DefaultTimeoutStopSec=15s
-        DefaultTimeoutAbortSec=5s
-      '';
+      settings.Manager = {
+        DefaultTimeoutStopSec = "15s";
+        DefaultTimeoutAbortSec = "5s";
+      };
       # systemd's out-of-memory daemon
       oomd = {
         enableRootSlice = true;
