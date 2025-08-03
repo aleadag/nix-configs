@@ -26,7 +26,7 @@
         custom.jj = {
           ignore_timeout = true;
           description = "The current jj status";
-          detect_folders = [".jj"];
+          detect_folders = [ ".jj" ];
           symbol = "🥋 ";
           command = ''
             jj log --revisions @ --no-graph --ignore-working-copy --color always --limit 1 --template '
