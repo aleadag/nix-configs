@@ -24,6 +24,14 @@
         package = pkgs.noto-fonts;
         name = "Noto Sans";
       };
+      iconTheme = {
+        package = pkgs.nordzy-icon-theme;
+        name = "Nordzy-dark";
+      };
+      theme = {
+        name = "Nordic-bluish-accent";
+        package = pkgs.nordic;
+      };
     };
 
     services.xsettingsd = {
