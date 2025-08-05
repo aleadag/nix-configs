@@ -1,6 +1,6 @@
 # Claude Code Hooks - Project Integration Guide
 
-This guide shows how to integrate your project with Claude Code's smart-lint and smart-test hooks by implementing `make lint` and `make test` targets.
+This guide shows how to integrate your project with Claude Code's smart-lint and smart-test hooks by implementing `make lint`/`make test` targets (Makefile) or `just lint`/`just test` recipes (Justfile).
 
 ## 🚀 Automated Integration
 
@@ -16,14 +16,15 @@ This will analyze your project and generate a custom integration prompt for Clau
 ## For Claude: Quick Summary
 
 When you edit files, these hooks automatically run. To integrate a project:
-1. Check if `make lint` and `make test` exist
+1. Check if `make lint`/`make test` (Makefile) or `just lint`/`just test` (Justfile) exist
 2. If not, create them using the examples below
-3. The hooks pass `FILE=relative/path/to/edited/file.ext`
-4. Exit 0 = success, Exit 1+ = failure (blocks further edits)
+3. For Makefiles: hooks pass `FILE=relative/path/to/edited/file.ext`
+4. For Justfiles: hooks pass file paths as arguments to recipes
+5. Exit 0 = success, Exit 1+ = failure (blocks further edits)
 
 ## Manual Integration
 
-### 1. Create a Makefile
+### 1. Option A: Create a Makefile
 
 Add these targets to your project's Makefile:
 
@@ -49,18 +50,48 @@ test:
 	fi
 ```
 
+### 1. Option B: Create a Justfile
+
+Add these recipes to your project's Justfile:
+
+```justfile
+# Lint recipe - receives file paths as arguments
+lint *files:
+    #!/usr/bin/env bash
+    if [[ $# -gt 0 ]]; then
+        echo "Linting specific files: $*"
+        # Your file-specific linting commands here
+    else
+        echo "Linting all files"
+        # Your project-wide linting commands here
+    fi
+
+# Test recipe - receives file paths as arguments
+test *files:
+    #!/usr/bin/env bash
+    if [[ $# -gt 0 ]]; then
+        echo "Testing specific files: $*"
+        # Your file-specific testing commands here
+    else
+        echo "Testing all files"
+        # Your project-wide testing commands here
+    fi
+```
+
 ### 2. How It Works
 
 When Claude edits a file, the hooks will:
-1. Search upward from the edited file for a Makefile
-2. If found, run `make lint FILE=relative/path/to/file.ext`
-3. Pass the relative path from the Makefile's directory to the edited file
-4. Use the exit code to determine if the operation should be blocked
+1. Search upward from the edited file for a Makefile or Justfile
+2. For Makefiles: run `make lint FILE=relative/path/to/file.ext`
+3. For Justfiles: run `just lint relative/path/to/file.ext`
+4. Pass the relative path from the project root to the edited file
+5. Use the exit code to determine if the operation should be blocked
 
 ## Examples by Language
 
 ### Go Project
 
+#### Makefile version:
 ```makefile
 lint:
 	@if [ -n "$(FILE)" ]; then \
@@ -79,8 +110,34 @@ test:
 	fi
 ```
 
+#### Justfile version:
+```justfile
+lint *files:
+    #!/usr/bin/env bash
+    if [[ $# -gt 0 ]]; then
+        for file in "$@"; do
+            golangci-lint run "$file"
+            gofmt -w "$file"
+        done
+    else
+        golangci-lint run ./...
+        gofmt -w .
+    fi
+
+test *files:
+    #!/usr/bin/env bash
+    if [[ $# -gt 0 ]]; then
+        for file in "$@"; do
+            go test -v -race "$(dirname "$file")"
+        done
+    else
+        go test -v -race ./...
+    fi
+```
+
 ### Python Project
 
+#### Makefile version:
 ```makefile
 lint:
 	@if [ -n "$(FILE)" ]; then \
@@ -101,8 +158,40 @@ test:
 	fi
 ```
 
+#### Justfile version:
+```justfile
+lint *files:
+    #!/usr/bin/env bash
+    if [[ $# -gt 0 ]]; then
+        for file in "$@"; do
+            black "$file"
+            ruff check --fix "$file"
+            mypy "$file"
+        done
+    else
+        black .
+        ruff check --fix .
+        mypy .
+    fi
+
+test *files:
+    #!/usr/bin/env bash
+    if [[ $# -gt 0 ]]; then
+        for file in "$@"; do
+            if [[ -f "$file" ]]; then
+                pytest -xvs "$file" || pytest -xvs "$(dirname "$file")"
+            else
+                pytest -xvs "$file"
+            fi
+        done
+    else
+        pytest -xvs
+    fi
+```
+
 ### TypeScript/JavaScript Project
 
+#### Makefile version:
 ```makefile
 lint:
 	@if [ -n "$(FILE)" ]; then \
@@ -121,8 +210,32 @@ test:
 	fi
 ```
 
+#### Justfile version:
+```justfile
+lint *files:
+    #!/usr/bin/env bash
+    if [[ $# -gt 0 ]]; then
+        for file in "$@"; do
+            npx eslint --fix "$file"
+            npx prettier --write "$file"
+        done
+    else
+        npm run lint
+        npm run format
+    fi
+
+test *files:
+    #!/usr/bin/env bash
+    if [[ $# -gt 0 ]]; then
+        npx jest "$@"
+    else
+        npm test
+    fi
+```
+
 ### Mixed-Language Project
 
+#### Makefile version:
 ```makefile
 # Detect file type and run appropriate linter
 lint:
@@ -162,9 +275,55 @@ test-all:
 	@npm test
 ```
 
+#### Justfile version:
+```justfile
+# Detect file type and run appropriate linter
+lint *files:
+    #!/usr/bin/env bash
+    if [[ $# -gt 0 ]]; then
+        for file in "$@"; do
+            case "$file" in
+                *.go) golangci-lint run "$file" ;;
+                *.py) black "$file" && ruff check "$file" ;;
+                *.ts|*.js) npx eslint --fix "$file" ;;
+                *.sh) shellcheck "$file" ;;
+                *) echo "No linter for $file" ;;
+            esac
+        done
+    else
+        just lint-all
+    fi
+
+lint-all:
+    golangci-lint run ./...
+    black .
+    npm run lint
+    shellcheck **/*.sh
+
+test *files:
+    #!/usr/bin/env bash
+    if [[ $# -gt 0 ]]; then
+        for file in "$@"; do
+            case "$file" in
+                *.go) go test -v "$(dirname "$file")" ;;
+                *.py) pytest -xvs "$file" ;;
+                *.spec.ts|*.test.js) npx jest "$file" ;;
+                *) echo "No tests for $file" ;;
+            esac
+        done
+    else
+        just test-all
+    fi
+
+test-all:
+    go test -v ./...
+    pytest
+    npm test
+```
+
 ## Alternative: Shell Scripts
 
-If you prefer shell scripts over Makefiles, create a `scripts/` directory:
+If you prefer shell scripts over Makefiles or Justfiles, create a `scripts/` directory:
 
 ```bash
 #!/usr/bin/env bash

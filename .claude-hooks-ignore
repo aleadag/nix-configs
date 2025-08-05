@@ -1,0 +1,12 @@
+# Claude hooks ignore file for nix-configs project
+# This prevents shellcheck from running on markdown documentation files
+
+# Documentation files - these contain code examples that shellcheck shouldn't process
+*.md
+**/*.md
+
+# Test spec files - these are bash_unit test files with special syntax
+# Using all possible pattern variations to ensure they match
+*_spec.sh
+**/*_spec.sh
+**/spec/**/*.sh
