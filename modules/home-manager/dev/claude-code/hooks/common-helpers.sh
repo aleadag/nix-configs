@@ -297,8 +297,8 @@ find_project_command_root() {
     fi
 
     while [[ "$dir" != "/" ]]; do
-        # Check for Makefile or scripts/ directory
-        if [[ -f "$dir/Makefile" ]] || [[ -d "$dir/scripts" ]]; then
+        # Check for Makefile, justfile/Justfile, or scripts/ directory
+        if [[ -f "$dir/Makefile" ]] || [[ -f "$dir/justfile" ]] || [[ -f "$dir/Justfile" ]] || [[ -d "$dir/scripts" ]]; then
             echo "$dir"
             return 0
         fi
