@@ -22,6 +22,57 @@ in
       just
     ];
 
+    mutableConfig.files = {
+      # Claude Code settings which requires writabble
+      "${config.home.homeDirectory}/.claude/settings.json" = {
+        env = {
+          BASH_DEFAULT_TIMEOUT_MS = "300000";
+          BASH_MAX_TIMEOUT_MS = "600000";
+          CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
+          TZ = "America/Los_Angeles";
+        }
+        // lib.optionalAttrs config.home-manager.mihomo.enable (
+          let
+            # Claude Code does not support SOCKS proxies.
+            proxy = "http://127.0.0.1:7890";
+          in
+          {
+            HTTP_PROXY = proxy;
+            HTTPS_PROXY = proxy;
+          }
+        );
+        hooks = {
+          PostToolUse = [
+            {
+              matcher = "Write|Edit|MultiEdit";
+              hooks = [
+                {
+                  type = "command";
+                  command = "~/.claude/hooks/smart-lint.sh";
+                }
+                {
+                  type = "command";
+                  command = "~/.claude/hooks/smart-test.sh";
+                }
+              ];
+            }
+          ];
+          Stop = [
+            {
+              matcher = "";
+              hooks = lib.optionals config.home-manager.cli.jujutsu.enable [
+                {
+                  type = "command";
+                  command = "jj new";
+                }
+              ];
+            }
+          ];
+        };
+        includeCoAuthoredBy = false;
+      };
+    };
+
     # Create and manage ~/.claude directory
     home.file =
       let
@@ -36,55 +87,6 @@ in
       in
       commandFileAttrs
       // {
-        # Claude Code settings from sops
-        ".claude/settings.json".text = builtins.toJSON {
-          env = {
-            BASH_DEFAULT_TIMEOUT_MS = "300000";
-            BASH_MAX_TIMEOUT_MS = "600000";
-            CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
-            TZ = "America/Los_Angeles";
-          }
-          // lib.optionalAttrs config.home-manager.mihomo.enable (
-            let
-              # Claude Code does not support SOCKS proxies.
-              proxy = "http://127.0.0.1:7890";
-            in
-            {
-              HTTP_PROXY = proxy;
-              HTTPS_PROXY = proxy;
-            }
-          );
-          hooks = {
-            PostToolUse = [
-              {
-                matcher = "Write|Edit|MultiEdit";
-                hooks = [
-                  {
-                    type = "command";
-                    command = "~/.claude/hooks/smart-lint.sh";
-                  }
-                  {
-                    type = "command";
-                    command = "~/.claude/hooks/smart-test.sh";
-                  }
-                ];
-              }
-            ];
-            Stop = [
-              {
-                matcher = "";
-                hooks = lib.optionals config.home-manager.cli.jujutsu.enable [
-                  {
-                    type = "command";
-                    command = "jj new";
-                  }
-                ];
-              }
-            ];
-          };
-          includeCoAuthoredBy = false;
-        };
-
         ".claude/CLAUDE.md".source = ./CLAUDE.md;
 
         # Copy hook scripts with executable permissions
