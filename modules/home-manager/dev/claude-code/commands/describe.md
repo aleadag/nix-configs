@@ -174,7 +174,7 @@ Example of splitting changes:
 
 Your task is to:
 
-1. **Analyze the current changes** by running `jj diff -r $ARGUMENTS` (where $ARGUMENTS is the revset, defaulting to `@`)
+1. **Analyze the current changes** by running `jj diff -r $ARGUMENTS --git` (where $ARGUMENTS is the revset, defaulting to `@`)
 2. **Review the diff** to understand what changes were made
 3. **Generate an appropriate commit message** using the conventional commit format with emoji from the guidelines above
 4. **Apply the description** by running `jj describe -m "your generated message" $ARGUMENTS`
