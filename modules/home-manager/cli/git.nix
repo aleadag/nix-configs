@@ -25,7 +25,6 @@ in
   config = lib.mkIf cfg.enable {
     home.shellAliases = {
       g = "git";
-      lg = "lazygit";
     };
 
     programs.git = {
@@ -141,10 +140,6 @@ in
           co = "pr checkout";
         };
       };
-    };
-
-    programs.lazygit = {
-      enable = true;
     };
 
     services.git-sync = {

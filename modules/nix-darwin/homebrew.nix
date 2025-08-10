@@ -17,7 +17,6 @@ in
       casks = [
         "betterdisplay"
         "domzilla-caffeine"
-        "cursor"
         "firefox"
         "google-chrome"
         "linearmouse"

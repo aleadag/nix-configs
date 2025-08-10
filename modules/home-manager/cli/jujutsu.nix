@@ -16,9 +16,12 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    home.shellAliases = {
+      ju = "jjui";
+    };
+
     home.packages = with pkgs; [
       jjui
-      jj-fzf
     ];
 
     home.file.".config/jjui/config.toml".source = (pkgs.formats.toml { }).generate "jjui-config" {
