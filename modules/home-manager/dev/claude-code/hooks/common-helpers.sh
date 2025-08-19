@@ -69,10 +69,10 @@ find_project_root() {
     local dir="$PWD"
     while [[ "$dir" != "/" ]]; do
         # Check for various project root indicators
-        if [[ -f "$dir/.git/HEAD" ]] || [[ -d "$dir/.git" ]] ||
+        if [[ -f "$dir/.git/HEAD" ]] || [[ -d "$dir/.git" ]] || 
            [[ -f "$dir/.claude-hooks-config.sh" ]] ||
-           [[ -f "$dir/go.mod" ]] ||
-           [[ -f "$dir/package.json" ]] ||
+           [[ -f "$dir/go.mod" ]] || 
+           [[ -f "$dir/package.json" ]] || 
            [[ -f "$dir/Cargo.toml" ]] ||
            [[ -f "$dir/setup.py" ]] ||
            [[ -f "$dir/pyproject.toml" ]]; then
@@ -91,15 +91,15 @@ load_project_config() {
     # User-level config
     # shellcheck disable=SC1091
     [[ -f "$HOME/.claude-hooks.conf" ]] && source "$HOME/.claude-hooks.conf"
-
+    
     # Debug current directory
     log_debug "load_project_config called from PWD: $(pwd)"
-
+    
     # Find project root and load config from there
     local project_root
     project_root=$(find_project_root)
     log_debug "Project root found: $project_root"
-
+    
     if [[ -f "$project_root/.claude-hooks-config.sh" ]]; then
         log_debug "Found config file at: $project_root/.claude-hooks-config.sh"
         # shellcheck disable=SC1091
@@ -108,7 +108,7 @@ load_project_config() {
     else
         log_debug "No .claude-hooks-config.sh found at: $project_root"
     fi
-
+    
     # Always return success
     return 0
 }
@@ -181,7 +181,23 @@ should_skip_file() {
     local file="$1"
     local project_root
     project_root=$(find_project_root)
-
+    
+    # Built-in patterns to always skip
+    case "$file" in
+        */vendor/* | */node_modules/* | */build/* | */.git/* | */dist/* | */__pycache__/* | */.cache/*)
+            log_debug "Skipping $file due to built-in ignore pattern"
+            return 0
+            ;;
+        *_test.go | *_test.py | *.test.js | *.test.ts | *.spec.js | *.spec.ts)
+            log_debug "Skipping $file as it's a test file"
+            return 0
+            ;;
+        *.generated.go | *.pb.go | *.gen.go)
+            log_debug "Skipping $file as it's generated code"
+            return 0
+            ;;
+    esac
+    
     # Check .claude-hooks-ignore if it exists in project root
     if [[ -f "$project_root/.claude-hooks-ignore" ]]; then
         # Make file path relative to project root for pattern matching
@@ -189,11 +205,11 @@ should_skip_file() {
         # Also get just the basename for matching
         local base_file
         base_file=$(basename "$file")
-
+        
         while IFS= read -r pattern; do
             # Skip comments and empty lines
             [[ -z "$pattern" || "$pattern" =~ ^[[:space:]]*# ]] && continue
-
+            
             # Check if pattern ends with /** for directory matching
             if [[ "$pattern" == */** ]]; then
                 local dir_pattern="${pattern%/**}"
@@ -225,13 +241,13 @@ should_skip_file() {
             fi
         done < "$project_root/.claude-hooks-ignore"
     fi
-
+    
     # Check for inline skip comments
     if [[ -f "$file" ]] && head -n 5 "$file" 2>/dev/null | grep -q "claude-hooks-disable"; then
         log_debug "Skipping $file due to inline claude-hooks-disable comment"
         return 0
     fi
-
+    
     return 1
 }
 
@@ -245,10 +261,10 @@ output_json_response() {
     local action="$1"
     local message="$2"
     shift 2
-
+    
     # Start JSON object
     local json='{'
-
+    
     # Add action field
     case "$action" in
         "continue")
@@ -261,22 +277,22 @@ output_json_response() {
             json+='"action":"error"'
             ;;
     esac
-
+    
     # Add message if provided
     if [[ -n "$message" ]]; then
         json+=",\"message\":\"$(echo -n "$message" | sed 's/"/\\"/g')\""
     fi
-
+    
     # Add any additional fields
     for field in "$@"; do
         local key="${field%%:*}"
         local value="${field#*:}"
         json+=",\"$key\":\"$(echo -n "$value" | sed 's/"/\\"/g')\""
     done
-
+    
     # Close JSON object
     json+='}'
-
+    
     echo "$json"
 }
 
@@ -290,30 +306,30 @@ output_json_response() {
 find_project_command_root() {
     local start_dir="${1:-$PWD}"
     local dir="$start_dir"
-
+    
     # Convert to absolute path if relative
     if [[ "$dir" != /* ]]; then
         dir="$(cd "$dir" && pwd)"
     fi
-
+    
     while [[ "$dir" != "/" ]]; do
-        # Check for Makefile, justfile/Justfile, or scripts/ directory
-        if [[ -f "$dir/Makefile" ]] || [[ -f "$dir/justfile" ]] || [[ -f "$dir/Justfile" ]] || [[ -d "$dir/scripts" ]]; then
+        # Check for Makefile, justfile, or scripts/ directory
+        if [[ -f "$dir/Makefile" ]] || [[ -f "$dir/justfile" ]] || [[ -f "$dir/.justfile" ]] || [[ -d "$dir/scripts" ]]; then
             echo "$dir"
             return 0
         fi
-
+        
         # Stop at project root markers - don't search beyond project boundaries
-        if [[ -d "$dir/.git" ]] || [[ -f "$dir/go.mod" ]] ||
+        if [[ -d "$dir/.git" ]] || [[ -f "$dir/go.mod" ]] || 
            [[ -f "$dir/package.json" ]] || [[ -f "$dir/Cargo.toml" ]] ||
            [[ -f "$dir/setup.py" ]] || [[ -f "$dir/pyproject.toml" ]]; then
             # If we're at project root but no commands found, return failure
             return 1
         fi
-
+        
         dir="$(dirname "$dir")"
     done
-
+    
     return 1
 }
 
@@ -322,25 +338,10 @@ find_project_command_root() {
 check_make_target() {
     local target="$1"
     local makefile_dir="${2:-.}"
-
+    
     # Use make -n (dry-run) to check if target exists
     # Redirect both stdout and stderr to avoid noise
     if (cd "$makefile_dir" && make -n "$target" >/dev/null 2>&1); then
-        return 0
-    else
-        return 1
-    fi
-}
-
-# Check if a just recipe exists using dry-run mode
-# Returns 0 if recipe exists, 1 otherwise
-check_just_target() {
-    local target="$1"
-    local justfile_dir="${2:-.}"
-
-    # Use just --dry-run to check if recipe exists
-    # Redirect both stdout and stderr to avoid noise
-    if (cd "$justfile_dir" && just --dry-run "$target" >/dev/null 2>&1); then
         return 0
     else
         return 1
@@ -352,9 +353,34 @@ check_just_target() {
 check_script_exists() {
     local script_name="$1"
     local scripts_dir="${2:-./scripts}"
-
+    
     # Check if the script exists and is executable
     [[ -x "$scripts_dir/$script_name" ]]
+}
+
+# Check if a just recipe exists
+# Returns 0 if recipe exists, 1 otherwise
+check_just_recipe() {
+    local recipe="$1"
+    local justfile_dir="${2:-.}"
+    
+    # Check if just command exists
+    if ! command_exists just; then
+        return 1
+    fi
+    
+    # Check if justfile exists in the directory
+    if [[ ! -f "$justfile_dir/justfile" ]] && [[ ! -f "$justfile_dir/.justfile" ]]; then
+        return 1
+    fi
+    
+    # Use just --list to check if recipe exists
+    # just --list shows all available recipes
+    if (cd "$justfile_dir" && just --list 2>/dev/null | grep -q "^[[:space:]]*$recipe"); then
+        return 0
+    else
+        return 1
+    fi
 }
 
 # Calculate relative path from one directory to a file
@@ -362,7 +388,7 @@ check_script_exists() {
 calculate_relative_path() {
     local from_dir="$1"
     local to_file="$2"
-
+    
     # Try using realpath first (most reliable)
     if command_exists realpath; then
         realpath --relative-to="$from_dir" "$to_file" 2>/dev/null || echo "$to_file"
@@ -373,11 +399,11 @@ calculate_relative_path() {
         abs_from=$(cd "$from_dir" && pwd)
         local abs_to
         abs_to=$(cd "$(dirname "$to_file")" && pwd)/$(basename "$to_file")
-
+        
         # Remove common prefix
         local common_part="$abs_from"
         local result="${abs_to#"$common_part"/}"
-
+        
         # If no common part was removed, paths might be on different branches
         if [[ "$result" == "$abs_to" ]]; then
             echo "$to_file"
@@ -391,12 +417,12 @@ calculate_relative_path() {
 # Returns make targets on first line, script names on second line
 get_project_command_config() {
     local command_type="$1"  # "lint" or "test"
-
+    
     # Check global opt-out first
     if [[ "${CLAUDE_HOOKS_USE_PROJECT_COMMANDS:-true}" != "true" ]]; then
         return 1
     fi
-
+    
     # Return configured values based on command type
     if [[ "$command_type" == "lint" ]]; then
         echo "${CLAUDE_HOOKS_MAKE_LINT_TARGETS:-lint}"
@@ -417,39 +443,39 @@ get_project_command_config() {
 detect_project_type() {
     local project_type="unknown"
     local types=()
-
+    
     # Go project
     if [[ -f "go.mod" ]] || [[ -f "go.sum" ]] || [[ -n "$(find . -maxdepth 3 -name "*.go" -type f -print -quit 2>/dev/null)" ]]; then
         types+=("go")
     fi
-
+    
     # Python project
     if [[ -f "pyproject.toml" ]] || [[ -f "setup.py" ]] || [[ -f "requirements.txt" ]] || [[ -n "$(find . -maxdepth 3 -name "*.py" -type f -print -quit 2>/dev/null)" ]]; then
         types+=("python")
     fi
-
+    
     # JavaScript/TypeScript project
     if [[ -f "package.json" ]] || [[ -f "tsconfig.json" ]] || [[ -n "$(find . -maxdepth 3 \( -name "*.js" -o -name "*.ts" -o -name "*.jsx" -o -name "*.tsx" \) -type f -print -quit 2>/dev/null)" ]]; then
         types+=("javascript")
     fi
-
+    
     # Rust project
     if [[ -f "Cargo.toml" ]] || [[ -n "$(find . -maxdepth 3 -name "*.rs" -type f -print -quit 2>/dev/null)" ]]; then
         types+=("rust")
     fi
-
+    
     # Nix project
     if [[ -f "flake.nix" ]] || [[ -f "default.nix" ]] || [[ -f "shell.nix" ]]; then
         types+=("nix")
     fi
-
+    
     # Return primary type or "mixed" if multiple
     if [[ ${#types[@]} -eq 1 ]]; then
         project_type="${types[0]}"
     elif [[ ${#types[@]} -gt 1 ]]; then
         project_type="mixed:$(IFS=,; echo "${types[*]}")"
     fi
-
+    
     log_debug "Detected project type: $project_type"
     echo "$project_type"
 }

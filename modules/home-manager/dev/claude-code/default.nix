@@ -41,6 +41,13 @@ in
             HTTPS_PROXY = proxy;
           }
         );
+
+        statusLine = {
+          type = "command";
+          command = "~/.claude/hooks/statusline.sh";
+          padding = 0;
+        };
+
         hooks = {
           PostToolUse = [
             {
@@ -110,30 +117,15 @@ in
           executable = true;
         };
 
-        # Language-specific hook files
-        ".claude/hooks/lint-go.sh" = {
-          source = ./hooks/lint-go.sh;
-          executable = true;
-        };
-
-        ".claude/hooks/test-go.sh" = {
-          source = ./hooks/test-go.sh;
-          executable = true;
-        };
-
-        ".claude/hooks/lint-tilt.sh" = {
-          source = ./hooks/lint-tilt.sh;
-          executable = true;
-        };
-
-        ".claude/hooks/test-tilt.sh" = {
-          source = ./hooks/test-tilt.sh;
-          executable = true;
-        };
-
         # Integration helper script
         ".claude/hooks/integrate.sh" = {
           source = ./hooks/integrate.sh;
+          executable = true;
+        };
+
+        # Status line script
+        ".claude/hooks/statusline.sh" = {
+          source = ./hooks/statusline.sh;
           executable = true;
         };
 
