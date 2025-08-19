@@ -86,6 +86,7 @@ in
       rlwrap
       tealdeer
       tokei
+      uutils-coreutils-noprefix
       websocat
       wget
       railway
