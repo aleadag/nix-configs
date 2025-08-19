@@ -42,11 +42,11 @@ in
           }
         );
 
-        statusLine = {
-          type = "command";
-          command = "~/.claude/hooks/statusline.sh";
-          padding = 0;
-        };
+        # statusLine = {
+        #   type = "command";
+        #   command = "~/.claude/hooks/statusline.sh";
+        #   padding = 0;
+        # };
 
         hooks = {
           PostToolUse = [
