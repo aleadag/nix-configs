@@ -894,7 +894,7 @@ RIGHT_LENGTH=$(echo -n "$RIGHT_VISIBLE" | wc -m | tr -d ' ')
 
 # Calculate the exact width we need to work with
 # Account for newline and a larger safety margin to prevent overflow on first render
-RESERVED_END_CHARS=4 # Newline + 3 char safety margin to prevent overflow
+RESERVED_END_CHARS=8 # Newline + 4 char for IDE status + 3 char safety margin to prevent overflow
 if [[ $IN_COMPACT_MODE -eq 1 ]]; then
   # Reserve space for the auto-compact message (space is already in RIGHT_LENGTH)
   COMPACT_MESSAGE_WIDTH=41 # 41 chars for the message itself
