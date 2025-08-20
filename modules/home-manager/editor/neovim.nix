@@ -282,7 +282,7 @@ in
                 vim.keymap.set("n", "<Leader>/", fzf.live_grep, { desc = "Live grep" })
                 vim.keymap.set("n", "<Leader>*", fzf.grep_cword, { desc = "Grep word under cursor" })
                 vim.keymap.set("n", "<Leader>b", fzf.buffers, { desc = "Buffers" })
-                vim.keymap.set("n", "<Leader>c", fzf.commands, { desc = "Commands" })
+                vim.keymap.set("n", "<Leader>C", fzf.commands, { desc = "Commands" })
                 vim.keymap.set("n", "<Leader>gc", fzf.git_commits, { desc = "Git commits" })
                 vim.keymap.set("n", "<Leader>gC", fzf.git_bcommits, { desc = "Git buffer commits" })
                 vim.keymap.set("n", "<Leader>gb", fzf.git_branches, { desc = "Git branches" })
@@ -572,15 +572,59 @@ in
                 }
 
                 -- Claude Code keymaps
-                vim.keymap.set("n", "<leader>d", "<nop>", { desc = "AI/Claude Code", noremap = true, silent = true })
-                vim.keymap.set("n", "<leader>dc", "<cmd>ClaudeCode<cr>", { desc = "Toggle Claude" })
-                vim.keymap.set("n", "<leader>df", "<cmd>ClaudeCodeFocus<cr>", { desc = "Focus Claude" })
-                vim.keymap.set("n", "<leader>dr", "<cmd>ClaudeCode --resume<cr>", { desc = "Resume Claude" })
-                vim.keymap.set("n", "<leader>dC", "<cmd>ClaudeCode --continue<cr>", { desc = "Continue Claude" })
-                vim.keymap.set("n", "<leader>db", "<cmd>ClaudeCodeAdd %<cr>", { desc = "Add current buffer" })
-                vim.keymap.set("v", "<leader>ds", "<cmd>ClaudeCodeSend<cr>", { desc = "Send to Claude" })
-                vim.keymap.set("n", "<leader>da", "<cmd>ClaudeCodeDiffAccept<cr>", { desc = "Accept diff" })
-                vim.keymap.set("n", "<leader>dd", "<cmd>ClaudeCodeDiffDeny<cr>", { desc = "Deny diff" })
+                vim.keymap.set("n", "<leader>c", "<nop>", { desc = "AI/Claude Code", noremap = true, silent = true })
+                vim.keymap.set("n", "<leader>cc", "<cmd>ClaudeCode<cr>", { desc = "Toggle Claude" })
+                vim.keymap.set("n", "<leader>cF", "<cmd>ClaudeCodeFocus<cr>", { desc = "Focus Claude" })
+                vim.keymap.set("n", "<leader>cr", "<cmd>ClaudeCode --resume<cr>", { desc = "Resume Claude" })
+                vim.keymap.set("n", "<leader>cC", "<cmd>ClaudeCode --continue<cr>", { desc = "Continue Claude" })
+                vim.keymap.set("n", "<leader>cB", "<cmd>ClaudeCodeAdd %<cr>", { desc = "Add current buffer" })
+                vim.keymap.set("v", "<leader>cs", "<cmd>ClaudeCodeSend<cr>", { desc = "Send to Claude" })
+                vim.keymap.set("n", "<leader>ca", "<cmd>ClaudeCodeDiffAccept<cr>", { desc = "Accept diff" })
+                vim.keymap.set("n", "<leader>cD", "<cmd>ClaudeCodeDiffDeny<cr>", { desc = "Deny diff" })
+              '';
+          }
+          {
+            plugin = pkgs.vimUtils.buildVimPlugin {
+              pname = "claude-fzf-nvim";
+              version = "2025-07-26";
+              src = pkgs.fetchFromGitHub {
+                owner = "pittcat";
+                repo = "claude-fzf.nvim";
+                rev = "49f48154c5abf2d07281bdb6f244ae0cde6eb5eb";
+                sha256 = "sha256-SeoijCY470vz1xd7FTvEqLCwfD4k75yRrjtKBvyQS+U=";
+              };
+              postInstall = ''
+                rm -rf $out/doc
+              '';
+            };
+            type = "lua";
+            config = # lua
+              ''
+                require("claude-fzf").setup {
+                  logging = {
+                    console_logging = false,
+                  },
+                }
+              '';
+          }
+          {
+            plugin = pkgs.vimUtils.buildVimPlugin {
+              pname = "claude-fzf-history-nvim";
+              version = "2025-07-16";
+              src = pkgs.fetchFromGitHub {
+                owner = "pittcat";
+                repo = "claude-fzf-history.nvim";
+                rev = "9558088793ceee4171261ff3ddcc9fbe3761f813";
+                sha256 = "sha256-0VNqGX+1LXQr3JFQOJgaVjQjMNCU1Ee8Dg0wmSfE4oI=";
+              };
+              postInstall = ''
+                rm -rf $out/doc
+              '';
+            };
+            type = "lua";
+            config = # lua
+              ''
+                require("claude-fzf-history").setup()
               '';
           }
         ]
