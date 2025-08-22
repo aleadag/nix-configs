@@ -30,6 +30,7 @@ in
           BASH_MAX_TIMEOUT_MS = "600000";
           CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
           TZ = "America/Los_Angeles";
+          USE_BUILTIN_RIPGREP = "0";
         }
         // lib.optionalAttrs config.home-manager.mihomo.enable (
           let
