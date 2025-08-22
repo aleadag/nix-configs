@@ -32,6 +32,24 @@ fi
 
 time_point "START"
 
+# Helper function to get file modification time (works on both macOS and Linux)
+# Define early as it's needed for cache checks
+get_file_mtime() {
+  local file="$1"
+  if [[ ! -f "$file" ]]; then
+    echo "0"
+    return
+  fi
+  
+  # Try macOS native stat first (if available)
+  if [[ -x /usr/bin/stat ]]; then
+    /usr/bin/stat -f "%m" "$file" 2>/dev/null || echo "0"
+  else
+    # Fall back to GNU stat
+    stat -c %Y "$file" 2>/dev/null || echo "0"
+  fi
+}
+
 # Read JSON input FIRST to check cache
 time_point "before_read_stdin"
 input=$(cat)
@@ -46,7 +64,7 @@ CACHE_FILE="/tmp/claude_statusline_data_${CACHE_KEY}"
 # Check data cache (valid for 5 seconds)
 USE_CACHE=0
 if [[ -f "$CACHE_FILE" ]]; then
-  age=$(($(date +%s) - $(stat -c %Y "$CACHE_FILE" 2>/dev/null || echo 0)))
+  age=$(($(date +%s) - $(get_file_mtime "$CACHE_FILE")))
   if [[ $age -lt 5 ]]; then
     time_point "cache_hit"
     # Load cached data
@@ -149,7 +167,7 @@ MODEL_ICON="${MODEL_ICONS:$RANDOM_INDEX:1} "
 # We'll handle transcript search later with other cached operations
 # But we need to define functions here so they're available in subshells
 
-# Get terminal width - we'll adjust it later based on context percentage
+# Get terminal width - complex operation so we cache it
 get_terminal_width() {
   # Try environment variable first (fastest)
   if [[ -n "${COLUMNS:-}" ]] && [[ "$COLUMNS" -gt 0 ]]; then
@@ -157,53 +175,94 @@ get_terminal_width() {
     return
   fi
 
-  # Try to find the Claude process's TTY via /proc (Linux only)
-  if [[ -d /proc ]]; then
-    # Walk up the process tree to find a Claude process with a TTY
-    local check_pid=$PPID
-    local attempts=0
-
-    while [[ $attempts -lt 5 ]] && [[ $check_pid -gt 1 ]]; do
-      # Check if this process is claude
-      if [[ -r "/proc/$check_pid/comm" ]]; then
-        local comm
-        comm=$(cat "/proc/$check_pid/comm" 2>/dev/null)
-
-        # If we found claude or we have a TTY, try to get dimensions
-        if [[ "$comm" == "claude" ]] || [[ -e "/proc/$check_pid/fd/1" ]]; then
-          local tty_path
-          tty_path=$(readlink "/proc/$check_pid/fd/1" 2>/dev/null)
-
-          if [[ "$tty_path" =~ ^/dev/(pts/|tty) ]]; then
-            # Get terminal size from this TTY with timeout
-            local stty_output
-            stty_output=$(timeout 0.02s stty size <"$tty_path" 2>/dev/null || true)
-            if [[ -n "$stty_output" ]]; then
-              local width
-              width=$(echo "$stty_output" | awk '{print $2}')
-              if [[ -n "$width" ]] && [[ "$width" -gt 0 ]]; then
-                echo "$width"
-                return
-              fi
-            fi
+  # Walk up process tree to find a TTY - works on both macOS and Linux
+  local current_pid=$$
+  local attempts=0
+  
+  while [[ $attempts -lt 10 ]] && [[ $current_pid -gt 1 ]]; do
+    # Get the parent PID
+    local parent_pid
+    if [[ "$(uname)" == "Darwin" ]]; then
+      # macOS: use ps
+      parent_pid=$(ps -o ppid= -p "$current_pid" 2>/dev/null | tr -d ' ')
+    elif [[ -r "/proc/$current_pid/stat" ]]; then
+      # Linux: use /proc
+      parent_pid=$(awk '{print $4}' "/proc/$current_pid/stat" 2>/dev/null)
+    else
+      break
+    fi
+    
+    if [[ -z "$parent_pid" ]] || [[ "$parent_pid" == "0" ]]; then
+      break
+    fi
+    
+    # Check if this process has a TTY
+    if [[ "$(uname)" == "Darwin" ]]; then
+      # macOS: check via ps
+      local tty_device
+      tty_device=$(ps -o tty= -p "$parent_pid" 2>/dev/null | tr -d ' ')
+      
+      if [[ -n "$tty_device" ]] && [[ "$tty_device" != "??" ]] && [[ "$tty_device" != "?" ]]; then
+        # Found a TTY - try to get its size
+        local stty_result
+        local tty_path
+        if [[ "$tty_device" =~ ^s[0-9]+ ]]; then
+          tty_path="/dev/tty$tty_device"
+        elif [[ "$tty_device" =~ ^ttys[0-9]+ ]]; then
+          tty_path="/dev/$tty_device"
+        else
+          tty_path="/dev/$tty_device"
+        fi
+        
+        # Use native macOS stty if available, otherwise try GNU stty
+        if [[ -x /bin/stty ]]; then
+          # Native macOS stty with -f flag
+          stty_result=$(/bin/stty -f "$tty_path" size 2>/dev/null || true)
+        elif [[ -x /usr/bin/stty ]]; then
+          # Alternative macOS path
+          stty_result=$(/usr/bin/stty -f "$tty_path" size 2>/dev/null || true)
+        else
+          # Try GNU stty by redirecting stdin
+          stty_result=$(stty size < "$tty_path" 2>/dev/null || true)
+        fi
+        
+        if [[ -n "$stty_result" ]]; then
+          local width
+          width=$(echo "$stty_result" | awk '{print $2}')
+          if [[ -n "$width" ]] && [[ "$width" -gt 0 ]]; then
+            echo "$width"
+            return
           fi
         fi
       fi
-
-      # Get parent PID and continue
-      if [[ -r "/proc/$check_pid/stat" ]]; then
-        check_pid=$(awk '{print $4}' "/proc/$check_pid/stat" 2>/dev/null)
-      else
-        break
+    elif [[ -e "/proc/$parent_pid/fd/0" ]]; then
+      # Linux: check via /proc
+      local tty_path
+      tty_path=$(readlink "/proc/$parent_pid/fd/0" 2>/dev/null)
+      
+      if [[ "$tty_path" =~ ^/dev/(pts/|tty) ]]; then
+        # Get terminal size from this TTY
+        local stty_output
+        stty_output=$(stty size <"$tty_path" 2>/dev/null || true)
+        if [[ -n "$stty_output" ]]; then
+          local width
+          width=$(echo "$stty_output" | awk '{print $2}')
+          if [[ -n "$width" ]] && [[ "$width" -gt 0 ]]; then
+            echo "$width"
+            return
+          fi
+        fi
       fi
-      ((attempts++))
-    done
-  fi
+    fi
+    
+    current_pid=$parent_pid
+    ((attempts++))
+  done
 
-  # Try tput cols as fallback with timeout
+  # Try tput cols as fallback
   if command -v tput >/dev/null 2>&1; then
     local tput_width
-    tput_width=$(timeout 0.02s tput cols 2>/dev/null)
+    tput_width=$(tput cols 2>/dev/null)
     if [[ -n "$tput_width" ]] && [[ "$tput_width" -gt 0 ]]; then
       echo "$tput_width"
       return
@@ -211,7 +270,7 @@ get_terminal_width() {
   fi
 
   # Default to a wider width since most modern terminals are wide
-  echo "160"
+  echo "210"
 }
 
 # Get token metrics if transcript is available (accurate version)
@@ -274,6 +333,27 @@ format_path() {
     fi
   else
     echo "$path"
+  fi
+}
+
+# Truncate text to a maximum length with ellipsis
+truncate_text() {
+  local text="$1"
+  local max_length="$2"
+  
+  # Count actual display width (handles UTF-8)
+  local length
+  length=$(echo -n "$text" | wc -m | tr -d ' ')
+  
+  if [[ $length -le $max_length ]]; then
+    echo "$text"
+  else
+    # Leave room for ellipsis (…)
+    local truncate_at=$((max_length - 1))
+    # Use printf to properly handle UTF-8 truncation
+    local truncated
+    truncated=$(echo "$text" | cut -c1-${truncate_at})
+    echo "${truncated}…"
   fi
 }
 
@@ -343,7 +423,7 @@ cache_valid() {
     return 1
   fi
 
-  local age=$(($(date +%s) - $(stat -c %Y "$cache_file" 2>/dev/null || echo 0)))
+  local age=$(($(date +%s) - $(get_file_mtime "$cache_file")))
   [[ $age -lt $max_age ]]
 }
 
@@ -365,65 +445,61 @@ get_cached() {
   fi
 }
 
-# Skip expensive operations if we have cached data
-if [[ $USE_CACHE -eq 0 ]]; then
+# Find transcript if not provided and not disabled
+# This needs to happen regardless of cache status to ensure token metrics work
+if [[ "${CLAUDE_STATUSLINE_NO_TOKENS:-}" != "1" ]]; then
+  if [[ -z "$TRANSCRIPT_PATH" ]] || [[ "$TRANSCRIPT_PATH" == "null" ]]; then
+    # Look for most recent transcript in Claude project directory
+    # Convert current directory to the sanitized project path format
+    PROJECT_PATH="${CURRENT_DIR}"
+    # Handle home directory - use appropriate prefix based on OS
+    if [[ "$(uname)" == "Darwin" ]]; then
+      # macOS uses /Users
+      PROJECT_PATH="${PROJECT_PATH/#$HOME/-Users-$(whoami)}"
+    else
+      # Linux uses /home
+      PROJECT_PATH="${PROJECT_PATH/#$HOME/-home-$(whoami)}"
+    fi
+    # Replace slashes with dashes
+    PROJECT_PATH="${PROJECT_PATH//\//-}"
 
-  # Find transcript if not in cache and not disabled
-  if [[ "${CLAUDE_STATUSLINE_NO_TOKENS:-}" != "1" ]]; then
-    if [[ -z "$TRANSCRIPT_PATH" ]] || [[ "$TRANSCRIPT_PATH" == "null" ]]; then
-      # Look for most recent transcript in Claude project directory
-      # Convert current directory to the sanitized project path format
-      PROJECT_PATH="${CURRENT_DIR}"
-      # Handle home directory - use appropriate prefix based on OS
-      if [[ "$(uname)" == "Darwin" ]]; then
-        # macOS uses /Users
-        PROJECT_PATH="${PROJECT_PATH/#$HOME/-Users-$(whoami)}"
+    # Look in ~/.claude/projects/ for this project
+    CLAUDE_PROJECT_DIR="${HOME}/.claude/projects/${PROJECT_PATH}"
+
+    if [[ -d "$CLAUDE_PROJECT_DIR" ]]; then
+      # Cache transcript path for 5 seconds - changes when new conversation starts
+      time_point "before_transcript_search"
+      TRANSCRIPT_CACHE="$CACHE_DIR/transcript_$(echo -n "$CLAUDE_PROJECT_DIR" | md5sum | cut -d' ' -f1)"
+      if cache_valid "$TRANSCRIPT_CACHE" 5; then
+        TRANSCRIPT_PATH=$(cat "$TRANSCRIPT_CACHE")
       else
-        # Linux uses /home
-        PROJECT_PATH="${PROJECT_PATH/#$HOME/-home-$(whoami)}"
-      fi
-      # Replace slashes with dashes
-      PROJECT_PATH="${PROJECT_PATH//\//-}"
-
-      # Look in ~/.claude/projects/ for this project
-      CLAUDE_PROJECT_DIR="${HOME}/.claude/projects/${PROJECT_PATH}"
-
-      if [[ -d "$CLAUDE_PROJECT_DIR" ]]; then
-        # Cache transcript path for 5 seconds - changes when new conversation starts
-        time_point "before_transcript_search"
-        TRANSCRIPT_CACHE="$CACHE_DIR/transcript_$(echo -n "$CLAUDE_PROJECT_DIR" | md5sum | cut -d' ' -f1)"
-        if cache_valid "$TRANSCRIPT_CACHE" 5; then
-          TRANSCRIPT_PATH=$(cat "$TRANSCRIPT_CACHE")
-        else
-          # Use simpler ls-based approach with timeout for better performance
-          # Get the most recent .jsonl file (ls -t sorts by modification time)
-          TRANSCRIPT_PATH=$(timeout 0.1s ls -t "$CLAUDE_PROJECT_DIR"/*.jsonl 2>/dev/null | head -n1)
-          if [[ -n "$TRANSCRIPT_PATH" ]]; then
-            echo "$TRANSCRIPT_PATH" >"$TRANSCRIPT_CACHE"
-          fi
+        # Use simpler ls-based approach with timeout for better performance
+        # Get the most recent .jsonl file (ls -t sorts by modification time)
+        TRANSCRIPT_PATH=$(timeout 0.1s ls -t "$CLAUDE_PROJECT_DIR"/*.jsonl 2>/dev/null | head -n1)
+        if [[ -n "$TRANSCRIPT_PATH" ]]; then
+          echo "$TRANSCRIPT_PATH" >"$TRANSCRIPT_CACHE"
         fi
-        time_point "after_transcript_search"
+      fi
+      time_point "after_transcript_search"
 
-        # If we found a transcript, validate it's recent (within last hour)
-        if [[ -n "$TRANSCRIPT_PATH" ]] && [[ -f "$TRANSCRIPT_PATH" ]]; then
-          # Check if file was modified in the last hour
-          CURRENT_TIME=$(date +%s)
-          # Use explicit path for macOS stat to avoid conflicts
-          if [[ -x /usr/bin/stat ]]; then
-            FILE_TIME=$(/usr/bin/stat -f "%m" "$TRANSCRIPT_PATH" 2>/dev/null || echo 0)
-          else
-            FILE_TIME=$(stat -c %Y "$TRANSCRIPT_PATH" 2>/dev/null || echo 0)
-          fi
-          TIME_DIFF=$((CURRENT_TIME - FILE_TIME))
+      # If we found a transcript, validate it's recent (within last hour)
+      if [[ -n "$TRANSCRIPT_PATH" ]] && [[ -f "$TRANSCRIPT_PATH" ]]; then
+        # Check if file was modified in the last hour
+        CURRENT_TIME=$(date +%s)
+        FILE_TIME=$(get_file_mtime "$TRANSCRIPT_PATH")
+        TIME_DIFF=$((CURRENT_TIME - FILE_TIME))
 
-          # If file is older than 1 hour (3600 seconds), ignore it
-          if [[ $TIME_DIFF -gt 3600 ]]; then
-            TRANSCRIPT_PATH=""
-          fi
+        # If file is older than 1 hour (3600 seconds), ignore it
+        if [[ $TIME_DIFF -gt 3600 ]]; then
+          TRANSCRIPT_PATH=""
         fi
       fi
     fi
   fi
+fi
+
+# Skip expensive operations if we have cached data
+if [[ $USE_CACHE -eq 0 ]]; then
 
   # Run expensive operations in parallel using background processes
   time_point "before_parallel_ops"
@@ -451,17 +527,16 @@ if [[ $USE_CACHE -eq 0 ]]; then
   ) &
   GIT_PID=$!
 
+  # Terminal width - cache for 10 seconds since window size can change
   (
-    # Terminal width detection - cache for 10 seconds (rarely changes)
-    # Include PPID in cache key since width can vary by terminal
-    TERM_CACHE="$CACHE_DIR/term_width_$PPID"
-    if cache_valid "$TERM_CACHE" 10; then
-      cat "$TERM_CACHE"
+    TERM_WIDTH_CACHE="$CACHE_DIR/terminal_width"
+    if cache_valid "$TERM_WIDTH_CACHE" 10; then
+      cat "$TERM_WIDTH_CACHE"
     else
-      get_terminal_width | tee "$TERM_CACHE"
-    fi >"$TMP_DIR/term_width" 2>/dev/null
+      get_terminal_width | tee "$TERM_WIDTH_CACHE"
+    fi >"$TMP_DIR/terminal_width" 2>/dev/null
   ) &
-  TERM_PID=$!
+  TERM_WIDTH_PID=$!
 
   (
     # Kubernetes context - cache for 30 seconds (changes infrequently)
@@ -481,7 +556,7 @@ if [[ $USE_CACHE -eq 0 ]]; then
     (
       # Cache token metrics for 1 second - changes frequently during conversation
       # Use file modification time as part of cache key
-      FILE_MTIME=$(stat -c %Y "$TRANSCRIPT_PATH" 2>/dev/null || echo 0)
+      FILE_MTIME=$(get_file_mtime "$TRANSCRIPT_PATH")
       TOKEN_CACHE="$CACHE_DIR/tokens_$(echo -n "${TRANSCRIPT_PATH}_${FILE_MTIME}" | md5sum | cut -d' ' -f1)"
       if cache_valid "$TOKEN_CACHE" 1; then
         cat "$TOKEN_CACHE"
@@ -495,9 +570,9 @@ if [[ $USE_CACHE -eq 0 ]]; then
 
   # Wait for all background processes to complete
   if [[ -n "${TOKEN_PID:-}" ]]; then
-    wait "$GIT_PID" "$TERM_PID" "$K8S_PID" "$TOKEN_PID"
+    wait "$GIT_PID" "$TERM_WIDTH_PID" "$K8S_PID" "$TOKEN_PID"
   else
-    wait "$GIT_PID" "$TERM_PID" "$K8S_PID"
+    wait "$GIT_PID" "$TERM_WIDTH_PID" "$K8S_PID"
   fi
 
   time_point "after_parallel_ops"
@@ -514,10 +589,10 @@ if [[ $USE_CACHE -eq 0 ]]; then
   fi
 
   # Terminal width
-  if [[ -f "$TMP_DIR/term_width" ]]; then
-    RAW_TERM_WIDTH=$(cat "$TMP_DIR/term_width")
+  if [[ -f "$TMP_DIR/terminal_width" ]]; then
+    RAW_TERM_WIDTH=$(cat "$TMP_DIR/terminal_width")
   else
-    RAW_TERM_WIDTH=160
+    RAW_TERM_WIDTH=210  # Fallback default
   fi
 
   # Kubernetes context
@@ -543,7 +618,6 @@ if [[ $USE_CACHE -eq 0 ]]; then
 # Cached statusline data
 GIT_BRANCH="$GIT_BRANCH"
 GIT_STATUS="$GIT_STATUS"
-RAW_TERM_WIDTH="$RAW_TERM_WIDTH"
 K8S_CONTEXT="$K8S_CONTEXT"
 INPUT_TOKENS="$INPUT_TOKENS"
 OUTPUT_TOKENS="$OUTPUT_TOKENS"
@@ -552,9 +626,12 @@ HOSTNAME="$HOSTNAME"
 DEVSPACE="$DEVSPACE"
 DEVSPACE_SYMBOL="$DEVSPACE_SYMBOL"
 TRANSCRIPT_PATH="$TRANSCRIPT_PATH"
+RAW_TERM_WIDTH="$RAW_TERM_WIDTH"
 EOF
 
 fi # End of cache miss block
+
+# Terminal width is already set from cache or parallel detection above
 
 # Format token count for display
 format_tokens() {
@@ -733,19 +810,47 @@ strip_ansi() {
 # Start with directory (left side)
 STATUS_LINE=""
 
+# In compact mode, we need to be more aggressive with truncation
+# Normal mode: 210 chars available, Compact mode: 169 chars available
+if [[ $CONTEXT_LENGTH -ge 128000 ]]; then
+  # Compact mode - be more aggressive with truncation
+  DIR_MAX_LEN=15
+  MODEL_MAX_LEN=20
+  HOSTNAME_MAX_LEN=15
+  BRANCH_MAX_LEN=20
+  AWS_MAX_LEN=15
+  K8S_MAX_LEN=15
+  DEVSPACE_MAX_LEN=10
+else
+  # Normal mode - regular truncation
+  DIR_MAX_LEN=20
+  MODEL_MAX_LEN=30
+  HOSTNAME_MAX_LEN=25
+  BRANCH_MAX_LEN=30
+  AWS_MAX_LEN=25
+  K8S_MAX_LEN=25
+  DEVSPACE_MAX_LEN=20
+fi
+
+# Truncate directory path
+DIR_PATH_TRUNCATED=$(truncate_text "$DIR_PATH" $DIR_MAX_LEN)
+
 # Start with a full reset to clear any leftover ANSI state from Claude Code
 # Then build the status line with left curve and directory with lavender background
-STATUS_LINE="${NC}${LAVENDER_FG}${LEFT_CURVE}${LAVENDER_BG}${BASE_FG} ${DIR_PATH} ${NC}"
+STATUS_LINE="${NC}${LAVENDER_FG}${LEFT_CURVE}${LAVENDER_BG}${BASE_FG} ${DIR_PATH_TRUNCATED} ${NC}"
 
 # Add model/tokens section with blue background for better contrast with green context bar
 STATUS_LINE="${STATUS_LINE}${SKY_BG}${LAVENDER_FG}${LEFT_CHEVRON}${NC}"
 
 # Show model name and token usage
+# Truncate model name using dynamic length
+MODEL_DISPLAY_TRUNCATED=$(truncate_text "$MODEL_DISPLAY" $MODEL_MAX_LEN)
+
 TOKEN_INFO=""
 if [[ $INPUT_TOKENS -gt 0 ]] || [[ $OUTPUT_TOKENS -gt 0 ]]; then
-  TOKEN_INFO=" ${MODEL_ICON:-}${MODEL_DISPLAY} ↑$(format_tokens "$INPUT_TOKENS") ↓$(format_tokens "$OUTPUT_TOKENS")"
+  TOKEN_INFO=" ${MODEL_ICON:-}${MODEL_DISPLAY_TRUNCATED} ↑$(format_tokens "$INPUT_TOKENS") ↓$(format_tokens "$OUTPUT_TOKENS")"
 else
-  TOKEN_INFO=" ${MODEL_ICON:-}${MODEL_DISPLAY}"
+  TOKEN_INFO=" ${MODEL_ICON:-}${MODEL_DISPLAY_TRUNCATED}"
 fi
 STATUS_LINE="${STATUS_LINE}${SKY_BG}${BASE_FG}${TOKEN_INFO} ${NC}"
 
@@ -766,18 +871,24 @@ COMPONENTS=()
 
 # Add devspace if present (mauve background)
 if [[ -n "$DEVSPACE" ]]; then
-  COMPONENTS+=("mauve|${DEVSPACE}")
+  # Truncate devspace using dynamic length
+  DEVSPACE_TRUNCATED=$(truncate_text "$DEVSPACE" $DEVSPACE_MAX_LEN)
+  COMPONENTS+=("mauve|${DEVSPACE_TRUNCATED}")
 fi
 
 # Add hostname (rosewater background)
 if [[ -n "$HOSTNAME" ]]; then
-  HOSTNAME_TEXT="${HOSTNAME_ICON}${HOSTNAME}"
+  # Truncate hostname using dynamic length
+  HOSTNAME_TRUNCATED=$(truncate_text "$HOSTNAME" $HOSTNAME_MAX_LEN)
+  HOSTNAME_TEXT="${HOSTNAME_ICON}${HOSTNAME_TRUNCATED}"
   COMPONENTS+=("rosewater|${HOSTNAME_TEXT}")
 fi
 
 # Add git branch (sky background)
 if [[ -n "$GIT_BRANCH" ]]; then
-  GIT_TEXT="${GIT_ICON}${GIT_BRANCH}"
+  # Truncate git branch using dynamic length
+  GIT_BRANCH_TRUNCATED=$(truncate_text "$GIT_BRANCH" $BRANCH_MAX_LEN)
+  GIT_TEXT="${GIT_ICON}${GIT_BRANCH_TRUNCATED}"
   if [[ -n "$GIT_STATUS" ]]; then
     GIT_TEXT="${GIT_TEXT} ${GIT_STATUS}"
   fi
@@ -786,7 +897,9 @@ fi
 
 # Add AWS profile (peach background)
 if [[ -n "$AWS_PROFILE" ]]; then
-  COMPONENTS+=("peach|${AWS_ICON}${AWS_PROFILE}")
+  # Truncate AWS profile using dynamic length
+  AWS_PROFILE_TRUNCATED=$(truncate_text "$AWS_PROFILE" $AWS_MAX_LEN)
+  COMPONENTS+=("peach|${AWS_ICON}${AWS_PROFILE_TRUNCATED}")
 fi
 
 # Add K8s context (teal background)
@@ -795,7 +908,9 @@ if [[ -n "$K8S_CONTEXT" ]]; then
   SHORT_K8S="${K8S_CONTEXT}"
   SHORT_K8S="${SHORT_K8S#arn:aws:eks:*:*:cluster/}" # Remove AWS EKS ARN prefix
   SHORT_K8S="${SHORT_K8S#gke_*_*_}"                 # Shorten GKE contexts
-  COMPONENTS+=("teal|${K8S_ICON}${SHORT_K8S}")
+  # Truncate K8s context using dynamic length
+  SHORT_K8S_TRUNCATED=$(truncate_text "$SHORT_K8S" $K8S_MAX_LEN)
+  COMPONENTS+=("teal|${K8S_ICON}${SHORT_K8S_TRUNCATED}")
 fi
 
 # Build the right side with powerline separators
@@ -894,7 +1009,7 @@ RIGHT_LENGTH=$(echo -n "$RIGHT_VISIBLE" | wc -m | tr -d ' ')
 
 # Calculate the exact width we need to work with
 # Account for newline and a larger safety margin to prevent overflow on first render
-RESERVED_END_CHARS=8 # Newline + 4 char for IDE status + 3 char safety margin to prevent overflow
+RESERVED_END_CHARS=4 # Newline + 3 char safety margin to prevent overflow
 if [[ $IN_COMPACT_MODE -eq 1 ]]; then
   # Reserve space for the auto-compact message (space is already in RIGHT_LENGTH)
   COMPACT_MESSAGE_WIDTH=41 # 41 chars for the message itself
@@ -960,7 +1075,7 @@ else
   MIDDLE_SECTION=$(printf '%*s' $SPACE_FOR_MIDDLE '')
 fi
 
-# Output the statusline
+# Output the statusline (no newline - statusline should be exact width)
 time_point "before_output"
-printf '%b\n' "${STATUS_LINE}${MIDDLE_SECTION}${RIGHT_SIDE}"
+printf '%b' "${STATUS_LINE}${MIDDLE_SECTION}${RIGHT_SIDE}"
 time_point "after_output"
