@@ -41,13 +41,8 @@ get_file_mtime() {
     return
   fi
 
-  # Try macOS native stat first (if available)
-  if [[ -x /usr/bin/stat ]]; then
-    /usr/bin/stat -f "%m" "$file" 2>/dev/null || echo "0"
-  else
-    # Fall back to GNU stat
-    stat -c %Y "$file" 2>/dev/null || echo "0"
-  fi
+  # GNU stat
+  stat -c %Y "$file" 2>/dev/null || echo "0"
 }
 
 # Read JSON input FIRST to check cache
@@ -57,15 +52,23 @@ time_point "after_read_stdin"
 
 # Quick parse to get cache key (directory is main variable)
 time_point "before_cache_check"
-CURRENT_DIR_FOR_CACHE=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // "~"' 2>/dev/null || echo "~")
+CURRENT_DIR_FOR_CACHE=$(echo "$input" | jq -r '.workspace.project_dir // .workspace.current_dir // .cwd // "~"' 2>/dev/null || echo "~")
 CACHE_KEY="$(echo -n "$CURRENT_DIR_FOR_CACHE" | md5sum | cut -d' ' -f1)"
-CACHE_FILE="/tmp/claude_statusline_data_${CACHE_KEY}"
+
+# Use RAM-based /dev/shm to avoid SSD wear from frequent cache checks
+# Allow override for testing
+CACHE_DIR="${CLAUDE_STATUSLINE_CACHE_DIR:-/dev/shm}"
+CACHE_FILE="${CACHE_DIR}/claude_statusline_${CACHE_KEY}"
+
+# Configurable cache duration (default 20 seconds)
+# This reduces computation from 180/minute to just 3/minute
+CACHE_DURATION="${CLAUDE_STATUSLINE_CACHE_SECONDS:-20}"
 
 # Check data cache (valid for 5 seconds)
 USE_CACHE=0
 if [[ -f "$CACHE_FILE" ]]; then
   age=$(($(date +%s) - $(get_file_mtime "$CACHE_FILE")))
-  if [[ $age -lt 5 ]]; then
+  if [[ $age -lt $CACHE_DURATION ]]; then
     time_point "cache_hit"
     # Load cached data
     # shellcheck source=/dev/null
@@ -119,18 +122,21 @@ MODEL_ICONS="󰚩󱚝󱚟󱚡󱚣󱚥"
 # MAIN LOGIC
 # ============================================================================
 
-# Parse ALL JSON values at once (single jq invocation for performance)
-# Input already read above for cache check
-time_point "before_jq_parse"
-json_values=$(echo "$input" | timeout 0.1s jq -r '
-    (.model.display_name // "Claude") + "|" +
-    (.workspace.current_dir // .cwd // "~") + "|" +
-    (.transcript_path // "")
-' 2>/dev/null || echo "Claude|~|")
-time_point "after_jq_parse"
+# Only parse JSON if we don't have cached data
+if [[ $USE_CACHE -eq 0 ]]; then
+  # Parse ALL JSON values at once (single jq invocation for performance)
+  # Input already read above for cache check
+  time_point "before_jq_parse"
+  json_values=$(echo "$input" | timeout 0.1s jq -r '
+      (.model.display_name // "Claude") + "|" +
+      (.workspace.project_dir // .workspace.current_dir // .cwd // "~") + "|" +
+      (.transcript_path // "")
+  ' 2>/dev/null || echo "Claude|~|")
+  time_point "after_jq_parse"
 
-# Split the parsed values
-IFS='|' read -r MODEL_DISPLAY CURRENT_DIR TRANSCRIPT_PATH <<<"$json_values"
+  # Split the parsed values
+  IFS='|' read -r MODEL_DISPLAY CURRENT_DIR TRANSCRIPT_PATH <<<"$json_values"
+fi
 
 # Select a random icon from MODEL_ICONS
 ICON_COUNT=${#MODEL_ICONS}
@@ -199,166 +205,40 @@ truncate_text() {
 }
 
 
-# Set up cache directory for persistent caching
-CACHE_DIR="/tmp/claude_statusline_cache"
-mkdir -p "$CACHE_DIR"
+# Note: We use simple caching with /dev/shm (RAM) to avoid disk I/O
+# All expensive operations are computed once and cached for CACHE_DURATION seconds
 
-# Clean up old cache files occasionally (1% chance per run)
-if [[ $((RANDOM % 100)) -eq 0 ]]; then
-  find "$CACHE_DIR" -type f -mmin +10 -delete 2>/dev/null &
-fi
-
-# Function to check cache validity
-cache_valid() {
-  local cache_file="$1"
-  local max_age="${2:-5}" # Default 5 seconds
-
-  if [[ ! -f "$cache_file" ]]; then
-    return 1
-  fi
-
-  local age=$(($(date +%s) - $(get_file_mtime "$cache_file")))
-  [[ $age -lt $max_age ]]
-}
-
-# Function to get cached value or compute it
-get_cached() {
-  local cache_file="$1"
-  local max_age="$2"
-  shift 2
-  local command="$*"
-
-  if cache_valid "$cache_file" "$max_age"; then
-    cat "$cache_file"
-  else
-    # Run command and cache result
-    local result
-    result=$(eval "$command" 2>/dev/null)
-    echo "$result" >"$cache_file"
-    echo "$result"
-  fi
-}
-
-# Find transcript if not provided and not disabled
-# This needs to happen regardless of cache status to ensure token metrics work
-if [[ "${CLAUDE_STATUSLINE_NO_TOKENS:-}" != "1" ]]; then
-  if [[ -z "$TRANSCRIPT_PATH" ]] || [[ "$TRANSCRIPT_PATH" == "null" ]]; then
-    # Look for most recent transcript in Claude project directory
-    # Convert current directory to the sanitized project path format
-    PROJECT_PATH="${CURRENT_DIR}"
-    # Handle home directory - use appropriate prefix based on OS
-    if [[ "$(uname)" == "Darwin" ]]; then
-      # macOS uses /Users
-      PROJECT_PATH="${PROJECT_PATH/#$HOME/-Users-$(whoami)}"
-    else
-      # Linux uses /home
-      PROJECT_PATH="${PROJECT_PATH/#$HOME/-home-$(whoami)}"
-    fi
-    # Replace slashes with dashes
-    PROJECT_PATH="${PROJECT_PATH//\//-}"
-
-    # Look in ~/.claude/projects/ for this project
-    CLAUDE_PROJECT_DIR="${HOME}/.claude/projects/${PROJECT_PATH}"
-
-    if [[ -d "$CLAUDE_PROJECT_DIR" ]]; then
-      # Cache transcript path for 5 seconds - changes when new conversation starts
-      time_point "before_transcript_search"
-      TRANSCRIPT_CACHE="$CACHE_DIR/transcript_$(echo -n "$CLAUDE_PROJECT_DIR" | md5sum | cut -d' ' -f1)"
-      if cache_valid "$TRANSCRIPT_CACHE" 5; then
-        TRANSCRIPT_PATH=$(cat "$TRANSCRIPT_CACHE")
-      else
-        # Use simpler ls-based approach with timeout for better performance
-        # Get the most recent .jsonl file (ls -t sorts by modification time)
-        TRANSCRIPT_PATH=$(timeout 0.1s ls -t "$CLAUDE_PROJECT_DIR"/*.jsonl 2>/dev/null | head -n1)
-        if [[ -n "$TRANSCRIPT_PATH" ]]; then
-          echo "$TRANSCRIPT_PATH" >"$TRANSCRIPT_CACHE"
-        fi
-      fi
-      time_point "after_transcript_search"
-
-      # If we found a transcript, validate it's recent (within last hour)
-      if [[ -n "$TRANSCRIPT_PATH" ]] && [[ -f "$TRANSCRIPT_PATH" ]]; then
-        # Check if file was modified in the last hour
-        CURRENT_TIME=$(date +%s)
-        FILE_TIME=$(get_file_mtime "$TRANSCRIPT_PATH")
-        TIME_DIFF=$((CURRENT_TIME - FILE_TIME))
-
-        # If file is older than 1 hour (3600 seconds), ignore it
-        if [[ $TIME_DIFF -gt 3600 ]]; then
-          TRANSCRIPT_PATH=""
-        fi
-      fi
-    fi
-  fi
-fi
+# transcript_path is provided directly in the JSON input, no need to search for it!
 
 # Skip expensive operations if we have cached data
 if [[ $USE_CACHE -eq 0 ]]; then
 
-  # Run expensive operations in parallel using background processes
-  time_point "before_parallel_ops"
+  # Compute all data directly (no complex parallel operations or individual caches)
+  time_point "before_compute"
 
-  # Create temp files for parallel operations
-  TMP_DIR="/tmp/claude_statusline_$$"
-  mkdir -p "$TMP_DIR"
-  # Add cleanup to existing trap if timing is enabled
-  if [[ "${DEBUG_TIMING:-}" == "1" ]]; then
-    trap 'rm -rf '"$TMP_DIR"'; finish_timing' EXIT
-  else
-    trap 'rm -rf '"$TMP_DIR" EXIT
-  fi
-
-  # Start all expensive operations in parallel
-
-  # Token metrics can run in background too if transcript exists
+  # Get token metrics if transcript exists
   if [[ -n "$TRANSCRIPT_PATH" ]] && [[ -f "$TRANSCRIPT_PATH" ]]; then
-    (
-      # Cache token metrics for 1 second - changes frequently during conversation
-      # Use file modification time as part of cache key
-      FILE_MTIME=$(get_file_mtime "$TRANSCRIPT_PATH")
-      TOKEN_CACHE="$CACHE_DIR/tokens_$(echo -n "${TRANSCRIPT_PATH}_${FILE_MTIME}" | md5sum | cut -d' ' -f1)"
-      if cache_valid "$TOKEN_CACHE" 1; then
-        cat "$TOKEN_CACHE"
-      else
-        result=$(get_token_metrics "$TRANSCRIPT_PATH")
-        echo "$result" | tee "$TOKEN_CACHE"
-      fi >"$TMP_DIR/token_metrics"
-    ) &
-    TOKEN_PID=$!
-  fi
-
-  # Wait for all background processes to complete
-  if [[ -n "${TOKEN_PID:-}" ]]; then
-    wait "$TOKEN_PID"
-  fi
-
-  time_point "after_parallel_ops"
-
-  # Read results from temp files
-  time_point "before_read_results"
-
-  # Token metrics
-  if [[ -f "$TMP_DIR/token_metrics" ]]; then
-    IFS='|' read -r INPUT_TOKENS OUTPUT_TOKENS _ CONTEXT_LENGTH <"$TMP_DIR/token_metrics"
+    IFS='|' read -r INPUT_TOKENS OUTPUT_TOKENS _ CONTEXT_LENGTH <<<"$(get_token_metrics "$TRANSCRIPT_PATH")"
   else
     INPUT_TOKENS=0
     OUTPUT_TOKENS=0
     CONTEXT_LENGTH=0
   fi
 
-  time_point "after_read_results"
+  time_point "after_compute"
 
   # Save all data to cache file
   cat >"$CACHE_FILE" <<EOF
 # Cached statusline data
+MODEL_DISPLAY="$MODEL_DISPLAY"
+CURRENT_DIR="$CURRENT_DIR"
+TRANSCRIPT_PATH="$TRANSCRIPT_PATH"
 INPUT_TOKENS="$INPUT_TOKENS"
 OUTPUT_TOKENS="$OUTPUT_TOKENS"
 CONTEXT_LENGTH="$CONTEXT_LENGTH"
-TRANSCRIPT_PATH="$TRANSCRIPT_PATH"
 EOF
 
 fi # End of cache miss block
-
 # Format token count for display
 format_tokens() {
   local count=$1
