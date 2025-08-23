@@ -31,6 +31,8 @@ in
           CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
           TZ = "America/Los_Angeles";
           USE_BUILTIN_RIPGREP = "0";
+          # Use RAM-based cache on Linux (/dev/shm) or regular tmp on macOS
+          CLAUDE_STATUSLINE_CACHE_DIR = if pkgs.stdenv.isDarwin then "/tmp" else "/dev/shm";
         }
         // lib.optionalAttrs config.home-manager.mihomo.enable (
           let
