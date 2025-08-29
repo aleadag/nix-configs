@@ -13,6 +13,13 @@
       };
     };
     hardware.url = "github:NixOS/nixos-hardware";
+
+    # CC-Tools - Claude Code smart hooks
+    cc-tools = {
+      url = "github:Veraticus/cc-tools";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";

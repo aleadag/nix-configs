@@ -41,7 +41,7 @@ We build production code together. I handle implementation details while you gui
 
 ### Required Patterns
 - **Concrete types** not interface{} or any - interfaces hide bugs
-- **Channels** for synchronization, not time.Sleep() - sleeping is unreliable  
+- **Channels** for synchronization, not time.Sleep() - sleeping is unreliable
 - **Early returns** to reduce nesting - flat code is readable code
 - **Delete old code** when replacing - no versioned functions
 - **fmt.Errorf("context: %w", err)** - preserve error chains
@@ -75,3 +75,19 @@ Your redirects prevent over-engineering. When uncertain about implementation, st
 - **Clear naming** in all code
 
 Focus on maintainable solutions over clever abstractions.
+
+## Playwright MCP Server Configuration
+
+**IMPORTANT**: This is a headless NixOS server with no display. When using the Playwright MCP tools:
+
+1. **Always use Firefox** - Set `browserType: "firefox"` in all `playwright_navigate` calls
+2. **Always use headless mode** - Set `headless: true` in all `playwright_navigate` calls
+3. **Example**:
+   ```
+   playwright_navigate with parameters:
+   - url: "https://example.com"
+   - browserType: "firefox"
+   - headless: true
+   ```
+
+Chromium does not work on this headless server due to missing dependencies. Firefox is the only supported browser.

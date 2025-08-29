@@ -8,7 +8,7 @@
 # No global timeout wrapper needed
 
 # Enable timing if DEBUG_TIMING is set
-if [[ "${DEBUG_TIMING:-}" == "1" ]]; then
+if [[ ${DEBUG_TIMING:-} == "1" ]]; then
   exec 3>&2 # Save stderr
   TIMING_LOG="/tmp/statusline_timing_$$"
   : >"$TIMING_LOG"
@@ -19,7 +19,7 @@ if [[ "${DEBUG_TIMING:-}" == "1" ]]; then
   }
 
   finish_timing() {
-    if [[ -f "$TIMING_LOG" ]]; then
+    if [[ -f $TIMING_LOG ]]; then
       awk 'NR==1{start=$1} {printf "[%4dms] %s\n", $1-start, substr($0, index($0, $2))}' "$TIMING_LOG" >&3
       rm -f "$TIMING_LOG"
     fi
@@ -36,7 +36,7 @@ time_point "START"
 # Define early as it's needed for cache checks
 get_file_mtime() {
   local file="$1"
-  if [[ ! -f "$file" ]]; then
+  if [[ ! -f $file ]]; then
     echo "0"
     return
   fi
@@ -66,7 +66,7 @@ CACHE_DURATION="${CLAUDE_STATUSLINE_CACHE_SECONDS:-20}"
 
 # Check data cache (valid for 5 seconds)
 USE_CACHE=0
-if [[ -f "$CACHE_FILE" ]]; then
+if [[ -f $CACHE_FILE ]]; then
   age=$(($(date +%s) - $(get_file_mtime "$CACHE_FILE")))
   if [[ $age -lt $CACHE_DURATION ]]; then
     time_point "cache_hit"
@@ -80,13 +80,6 @@ fi
 if [[ $USE_CACHE -eq 0 ]]; then
   time_point "cache_miss"
 fi
-
-# Source common helpers for colors (though we'll need more specific ones)
-time_point "before_source"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=/dev/null
-source "${SCRIPT_DIR}/common-helpers.sh"
-time_point "after_source"
 
 # ============================================================================
 # CATPPUCCIN MOCHA COLORS - True color (24-bit) support
@@ -106,7 +99,7 @@ PEACH_FG="\033[38;2;250;179;135m"
 RED_BG="\033[48;2;243;139;168m" # #f38ba8 (Catppuccin Mocha red)
 RED_FG="\033[38;2;243;139;168m"
 BASE_FG="\033[38;2;30;30;46m" # #1e1e2e (dark text on colored backgrounds)
-
+NC="\033[0m"                  # No Color / Reset
 
 # Powerline characters
 LEFT_CHEVRON=""
@@ -116,7 +109,6 @@ RIGHT_CURVE=""
 # Icons for different sections (customize as needed)
 CONTEXT_ICON=" "
 MODEL_ICONS="󰚩󱚝󱚟󱚡󱚣󱚥"
-
 
 # ============================================================================
 # MAIN LOGIC
@@ -141,16 +133,15 @@ fi
 # Select a random icon from MODEL_ICONS
 ICON_COUNT=${#MODEL_ICONS}
 RANDOM_INDEX=$((RANDOM % ICON_COUNT))
-MODEL_ICON="${MODEL_ICONS:$RANDOM_INDEX:1} "
+MODEL_ICON="${MODEL_ICONS:RANDOM_INDEX:1} "
 
 # We'll handle transcript search later with other cached operations
 # But we need to define functions here so they're available in subshells
 
-
 # Get token metrics if transcript is available (accurate version)
 get_token_metrics() {
   local transcript="$1"
-  if [[ -z "$transcript" ]] || [[ ! -f "$transcript" ]]; then
+  if [[ -z $transcript ]] || [[ ! -f $transcript ]]; then
     echo "0|0|0|0"
     return
   fi
@@ -175,13 +166,12 @@ get_token_metrics() {
             end
         ' <"$transcript" 2>/dev/null)
 
-  if [[ -n "$result" ]]; then
+  if [[ -n $result ]]; then
     echo "$result"
   else
     echo "0|0|0|0"
   fi
 }
-
 
 # Truncate text to a maximum length with ellipsis
 truncate_text() {
@@ -204,7 +194,6 @@ truncate_text() {
   fi
 }
 
-
 # Note: We use simple caching with /dev/shm (RAM) to avoid disk I/O
 # All expensive operations are computed once and cached for CACHE_DURATION seconds
 
@@ -217,7 +206,7 @@ if [[ $USE_CACHE -eq 0 ]]; then
   time_point "before_compute"
 
   # Get token metrics if transcript exists
-  if [[ -n "$TRANSCRIPT_PATH" ]] && [[ -f "$TRANSCRIPT_PATH" ]]; then
+  if [[ -n $TRANSCRIPT_PATH ]] && [[ -f $TRANSCRIPT_PATH ]]; then
     IFS='|' read -r INPUT_TOKENS OUTPUT_TOKENS _ CONTEXT_LENGTH <<<"$(get_token_metrics "$TRANSCRIPT_PATH")"
   else
     INPUT_TOKENS=0
@@ -258,7 +247,7 @@ format_tokens() {
 # Token metrics already retrieved in parallel section above
 
 # Debug context length
-if [[ "${STATUSLINE_DEBUG:-}" == "1" ]]; then
+if [[ ${STATUSLINE_DEBUG:-} == "1" ]]; then
   >&2 echo "DEBUG: CONTEXT_LENGTH=$CONTEXT_LENGTH, INPUT_TOKENS=$INPUT_TOKENS, TRANSCRIPT_PATH=$TRANSCRIPT_PATH"
 fi
 
@@ -316,7 +305,6 @@ STATUS_LINE="${STATUS_LINE}${SKY_BG}${BASE_FG}${TOKEN_INFO} ${NC}"
 
 # End the model section with RIGHT_CURVE
 STATUS_LINE="${STATUS_LINE}${SKY_FG}${RIGHT_CURVE}${NC}"
-
 
 # Output the statusline (no newline - statusline should be exact width)
 time_point "before_output"

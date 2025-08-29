@@ -1,12 +1,15 @@
 {
-  lib,
   config,
+  flake,
+  lib,
   pkgs,
   ...
 }:
 
 let
   cfg = config.home-manager.dev.claude-code;
+  # Get cc-tools binaries from the flake
+  cc-tools = flake.inputs.cc-tools.packages.${pkgs.system}.default;
 in
 {
   options.home-manager.dev.claude-code = {
@@ -17,10 +20,18 @@ in
 
   config = lib.mkIf cfg.enable {
     # Install Claude Code package and ccusage
-    home.packages = with pkgs; [
-      claude-code
-      just
-    ];
+    home.packages =
+      with pkgs;
+      [
+        claude-code
+        just
+        # Include cc-tools binaries
+        cc-tools
+      ]
+      ++ lib.optionals (pkgs.stdenv.isLinux && pkgs.stdenv.isx86_64) [
+        # FHS environment for running Playwright browsers (x86_64 Linux only)
+        steam-run
+      ];
 
     mutableConfig.files = {
       # Claude Code settings which requires writabble
@@ -47,7 +58,7 @@ in
 
         statusLine = {
           type = "command";
-          command = "~/.claude/hooks/statusline.sh";
+          command = "${./statusline.sh}";
           padding = 0;
         };
 
@@ -58,11 +69,7 @@ in
               hooks = [
                 {
                   type = "command";
-                  command = "~/.claude/hooks/smart-lint.sh";
-                }
-                {
-                  type = "command";
-                  command = "~/.claude/hooks/smart-test.sh";
+                  command = "${cc-tools}/bin/cc-tools-validate";
                 }
               ];
             }
@@ -99,53 +106,19 @@ in
       // {
         ".claude/CLAUDE.md".source = ./CLAUDE.md;
 
-        # Copy hook scripts with executable permissions
-        ".claude/hooks/common-helpers.sh" = {
-          source = ./hooks/common-helpers.sh;
-          executable = true;
-        };
-
-        ".claude/hooks/smart-lint.sh" = {
-          source = ./hooks/smart-lint.sh;
-          executable = true;
-        };
-
-        ".claude/hooks/smart-test.sh" = {
-          source = ./hooks/smart-test.sh;
-          executable = true;
-        };
-
-        ".claude/hooks/ntfy-notifier.sh" = {
-          source = ./hooks/ntfy-notifier.sh;
-          executable = true;
-        };
-
-        # Integration helper script
-        ".claude/hooks/integrate.sh" = {
-          source = ./hooks/integrate.sh;
-          executable = true;
-        };
-
-        # Status line script
-        ".claude/hooks/statusline.sh" = {
-          source = ./hooks/statusline.sh;
-          executable = true;
-        };
-
-        # Copy documentation and examples (not executable)
-        ".claude/hooks/README.md".source = ./hooks/README.md;
-        ".claude/hooks/INTEGRATION.md".source = ./hooks/INTEGRATION.md;
-        ".claude/hooks/QUICK_START.md".source = ./hooks/QUICK_START.md;
-        ".claude/hooks/example-Justfile".source = ./hooks/example-Justfile;
-        ".claude/hooks/example-claude-hooks-config.sh".source = ./hooks/example-claude-hooks-config.sh;
-        ".claude/hooks/example-claude-hooks-ignore".source = ./hooks/example-claude-hooks-ignore;
-
         # Create necessary directories
         ".claude/.keep".text = "";
         ".claude/projects/.keep".text = "";
         ".claude/todos/.keep".text = "";
         ".claude/statsig/.keep".text = "";
         ".claude/commands/.keep".text = "";
+      }
+      // lib.optionalAttrs pkgs.stdenv.isLinux {
+        # Playwright MCP wrapper for steam-run (Linux only)
+        ".claude/playwright-mcp-wrapper.sh" = {
+          source = ./playwright-headless-wrapper.sh;
+          executable = true;
+        };
       };
   };
 }
