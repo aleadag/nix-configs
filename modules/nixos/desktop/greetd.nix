@@ -30,7 +30,7 @@
             in
             {
               command = lib.escapeShellArgs [
-                (lib.getExe pkgs.greetd.tuigreet)
+                (lib.getExe pkgs.tuigreet)
                 "--remember"
                 "--remember-session"
                 "--time"
