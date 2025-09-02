@@ -44,15 +44,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1756798297,
+        "lastModified": 1756827963,
         "narHash": "sha256-7ciRlaB1d3Zsuq9XOxI5eRh4kxV4AqY3aSeTXIIf57I=",
-        "owner": "aleadag",
+        "owner": "Veraticus",
         "repo": "cc-tools",
-        "rev": "54aa7e307107b4719ce6d5e01c74376cad3f2b4a",
+        "rev": "6765974b5385f03200b96519aa02462b27bfe97b",
         "type": "github"
       },
       "original": {
-        "owner": "aleadag",
+        "owner": "Veraticus",
         "repo": "cc-tools",
         "type": "github"
       }
