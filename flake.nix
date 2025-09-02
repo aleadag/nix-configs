@@ -16,7 +16,7 @@
 
     # CC-Tools - Claude Code smart hooks
     cc-tools = {
-      url = "github:Veraticus/cc-tools";
+      url = "github:aleadag/cc-tools";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
