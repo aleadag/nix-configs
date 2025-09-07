@@ -16,6 +16,7 @@
     ./dev
     ./editor
     ./gui
+    ./kanata
     ./meta
     ./mihomo
     ./nix
