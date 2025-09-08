@@ -14,6 +14,7 @@
     ./yabai
     ./sketchybar
     ./skhd
+    ./kanata
   ];
 
   system.primaryUser = config.meta.username;

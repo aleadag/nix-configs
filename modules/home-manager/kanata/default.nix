@@ -30,6 +30,7 @@ let
     enable = true;
     config = {
       ProgramArguments = [
+        "sudo"
         (getExe package)
         "--cfg"
         "${config.xdg.configHome}/kanata/kanata.kbd"
