@@ -6,13 +6,13 @@
 lint *files:
     #!/usr/bin/env bash
     set -euo pipefail
-    
+
     # All output to stderr as required by hooks
     exec 2>&1
-    
+
     if [[ $# -gt 0 ]]; then
         echo "Linting specific Nix files: $*" >&2
-        
+
         # Format specific files with nixfmt
         for file in "$@"; do
             if [[ "$file" == *.nix ]]; then
@@ -20,22 +20,22 @@ lint *files:
                 nixfmt "$file"
             fi
         done
-        
+
         # Run statix on specific files
         echo "Running statix linter on specified files" >&2
         statix check "$@"
     else
         echo "Linting all Nix files" >&2
-        
+
         # Format all files using nix fmt
         echo "Running nix fmt" >&2
         nix fmt
-        
+
         # Run statix on entire project
         echo "Running statix check" >&2
         statix check
     fi
-    
+
     echo "Linting completed successfully" >&2
 
 # Test target - builds configurations to verify they're valid
@@ -43,29 +43,29 @@ lint *files:
 test *files:
     #!/usr/bin/env bash
     set -euo pipefail
-    
+
     # All output to stderr as required by hooks
     exec 2>&1
-    
+
     if [[ $# -gt 0 ]]; then
         echo "Testing configurations related to: $*" >&2
-        
+
         # For targeted testing, we'll run a basic flake check
         # since individual file testing isn't practical for Nix configs
         echo "Running flake check for configuration validation" >&2
         nix flake check --no-build
     else
         echo "Running full configuration tests" >&2
-        
+
         # Run comprehensive flake check
         echo "Running nix flake check" >&2
-        nix flake check --no-build
-        
+        nix flake check --print-build-logs
+
         # Test building a sample configuration to ensure it works
         echo "Testing Home Manager configuration build" >&2
         nix build '.#homeConfigurations.home-mac.activationPackage' --dry-run
     fi
-    
+
     echo "Testing completed successfully" >&2
 
 # Build a specific host configuration
