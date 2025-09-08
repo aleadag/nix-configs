@@ -45,7 +45,7 @@ let
       '';
 
       extraBindings = {
-        "${modifier}+p" = ''mode "${displayLayoutMode}"'';
+        "${modifier}+F8" = ''mode "${displayLayoutMode}"''; # moved from 'p' to avoid QWERTY workspace conflict
         "${modifier}+c" = "exec ${rofi} -show calc -modi calc -no-show-match -no-sort";
         "${modifier}+Tab" = "exec ${rofi} -show window -modi window";
       };

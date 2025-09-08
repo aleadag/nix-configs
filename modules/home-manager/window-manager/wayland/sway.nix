@@ -63,7 +63,7 @@ let
       '';
 
       extraBindings = {
-        "${modifier}+p" = ''mode "${displayLayoutMode}"'';
+        "${modifier}+F8" = ''mode "${displayLayoutMode}"''; # moved from 'p' to avoid QWERTY workspace conflict
       };
 
       extraModes = {

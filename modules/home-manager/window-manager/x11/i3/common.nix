@@ -38,43 +38,43 @@
   extraConfig ? "",
   workspaces ? [
     {
-      ws = 1;
+      ws = "q";
       name = "1:  ";
     }
     {
-      ws = 2;
+      ws = "w";
       name = "2:  ";
     }
     {
-      ws = 3;
+      ws = "e";
       name = "3:  ";
     }
     {
-      ws = 4;
+      ws = "r";
       name = "4:  ";
     }
     {
-      ws = 5;
+      ws = "t";
       name = "5:  ";
     }
     {
-      ws = 6;
+      ws = "y";
       name = "6:  ";
     }
     {
-      ws = 7;
+      ws = "u";
       name = "7:  ";
     }
     {
-      ws = 8;
+      ws = "i";
       name = "8:  ";
     }
     {
-      ws = 9;
+      ws = "o";
       name = "9:  ";
     }
     {
-      ws = 0;
+      ws = "p";
       name = "10:  ";
     }
   ],
@@ -152,56 +152,105 @@ in
       ;
 
     keybindings = {
-      "${modifier}+Return" = "exec ${terminal}";
-      "${modifier}+Shift+q" = "kill";
-      "${alt}+F4" = "kill";
+      # ===== MAIN LAYER (Super key) - Core functionality =====
 
-      "${modifier}+n" = "exec ${browser}";
-      "${modifier}+m" = "exec ${fileManager}";
+      # Terminal
+      "${modifier}+Return" = "exec ${terminal}";
+
+      # Browser
+      "${modifier}+m" = "exec ${browser}";
+
+      # Switch to a window by letter, like Tmux "Q" or Vimium "F"
+      ## Containers // Visually Switch by Letter // 🪟 B ##
+      "${modifier}+b" = "exec --no-startup-id wmfocus";
 
       "${modifier}+d" = "exec ${menu}";
 
-      "${modifier}+f" = "fullscreen toggle";
-      "${modifier}+v" = "split v";
-      "${modifier}+b" = "split h";
-
-      "${modifier}+s" = "layout stacking";
-      "${modifier}+w" = "layout tabbed";
-      "${modifier}+e" = "layout toggle split";
-
-      "${modifier}+semicolon" = "focus mode_toggle";
-      "${modifier}+Shift+semicolon" = "floating toggle";
-
+      ## Containers // Focus Parent Container // 🪟 A ##
       "${modifier}+a" = "focus parent";
+      ## Containers // Focus Child Container // 🪟 C ##
+      "${modifier}+c" = "focus child";
 
-      "${modifier}+Shift+minus" = "move scratchpad";
-      "${modifier}+minus" = "scratchpad show";
+      ## Containers // Move Focus Direction // 🪟 HJKL ##
+      # Focus direction handled by mapDirectionDefault below
 
-      "${modifier}+r" = ''mode "${resizeMode}"'';
-      "${modifier}+Escape" = ''mode "${powerManagementMode}"'';
+      ## Containers // Vertical Split // 🪟 V ##
+      "${modifier}+v" = "split horizontal";
 
-      "${modifier}+Shift+c" = "reload";
-      "${modifier}+Shift+r" = "restart";
+      ## Containers // Horizontal Split // 🪟 S ##
+      "${modifier}+s" = "split vertical";
 
+      # Window management
+      "${modifier}+f" = "fullscreen toggle";
+
+      ## Workspaces // Increase Gaps // 🪟 = ##
+      "${modifier}+minus" = "gaps inner current minus 6";
+      "${modifier}+equal" = "gaps inner current plus 6";
+
+      # Resize mode entry (as recommended in blog)
+      "${modifier}+period" = ''mode "${resizeMode}"'';
+
+      # QWERTY Workspace Navigation handled by mapWorkspacesStr in extraConfig
+
+      # Workspace switching improvements (as recommended)
+      "${alt}+Tab" = "exec swayr switch-workspace";
+      "${modifier}+Tab" = "exec swayr switch-window"; # Window switcher menu
+
+      # ===== DANGER LAYER (Super+Shift) - Destructive actions =====
+
+      # Window killing
+      "${modifier}+Shift+slash" = "kill";
+
+      # Window movement handled by mapDirectionDefault below
+
+      # Layout controls moved to non-conflicting keys (v/s moved to main layer)
+      "${modifier}+Shift+f" = "floating toggle";
+
+      "${modifier}+Shift+comma" = "focus mode_toggle";
+
+      # Move windows to workspaces handled by mapWorkspacesStr in extraConfig
+
+      # Sway Session // Reload Config File
+      "${modifier}+Shift+c" = "reload, exec systemctl --user restart kanshi";
+
+      # System control
+      "${modifier}+Shift+Escape" = ''mode "${powerManagementMode}"'';
+
+      # ===== UTILITY LAYER (Super+Ctrl) - App launching and tools =====
+
+      # Layout controls in utility layer
+      "${modifier}+Ctrl+s" = "layout splitv";
+      "${modifier}+Ctrl+v" = "layout splith";
+      # I usually use tabbed, but if I press the key again, toggle to stacking
+      "${modifier}+Ctrl+t" = "layout toggle tabbed stacking";
+
+      ## Workspaces // Move to Monitor Direction // 🪟 <Ctrl> HJKL ##
+      # Move workspace to output direction handled by mapDirectionDefault below
+
+      # Notification management (utility layer)
+      "${modifier}+Ctrl+escape" = "exec ${dunstctl} close";
+      "${modifier}+Ctrl+Shift+escape" = "exec ${dunstctl} close-all";
+
+      # Touchpad toggle (utility layer)
+      "${modifier}+Ctrl+Space" = "input type:touchpad events toggle enabled disabled";
+
+      # ===== MEDIA AND SYSTEM KEYS =====
+
+      # Audio controls
       "XF86AudioRaiseVolume" = "exec --no-startup-id ${pamixer} --set-limit 150 --allow-boost -i 5";
       "XF86AudioLowerVolume" = "exec --no-startup-id ${pamixer} --set-limit 150 --allow-boost -d 5";
       "XF86AudioMute" = "exec --no-startup-id ${pamixer} --toggle-mute";
       "XF86AudioMicMute" = "exec --no-startup-id ${pamixer} --toggle-mute --default-source";
-
       "XF86MonBrightnessUp" = "exec --no-startup-id ${light} -inc 5";
       "XF86MonBrightnessDown" = "exec --no-startup-id ${light} -dec 5";
-
       "XF86AudioPlay" = "exec --no-startup-id ${playerctl} play-pause";
       "XF86AudioStop" = "exec --no-startup-id ${playerctl} stop";
       "XF86AudioNext" = "exec --no-startup-id ${playerctl} next";
       "XF86AudioPrev" = "exec --no-startup-id ${playerctl} previous";
 
+      # Screenshots
       "Print" = "exec --no-startup-id ${fullScreenShot}";
       "Shift+Print" = "exec --no-startup-id ${areaScreenShot}";
-
-      "Ctrl+escape" = "exec ${dunstctl} close";
-      "Ctrl+Shift+escape" = "exec ${dunstctl} close-all";
-      "Alt+Space" = "input type:touchpad events toggle enabled disabled";
     }
     // (mapDirectionDefault {
       prefixKey = modifier;
@@ -212,7 +261,7 @@ in
       prefixCmd = "move";
     })
     // (mapDirectionDefault {
-      prefixKey = "Ctrl+${alt}";
+      prefixKey = "${modifier}+Ctrl";
       prefixCmd = "move workspace to output";
     })
     // extraBindings;
@@ -227,11 +276,24 @@ in
       {
         ${resizeMode} =
           (mapDirection {
-            leftCmd = "resize shrink width 10px or 10ppt";
-            downCmd = "resize grow height 10px or 10ppt";
-            upCmd = "resize shrink height 10px or 10ppt";
-            rightCmd = "resize grow width 10px or 10ppt";
+            leftCmd = "resize shrink width 192 px or 5 ppt";
+            downCmd = "resize shrink height 192 px or 5 ppt";
+            upCmd = "resize grow height 192 px or 5 ppt";
+            rightCmd = "resize grow width 192 px or 5 ppt";
           })
+          // {
+            ## Resize/Move Mode // Move Floating Windows by 192px // <Up><Down><Left><Right> ##
+            "Up" = "move up 192 px";
+            "Left" = "move left 192 px";
+            "Down" = "move down 192 px";
+            "Right" = "move right 192 px";
+
+            # back to normal: Enter, Escape, Super, Space or Super-R
+            ## Resize/Move Mode // Exit Mode // <Return>, <Esc>, <Space> ##
+            "${modifier}+r" = "mode default";
+            "${modifier}" = "mode default";
+            "space" = "mode default";
+          }
           // exitMode;
         ${powerManagementMode} =
           let
@@ -270,7 +332,7 @@ in
     // extraFocusOptions;
   };
 
-  # Until this issue is fixed we need to map workspaces directly to config file
+  # QWERTY workspace navigation using mapWorkspacesStr
   # https://github.com/nix-community/home-manager/issues/695
   extraConfig =
     let
