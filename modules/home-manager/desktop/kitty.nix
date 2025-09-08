@@ -17,7 +17,7 @@ in
       default = config.home-manager.editor.neovim.enable;
     };
     useSuperKeybindings = lib.mkEnableOption "keybindings with Super/Command" // {
-      default = pkgs.stdenv.isDarwin;
+      default = false;
     };
     fontSize = lib.mkOption {
       type = lib.types.float;
@@ -39,19 +39,20 @@ in
           lib.optionalString cfg.scrollback-nvim.enable "kitten ${pkgs.vimPlugins.kitty-scrollback-nvim}/python/kitty_scrollback_nvim.py";
       };
       keybindings = {
-        "kitty_mod+t" = "new_tab_with_cwd";
+        "kitty_mod+n" = "new_tab_with_cwd"; # moved from 't' to avoid conflict
         "kitty_mod+enter" = "new_window_with_cwd";
         "kitty_mod+backspace" = "change_font_size all 0";
-        "kitty_mod+1" = "goto_tab 1";
-        "kitty_mod+2" = "goto_tab 2";
-        "kitty_mod+3" = "goto_tab 3";
-        "kitty_mod+4" = "goto_tab 4";
-        "kitty_mod+5" = "goto_tab 5";
-        "kitty_mod+6" = "goto_tab 6";
-        "kitty_mod+7" = "goto_tab 7";
-        "kitty_mod+8" = "goto_tab 8";
-        "kitty_mod+9" = "goto_tab 9";
-        "kitty_mod+0" = "goto_tab 10";
+        # QWERTY tab navigation (consistent with window manager)
+        "kitty_mod+q" = "goto_tab 1";
+        "kitty_mod+w" = "goto_tab 2";
+        "kitty_mod+e" = "goto_tab 3";
+        "kitty_mod+r" = "goto_tab 4";
+        "kitty_mod+t" = "goto_tab 5";
+        "kitty_mod+y" = "goto_tab 6";
+        "kitty_mod+u" = "goto_tab 7";
+        "kitty_mod+i" = "goto_tab 8";
+        "kitty_mod+o" = "goto_tab 9";
+        "kitty_mod+p" = "goto_tab 10";
       }
       // lib.optionalAttrs cfg.scrollback-nvim.enable {
         "kitty_mod+h" = "kitty_scrollback_nvim";
