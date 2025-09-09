@@ -56,7 +56,8 @@ in
             cmd - m                : open -na "Firefox"
 
             # Application launcher (consistent with Sway: Super+D)
-            cmd - d                : open -na "Raycast" || open -na "Alfred 5" || open -na "Spotlight"
+            # set in Raycat
+            # cmd - d                : open -na "Raycast" || open -na "Alfred 5" || open -na "Spotlight"
 
             # Focus parent/child containers (consistent with Sway: Super+A/C)
             cmd - a                : yabai -m window --focus largest
@@ -70,8 +71,8 @@ in
             cmd - f                : yabai -m window --toggle zoom-fullscreen
 
             # Gap controls (consistent with Sway: Super+minus/equal)
-            cmd - minus            : yabai -m space --gap abs:$(($(yabai -m query --spaces --space | jq '.gap') - 6))
-            cmd - equal            : yabai -m space --gap abs:$(($(yabai -m query --spaces --space | jq '.gap') + 6))
+            # cmd - 0x1B            : yabai -m space --gap abs:$(($(yabai -m query --spaces --space | jq '.gap') - 6))
+            # cmd - 0x18            : yabai -m space --gap abs:$(($(yabai -m query --spaces --space | jq '.gap') + 6))
 
             # Resize mode entry handled by mode activation below
 
@@ -95,7 +96,7 @@ in
             :: reload  @         : ${modeControllerCmd} reload
 
             # Mode activation (consistent with Sway/i3)
-            cmd - period           ; resize
+            cmd - 0x2F             ; resize
             cmd + shift - escape   ; power
             cmd + shift - x        ; reload
 
@@ -245,8 +246,8 @@ in
             resize < right         : yabai -m window --move rel:192:0
 
             # Exit resize mode (consistent with Sway: multiple ways)
-            resize < cmd           : skhd -k 'escape'
-            resize < space         : skhd -k 'escape'
+            # resize < cmd           : skhd -k 'escape'
+            # resize < space         : skhd -k 'escape'
             resize < return        : skhd -k 'escape'
 
             # Balance all windows. Maps to `=` key
