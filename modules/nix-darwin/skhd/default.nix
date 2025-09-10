@@ -60,12 +60,12 @@ in
             # cmd - d                : open -na "Raycast" || open -na "Alfred 5" || open -na "Spotlight"
 
             # Focus parent/child containers (consistent with Sway: Super+A/C)
-            cmd - a                : yabai -m window --focus largest
-            cmd - c                : yabai -m window --focus smallest
+            cmd + shift - a                : yabai -m window --focus largest
+            cmd + shift - c                : yabai -m window --focus smallest
 
             # Splits (consistent with Sway: Super+V/S)
-            cmd - v                : yabai -m window --insert east
-            cmd - s                : yabai -m window --insert south
+            cmd + shift - v                : yabai -m window --insert east
+            cmd + shift - s                : yabai -m window --insert south
 
             # Fullscreen (consistent with Sway: Super+F)
             cmd - f                : yabai -m window --toggle zoom-fullscreen
