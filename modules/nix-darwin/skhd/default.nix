@@ -197,6 +197,9 @@ in
             # toggle window native fullscreen (legacy - moved to utility layer)
             cmd + shift - n       : yabai -m window --toggle native-fullscreen
 
+            # Quit application (consistent with macOS: Super+Alt+Q)
+            cmd + alt - q       : osascript -e 'tell application "System Events" to set frontApp to name of first application process whose frontmost is true' -e 'tell application frontApp to quit'
+
             # Fast focus display (consistent with Sway utility layer pattern)
             cmd + alt - h       : yabai -m display --focus west || yabai -m display --focus recent
             cmd + alt - l       : yabai -m display --focus east || yabai -m display --focus recent
