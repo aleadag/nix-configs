@@ -95,4 +95,8 @@ final: prev:
   nix-whereis = prev.callPackage ../packages/nix-whereis { };
 
   run-bg-alias = name: command: prev.callPackage ../packages/run-bg-alias { inherit name command; };
+
+  karabiner-driverkit-virtualhiddevice =
+    prev.callPackage ../packages/karabiner-driverkit-virtualhiddevice
+      { };
 }
