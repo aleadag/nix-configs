@@ -1,6 +1,5 @@
 {
   config,
-  driverKitExtVersion ? "5.0.0",
   lib,
   pkgs,
   ...
@@ -8,6 +7,7 @@
 let
   inherit (lib) getExe;
   cfg = config.nix-darwin.kanata;
+  driverKitExtVersion = "5.0.0";
   kanataConfigFile = ../../../configs/kanata.kbd;
   karabinerDriverKitExtDestPath = "/Applications/.Karabiner-VirtualHIDDevice-Manager.app";
   karabinerFilesPath = "/Library/Application Support/org.pqrs/Karabiner-DriverKit-VirtualHIDDevice";
@@ -19,7 +19,7 @@ let
         echo "Starting kanata wrapper..."
 
         # Start Karabiner daemon in background
-        sudo '${karabinerFilesPath}/Applications/Karabiner-VirtualHIDDevice-Daemon.app/Contents/MacOS/Karabiner-VirtualHIDDevice-Daemon' &
+        exec sudo '${karabinerFilesPath}/Applications/Karabiner-VirtualHIDDevice-Daemon.app/Contents/MacOS/Karabiner-VirtualHIDDevice-Daemon' &
         echo "Started Karabiner daemon in background"
 
         # Wait for daemon to initialize
@@ -84,22 +84,24 @@ in
 
     # Create sudoers file for kanata to run without password
     environment.etc."sudoers.d/kanata".source = pkgs.runCommand "sudoers-kanata" { } ''
-      KANATA_BIN="${kanataWrapper}"
-      SHASUM=$(sha256sum "$KANATA_BIN" | cut -d' ' -f1)
+      KANATA_BIN="${getExe pkgs.kanata}"
+      KANATA_SHASUM=$(sha256sum "$KANATA_BIN" | cut -d' ' -f1)
+      KARABINER_DAEMON="${karabinerFilesPath}/Applications/Karabiner-VirtualHIDDevice-Daemon.app/Contents/MacOS/Karabiner-VirtualHIDDevice-Daemon"
+      KARABINER_DAEMON_ESCAPED=$(echo "$KARABINER_DAEMON" | sed 's/ /\\ /g')
       cat <<EOF > "$out"
-      %admin ALL=(root) NOPASSWD: sha256:$SHASUM $KANATA_BIN
+      %admin ALL=(root) NOPASSWD: sha256:$KANATA_SHASUM $KANATA_BIN
+      %admin ALL=(root) NOPASSWD: $KARABINER_DAEMON_ESCAPED
       EOF
     '';
 
     # User launch agent for kanata service
     launchd.user.agents.kanata = {
-      enable = true;
-      config = {
-        ProgramArguments = [
-          "${kanataWrapper}"
-        ];
+      command = "${kanataWrapper}";
+      serviceConfig = {
         KeepAlive = true;
         RunAtLoad = true;
+        StandardOutPath = "/tmp/kanata.out.log";
+        StandardErrorPath = "/tmp/kanata.err.log";
       };
     };
   };
