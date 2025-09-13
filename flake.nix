@@ -58,12 +58,6 @@
       flake = false;
     };
 
-    # hyprland
-    hyprland-go = {
-      url = "github:thiagokokada/hyprland-go";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     zsh-proxy = {
       url = "github:SukkaW/zsh-proxy";
       flake = false;
