@@ -99,7 +99,7 @@ in
       command = "${kanataWrapper}";
       serviceConfig = {
         KeepAlive = true;
-        RunAtLoad = true;
+        RunAtLoad = false;
         StandardOutPath = "/tmp/kanata.out.log";
         StandardErrorPath = "/tmp/kanata.err.log";
       };
