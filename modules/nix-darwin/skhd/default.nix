@@ -35,7 +35,6 @@ in
             # fast focus desktop
             cmd - left             : yabai -m space --focus prev
             cmd - right            : yabai -m space --focus next
-            cmd - z                : yabai -m space --focus recent
 
             # QWERTY workspace navigation (consistent with Sway/i3)
             cmd - q                : yabai -m space --focus 1
@@ -62,6 +61,8 @@ in
             # Focus parent/child containers (consistent with Sway: Super+A/C)
             cmd + shift - a                : yabai -m window --focus largest
             cmd + shift - c                : yabai -m window --focus smallest
+
+            cmd + shift - z                : yabai -m space --focus recent
 
             # Splits (consistent with Sway: Super+V/S)
             cmd + shift - v                : yabai -m window --insert east
@@ -247,11 +248,6 @@ in
             resize < down          : yabai -m window --move rel:0:192
             resize < left          : yabai -m window --move rel:-192:0
             resize < right         : yabai -m window --move rel:192:0
-
-            # Exit resize mode (consistent with Sway: multiple ways)
-            # resize < cmd           : skhd -k 'escape'
-            # resize < space         : skhd -k 'escape'
-            resize < return        : skhd -k 'escape'
 
             # Balance all windows. Maps to `=` key
             resize < 0x18          : yabai -m space --balance; skhd -k 'escape'
