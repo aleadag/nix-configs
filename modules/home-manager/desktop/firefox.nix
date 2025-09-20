@@ -12,7 +12,7 @@ in
 {
   options.home-manager.desktop.firefox = {
     enable = lib.mkEnableOption "Firefox config" // {
-      default = config.home-manager.desktop.enable;
+      default = config.home-manager.desktop.enable || config.home-manager.darwin.enable;
     };
     subpixelRender.enable = lib.mkEnableOption "Subpixel render" // {
       default =

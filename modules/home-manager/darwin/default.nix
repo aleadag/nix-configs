@@ -16,17 +16,6 @@
   };
 
   config = lib.mkIf config.home-manager.darwin.enable {
-    home-manager = {
-      desktop = {
-        kitty = {
-          enable = true;
-          fontSize = 14.0;
-          opacity = 1.0;
-        };
-        firefox.enable = true;
-      };
-    };
-
     targets.darwin.defaults = {
       NSGlobalDomain = {
         ApplePressAndHoldEnabled = false;
