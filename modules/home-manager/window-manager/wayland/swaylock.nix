@@ -7,7 +7,7 @@
 
 let
   cfg = config.home-manager.window-manager.wayland.swaylock;
-  kbLayouts = lib.splitString "," config.home.keyboard.layout;
+  kbLayouts = lib.splitString "," (config.home.keyboard.layout or "");
 in
 {
   options.home-manager.window-manager.wayland.swaylock.enable =

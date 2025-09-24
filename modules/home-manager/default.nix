@@ -25,15 +25,25 @@
     ./window-manager
   ];
 
-  catppuccin = {
-    inherit (config.theme) flavor;
-    enable = true;
-    fcitx5.enable = false;
+  options.home-manager = {
+    hostName = lib.mkOption {
+      description = "The hostname of the machine.";
+      type = lib.types.str;
+      default = "generic";
+    };
   };
 
-  home = {
-    username = lib.mkOptionDefault "awang";
-    homeDirectory = lib.mkOptionDefault "/home/awang";
-    stateVersion = lib.mkOptionDefault "25.05";
+  config = {
+    catppuccin = {
+      inherit (config.theme) flavor;
+      enable = true;
+      fcitx5.enable = false;
+    };
+
+    home = {
+      username = lib.mkOptionDefault "awang";
+      homeDirectory = lib.mkOptionDefault "/home/awang";
+      stateVersion = lib.mkOptionDefault "25.05";
+    };
   };
 }

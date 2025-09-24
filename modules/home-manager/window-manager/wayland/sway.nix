@@ -99,7 +99,9 @@ in
       config = commonOptions.config // {
         input =
           let
-            inherit (config.home.keyboard) layout variant options;
+            layout = config.home.keyboard.layout or null;
+            variant = config.home.keyboard.variant or null;
+            options = config.home.keyboard.options or [ "" ];
           in
           {
             "type:keyboard" = {
@@ -121,10 +123,12 @@ in
           };
 
         output = {
-          "*" = with config.theme.wallpaper; {
-            bg = "${path} ${scale}";
+          "*" = {
+            bg = lib.mkIf (
+              config.theme.wallpaper != null
+            ) "${config.theme.wallpaper.path} ${config.theme.wallpaper.scale}";
             # DPI
-            scale = toString (config.theme.fonts.dpi / 100.0);
+            scale = lib.mkIf (config.theme.fonts != null) (toString (config.theme.fonts.dpi / 100.0));
             subpixel = config.home-manager.window-manager.fonts.fontconfig.subpixel.rgba;
           };
         };
