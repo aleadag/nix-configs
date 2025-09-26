@@ -129,7 +129,11 @@ in
             ) "${config.theme.wallpaper.path} ${config.theme.wallpaper.scale}";
             # DPI
             scale = lib.mkIf (config.theme.fonts != null) (toString (config.theme.fonts.dpi / 100.0));
-            subpixel = config.home-manager.window-manager.fonts.fontconfig.subpixel.rgba;
+            subpixel =
+              if config.fonts.fontconfig.subpixelRendering != null then
+                config.fonts.fontconfig.subpixelRendering
+              else
+                "none";
           };
         };
       };

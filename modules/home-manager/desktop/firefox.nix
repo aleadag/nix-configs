@@ -1,23 +1,24 @@
 {
   config,
   lib,
-  osConfig,
   pkgs,
   ...
 }:
 
 let
   cfg = config.home-manager.desktop.firefox;
+  cfgFc = config.fonts.fontconfig;
 in
 {
   options.home-manager.desktop.firefox = {
     enable = lib.mkEnableOption "Firefox config" // {
       default = config.home-manager.desktop.enable || config.home-manager.darwin.enable;
     };
-    subpixelRender.enable = lib.mkEnableOption "Subpixel render" // {
+    subpixelRender.enable = lib.mkEnableOption "subpixel render" // {
       default =
-        (osConfig.fonts.fontconfig.antialias or false)
-        && (osConfig.fonts.fontconfig.subpixel.rgba != "none");
+        (!config.home-manager.darwin.enable)
+        && (cfgFc.antialiasing == true)
+        && (cfgFc.subpixelRendering != "none");
     };
     proxy.enable = lib.mkEnableOption "Enable proxy" // {
       default = config.home-manager.mihomo.enable;
