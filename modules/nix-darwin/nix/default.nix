@@ -70,7 +70,6 @@ in
       config = flake.outputs.internal.configs.nixpkgs;
       overlays = [
         flake.outputs.overlays.default
-        flake.inputs.nur.overlays.default
       ];
     };
   };

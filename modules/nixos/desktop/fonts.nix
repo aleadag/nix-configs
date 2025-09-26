@@ -11,6 +11,15 @@
   };
 
   config = lib.mkIf config.nixos.desktop.fonts.enable {
+    nixos.home.extraModules = {
+      fonts.fontconfig = with config.fonts.fontconfig; {
+        enable = true;
+        antialiasing = antialias;
+        hinting = lib.mkIf hinting.enable hinting.style;
+        subpixelRendering = subpixel.rgba;
+      };
+    };
+
     fonts = {
       fontDir.enable = true;
 

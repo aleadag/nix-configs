@@ -4,13 +4,15 @@ let
 in
 {
   options.nixos.server.networkd = {
-    enable = lib.mkEnableOption "systemd-networkd config" // {
-      default = config.nixos.server.enable;
-    };
+    enable = lib.mkEnableOption "systemd-networkd config";
   };
 
   config = lib.mkIf cfg.enable {
-    services.resolved.enable = true;
+    services.resolved = {
+      enable = true;
+      # Can make DNS lookups really slow
+      dnssec = "false";
+    };
     networking.useNetworkd = true;
   };
 }

@@ -1,31 +1,27 @@
 { config, lib, ... }:
 
-let
-  inherit (config.meta) username;
-in
 {
   imports = [
     ./audio.nix
     ./fonts.nix
-    ./greetd.nix
+    ./kde.nix
     ./locale.nix
+    ./plymouth.nix
     ./tailscale.nix
-    ./wayland.nix
-    ./xserver.nix
+    ./wireless.nix
   ];
 
   options.nixos.desktop.enable = lib.mkEnableOption "desktop config" // {
     default = builtins.any (x: config.device.type == x) [
       "desktop"
       "laptop"
+      "steam-machine"
     ];
   };
 
   config = lib.mkIf config.nixos.desktop.enable {
-    # Programs that needs system-wide permissions to work correctly
-    programs = {
-      adb.enable = true;
-      gnome-disks.enable = true;
+    nixos.home.extraModules = {
+      home-manager.desktop.enable = true;
     };
 
     # Increase file handler limit
@@ -38,14 +34,20 @@ in
       }
     ];
 
-    services = {
-      dbus.implementation = "broker";
-      gnome.gnome-keyring.enable = true;
-      graphical-desktop.enable = true;
-      udisks2.enable = true;
+    systemd = {
+      settings.Manager = {
+        # Reduce default service stop timeouts for faster shutdown
+        DefaultTimeoutStopSec = lib.mkDefault "15s";
+      };
+      services."user@".serviceConfig = {
+        # Reduce default service stop for User services
+        TimeoutStopSec = lib.mkDefault "15s";
+      };
     };
 
-    # Added user to groups
-    users.users.${username}.extraGroups = [ "adbusers" ];
+    services = {
+      dbus.implementation = "broker";
+      flatpak.enable = true;
+    };
   };
 }

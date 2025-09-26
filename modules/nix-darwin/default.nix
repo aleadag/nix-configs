@@ -1,4 +1,4 @@
-{ config, flake, ... }:
+{ flake, ... }:
 
 {
   imports = [
@@ -16,6 +16,4 @@
     ./skhd
     ./kanata
   ];
-
-  system.primaryUser = config.meta.username;
 }

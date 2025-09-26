@@ -29,15 +29,10 @@ in
 
       steam = {
         enable = true;
+        protontricks.enable = true;
+        gamescopeSession.enable = !config.nixos.games.jovian.enable;
         remotePlay.openFirewall = true;
-        gamescopeSession = {
-          enable = true;
-          args = [
-            "--fsr-sharpness 10"
-            "-U"
-            "--adaptive-sync"
-          ];
-        };
+        localNetworkGameTransfers.openFirewall = true;
       };
     };
   };

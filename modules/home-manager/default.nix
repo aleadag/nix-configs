@@ -43,7 +43,6 @@
     home = {
       username = lib.mkOptionDefault "awang";
       homeDirectory = lib.mkOptionDefault "/home/awang";
-      stateVersion = lib.mkOptionDefault "25.05";
     };
   };
 }

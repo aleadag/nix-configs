@@ -11,11 +11,10 @@ in
 {
   imports = [
     ./binfmt.nix
-    ./btrfs.nix
     ./cli.nix
+    ./gpu.nix
     ./smart.nix
     ./vm.nix
-    ./virtualisation.nix
   ];
 
   options.nixos.system = {
@@ -34,8 +33,6 @@ in
     boot = {
       initrd.systemd.enable = lib.mkDefault true;
 
-      kernelParams = [ "zswap.enabled=0" ];
-
       kernel.sysctl = {
         # Enable Magic keys
         "kernel.sysrq" = 1;
@@ -45,6 +42,9 @@ in
         "vm.watermark_scale_factor" = lib.mkIf cfg.zram.enable 125;
         "vm.page-cluster" = lib.mkIf cfg.zram.enable 0;
       };
+
+      # Disable boot editor for security
+      loader.systemd-boot.editor = false;
 
       # Enable NTFS support
       supportedFilesystems = [ "ntfs" ];
@@ -63,13 +63,6 @@ in
     # Enable nftables-based firewall
     networking.nftables.enable = lib.mkDefault true;
 
-    # Workaround run0 issue
-    # https://github.com/NixOS/nixpkgs/issues/361592
-    security.pam.services.systemd-run0 = {
-      setEnvironment = true;
-      pamMount = false;
-    };
-
     services = {
       cron.enable = true;
 
@@ -79,25 +72,15 @@ in
         interval = "weekly";
       };
 
-      # Decrease journal size
-      journald.extraConfig = ''
-        SystemMaxUse=500M
-      '';
-
       zram-generator = {
         inherit (cfg.zram) enable;
         settings.zram0 = {
-          zram-size = "min(ram, 8192)";
+          zram-size = lib.mkDefault "min(ram, 8192)";
         };
       };
     };
 
     systemd = {
-      # Reduce default service stop timeouts for faster shutdown
-      settings.Manager = {
-        DefaultTimeoutStopSec = "15s";
-        DefaultTimeoutAbortSec = "5s";
-      };
       # systemd's out-of-memory daemon
       oomd = {
         enableRootSlice = true;
@@ -106,7 +89,6 @@ in
     };
 
     system.configurationRevision = flake.rev or "dirty";
-    system.rebuild.enableNg = true;
 
     # nixos/modules/misc/version.nix
     users.motd = lib.mkIf cfg.motd.enable ''

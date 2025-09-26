@@ -19,23 +19,5 @@
     ];
 
     services.smartd.enable = true;
-
-    systemd.services.smartd.serviceConfig = {
-      LockPersonality = true;
-      NoNewPrivileges = true;
-      PrivateTmp = true;
-      ProtectControlGroups = true;
-      ProtectHome = true;
-      ProtectHostname = true;
-      ProtectKernelLogs = true;
-      ProtectKernelModules = true;
-      ProtectKernelTunables = true;
-      ProtectProc = "invisible";
-      ProtectSystem = "strict";
-      RestrictNamespaces = true;
-      RestrictRealtime = true;
-      RestrictSUIDSGID = true;
-      SystemCallArchitectures = "native";
-    };
   };
 }

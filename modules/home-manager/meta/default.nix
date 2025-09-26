@@ -12,6 +12,7 @@ in
   imports = [
     ./diff.nix
     ./mutable-config.nix
+    ./restore-backups.nix
   ];
 
   options.home-manager.meta = {

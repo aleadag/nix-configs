@@ -2,14 +2,15 @@
 
 {
   imports = [
-    flake.inputs.catppuccin.nixosModules.default
     flake.outputs.internal.sharedModules.default
     ./desktop
+    ./dev
     ./games
     ./home.nix
     ./laptop
     ./nix
     ./server
     ./system
+    ./window-manager
   ];
 }
