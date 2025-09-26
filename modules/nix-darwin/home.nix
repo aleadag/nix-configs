@@ -17,5 +17,7 @@ in
 
   config = lib.mkIf cfg.enable {
     users.users.${username}.home = lib.mkDefault "/Users/${username}";
+
+    system.primaryUser = lib.mkDefault username;
   };
 }
