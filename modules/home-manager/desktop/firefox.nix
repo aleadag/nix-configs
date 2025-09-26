@@ -18,7 +18,7 @@ in
     subpixelRender.enable = lib.mkEnableOption "subpixel render" // {
       default =
         (!config.home-manager.darwin.enable)
-        && (cfgFc.antialiasing == true)
+        && (if cfgFc.antialiasing != null then cfgFc.antialiasing else false)
         && (cfgFc.subpixelRendering != "none");
     };
     proxy.enable = lib.mkEnableOption "Enable proxy" // {
