@@ -17,7 +17,6 @@ in
       casks = [
         "betterdisplay"
         "domzilla-caffeine"
-        "firefox"
         "google-chrome"
         "linearmouse"
         "logseq"

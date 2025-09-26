@@ -6,6 +6,7 @@
 }:
 
 let
+  inherit (config.home) username;
   cfg = config.home-manager.desktop.firefox;
   cfgFc = config.fonts.fontconfig;
 in
@@ -30,9 +31,7 @@ in
 
     programs.firefox = {
       enable = true;
-      # in darwin, firefox is installed by homebrew
-      package = lib.mkIf pkgs.stdenv.isDarwin null;
-      profiles.default = {
+      profiles.${username} = {
         settings =
           let
             extensions = {
@@ -51,6 +50,8 @@ in
             "app.shield.optoutstudies.enabled" = false;
             "app.normandy.enabled" = false;
 
+            # disable AI chatbox
+            "browser.ml.chat.enabled" = false;
             "browser.newtabpage.activity-stream.showSponsored" = false;
             "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
             "browser.newtabpage.activity-stream.showSponsoredCheckboxes" = false;

@@ -1,4 +1,4 @@
-{ inputs, outputs }:
+{ inputs, outputs, ... }:
 final: prev:
 
 inputs.nur.overlays.default final prev
