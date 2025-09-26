@@ -17,20 +17,20 @@
   macos.runs-on = "macos-latest";
 
   home-manager = {
-    x86_64-linux.hostnames = [
+    x86_64-linux.hostNames = [
       "mbx"
     ];
-    aarch64-linux.hostnames = [ "lckfb" ];
-    aarch64-darwin.hostnames = [ "home-mac" ];
+    aarch64-linux.hostNames = [ "lckfb" ];
+    aarch64-darwin.hostNames = [ "home-mac" ];
   };
 
-  nix-darwin.aarch64-darwin.hostnames = [ "t0" ];
+  nix-darwin.aarch64-darwin.hostNames = [ "t0" ];
 
   nixos = {
-    aarch64-linux.hostnames = [
+    aarch64-linux.hostNames = [
       "jetson-nixos"
     ];
-    x86_64-linux.hostnames = [
+    x86_64-linux.hostNames = [
       "pvg1-nixos"
     ];
   };
