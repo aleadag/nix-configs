@@ -29,9 +29,10 @@ inputs.nur.overlays.default final prev
           configuration = {
             catppuccin = {
               # to make flake check happy
+              eza.enable = false;
+              firefox.enable = false;
               lazygit.enable = false;
               starship.enable = false;
-              firefox.enable = false;
             };
             home-manager = {
               cli.icons.enable = false;
