@@ -101,6 +101,7 @@ in
         editor = lib.mkIf config.home-manager.window-manager.enable config.home-manager.window-manager.default.editor;
         # ctrl+shift+l / super+l
         enabled_layouts = "tall,fat,grid,horizontal,vertical,stack";
+        hide_window_decorations = "titlebar-only";
         listen_on = "unix:/tmp/kitty";
         macos_menubar_title_max_length = 50;
         strip_trailing_spaces = "smart";
