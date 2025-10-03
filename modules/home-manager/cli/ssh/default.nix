@@ -20,7 +20,7 @@
 
         includes = [ "local.d/*" ];
 
-        extraConfig = lib.optionalString pkgs.stdenv.isDarwin ''
+        extraConfig = lib.optionalString config.home-manager.darwin.enable ''
           IgnoreUnknown UseKeychain
           UseKeychain yes
         '';

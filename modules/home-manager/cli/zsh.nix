@@ -53,7 +53,7 @@ in
         [
           realise-symlink
         ]
-        ++ lib.optionals (!stdenv.isDarwin) [
+        ++ lib.optionals (!config.home-manager.darwin.enable) [
           (run-bg-alias "open" (lib.getExe' xdg-utils "xdg-open"))
         ];
 
@@ -84,7 +84,7 @@ in
         };
 
         envExtra = lib.mkBefore (
-          lib.optionalString pkgs.stdenv.isDarwin
+          lib.optionalString config.home-manager.darwin.enable
             # bash
             ''
               # Source nix-daemon profile since macOS updates can remove it from /etc/zshrc
@@ -119,7 +119,7 @@ in
             ''
           )
           (lib.mkOrder 1500 (
-            lib.optionalString pkgs.stdenv.isDarwin # bash
+            lib.optionalString config.home-manager.darwin.enable # bash
               ''
                 # Set the soft ulimit to something sensible
                 # https://developer.apple.com/forums/thread/735798

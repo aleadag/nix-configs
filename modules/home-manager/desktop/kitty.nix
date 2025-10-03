@@ -22,12 +22,12 @@ in
     fontSize = lib.mkOption {
       type = lib.types.float;
       description = "Font size.";
-      default = 12.0;
+      default = if config.home-manager.darwin.enable then 14.0 else 12.0;
     };
     opacity = lib.mkOption {
       type = lib.types.float;
       description = "Background opacity.";
-      default = 0.95;
+      default = if config.home-manager.darwin.enable then 1.0 else 0.95;
     };
   };
 
@@ -65,6 +65,12 @@ in
       settings = {
         kitty_mod = lib.mkIf cfg.useSuperKeybindings "super";
 
+        # When using home-manager in standalone mode it is not always possible
+        # to change the default shell for the user, so let's force it here
+        shell = lib.mkIf (
+          config.home-manager.cli.zsh.enable && config.targets.genericLinux.enable
+        ) "${config.home.profileDirectory}/bin/zsh";
+
         # Scrollback
         scrollback_lines = 10000;
 
@@ -84,25 +90,30 @@ in
         tab_bar_style = "powerline";
         tab_powerline_style = "round";
         tab_title_template = "{fmt.fg.red}{bell_symbol}{activity_symbol}{fmt.fg.tab}{tab.last_focused_progress_percent}[{layout_name[:1]}] {index}:{title}";
-        tab_bar_min_tabs = lib.mkIf pkgs.stdenv.isDarwin 1; # always show tabs in macOS
+        # always show tabs when not using window-manager
+        tab_bar_min_tabs = lib.mkIf (!config.home-manager.window-manager.enable) 1;
         tab_title_max_length = 30;
 
         # Misc
-        editor = lib.mkIf config.home-manager.window-manager.enable config.home-manager.window-manager.default.editor;
-        enabled_layouts = "tall,fat,grid,horizontal,vertical,stack";
-        strip_trailing_spaces = "smart";
-        clipboard_control = "write-clipboard write-primary read-clipboard read-primary";
-        background_opacity = toString cfg.opacity;
-        window_padding_width = 5;
         allow_remote_control = "socket-only";
+        background_opacity = toString cfg.opacity;
+        clipboard_control = "write-clipboard write-primary read-clipboard read-primary";
+        editor = lib.mkIf config.home-manager.window-manager.enable config.home-manager.window-manager.default.editor;
+        # ctrl+shift+l / super+l
+        enabled_layouts = "tall,fat,grid,horizontal,vertical,stack";
         listen_on = "unix:/tmp/kitty";
         macos_menubar_title_max_length = 50;
-        hide_window_decorations = "titlebar-only";
+        strip_trailing_spaces = "smart";
+        window_padding_width = 5;
+        confirm_os_window_close = 0;
+
+        # Simulate middle-click copy-and-paste, but instead of copying to
+        # clipboard it copies to a private buffer
+        copy_on_select = "select_buffer";
+        "mouse_map middle release ungrabbed paste_from_buffer" = "select_buffer";
 
         # Fix for Wayland slow scrolling
-        touch_scroll_multiplier = lib.mkIf pkgs.stdenv.isLinux "5.0";
-
-        shell = lib.mkIf config.programs.zsh.enable "${lib.getExe config.programs.zsh.package}";
+        touch_scroll_multiplier = lib.mkIf config.home-manager.desktop.enable "5.0";
       };
 
       darwinLaunchOptions = [
