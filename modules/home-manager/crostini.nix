@@ -9,11 +9,6 @@
       dev.enable = true;
     };
 
-    nixGL = {
-      defaultWrapper = "mesa";
-      installScripts = [ "mesa" ];
-    };
-
     # https://nixos.wiki/wiki/Installing_Nix_on_Crostini
     xdg.configFile."systemd/user/cros-garcon.service.d/override.conf".text = ''
       [Service]
