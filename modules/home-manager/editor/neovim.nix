@@ -597,19 +597,7 @@ in
               '';
           }
           {
-            plugin = pkgs.vimUtils.buildVimPlugin {
-              pname = "claude-fzf-nvim";
-              version = "2025-07-26";
-              src = pkgs.fetchFromGitHub {
-                owner = "pittcat";
-                repo = "claude-fzf.nvim";
-                rev = "49f48154c5abf2d07281bdb6f244ae0cde6eb5eb";
-                sha256 = "sha256-SeoijCY470vz1xd7FTvEqLCwfD4k75yRrjtKBvyQS+U=";
-              };
-              postInstall = ''
-                rm -rf $out/doc
-              '';
-            };
+            plugin = claude-fzf-nvim;
             type = "lua";
             config = # lua
               ''
@@ -621,19 +609,7 @@ in
               '';
           }
           {
-            plugin = pkgs.vimUtils.buildVimPlugin {
-              pname = "claude-fzf-history-nvim";
-              version = "2025-07-16";
-              src = pkgs.fetchFromGitHub {
-                owner = "pittcat";
-                repo = "claude-fzf-history.nvim";
-                rev = "9558088793ceee4171261ff3ddcc9fbe3761f813";
-                sha256 = "sha256-0VNqGX+1LXQr3JFQOJgaVjQjMNCU1Ee8Dg0wmSfE4oI=";
-              };
-              postInstall = ''
-                rm -rf $out/doc
-              '';
-            };
+            plugin = claude-fzf-history-nvim;
             type = "lua";
             config = # lua
               ''
