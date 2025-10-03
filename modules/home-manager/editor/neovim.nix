@@ -32,6 +32,16 @@ in
         default = config.home-manager.dev.claude-code.enable;
       };
     };
+    vimwiki = {
+      enable = lib.mkEnableOption "Vimwiki plugin" // {
+        default = true;
+      };
+      folder = lib.mkOption {
+        type = lib.types.str;
+        default = "${config.home.homeDirectory}/sync/wiki";
+        description = "Path to vimwiki folder";
+      };
+    };
     standalonePackage = lib.mkOption {
       description = "Standalone customized package.";
       type = lib.types.package;
@@ -437,7 +447,7 @@ in
                     { mode = 'n', keys = '<Leader>g', desc = '+Git' },
                     { mode = 'n', keys = '<Leader>l', desc = '+LSP' },
                     { mode = 'n', keys = '<Leader>t', desc = '+Test' },
-                    { mode = 'n', keys = '<Leader>w', desc = '+Whitespace' },
+                    { mode = 'n', keys = '<Leader>W', desc = '+Whitespace' },
                   },
 
                   window = {
@@ -464,8 +474,8 @@ in
 
                 local trailspace = require('mini.trailspace')
                 trailspace.setup {}
-                vim.keymap.set('n', '<Leader>ww', trailspace.trim, { desc = "Trim whitespace" })
-                vim.keymap.set('n', '<Leader>wl', trailspace.trim_last_lines, { desc = "Trim last lines" })
+                vim.keymap.set('n', '<Leader>Ww', trailspace.trim, { desc = "Trim whitespace" })
+                vim.keymap.set('n', '<Leader>Wl', trailspace.trim_last_lines, { desc = "Trim last lines" })
               '';
           }
           {
@@ -858,6 +868,40 @@ in
             config = # lua
               ''
                 require("nvim-ts-autotag").setup {}
+              '';
+          }
+        ]
+        ++ lib.optionals cfg.vimwiki.enable [
+          {
+            plugin = vimwiki;
+            type = "lua";
+            config = # lua
+              ''
+                vim.g.vimwiki_list = {
+                  {
+                    path = '${cfg.vimwiki.folder}',
+                    syntax = 'markdown',
+                    ext = '.md',
+                  }
+                }
+
+                local function load_quotes()
+                  local quote = vim.fn.systemlist('${pkgs.coreutils}/bin/shuf -n 1 ${cfg.vimwiki.folder}/quotes')
+                  return ">_" .. quote[1] .. "_"
+                end
+
+                local function journal_header()
+                  return "# " .. os.date('%a') .. " " .. os.date('%m/%d') .. " @"
+                end
+
+                vim.keymap.set('n', '<Space>L', function()
+                  vim.cmd('r ${cfg.vimwiki.folder}/journal_template.md')
+                  local header = journal_header()
+                  local quote = load_quotes()
+                  local blank = ""
+                  vim.fn.append(0, { header, blank, quote, blank })
+                  vim.cmd('normal! gg')
+                end, { desc = 'Load journal template' })
               '';
           }
         ]
