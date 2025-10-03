@@ -22,34 +22,30 @@ inputs.nur.overlays.default final prev
   neovim-standalone =
     let
       hostName = "neovim-standalone";
-      hm =
-        (outputs.lib.mkHomeConfig {
-          inherit hostName;
-          inherit (prev) system;
-          configuration = {
-            catppuccin = {
-              # to make flake check happy
-              eza.enable = false;
-              firefox.enable = false;
-              lazygit.enable = false;
-              starship.enable = false;
-            };
-            home-manager = {
-              cli.icons.enable = false;
-              dev.nix.enable = true;
-              editor.neovim = {
-                lsp.enable = true;
-                treeSitter.enable = true;
-              };
-            };
-            home.stateVersion = "25.11";
+      hm = outputs.lib.mkHomeConfig {
+        inherit hostName;
+        inherit (prev) system;
+        configuration = {
+          catppuccin = {
+            # to make flake check happy
+            eza.enable = false;
+            firefox.enable = false;
+            lazygit.enable = false;
+            starship.enable = false;
           };
-        }).homeConfigurations.${hostName};
+          home-manager = {
+            cli.icons.enable = false;
+            dev.nix.enable = true;
+            editor.neovim = {
+              lsp.enable = true;
+              treeSitter.enable = true;
+            };
+          };
+          home.stateVersion = "25.11";
+        };
+      };
     in
-    hm.config.programs.neovim.finalPackage.override {
-      luaRcContent = hm.config.xdg.configFile."nvim/init.lua".text;
-      wrapRc = true;
-    };
+    hm.homeConfigurations.${hostName}.config.home-manager.editor.neovim.standalonePackage;
 
   nix-cleanup = prev.callPackage ../packages/nix-cleanup { };
 
