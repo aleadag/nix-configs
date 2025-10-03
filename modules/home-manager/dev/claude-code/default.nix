@@ -56,12 +56,6 @@ in
           }
         );
 
-        statusLine = {
-          type = "command";
-          command = "${./statusline.sh}";
-          padding = 0;
-        };
-
         hooks = {
           PostToolUse = [
             {
