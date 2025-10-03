@@ -43,8 +43,6 @@ in
               config.programs.steam.extraCompatPackages;
         };
       };
-      # Upstream disables amd_iommu
-      steamos.enableDefaultCmdlineConfig = !config.nixos.dev.virtualisation.libvirt.enable;
       hardware.has.amd.gpu = config.nixos.system.gpu.maker == "amd";
     };
 
@@ -84,15 +82,21 @@ in
     specialisation = {
       game-mode = lib.mkIf cfg.bootInDesktopMode {
         configuration = {
+          boot.loader.systemd-boot.sortKey = "o_nixos";
           nixos.games.jovian.bootInDesktopMode = false;
           system.nixos.tags = [ "with-jovian-in-game-mode" ];
         };
       };
       desktop-mode = lib.mkIf (!cfg.bootInDesktopMode) {
         configuration = {
+          boot.loader.systemd-boot.sortKey = "o_nixos";
           nixos.games.jovian.bootInDesktopMode = true;
           system.nixos.tags = [ "with-jovian-in-desktop-mode" ];
         };
+      };
+      # from chaotic.mesa-git
+      stable-mesa.configuration = {
+        boot.loader.systemd-boot.sortKey = "p_nixos";
       };
     };
   };
