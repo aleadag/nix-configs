@@ -1,5 +1,5 @@
 {
-  home.stateVersion = "24.05";
+  home.stateVersion = "25.05";
 
   home-manager = {
     cli.git.git-sync.enable = true;
