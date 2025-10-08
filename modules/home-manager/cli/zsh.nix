@@ -38,10 +38,7 @@ in
     enable = lib.mkEnableOption "ZSH config" // {
       default = config.home-manager.cli.enable;
     };
-    # Do not forget to set 'Hack Nerd Mono Font' as the terminal font
-    icons.enable = lib.mkEnableOption "icons" // {
-      default = config.home-manager.desktop.enable || config.home-manager.darwin.enable;
-    };
+    zprof.enable = lib.mkEnableOption "zsh/zprof module";
   };
 
   config = lib.mkIf cfg.enable {
@@ -96,6 +93,15 @@ in
         );
 
         initContent = lib.mkMerge [
+          # Enable zprof but don't print its output
+          # We can still call it by calling zprof manually
+          (lib.mkIf cfg.zprof.enable (
+            lib.mkOrder 400
+              # bash
+              ''
+                zmodload zsh/zprof
+              ''
+          ))
           (lib.mkOrder 1000
             # bash
             ''
@@ -107,8 +113,22 @@ in
               # prezto default matching does annoying partial matching
               # e.g.: something-|.json
               zstyle ':completion:*' matcher-list 'm:{[:lower:]}={[:upper:]}' 'm:{[:upper:]}={[:lower:]}' 'r:|=* r:|=*'
+
+              # map V in vi-mode to edit the current command line in $VISUAL
+              export VISUAL="$EDITOR"
+              bindkey -M vicmd 'V' edit-command-line
             ''
           )
+          (lib.mkOrder 1200 (
+            lib.optionalString config.home-manager.darwin.enable # bash
+              ''
+                # This is really slow on darwin
+                export PURE_GIT_UNTRACKED_DIRTY=0
+                # Set the soft ulimit to something sensible
+                # https://developer.apple.com/forums/thread/735798
+                ulimit -Sn 524288
+              ''
+          ))
           (lib.mkOrder 1300
             # bash
             ''
@@ -118,14 +138,6 @@ in
               done
             ''
           )
-          (lib.mkOrder 1500 (
-            lib.optionalString config.home-manager.darwin.enable # bash
-              ''
-                # Set the soft ulimit to something sensible
-                # https://developer.apple.com/forums/thread/735798
-                ulimit -Sn 524288
-              ''
-          ))
         ];
 
         prezto = {
