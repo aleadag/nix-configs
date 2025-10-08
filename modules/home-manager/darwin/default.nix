@@ -5,17 +5,22 @@
   ...
 }:
 
+let
+  cfg = config.home-manager.darwin;
+in
 {
   imports = [
     ./copy-apps.nix
     ./homebrew.nix
   ];
 
-  options.home-manager.darwin.enable = lib.mkEnableOption "Darwin (macOS) config" // {
-    default = pkgs.stdenv.isDarwin;
+  options.home-manager.darwin = {
+    enable = lib.mkEnableOption "Darwin (macOS) config" // {
+      default = pkgs.stdenv.isDarwin;
+    };
   };
 
-  config = lib.mkIf config.home-manager.darwin.enable {
+  config = lib.mkIf cfg.enable {
     targets.darwin.defaults = {
       NSGlobalDomain = {
         ApplePressAndHoldEnabled = false;
