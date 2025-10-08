@@ -5,7 +5,10 @@
     username = "alexander";
     extraModules = {
       home.stateVersion = "24.05";
-      home-manager.cli.git.git-sync.enable = true;
+      home-manager = {
+        cli.git.git-sync.enable = true;
+        cli.zsh.zprof.enable = true;
+      };
     };
   };
 
