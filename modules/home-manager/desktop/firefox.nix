@@ -31,6 +31,8 @@ in
 
     programs.firefox = {
       enable = true;
+      # in darwin, firefox is installed by homebrew as nixpkgs's is broken
+      package = lib.mkIf pkgs.stdenv.isDarwin null;
       profiles.${username} = {
         settings =
           let
