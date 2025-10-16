@@ -61,6 +61,7 @@ in
     programs = {
       eza = {
         enable = true;
+        git = true;
         icons = if config.home-manager.cli.icons.enable then "auto" else "never";
       };
       fzf = {
