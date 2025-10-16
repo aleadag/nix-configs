@@ -17,8 +17,6 @@ inputs.nur.overlays.default final prev
 
   inherit (inputs.nix-proxy-manager.packages.${prev.system}) nix-proxy-manager;
 
-  open-browser = prev.callPackage ../packages/open-browser { };
-
   neovim-standalone =
     let
       hostName = "neovim-standalone";
