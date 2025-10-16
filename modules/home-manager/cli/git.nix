@@ -20,11 +20,21 @@ in
       default = true;
     };
     git-sync.enable = lib.mkEnableOption "git-sync of notes";
+    mergiraf.enable = lib.mkEnableOption "Mergiraf config" // {
+      default = true;
+    };
   };
 
   config = lib.mkIf cfg.enable {
-    home.shellAliases = {
-      g = "git";
+    home = {
+      packages =
+        with pkgs;
+        lib.optionals cfg.mergiraf.enable [
+          mergiraf
+        ];
+      shellAliases = {
+        g = "git";
+      };
     };
 
     programs.git = {
@@ -39,6 +49,10 @@ in
         lola = "log --graph --decorate --oneline --abbrev-commit --all";
         work = "log --pretty=format:'%h%x09%an%x09%ad%x09%s'";
       };
+
+      attributes = lib.mkIf cfg.mergiraf.enable [
+        "* merge=mergiraf"
+      ];
 
       ignores = [
         "*.swp"
@@ -94,7 +108,11 @@ in
           user = "aleadag";
         };
         merge = {
-          conflictstyle = "zdiff3";
+          mergiraf = lib.mkIf cfg.mergiraf.enable {
+            name = "mergiraf";
+            driver = "mergiraf merge --git %O %A %B -s %S -x %X -y %Y -p %P -l %L";
+          };
+          conflictstyle = if cfg.mergiraf.enable then "diff3" else "zdiff3";
           tool = "nvim -d";
         };
         pull.rebase = true;
