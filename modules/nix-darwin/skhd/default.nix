@@ -14,7 +14,7 @@ in
 
   config = lib.mkIf cfg.enable (
     let
-      modeControllerCmd = lib.getExe (import ./mode-controller.nix { inherit pkgs; });
+      modeControllerCmd = lib.getExe (import ./mode-controller.nix { inherit pkgs config; });
       toggleZenModeCmd = lib.getExe (import ./toggle-zen-mode.nix { inherit pkgs; });
     in
     {

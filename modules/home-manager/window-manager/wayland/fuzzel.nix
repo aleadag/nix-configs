@@ -11,11 +11,8 @@ in
   config = lib.mkIf cfg.enable {
     programs.fuzzel = {
       enable = true;
-      settings = with config.theme.fonts; {
+      settings = {
         main = {
-          inherit (config.home-manager.window-manager.default) terminal;
-          font = "${gui.name}:style=regular:size=14";
-          icon-theme = config.gtk.iconTheme.name;
           lines = 15;
           horizontal-pad = 10;
           vertical-pad = 10;

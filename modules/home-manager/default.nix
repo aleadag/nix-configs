@@ -7,7 +7,7 @@
 
 {
   imports = [
-    flake.inputs.catppuccin.homeModules.default
+    flake.inputs.stylix.homeModules.stylix
     flake.outputs.internal.sharedModules.default
     ./cli
     ./crostini.nix
@@ -34,12 +34,6 @@
   };
 
   config = {
-    catppuccin = {
-      inherit (config.theme) flavor;
-      enable = true;
-      fcitx5.enable = false;
-    };
-
     home = {
       username = lib.mkOptionDefault "awang";
       homeDirectory = lib.mkOptionDefault "/home/awang";

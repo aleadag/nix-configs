@@ -12,7 +12,6 @@ in
   imports = [
     ./dunst.nix
     ./gammastep.nix
-    ./theme
     ./wayland
     ./x11
   ];

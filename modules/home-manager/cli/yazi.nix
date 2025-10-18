@@ -5,7 +5,6 @@
 }:
 
 let
-  enableIcons = config.home-manager.cli.icons.enable;
   cfg = config.home-manager.cli.yazi;
 in
 {
@@ -16,10 +15,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = lib.optionals enableIcons [
-      config.theme.fonts.symbols.package
-    ];
-
     programs.yazi = {
       enable = true;
     };

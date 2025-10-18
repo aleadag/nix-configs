@@ -18,19 +18,11 @@
   modifier ? "Mod4",
   bars ? [
     {
-      inherit fonts statusCommand;
+      inherit statusCommand;
 
       position = "top";
     }
   ],
-  fonts ? with config.theme.fonts; {
-    names = lib.flatten [
-      gui.name
-      icons.name
-    ];
-    style = "Regular";
-    size = 10.0;
-  },
   extraBindings ? { },
   extraWindowOptions ? { },
   extraFocusOptions ? { },
@@ -145,7 +137,6 @@ in
   config = {
     inherit
       bars
-      fonts
       modifier
       menu
       terminal

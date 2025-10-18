@@ -24,13 +24,6 @@ inputs.nur.overlays.default final prev
         inherit hostName;
         inherit (prev) system;
         configuration = {
-          catppuccin = {
-            # to make flake check happy
-            eza.enable = false;
-            firefox.enable = false;
-            lazygit.enable = false;
-            starship.enable = false;
-          };
           home-manager = {
             cli.icons.enable = false;
             dev.nix.enable = true;

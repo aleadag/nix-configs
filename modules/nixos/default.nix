@@ -2,6 +2,7 @@
 
 {
   imports = [
+    flake.inputs.stylix.nixosModules.stylix
     flake.outputs.internal.sharedModules.default
     ./desktop
     ./dev

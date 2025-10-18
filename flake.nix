@@ -18,6 +18,7 @@
     cc-tools = {
       url = "github:Veraticus/cc-tools";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
     };
 
     disko = {
@@ -35,19 +36,24 @@
     nixgl = {
       url = "github:nix-community/nixGL";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
     };
-    chaotic-nyx.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
-    jovian-nixos.follows = "chaotic-nyx/jovian";
-    catppuccin = {
-      url = "github:catppuccin/nix";
+    chaotic-nyx = {
+      url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+      inputs.home-manager.follows = "home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    jovian-nixos.follows = "chaotic-nyx/jovian";
 
     # helpers
     flake-compat.url = "github:edolstra/flake-compat";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+    flake-utils = {
+      url = "github:numtide/flake-utils";
+      inputs.systems.follows = "systems";
     };
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
@@ -80,6 +86,23 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    stylix = {
+      url = "github:nix-community/stylix";
+      inputs = {
+        flake-parts.follows = "flake-parts";
+        nixpkgs.follows = "nixpkgs";
+        nur.follows = "nur";
+        systems.follows = "systems";
+        tinted-schemes.follows = "tinted-schemes";
+      };
+    };
+
+    systems.url = "github:nix-systems/default";
+
+    tinted-schemes = {
+      flake = false;
+      url = "github:tinted-theming/schemes";
+    };
   };
 
   outputs =

@@ -68,9 +68,6 @@ in
         # For clipboard=unnamedplus
         wl-clipboard
         xclip
-      ]
-      ++ lib.optionals enableIcons [
-        config.theme.fonts.symbols.package
       ];
 
     sops.secrets.qwen_api_key = { };

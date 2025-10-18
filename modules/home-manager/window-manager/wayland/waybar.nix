@@ -275,28 +275,11 @@ in
         };
       };
       style =
-        with config.theme.fonts;
-        let
-          concatFonts =
-            fonts:
-            lib.pipe fonts [
-              lib.flatten
-              (map (s: ''"${s}"''))
-              (lib.concatStringsSep ", ")
-            ];
-        in
         # css
         ''
           * {
             border: none;
             border-radius: 0;
-            font-family: ${
-              concatFonts [
-                gui.name
-                icons.name
-                "Symbols Nerd Font"
-              ]
-            };
           }
           window#waybar {
             background: @base;

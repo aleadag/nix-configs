@@ -75,11 +75,8 @@ let
         };
       };
 
-      extraConfig = with config.xsession.pointerCursor; ''
+      extraConfig = ''
         hide_edge_borders --i3 smart
-
-        # XCURSOR_SIZE
-        seat * xcursor_theme ${name} ${toString size}
       '';
 
       terminal = lib.getExe terminal-cwd;
@@ -121,21 +118,6 @@ in
               tap = "enabled";
             };
           };
-
-        output = {
-          "*" = {
-            bg = lib.mkIf (
-              config.theme.wallpaper != null
-            ) "${config.theme.wallpaper.path} ${config.theme.wallpaper.scale}";
-            # DPI
-            scale = lib.mkIf (config.theme.fonts != null) (toString (config.theme.fonts.dpi / 100.0));
-            subpixel =
-              if config.fonts.fontconfig.subpixelRendering != null then
-                config.fonts.fontconfig.subpixelRendering
-              else
-                "none";
-          };
-        };
       };
 
       extraSessionCommands =

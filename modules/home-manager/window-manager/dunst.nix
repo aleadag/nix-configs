@@ -15,12 +15,8 @@
 
     services.dunst = {
       enable = true;
-      iconTheme = with config.gtk.iconTheme; {
-        inherit name package;
-      };
       settings = {
         global = {
-          font = "${config.theme.fonts.gui.name} 8";
           markup = true;
           format = "<b>%s</b>\\n%b";
           sort = true;

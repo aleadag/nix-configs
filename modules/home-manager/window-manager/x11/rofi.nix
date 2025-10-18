@@ -12,7 +12,6 @@
 
   config = lib.mkIf config.home-manager.window-manager.x11.rofi.enable {
     programs.rofi = {
-      inherit (config.home-manager.window-manager.default) terminal;
       enable = true;
       package =
         with pkgs;
@@ -22,7 +21,6 @@
             rofi-emoji
           ];
         };
-      font = with config.theme.fonts; "${gui.package} 14";
 
       extraConfig = {
         show-icons = true;

@@ -10,7 +10,6 @@
 }:
 let
   cfg = config.nix-darwin.yabai;
-  catppuccin = import ../shared/catppuccin.nix;
 in
 {
   options.nix-darwin.yabai.enable = lib.mkEnableOption "yabai config" // {
@@ -36,7 +35,7 @@ in
         normal_window_opacity = "0.8";
         window_animation_duration = "0.22";
         window_animation_easing = "ease_out_quint";
-        insert_feedback_color = catppuccin.frappe.green;
+        insert_feedback_color = "0xff${config.lib.stylix.colors.base0B}";  # green
         split_ratio = "0.50";
         auto_balance = "off";
         mouse_modifier = "cmd";

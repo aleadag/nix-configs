@@ -38,7 +38,7 @@ in
       useUserPackages = true;
       useGlobalPkgs = true;
       users.${cfg.username} = {
-        inherit (config) meta device theme;
+        inherit (config) meta device;
         imports = [ flake.outputs.homeModules.default ] ++ cfg.extraModules;
         home-manager = {
           inherit (config.networking) hostName;

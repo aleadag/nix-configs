@@ -29,6 +29,8 @@ in
   config = lib.mkIf cfg.enable {
     home.packages = [ pkgs.tridactyl-native ];
 
+    stylix.targets.firefox.profileNames = [ username ];
+
     programs.firefox = {
       enable = true;
       # in darwin, firefox is installed by homebrew as nixpkgs's is broken

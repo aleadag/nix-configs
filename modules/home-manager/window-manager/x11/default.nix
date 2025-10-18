@@ -16,7 +16,6 @@ in
     ./picom.nix
     ./rofi.nix
     ./screen-locker.nix
-    ./wallpaper.nix
   ];
 
   options.home-manager.window-manager.x11 = {
@@ -50,10 +49,6 @@ in
     };
     xdg.configFile."sx/sxrc" = {
       inherit (config.home.file.".xsession") executable text;
-    };
-
-    xresources.properties = {
-      "Xft.dpi" = toString config.theme.fonts.dpi;
     };
 
     xsession = {

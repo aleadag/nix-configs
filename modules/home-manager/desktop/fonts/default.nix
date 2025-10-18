@@ -18,18 +18,12 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages =
-      with pkgs;
-      with config.theme.fonts;
-      [
-        gui.package
-        icons.package
-        symbols.package
-        # Noto fonts is a good fallback font
-        noto-fonts
-        noto-fonts-cjk-sans
-        noto-fonts-cjk-serif
-        noto-fonts-color-emoji
-      ];
+    home.packages = with pkgs; [
+      # Noto fonts is a good fallback font
+      noto-fonts
+      noto-fonts-cjk-sans
+      noto-fonts-cjk-serif
+      noto-fonts-color-emoji
+    ];
   };
 }

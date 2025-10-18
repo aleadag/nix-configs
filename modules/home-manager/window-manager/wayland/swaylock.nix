@@ -1,6 +1,5 @@
 {
   config,
-  pkgs,
   lib,
   ...
 }:
@@ -20,18 +19,8 @@ in
     programs.swaylock = {
       enable = true;
       settings = {
-        font = config.theme.fonts.gui.name;
         indicator-caps-lock = true;
         show-keyboard-layout = true;
-        # https://stackoverflow.com/a/506662
-        image =
-          with pkgs;
-          toString (
-            runCommand "wallpaper-pixelated" { buildInputs = [ imagemagick ]; } ''
-              convert -scale 1% -scale 10000% ${config.theme.wallpaper.path} $out
-            ''
-          );
-        scaling = config.theme.wallpaper.scale;
 
         # when we have 0 keyboard layouts, it probably means we are using HM
         # standalone, so we can't trust the keyboard module
