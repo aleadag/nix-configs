@@ -9,7 +9,6 @@
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
-        treefmt-nix.follows = "treefmt-nix";
       };
     };
     hardware.url = "github:NixOS/nixos-hardware";
