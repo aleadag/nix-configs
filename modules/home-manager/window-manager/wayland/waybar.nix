@@ -82,7 +82,6 @@ in
           "sway/mode".tooltip = lib.mkIf swayCfg.enable false;
           "sway/workspaces".disable-scroll-wraparound = lib.mkIf swayCfg.enable true;
           "wlr/taskbar" = {
-            icon-size = 24;
             format = "{icon}";
             on-click = "activate";
             on-click-middle = "close";
@@ -275,83 +274,83 @@ in
         };
       };
       style =
-        # css
-        ''
-          * {
-            border: none;
-            border-radius: 0;
-          }
-          window#waybar {
-            background: @base;
-            color: @text;
-            font-size: 14px;
-          }
-          #submap, #mode {
-            background: @yellow;
-            color: @base;
-            padding: 0 7px;
-          }
-          #window {
-            padding: 0 3px;
-          }
-          #workspaces button {
-            padding: 0 7px;
-          }
-          #workspaces button.active,
-          #workspaces button.focused {
-            background: @blue;
-            color: @base;
-          }
-          #workspaces button.urgent {
-            background: @red;
-            color: @base;
-          }
-          #temperature.critical {
-            color: @red;
-          }
-          #tray > .needs-attention {
-            color: @red;
-          }
-          #battery.warning {
-            color: @yellow;
-          }
-          #battery.critical {
-            color: @red;
-          }
-          #cpu.warning {
-            color: @yellow;
-          }
-          #cpu.critical {
-            color: @red;
-          }
-          #memory.warning {
-            color: @yellow;
-          }
-          #memory.critical {
-            color: @red;
-          }
-          #disk.warning {
-            color: @yellow;
-          }
-          #disk.critical {
-            color: @red;
-          }
-          #wireplumber.high {
-            color: @yellow;
-          }
-          #wireplumber.muted {
-            color: @red;
-          }
-          #idle_inhibitor.activated {
-            color: @red;
-          }
-          #custom-dunst.disabled {
-            color: @red;
-          }
-          #custom-separator {
-            color: @surface0;
-          }
-        '';
+        lib.mkAfter
+          # css
+          ''
+            * {
+              border: none;
+              border-radius: 0;
+            }
+            window#waybar {
+              background: @base00;
+              color: @base05;
+            }
+            #submap, #mode {
+              background: @base0A;
+              color: @base00;
+              padding: 0 7px;
+            }
+            #window {
+              padding: 0 3px;
+            }
+            #workspaces button {
+              padding: 0 7px;
+            }
+            #workspaces button.active,
+            #workspaces button.focused {
+              background: @base0D;
+              color: @base00;
+            }
+            #workspaces button.urgent {
+              background: @base08;
+              color: @base00;
+            }
+            #temperature.critical {
+              color: @base08;
+            }
+            #tray > .needs-attention {
+              color: @base08;
+            }
+            #battery.warning {
+              color: @base0A;
+            }
+            #battery.critical {
+              color: @base08;
+            }
+            #cpu.warning {
+              color: @base0A;
+            }
+            #cpu.critical {
+              color: @base08;
+            }
+            #memory.warning {
+              color: @base0A;
+            }
+            #memory.critical {
+              color: @base08;
+            }
+            #disk.warning {
+              color: @base0A;
+            }
+            #disk.critical {
+              color: @base08;
+            }
+            #wireplumber.high {
+              color: @base0A;
+            }
+            #wireplumber.muted {
+              color: @base08;
+            }
+            #idle_inhibitor.activated {
+              color: @base08;
+            }
+            #custom-dunst.disabled {
+              color: @base08;
+            }
+            #custom-separator {
+              color: @base01;
+            }
+          '';
     };
 
     systemd.user.services.waybar = {
