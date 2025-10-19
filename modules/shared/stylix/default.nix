@@ -13,7 +13,7 @@
       polarity = "dark";
 
       # Wallpaper configuration
-      image = "${pkgs.cosmic-wallpapers}/share/backgrounds/cosmic/A_stormy_stellar_nursery_esa_379309.jpg";
+      image = "${pkgs.pop-wallpapers}/share/backgrounds/pop/jasper-van-der-meij-97274-edit.jpg";
 
       # Font configuration
       fonts = rec {
