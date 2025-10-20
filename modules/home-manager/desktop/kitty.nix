@@ -19,11 +19,6 @@ in
     useSuperKeybindings = lib.mkEnableOption "keybindings with Super/Command" // {
       default = false;
     };
-    fontSize = lib.mkOption {
-      type = lib.types.float;
-      description = "Font size.";
-      default = if config.home-manager.darwin.enable then 14.0 else 12.0;
-    };
   };
 
   config = lib.mkIf cfg.enable {
