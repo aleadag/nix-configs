@@ -40,16 +40,6 @@ in
     programs.git = {
       enable = true;
 
-      userName = config.meta.fullname;
-      userEmail = config.meta.email;
-      aliases = {
-        branch-cleanup = ''!git branch --merged | egrep -v "(^\*|master|main|dev|development)" | xargs git branch -d #'';
-        hist = "log --pretty=format:'%C(yellow)[%ad]%C(reset) %C(green)[%h]%C(reset) | %C(red)%s %C(bold red){{%an}}%C(reset) %C(blue)%d%C(reset)' --graph --date=short";
-        lol = "log --graph --decorate --oneline --abbrev-commit";
-        lola = "log --graph --decorate --oneline --abbrev-commit --all";
-        work = "log --pretty=format:'%h%x09%an%x09%ad%x09%s'";
-      };
-
       attributes = lib.mkIf cfg.mergiraf.enable [
         "* merge=mergiraf"
       ];
@@ -65,13 +55,6 @@ in
         "Thumbs.db"
       ];
 
-      delta = {
-        enable = true;
-        options = {
-          navigate = true; # use n and N to move between diff sections
-        };
-      };
-
       lfs = {
         enable = true;
         skipSmudge = true;
@@ -79,7 +62,19 @@ in
 
       includes = [ { path = "~/.config/git/local"; } ];
 
-      extraConfig = {
+      settings = {
+        user = {
+          name = config.meta.fullname;
+          inherit (config.meta) email;
+        };
+
+        alias = {
+          branch-cleanup = ''!git branch --merged | egrep -v "(^\*|master|main|dev|development)" | xargs git branch -d #'';
+          hist = "log --pretty=format:'%C(yellow)[%ad]%C(reset) %C(green)[%h]%C(reset) | %C(red)%s %C(bold red){{%an}}%C(reset) %C(blue)%d%C(reset)' --graph --date=short";
+          lol = "log --graph --decorate --oneline --abbrev-commit";
+          lola = "log --graph --decorate --oneline --abbrev-commit --all";
+          work = "log --pretty=format:'%h%x09%an%x09%ad%x09%s'";
+        };
         init.defaultBranch = "main";
         branch.sort = "-committerdate";
         color.ui = true;
@@ -139,6 +134,14 @@ in
           sync = true;
           syncNewFiles = true;
         };
+      };
+    };
+
+    programs.delta = {
+      enable = true;
+      enableGitIntegration = true;
+      options = {
+        navigate = true; # use n and N to move between diff sections
       };
     };
 
