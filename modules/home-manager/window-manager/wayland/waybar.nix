@@ -41,7 +41,6 @@ in
       systemd.enable = true;
       settings = {
         top = {
-          height = 28;
           layer = "top";
           position = "top";
           spacing = 3;
