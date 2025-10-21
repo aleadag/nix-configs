@@ -31,11 +31,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = with pkgs; [
-      font-awesome_6
-      nerd-fonts.symbols-only
-    ];
-
     programs.waybar = {
       enable = true;
       systemd.enable = true;
@@ -81,6 +76,7 @@ in
           "sway/mode".tooltip = lib.mkIf swayCfg.enable false;
           "sway/workspaces".disable-scroll-wraparound = lib.mkIf swayCfg.enable true;
           "wlr/taskbar" = {
+            icon-size = 22;
             format = "{icon}";
             on-click = "activate";
             on-click-middle = "close";
@@ -88,8 +84,8 @@ in
           idle_inhibitor = {
             format = "{icon}";
             format-icons = {
-              deactivated = "";
-              activated = "";
+              deactivated = "󰾪";
+              activated = "";
             };
             tooltip-format-activated = "Caffeine enabled";
             tooltip-format-deactivated = "Caffeine disabled";
@@ -139,7 +135,7 @@ in
           };
           memory = {
             inherit (cfg) interval;
-            format = " {avail:0.0f}G";
+            format = "󰍛 {avail:0.0f}G";
             format-alt = " {swapAvail:0.0f}G";
             states = {
               warning = 75;
@@ -353,12 +349,19 @@ in
     };
 
     systemd.user.services.waybar = {
+      Unit = {
+        After = [ "graphical-session.target" ];
+        PartOf = [ "graphical-session.target" ];
+      };
       Service = {
         inherit (config.home-manager.window-manager.systemd.service)
           RestartSec
           RestartSteps
           RestartMaxDelaySec
           ;
+        # Ensure PATH includes user profile for GTK/icon theme resolution
+        # This fixes wlr/taskbar icon lookup when running as a systemd service
+        Environment = [ "PATH=${config.home.profileDirectory}/bin:\${PATH}" ];
       };
     };
   };
