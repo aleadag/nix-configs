@@ -33,8 +33,15 @@ in
 
     programs.firefox = {
       enable = true;
+      package =
+        if pkgs.stdenv.isDarwin then
+          # https://github.com/NixOS/nixpkgs/issues/451884
+          pkgs.firefox.overrideAttrs (_: {
+            gtk_modules = [ ];
+          })
+        else
+          pkgs.firefox;
       # in darwin, firefox is installed by homebrew as nixpkgs's is broken
-      package = lib.mkIf pkgs.stdenv.isDarwin null;
       profiles.${username} = {
         settings =
           let
@@ -68,6 +75,10 @@ in
             # telemetry
             "datareporting.policy.dataSubmissionEnable" = false;
             "datareporting.healthreport.uploadEnabled" = false;
+          }
+          // lib.optionalAttrs pkgs.stdenv.isLinux {
+            # https://wiki.archlinux.org/title/Firefox#XDG_Desktop_Portal_integration
+            "widget.use-xdg-desktop-portal.file-picker" = 1;
           }
           // lib.optionalAttrs cfg.subpixelRender.enable {
             # https://pandasauce.org/get-fonts-done/
