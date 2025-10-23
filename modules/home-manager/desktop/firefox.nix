@@ -33,15 +33,8 @@ in
 
     programs.firefox = {
       enable = true;
-      package =
-        if pkgs.stdenv.isDarwin then
-          # https://github.com/NixOS/nixpkgs/issues/451884
-          pkgs.firefox.overrideAttrs (_: {
-            gtk_modules = [ ];
-          })
-        else
-          pkgs.firefox;
-      # in darwin, firefox is installed by homebrew as nixpkgs's is broken
+      # managed by homebrew in darwin
+      package = if pkgs.stdenv.isDarwin then null else pkgs.firefox;
       profiles.${username} = {
         settings =
           let
