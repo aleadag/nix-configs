@@ -19,7 +19,6 @@ in
         "domzilla-caffeine"
         "firefox"
         "google-chrome"
-        "kitty"
         "linearmouse"
         "logseq"
         "microsoft-edge"
