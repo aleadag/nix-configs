@@ -62,25 +62,17 @@ in
       clock-rs
       curl
       dialog
-      diffutils
       dos2unix
       dua
       each
       file
-      findutils
       ffmpeg
-      gawk
-      gcal
-      gnugrep
-      gnumake
-      gnused
       hyperfine
       imagemagick
       lsof
       mediainfo
       ouch
       page
-      procps
       pv
       python3
       rlwrap
