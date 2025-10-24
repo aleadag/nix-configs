@@ -33,8 +33,6 @@ in
 
     programs.firefox = {
       enable = true;
-      # managed by homebrew in darwin
-      package = if pkgs.stdenv.isDarwin then null else pkgs.firefox;
       profiles.${username} = {
         settings =
           let

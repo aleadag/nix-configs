@@ -12,6 +12,13 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    nix-darwin.home.extraModules = {
+      programs = {
+        firefox.package = null;
+        kitty.package = null;
+      };
+    };
+
     homebrew = {
       enable = true;
       casks = [
@@ -19,6 +26,7 @@ in
         "domzilla-caffeine"
         "firefox"
         "google-chrome"
+        "kitty"
         "linearmouse"
         "logseq"
         "microsoft-edge"
