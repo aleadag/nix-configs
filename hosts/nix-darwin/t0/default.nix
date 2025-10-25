@@ -4,7 +4,7 @@
   nix-darwin.home = {
     username = "alexander";
     extraModules = {
-      home.stateVersion = "24.05";
+      home.stateVersion = "25.11";
       home-manager = {
         cli.git.git-sync.enable = true;
         cli.zsh.zprof.enable = true;
