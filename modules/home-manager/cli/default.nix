@@ -102,11 +102,10 @@ in
           tabs = "2";
           pager = "less -FR";
         };
-        # remove batdiff as it failed to build
-        # https://github.com/NixOS/nixpkgs/issues/336312
         extraPackages = with pkgs.bat-extras; [
-          batman
+          batdiff
           batgrep
+          batman
           batwatch
         ];
       };
