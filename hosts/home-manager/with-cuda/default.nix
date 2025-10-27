@@ -6,6 +6,7 @@
   };
 
   home-manager = {
+    dev.enable = true;
     editor = {
       enable = false;
       neovim.enable = true;
