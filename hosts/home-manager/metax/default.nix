@@ -1,3 +1,4 @@
+{ lib, ... }:
 {
   home = rec {
     username = "alexander";
@@ -13,6 +14,9 @@
     };
     gui.enable = false;
   };
+
+  # Disable dconf since we don't have GUI and it requires D-Bus
+  dconf.enable = lib.mkForce false;
 
   targets.genericLinux.enable = true;
 }
