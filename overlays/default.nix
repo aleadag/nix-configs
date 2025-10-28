@@ -3,6 +3,14 @@ final: prev:
 
 inputs.nur.overlays.default final prev
 // {
+  # Adds pkgs.stable
+  stable = import inputs.nixpkgs-stable {
+    inherit (final) system;
+    config = {
+      allowUnfree = true;
+    };
+  };
+
   # namespaces
   libEx = outputs.lib;
 

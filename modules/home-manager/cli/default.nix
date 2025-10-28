@@ -96,18 +96,22 @@ in
 
       bat = {
         enable = true;
+        package = pkgs.stable.bat;
         # This should pick up the correct colors for the generated theme. Otherwise
         # it is possible to generate a custom bat theme to ~/.config/bat/config
         config = {
           tabs = "2";
           pager = "less -FR";
         };
-        extraPackages = with pkgs.bat-extras; [
-          batdiff
-          batgrep
-          batman
-          batwatch
-        ];
+        # https://github.com/NixOS/nixpkgs/issues/454391
+        extraPackages = builtins.attrValues {
+          inherit (pkgs.stable.bat-extras)
+            batdiff
+            batgrep
+            batman
+            batwatch
+            ;
+        };
       };
       eza = {
         enable = true;
@@ -132,7 +136,7 @@ in
 
     home.shellAliases = {
       gs = lib.mkIf cfg.git.enable "${lib.getExe config.programs.git.package} status";
-      cat = lib.getExe pkgs.bat;
+      cat = lib.getExe config.programs.bat.package;
       # For muscle memory...
       archive = "${lib.getExe pkgs.ouch} compress";
       unarchive = "${lib.getExe pkgs.ouch} decompress";
