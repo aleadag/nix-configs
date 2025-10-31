@@ -15,6 +15,7 @@ in
     nix-darwin.home.extraModules = {
       programs = {
         firefox.package = null;
+        kitty.package = null;
       };
     };
 
@@ -25,6 +26,7 @@ in
         "domzilla-caffeine"
         "firefox"
         "google-chrome"
+        "kitty"
         "linearmouse"
         "logseq"
         "microsoft-edge"
