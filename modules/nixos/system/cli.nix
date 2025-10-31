@@ -21,7 +21,7 @@
         with config.boot.kernelPackages;
         [
           cpupower
-          glxinfo
+          mesa-demos
           lm_sensors
           lshw
           net-tools
