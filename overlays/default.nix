@@ -19,8 +19,6 @@ inputs.nur.overlays.default final prev
     src = inputs.arandr;
   });
 
-  inherit (inputs.home-manager.packages.${prev.system}) home-manager;
-
   inherit (inputs.gh-gfm-preview.packages.${prev.system}) gh-gfm-preview;
 
   inherit (inputs.nix-proxy-manager.packages.${prev.system}) nix-proxy-manager;
