@@ -146,6 +146,7 @@ in
       sloccount = lib.getExe pkgs.tokei;
       # https://unix.stackexchange.com/questions/335648/why-does-the-reset-command-include-a-delay
       reset = "${lib.getExe' pkgs.ncurses "tput"} reset";
+      ns = lib.mkIf config.programs.fzf.enable "${lib.getExe pkgs.nix-search-tv} print | ${lib.getExe pkgs.fzf} --preview '${lib.getExe pkgs.nix-search-tv} preview {}' --scheme history";
     };
   };
 }
