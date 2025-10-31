@@ -526,6 +526,25 @@ in
               '';
           }
           {
+            plugin = nvim-osc52;
+            type = "lua";
+            config = # lua
+              ''
+                local osc52 = require("osc52")
+                osc52.setup {
+                  max_length = 0,      -- Maximum length of selection (0 for no limit)
+                  silent = false,      -- Disable message on successful copy
+                  trim = false,        -- Trim text before copy
+                  tmux_passthrough = true, -- Use tmux passthrough if in tmux
+                }
+
+                -- Copy to clipboard using OSC52
+                vim.keymap.set("n", "<leader>y", require("osc52").copy_operator, { expr = true, desc = "Copy with OSC52" })
+                vim.keymap.set("n", "<leader>yy", "<leader>y_", { remap = true, desc = "Copy line with OSC52" })
+                vim.keymap.set("v", "<leader>y", require("osc52").copy_visual, { desc = "Copy selection with OSC52" })
+              '';
+          }
+          {
             plugin = openingh-nvim;
             type = "lua";
             config = # lua
