@@ -103,7 +103,7 @@ in
           tabs = "2";
           pager = "less -FR";
         };
-        # https://github.com/NixOS/nixpkgs/issues/454391
+        # XXX: https://github.com/NixOS/nixpkgs/issues/454391
         extraPackages = builtins.attrValues {
           inherit (pkgs.stable.bat-extras)
             batdiff

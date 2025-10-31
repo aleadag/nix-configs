@@ -30,6 +30,19 @@ in
 
     programs.jujutsu = {
       enable = true;
+      # XXX: cargo-nextest fails to build on macOS, skip tests until the issue
+      # is resolved.
+      #
+      # cf. https://github.com/NixOS/nixpkgs/issues/456113
+      package =
+        if pkgs.stdenv.hostPlatform.isDarwin then
+          pkgs.jujutsu.override {
+            rustPlatform = pkgs.rustPlatform // {
+              buildRustPackage = pkgs.rustPlatform.buildRustPackage.override { cargoNextestHook = null; };
+            };
+          }
+        else
+          pkgs.jujutsu;
       settings = {
         template-aliases = {
           "format_short_id(id)" = "id.shortest()";
