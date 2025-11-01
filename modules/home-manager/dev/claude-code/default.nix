@@ -9,7 +9,7 @@
 let
   cfg = config.home-manager.dev.claude-code;
   # Get cc-tools binaries from the flake
-  cc-tools = flake.inputs.cc-tools.packages.${pkgs.system}.default;
+  cc-tools = flake.inputs.cc-tools.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 {
   options.home-manager.dev.claude-code = {

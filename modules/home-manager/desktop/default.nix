@@ -30,7 +30,6 @@ in
       libreoffice-fresh
       (mcomix.override {
         unrarSupport = true;
-        pdfSupport = false;
       })
       wechat-uos
     ];
