@@ -8,7 +8,6 @@
   msg,
   browser ? config.home-manager.window-manager.default.browser,
   dunstctl ? (lib.getExe' pkgs.dunst "dunstctl"),
-  fileManager ? config.home-manager.window-manager.default.fileManager,
   light ? (lib.getExe pkgs.acpilight),
   pamixer ? (lib.getExe pkgs.pamixer),
   playerctl ? (lib.getExe pkgs.playerctl),
