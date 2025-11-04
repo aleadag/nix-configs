@@ -80,6 +80,13 @@ in
             "Groups/0/Items/0".Name = "keyboard-us";
             "Groups/0/Items/1".Name = "pinyin";
           };
+
+          addons.unicode = {
+            sections = {
+              TriggerKey."0" = "Control+Alt+Shift+U";
+              DirectUnicodeMode."0" = "Shift+Super+U";
+            };
+          };
         };
       };
     };
