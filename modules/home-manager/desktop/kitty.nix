@@ -89,6 +89,8 @@ in
         hide_window_decorations = "titlebar-only";
         listen_on = "unix:/tmp/kitty";
         macos_menubar_title_max_length = 50;
+        macos_quit_when_last_window_closed = true;
+        macos_show_window_title_in = "window";
         strip_trailing_spaces = "smart";
         window_padding_width = 5;
         confirm_os_window_close = 0;
