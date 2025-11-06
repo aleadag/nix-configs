@@ -37,15 +37,23 @@ in
       settings = flake.outputs.internal.configs.nix;
       extraOptions = ''
         netrc-file = ${config.sops.templates."netrc".path}
+        !include ${config.sops.templates."nix-access-tokens".path}
         !include nix.local.conf
       '';
     };
 
     # https://dl.thalheim.io/
     sops = {
-      secrets.attic_token = { };
+      secrets = {
+        attic_token = { };
+        gh_pat = { };
+      };
 
       templates = {
+        "nix-access-tokens".content = # conf
+          ''
+            access-tokens = github.com=${config.sops.placeholder.gh_pat}
+          '';
         "netrc".content = # netrc
           ''
             machine attic.tisvc.cc
