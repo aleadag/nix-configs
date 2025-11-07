@@ -33,15 +33,6 @@ in
 
     programs.firefox = {
       enable = true;
-      package = lib.mkDefault (
-        if pkgs.stdenv.isDarwin then
-          # https://github.com/NixOS/nixpkgs/issues/451884
-          pkgs.firefox.overrideAttrs (_: {
-            gtk_modules = [ ];
-          })
-        else
-          pkgs.firefox
-      );
       profiles.${username} = {
         settings =
           let
