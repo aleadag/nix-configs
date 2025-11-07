@@ -18,6 +18,9 @@ jobs:
           authToken: ${{ secrets.CACHIX_TOKEN }}
           extraPullNames: nix-community
           name: aleadag-nix-configs
+      - name: nix-info -m
+        run: |
+          nix run '.#nix-info' -- -m
       - name: 'Build Home-Manager configs for: home-mac'
         run: nix build --print-build-logs '.#homeConfigurations.home-mac.activationPackage'
       - name: 'Build nix-darwin configs for: t0'
@@ -38,6 +41,9 @@ jobs:
           authToken: ${{ secrets.CACHIX_TOKEN }}
           extraPullNames: nix-community
           name: aleadag-nix-configs
+      - name: nix-info -m
+        run: |
+          nix run '.#nix-info' -- -m
       - uses: thiagokokada/free-disk-space@main
         with:
           opt: true

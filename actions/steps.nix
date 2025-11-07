@@ -42,12 +42,20 @@ rec {
     };
   };
 
+  nixInfoStep = {
+    name = "nix-info -m";
+    run = ''
+      nix run '.#nix-info' -- -m
+    '';
+  };
+
   withSharedSteps =
     steps:
     [
       checkoutStep
       installNixActionStep
       cachixActionStep
+      nixInfoStep
     ]
     ++ steps;
 
