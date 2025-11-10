@@ -1,4 +1,8 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  ...
+}:
 
 {
   options.home-manager.cli.zellij.enable = lib.mkEnableOption "Zellij config" // {
@@ -10,6 +14,7 @@
       enable = true;
       settings = {
         default_mode = "normal";
+        default_shell = lib.mkIf config.programs.zsh.enable (lib.getExe config.programs.zsh.package);
         show_startup_tips = false;
         show_release_notes = false;
       };
