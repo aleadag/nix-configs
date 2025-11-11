@@ -60,6 +60,7 @@ in
       bc
       bind.dnsutils
       clock-rs
+      cointop
       curl
       dialog
       dos2unix
