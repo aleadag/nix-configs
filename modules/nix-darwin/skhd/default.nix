@@ -109,10 +109,6 @@ in
             # The aim is to not have too many global key-bindings because it will clash with
             # other application based keybindings e.g. VS Code, IntelliJ, etc.
 
-            # toggle fullscreen inside screen (legacy - use cmd+f instead)
-            cmd + shift - space   : yabai -m window --toggle zoom-fullscreen; \
-                                    sketchybar --trigger window_focus
-
             # ===== DANGER LAYER (Command+Shift) - Destructive actions =====
 
             # Window killing (consistent with Sway: Super+Shift+slash)
