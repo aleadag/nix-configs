@@ -1,0 +1,160 @@
+;; Eww configuration for wayland bar
+;; Widgets and layout definitions
+
+;; Variables and polls
+(defpoll time :interval "5s"
+  "date '+%H:%M, %a %d'")
+
+(defpoll calendar :interval "1h"
+  "eww-calendar")
+
+(defpoll cpu :interval "5s"
+  "eww-cpu")
+
+(defpoll memory :interval "5s"
+  "eww-memory")
+
+(defpoll temperature :interval "5s"
+  "eww-temperature")
+
+(defpoll volume :interval "1s"
+  "eww-volume")
+
+(defpoll wifi :interval "5s"
+  "eww-wifi")
+
+(defpoll wifi_tooltip :interval "5s"
+  "eww-wifi-tooltip")
+
+(defpoll battery :interval "5s"
+  "eww-battery")
+
+(defpoll disk :interval "5s"
+  "eww-disk")
+
+(deflisten dunst
+  "eww-dunst")
+
+(deflisten workspaces
+  "eww-workspace")
+
+(deflisten mode
+  "eww-mode")
+
+(defvar idle_inhibit false)
+
+;; Workspace widget (Sway)
+(defwidget workspaces_widget []
+  (box :class "workspaces" :spacing 5
+    (literal :content workspaces)))
+
+;; Clock widget
+(defwidget clock_widget []
+  (box :class "clock" :tooltip calendar
+    (label :text time)))
+
+;; CPU widget
+(defwidget cpu_widget []
+  (literal :content cpu))
+
+;; Memory widget
+(defwidget memory_widget []
+  (literal :content memory))
+
+;; Temperature widget
+(defwidget temperature_widget []
+  (literal :content temperature))
+
+;; Battery widget
+(defwidget battery_widget []
+  (literal :content battery))
+
+;; Disk widget
+(defwidget disk_widget []
+  (literal :content disk))
+
+;; Network widget
+(defwidget network_widget []
+  (box :class "network" :spacing 0 :tooltip wifi_tooltip
+    (label :text wifi)))
+
+;; Volume widget
+(defwidget volume_widget []
+  (eventbox :onclick "eww-volume-control &"
+            :onrightclick "eww-pamixer --toggle-mute"
+            :onscroll "eww-volume-scroll {}"
+    (box :class "volume" :spacing 0
+      (label :text volume))))
+
+;; Dunst notification widget
+(defwidget dunst_widget []
+  (button :onclick "dunstctl set-paused toggle"
+    (literal :content dunst)))
+
+;; Idle inhibitor widget
+(defwidget idle_inhibitor_widget []
+  (box :class "idle-inhibitor ${idle_inhibit ? 'activated' : 'deactivated'}" :spacing 0
+    (button :onclick "eww update idle_inhibit=${!idle_inhibit}"
+            :tooltip "${idle_inhibit ? 'Caffeine enabled' : 'Caffeine disabled'}"
+      (label :text "${idle_inhibit ? '' : '󰾪'}"))))
+
+;; Separator
+(defwidget separator []
+  (label :class "separator" :text "|"))
+
+;; Mode widget
+(defwidget mode_widget []
+  (box :class "mode" :spacing 0
+    (label :text mode :visible {mode != ""})))
+
+;; Left section
+(defwidget left []
+  (box :halign "start" :spacing 10 :space-evenly false
+    (workspaces_widget)
+    (mode_widget)))
+
+;; Center section
+(defwidget center []
+  (box :halign "center" :spacing 5 :space-evenly false
+    (clock_widget)))
+
+;; Right section
+(defwidget right []
+  (box :halign "end" :spacing 0 :space-evenly false
+    (network_widget)
+    (separator)
+    (disk_widget)
+    (separator)
+    (memory_widget)
+    (separator)
+    (cpu_widget)
+    (separator)
+    (temperature_widget)
+    (separator)
+    (battery_widget)
+    (separator)
+    (volume_widget)
+    (separator)
+    (dunst_widget)
+    (separator)
+    (idle_inhibitor_widget)))
+
+;; Main bar
+(defwidget bar_layout []
+  (centerbox :class "bar" :valign "center"
+    (left)
+    (center)
+    (right)))
+
+;; Window definition
+(defwindow bar
+  :monitor 0
+  :geometry (geometry :x "0%"
+                      :y "0px"
+                      :width "100%"
+                      :height "30px"
+                      :anchor "top center")
+  :stacking "fg"
+  :exclusive true
+  :focusable false
+  (bar_layout))

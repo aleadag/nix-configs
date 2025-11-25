@@ -1,0 +1,188 @@
+// Eww bar styling using stylix base16 color scheme
+// Colors are automatically provided by stylix and match your current theme
+
+* {
+  all: unset;
+  font-family: "Hack Nerd Font Mono";
+  font-size: 14px;
+}
+
+box, label, button {
+  min-height: 0;
+  min-width: 0;
+}
+
+.bar {
+  background-color: @base00;
+  color: @base05;
+  padding: 5px 10px;
+}
+
+// Workspaces
+.workspaces {
+  padding: 0 5px;
+}
+
+// Mode
+.mode {
+  padding: 0 10px;
+  color: @base08;
+  font-weight: bold;
+}
+
+.workspace-button {
+  padding: 3px 8px;
+  margin: 0 2px;
+  border-radius: 5px;
+  background-color: @base01;
+  color: @base04;
+  transition: all 0.3s ease;
+}
+
+.workspace-button.focused {
+  background-color: @base0D;
+  color: @base00;
+}
+
+.workspace-button.occupied {
+  background-color: @base02;
+  color: @base05;
+}
+
+.workspace-button.urgent {
+  background-color: @base08;
+  color: @base00;
+}
+
+// System monitors
+.metric {
+  padding: 2px 6px;
+  margin: 0;
+}
+
+.metric-label {
+  color: @base05;
+}
+
+.metric-value {
+  color: @base0D;
+}
+
+// CPU, Memory, Temperature labels
+.cpu, .memory, .temperature {
+  padding: 2px 6px;
+  margin: 0;
+}
+
+// Warning and critical states
+.warning {
+  color: @base0A;
+}
+
+.critical {
+  color: @base08;
+}
+
+// Battery
+.battery {
+  padding: 2px 6px;
+}
+
+.battery.warning {
+  color: @base0A;
+}
+
+.battery.critical {
+  color: @base08;
+}
+
+// Network
+.network {
+  padding: 2px 6px;
+}
+
+.network-disconnected {
+  color: @base08;
+}
+
+// Volume
+.volume {
+  padding: 2px 6px;
+}
+
+.volume-muted {
+  color: @base08;
+}
+
+.volume-high {
+  color: @base0A;
+}
+
+// Clock
+.clock {
+  padding: 2px 10px;
+  color: @base05;
+}
+
+// Disk
+.disk {
+  padding: 2px 6px;
+}
+
+.disk.warning {
+  color: @base0A;
+}
+
+.disk.critical {
+  color: @base08;
+}
+
+// Dunst notifications
+.dunst {
+  padding: 2px 6px;
+}
+
+.dunst.enabled {
+  color: @base05;
+}
+
+.dunst.disabled {
+  color: @base08;
+}
+
+// Idle inhibitor
+.idle-inhibitor {
+  padding: 2px 6px;
+}
+
+.idle-inhibitor.activated {
+  color: @base08;
+}
+
+.idle-inhibitor.deactivated {
+  color: @base0B;
+}
+
+// System tray
+.tray {
+  padding: 2px 8px;
+}
+
+// Separator
+.separator {
+  color: @base03;
+  padding: 0 3px;
+}
+
+// Tooltips
+tooltip {
+  background-color: @base00;
+  color: @base05;
+  border: 1px solid @base03;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+tooltip label {
+  color: @base05;
+}

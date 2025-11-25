@@ -1,0 +1,22 @@
+# Dunst notification status for eww
+
+ENABLED=""
+DISABLED=""
+
+while true; do
+  PAUSED=$(dunstctl is-paused)
+
+  if [ "$PAUSED" = "false" ]; then
+    echo "(label :class \"dunst enabled\" :text \"$ENABLED\")"
+  else
+    COUNT=$(dunstctl count waiting)
+    if [ "$COUNT" != "0" ] && [ "$COUNT" != "" ]; then
+      echo "(label :class \"dunst disabled\" :text \"$DISABLED ($COUNT)\")"
+    else
+      echo "(label :class \"dunst disabled\" :text \"$DISABLED\")"
+    fi
+  fi
+
+  # Wait for dunst state change
+  dunstctl subscribe >/dev/null 2>&1
+done

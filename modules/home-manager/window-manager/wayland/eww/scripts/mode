@@ -1,0 +1,10 @@
+# Sway mode for eww
+
+swaymsg -t subscribe -m '["mode"]' | while read -r event; do
+  mode=$(echo "$event" | jq -r '.change')
+  if [ "$mode" = "default" ]; then
+    echo ""
+  else
+    echo "$mode"
+  fi
+done

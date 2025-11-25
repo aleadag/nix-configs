@@ -1,0 +1,5 @@
+# Memory usage for eww
+
+avail=$(free -h | awk '/^Mem:/ {print $7}')
+
+echo "(label :class \"memory\" :text \"󰍛 $avail\")"

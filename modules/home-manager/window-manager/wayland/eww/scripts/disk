@@ -1,0 +1,14 @@
+# Disk usage for eww
+
+usage=$(df -h / | awk 'NR==2 {print $5}' | sed 's/%//')
+avail=$(df -h / | awk 'NR==2 {print $4}')
+
+icon=""
+
+if [ "$usage" -ge 95 ]; then
+  echo "(label :class \"disk critical\" :text \"$icon $avail\")"
+elif [ "$usage" -ge 75 ]; then
+  echo "(label :class \"disk warning\" :text \"$icon $avail\")"
+else
+  echo "(label :class \"disk\" :text \"$icon $avail\")"
+fi

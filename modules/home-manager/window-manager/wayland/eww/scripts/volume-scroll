@@ -1,0 +1,8 @@
+# Handle volume scroll events for eww
+# Argument: up or down
+
+if [ "$1" = "up" ]; then
+  pamixer --increase 5
+elif [ "$1" = "down" ]; then
+  pamixer --decrease 5
+fi

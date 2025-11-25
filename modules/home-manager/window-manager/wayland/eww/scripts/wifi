@@ -1,0 +1,70 @@
+# Network status and bandwidth for eww
+
+# Function to get human-readable bandwidth
+get_bandwidth() {
+  local interface=$1
+  local rx1
+  local tx1
+  local rx2
+  local tx2
+
+  rx1=$(cat "/sys/class/net/$interface/statistics/rx_bytes")
+  tx1=$(cat "/sys/class/net/$interface/statistics/tx_bytes")
+
+  sleep 1
+
+  rx2=$(cat "/sys/class/net/$interface/statistics/rx_bytes")
+  tx2=$(cat "/sys/class/net/$interface/statistics/tx_bytes")
+
+  local rx_rate=$((rx2 - rx1))
+  local tx_rate=$((tx2 - tx1))
+  local total=$((rx_rate + tx_rate))
+
+  # Convert to human readable
+  if [ $total -gt 1048576 ]; then
+    printf "%.1fM/s" "$(awk "BEGIN {print $total/1048576}")"
+  elif [ $total -gt 1024 ]; then
+    printf "%.0fK/s" "$(awk "BEGIN {print $total/1024}")"
+  else
+    printf "%dB/s" "$total"
+  fi
+}
+
+status=$(nmcli -t -f STATE general)
+
+if [ "$status" != "connected" ]; then
+  echo "󰤮"
+  exit 0
+fi
+
+# Get active interface
+interface=$(ip route | grep default | awk '{print $5}' | head -1)
+
+# Get bandwidth
+bandwidth=$(get_bandwidth "$interface")
+
+# Get connection type and signal strength
+connection_type=$(nmcli -t -f TYPE connection show --active | head -1)
+
+if [ "$connection_type" = "802-11-wireless" ]; then
+  signal=$(nmcli -t -f IN-USE,SIGNAL device wifi | grep '^\*' | cut -d: -f2)
+
+  if [ -z "$signal" ]; then
+    icon="󰤮"
+  elif [ "$signal" -ge 80 ]; then
+    icon="󰤨"
+  elif [ "$signal" -ge 60 ]; then
+    icon="󰤥"
+  elif [ "$signal" -ge 40 ]; then
+    icon="󰤢"
+  elif [ "$signal" -ge 20 ]; then
+    icon="󰤟"
+  else
+    icon="󰤯"
+  fi
+else
+  # Ethernet or other connection
+  icon="󰈀"
+fi
+
+echo "$icon $bandwidth"

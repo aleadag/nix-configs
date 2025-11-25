@@ -1,0 +1,38 @@
+# Network tooltip information for eww
+
+device=$(nmcli -t -f DEVICE,TYPE device | grep ":wifi$" | cut -d: -f1 | head -1)
+
+if [ -z "$device" ]; then
+  echo "No WiFi device"
+  exit 0
+fi
+
+# Get connection info
+ip=$(ip -4 addr show "$device" | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
+gateway=$(ip route | grep "^default" | grep "$device" | awk '{print $3}')
+netmask=$(ip -4 addr show "$device" | grep -oP '(?<=inet\s)\d+(\.\d+){3}/\d+' | cut -d/ -f2)
+
+# Get WiFi specific info
+ssid=$(nmcli -t -f active,ssid dev wifi | grep "^yes" | cut -d: -f2)
+signal=$(nmcli -t -f active,signal dev wifi | grep "^yes" | cut -d: -f2)
+freq=$(nmcli -t -f active,freq dev wifi | grep "^yes" | cut -d: -f2)
+
+# Get bandwidth (same as current display)
+rx_bytes=$(cat /sys/class/net/"$device"/statistics/rx_bytes 2>/dev/null || echo 0)
+tx_bytes=$(cat /sys/class/net/"$device"/statistics/tx_bytes 2>/dev/null || echo 0)
+sleep 1
+rx_bytes_new=$(cat /sys/class/net/"$device"/statistics/rx_bytes 2>/dev/null || echo 0)
+tx_bytes_new=$(cat /sys/class/net/"$device"/statistics/tx_bytes 2>/dev/null || echo 0)
+
+rx_rate=$(( (rx_bytes_new - rx_bytes) / 1024 ))
+tx_rate=$(( (tx_bytes_new - tx_bytes) / 1024 ))
+
+echo "Interface: $device
+IP: ${ip:-N/A}
+Gateway: ${gateway:-N/A}
+Netmask: /${netmask:-N/A}
+SSID: ${ssid:-N/A}
+Signal: ${signal:-N/A} dBm
+Frequency: ${freq:-N/A} MHz
+Download: ${rx_rate} KB/s
+Upload: ${tx_rate} KB/s"

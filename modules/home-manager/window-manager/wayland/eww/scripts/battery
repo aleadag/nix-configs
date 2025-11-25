@@ -1,0 +1,36 @@
+# Battery status for eww
+
+BATTERY_PATH="/sys/class/power_supply/BAT0"
+
+if [ ! -d "$BATTERY_PATH" ]; then
+  echo ""
+  exit 0
+fi
+
+capacity=$(cat "$BATTERY_PATH/capacity" 2>/dev/null || echo "0")
+status=$(cat "$BATTERY_PATH/status" 2>/dev/null || echo "Unknown")
+
+# Determine icon based on capacity and status
+if [ "$status" = "Charging" ] || [ "$status" = "Full" ]; then
+  icon=""
+elif [ "$capacity" -ge 90 ]; then
+  icon=""
+elif [ "$capacity" -ge 70 ]; then
+  icon=""
+elif [ "$capacity" -ge 50 ]; then
+  icon=""
+elif [ "$capacity" -ge 30 ]; then
+  icon=""
+elif [ "$capacity" -ge 10 ]; then
+  icon=""
+else
+  icon=""
+fi
+
+if [ "$capacity" -le 10 ]; then
+  echo "(label :class \"battery critical\" :text \"$icon $capacity%\")"
+elif [ "$capacity" -le 20 ]; then
+  echo "(label :class \"battery warning\" :text \"$icon $capacity%\")"
+else
+  echo "(label :class \"battery\" :text \"$icon $capacity%\")"
+fi

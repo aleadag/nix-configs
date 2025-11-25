@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Volume status for eww
+
+muted=$(pamixer --get-mute)
+volume=$(pamixer --get-volume)
+
+if [ "$muted" = "true" ]; then
+  echo ""
+elif [ "$volume" -ge 100 ]; then
+  echo " ${volume}%"
+elif [ "$volume" -ge 50 ]; then
+  echo " ${volume}%"
+else
+  echo " ${volume}%"
+fi
