@@ -15,171 +15,114 @@ let
   # Get stylix colors with hashtag prefix
   colorsWithHash = config.lib.stylix.colors.withHashtag;
 
-  # Create helper scripts using writeShellApplication
-  eww-workspace-script = pkgs.writeShellApplication {
-    name = "eww-workspace";
-    runtimeInputs = with pkgs; [
-      jq
-      sway
-    ];
-    text = builtins.readFile (scriptsDir + /workspace);
+  # Automatically discover all script files in the scripts directory
+  scriptNames = builtins.attrNames (builtins.readDir scriptsDir);
+
+  # Common dependencies for all scripts (deduplicated)
+  commonScriptDeps = with pkgs; [
+    # Core utilities used by multiple scripts
+    coreutils
+    gawk
+
+    # Sway integration
+    jq
+    sway
+
+    # Network monitoring
+    networkmanager
+    gnugrep
+    iproute2
+
+    # System monitoring
+    procps
+    systemd
+
+    # Audio control
+    wireplumber
+    pamixer
+
+    # Notifications
+    dunst
+
+    # Other utilities
+    gnused
+    util-linux
+
+    # Eww itself for idle-inhibit script
+    config.programs.eww.package
+  ];
+
+  # Helper function to create eww scripts with common dependencies
+  mkEwwScript =
+    scriptName:
+    pkgs.writeShellApplication {
+      name = "eww-${scriptName}";
+      runtimeInputs = commonScriptDeps;
+      text = builtins.readFile (scriptsDir + "/${scriptName}");
+    };
+
+  # Generate all scripts
+  scriptPackages = map mkEwwScript scriptNames;
+
+  # Package all eww scripts into a single derivation
+  eww-scripts = pkgs.symlinkJoin {
+    name = "eww-scripts";
+    paths = scriptPackages;
   };
 
-  eww-mode-script = pkgs.writeShellApplication {
-    name = "eww-mode";
-    runtimeInputs = with pkgs; [
-      jq
-      sway
-    ];
-    text = builtins.readFile (scriptsDir + /mode);
+  # Generate colors.scss from stylix using lib.concatMapStringsSep
+  colorVars = [
+    "00"
+    "01"
+    "02"
+    "03"
+    "04"
+    "05"
+    "06"
+    "07"
+    "08"
+    "09"
+    "0A"
+    "0B"
+    "0C"
+    "0D"
+    "0E"
+    "0F"
+  ];
+
+  colors-scss = pkgs.writeText "colors.scss" (
+    ''
+      // Generated from stylix base16 color scheme
+    ''
+    + lib.concatMapStringsSep "\n" (num: "$base${num}: ${colorsWithHash."base${num}"};") colorVars
+  );
+
+  # Use substituteAll for more declarative config generation
+  ewwConfigDir = pkgs.stdenv.mkDerivation {
+    name = "eww-config";
+    src = ./config;
+
+    nativeBuildInputs = [ pkgs.gnused ];
+
+    inherit (config.home-manager.window-manager.default) volumeControl;
+
+    buildPhase = ''
+      # Copy colors.scss
+      cp ${colors-scss} colors.scss
+
+      # Add import statement to eww.scss
+      sed -i '1i@import "colors.scss";' eww.scss
+
+      # Replace volume control placeholder with configured program
+      substituteInPlace eww.yuck \
+        --replace-fail "eww-volume-control" "$volumeControl"
+    '';
+
+    installPhase = ''
+      mkdir -p $out
+      cp -r . $out/
+    '';
   };
-
-  eww-battery-script = pkgs.writeShellApplication {
-    name = "eww-battery";
-    runtimeInputs = with pkgs; [
-      coreutils
-      gawk
-    ];
-    text = builtins.readFile (scriptsDir + /battery);
-  };
-
-  eww-wifi-script = pkgs.writeShellApplication {
-    name = "eww-wifi";
-    runtimeInputs = with pkgs; [
-      networkmanager
-      coreutils
-      gnugrep
-    ];
-    text = builtins.readFile (scriptsDir + /wifi);
-  };
-
-  eww-wifi-tooltip-script = pkgs.writeShellApplication {
-    name = "eww-wifi-tooltip";
-    runtimeInputs = with pkgs; [
-      networkmanager
-      coreutils
-      gnugrep
-      iproute2
-    ];
-    text = builtins.readFile (scriptsDir + /wifi-tooltip);
-  };
-
-  eww-volume-script = pkgs.writeShellApplication {
-    name = "eww-volume";
-    runtimeInputs = with pkgs; [
-      wireplumber
-      pamixer
-    ];
-    text = builtins.readFile (scriptsDir + /volume);
-  };
-
-  eww-disk-script = pkgs.writeShellApplication {
-    name = "eww-disk";
-    runtimeInputs = with pkgs; [
-      coreutils
-      gawk
-      gnused
-    ];
-    text = builtins.readFile (scriptsDir + /disk);
-  };
-
-  eww-dunst-script = pkgs.writeShellApplication {
-    name = "eww-dunst";
-    runtimeInputs = with pkgs; [ dunst ];
-    text = builtins.readFile (scriptsDir + /dunst);
-  };
-
-  eww-cpu-script = pkgs.writeShellApplication {
-    name = "eww-cpu";
-    runtimeInputs = with pkgs; [
-      coreutils
-      gawk
-    ];
-    text = builtins.readFile (scriptsDir + /cpu);
-  };
-
-  eww-memory-script = pkgs.writeShellApplication {
-    name = "eww-memory";
-    runtimeInputs = with pkgs; [
-      coreutils
-      gawk
-    ];
-    text = builtins.readFile (scriptsDir + /memory);
-  };
-
-  eww-temperature-script = pkgs.writeShellApplication {
-    name = "eww-temperature";
-    runtimeInputs = with pkgs; [
-      coreutils
-      gawk
-    ];
-    text = builtins.readFile (scriptsDir + /temperature);
-  };
-
-  eww-calendar-script = pkgs.writeShellApplication {
-    name = "eww-calendar";
-    runtimeInputs = with pkgs; [ util-linux ];
-    text = builtins.readFile (scriptsDir + /calendar);
-  };
-
-  eww-volume-scroll-script = pkgs.writeShellApplication {
-    name = "eww-volume-scroll";
-    runtimeInputs = with pkgs; [ pamixer ];
-    text = builtins.readFile (scriptsDir + /volume-scroll);
-  };
-
-  eww-idle-inhibit-script = pkgs.writeShellApplication {
-    name = "eww-idle-inhibit";
-    runtimeInputs = with pkgs; [
-      systemd
-      coreutils
-      procps
-      config.programs.eww.package
-    ];
-    text = builtins.readFile (scriptsDir + /idle-inhibit);
-  };
-
-  ewwConfigDir = pkgs.runCommand "eww-config" { } ''
-    cp -r ${./config} $out
-    chmod -R +w $out
-
-    # Replace all @baseXX color references with actual hex colors from stylix
-    sed -i 's|@base00|${colorsWithHash.base00}|g' $out/eww.scss
-    sed -i 's|@base01|${colorsWithHash.base01}|g' $out/eww.scss
-    sed -i 's|@base02|${colorsWithHash.base02}|g' $out/eww.scss
-    sed -i 's|@base03|${colorsWithHash.base03}|g' $out/eww.scss
-    sed -i 's|@base04|${colorsWithHash.base04}|g' $out/eww.scss
-    sed -i 's|@base05|${colorsWithHash.base05}|g' $out/eww.scss
-    sed -i 's|@base06|${colorsWithHash.base06}|g' $out/eww.scss
-    sed -i 's|@base07|${colorsWithHash.base07}|g' $out/eww.scss
-    sed -i 's|@base08|${colorsWithHash.base08}|g' $out/eww.scss
-    sed -i 's|@base09|${colorsWithHash.base09}|g' $out/eww.scss
-    sed -i 's|@base0A|${colorsWithHash.base0A}|g' $out/eww.scss
-    sed -i 's|@base0B|${colorsWithHash.base0B}|g' $out/eww.scss
-    sed -i 's|@base0C|${colorsWithHash.base0C}|g' $out/eww.scss
-    sed -i 's|@base0D|${colorsWithHash.base0D}|g' $out/eww.scss
-    sed -i 's|@base0E|${colorsWithHash.base0E}|g' $out/eww.scss
-    sed -i 's|@base0F|${colorsWithHash.base0F}|g' $out/eww.scss
-
-    # Replace script names with absolute nix store paths in eww.yuck
-    sed -i 's|"eww-workspace"|"${eww-workspace-script}/bin/eww-workspace"|g' $out/eww.yuck
-    sed -i 's|"eww-mode"|"${eww-mode-script}/bin/eww-mode"|g' $out/eww.yuck
-    sed -i 's|"eww-battery"|"${eww-battery-script}/bin/eww-battery"|g' $out/eww.yuck
-    sed -i 's|"eww-wifi"|"${eww-wifi-script}/bin/eww-wifi"|g' $out/eww.yuck
-    sed -i 's|"eww-wifi-tooltip"|"${eww-wifi-tooltip-script}/bin/eww-wifi-tooltip"|g' $out/eww.yuck
-    sed -i 's|"eww-volume"|"${eww-volume-script}/bin/eww-volume"|g' $out/eww.yuck
-    sed -i 's|"eww-volume-scroll"|"${eww-volume-scroll-script}/bin/eww-volume-scroll"|g' $out/eww.yuck
-    sed -i 's|"eww-disk"|"${eww-disk-script}/bin/eww-disk"|g' $out/eww.yuck
-    sed -i 's|"eww-dunst"|"${eww-dunst-script}/bin/eww-dunst"|g' $out/eww.yuck
-    sed -i 's|"eww-cpu"|"${eww-cpu-script}/bin/eww-cpu"|g' $out/eww.yuck
-    sed -i 's|"eww-memory"|"${eww-memory-script}/bin/eww-memory"|g' $out/eww.yuck
-    sed -i 's|"eww-temperature"|"${eww-temperature-script}/bin/eww-temperature"|g' $out/eww.yuck
-    sed -i 's|"eww-calendar"|"${eww-calendar-script}/bin/eww-calendar"|g' $out/eww.yuck
-    sed -i 's|eww-idle-inhibit|${eww-idle-inhibit-script}/bin/eww-idle-inhibit|g' $out/eww.yuck
-    sed -i 's|eww-volume-control|${config.home-manager.window-manager.default.volumeControl}|g' $out/eww.yuck
-    sed -i 's|eww-pamixer|${lib.getExe pkgs.pamixer}|g' $out/eww.yuck
-    sed -i 's|eww-volume-scroll|${eww-volume-scroll-script}/bin/eww-volume-scroll|g' $out/eww.yuck
-  '';
 in
 {
   options.home-manager.window-manager.wayland.eww = {
@@ -218,7 +161,9 @@ in
                 gawk
                 procps # Provides 'free' command for memory monitoring
                 iproute2 # Provides 'ip' command for network bandwidth
+                pamixer # For volume control
               ]
+              ++ [ eww-scripts ]
             )
           }:${config.home.profileDirectory}/bin"
         ];

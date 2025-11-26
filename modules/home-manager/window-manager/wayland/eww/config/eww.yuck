@@ -82,7 +82,7 @@
 ;; Volume widget
 (defwidget volume_widget []
   (eventbox :onclick "eww-volume-control &"
-            :onrightclick "eww-pamixer --toggle-mute"
+            :onrightclick "pamixer --toggle-mute"
             :onscroll "eww-volume-scroll {}"
     (box :class "volume" :spacing 0
       (label :text volume))))
