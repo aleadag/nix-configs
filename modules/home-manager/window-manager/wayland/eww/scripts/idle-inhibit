@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+# Toggle idle inhibition using systemd-inhibit
+# When enabled, prevents swayidle from triggering sleep/lock
+
+STATE_FILE="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/eww-idle-inhibit.lock"
+PID_FILE="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/eww-idle-inhibit.pid"
+
+case "$1" in
+  on)
+    if [[ -f "$PID_FILE" ]]; then
+      echo "Idle inhibitor already running"
+      exit 0
+    fi
+
+    # Start systemd-inhibit in background to prevent idle
+    systemd-inhibit \
+      --what=idle \
+      --who=eww \
+      --why="User requested via eww caffeine button" \
+      --mode=block \
+      sleep infinity &
+
+    echo $! > "$PID_FILE"
+    touch "$STATE_FILE"
+    eww update idle_inhibit=true
+    ;;
+
+  off)
+    if [[ ! -f "$PID_FILE" ]]; then
+      echo "Idle inhibitor not running"
+      exit 0
+    fi
+
+    # Kill the systemd-inhibit process
+    if [[ -f "$PID_FILE" ]]; then
+      kill "$(cat "$PID_FILE")" 2>/dev/null || true
+      rm -f "$PID_FILE"
+    fi
+
+    rm -f "$STATE_FILE"
+    eww update idle_inhibit=false
+    ;;
+
+  toggle)
+    if [[ -f "$STATE_FILE" ]]; then
+      "$0" off
+    else
+      "$0" on
+    fi
+    ;;
+
+  status)
+    if [[ -f "$STATE_FILE" ]] && [[ -f "$PID_FILE" ]] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
+      echo "true"
+    else
+      # Cleanup stale files
+      rm -f "$STATE_FILE" "$PID_FILE"
+      echo "false"
+    fi
+    ;;
+
+  *)
+    echo "Usage: $0 {on|off|toggle|status}"
+    exit 1
+    ;;
+esac

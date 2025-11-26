@@ -41,7 +41,8 @@
 (deflisten mode
   "eww-mode")
 
-(defvar idle_inhibit false)
+(defpoll idle_inhibit :interval "5s"
+  "eww-idle-inhibit status")
 
 ;; Workspace widget (Sway)
 (defwidget workspaces_widget []
@@ -94,7 +95,7 @@
 ;; Idle inhibitor widget
 (defwidget idle_inhibitor_widget []
   (box :class "idle-inhibitor ${idle_inhibit ? 'activated' : 'deactivated'}" :spacing 0
-    (button :onclick "eww update idle_inhibit=${!idle_inhibit}"
+    (button :onclick "eww-idle-inhibit toggle"
             :tooltip "${idle_inhibit ? 'Caffeine enabled' : 'Caffeine disabled'}"
       (label :text "${idle_inhibit ? '' : '󰾪'}"))))
 

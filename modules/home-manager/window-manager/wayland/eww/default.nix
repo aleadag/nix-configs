@@ -128,6 +128,17 @@ let
     text = builtins.readFile (scriptsDir + /volume-scroll);
   };
 
+  eww-idle-inhibit-script = pkgs.writeShellApplication {
+    name = "eww-idle-inhibit";
+    runtimeInputs = with pkgs; [
+      systemd
+      coreutils
+      procps
+      config.programs.eww.package
+    ];
+    text = builtins.readFile (scriptsDir + /idle-inhibit);
+  };
+
   ewwConfigDir = pkgs.runCommand "eww-config" { } ''
     cp -r ${./config} $out
     chmod -R +w $out
@@ -164,6 +175,7 @@ let
     sed -i 's|"eww-memory"|"${eww-memory-script}/bin/eww-memory"|g' $out/eww.yuck
     sed -i 's|"eww-temperature"|"${eww-temperature-script}/bin/eww-temperature"|g' $out/eww.yuck
     sed -i 's|"eww-calendar"|"${eww-calendar-script}/bin/eww-calendar"|g' $out/eww.yuck
+    sed -i 's|eww-idle-inhibit|${eww-idle-inhibit-script}/bin/eww-idle-inhibit|g' $out/eww.yuck
     sed -i 's|eww-volume-control|${config.home-manager.window-manager.default.volumeControl}|g' $out/eww.yuck
     sed -i 's|eww-pamixer|${lib.getExe pkgs.pamixer}|g' $out/eww.yuck
     sed -i 's|eww-volume-scroll|${eww-volume-scroll-script}/bin/eww-volume-scroll|g' $out/eww.yuck
@@ -193,7 +205,7 @@ in
         PartOf = [ "graphical-session.target" ];
       };
       Service = {
-        ExecStart = "${lib.getExe pkgs.eww} daemon --no-daemonize";
+        ExecStart = "${lib.getExe config.programs.eww.package} daemon --no-daemonize";
         Restart = "on-failure";
         # Add basic tools to PATH: sh for spawning deflisten commands, and utilities for inline commands
         Environment = [
@@ -222,7 +234,7 @@ in
     # Open the bar on startup
     wayland.windowManager.sway.config = lib.mkIf swayCfg.enable {
       startup = [
-        { command = "${lib.getExe pkgs.eww} open bar"; }
+        { command = "${lib.getExe config.programs.eww.package} open bar"; }
       ];
     };
   };
