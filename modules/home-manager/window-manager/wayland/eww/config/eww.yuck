@@ -5,9 +5,6 @@
 (defpoll time :interval "5s"
   "date '+%H:%M, %a %d'")
 
-(defpoll calendar :interval "1h"
-  "eww-calendar")
-
 (defpoll cpu :interval "5s"
   "eww-cpu")
 
@@ -51,8 +48,9 @@
 
 ;; Clock widget
 (defwidget clock_widget []
-  (box :class "clock" :tooltip calendar
-    (label :text time)))
+  (eventbox :onclick "eww open --toggle calendar"
+    (box :class "clock"
+      (label :text time))))
 
 ;; CPU widget
 (defwidget cpu_widget []
@@ -159,3 +157,17 @@
   :exclusive true
   :focusable false
   (bar_layout))
+
+;; Calendar window
+(defwindow calendar
+  :monitor 0
+  :geometry (geometry :x "0%"
+                      :y "30px"
+                      :anchor "top center")
+  :stacking "overlay"
+  :focusable false
+  (box :class "calendar-window"
+    (calendar :show-heading true
+              :show-day-names true
+              :show-details false
+              :show-week-numbers false)))

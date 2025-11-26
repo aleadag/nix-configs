@@ -186,3 +186,61 @@ tooltip {
 tooltip label {
   color: $base05;
 }
+
+// Calendar window
+.calendar-window {
+  background-color: $base00;
+  border: 1px solid $base03;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+// Calendar widget styling (based on Aylur's design)
+calendar {
+  background-color: transparent;
+  color: $base05;
+  font-size: 1.2em;
+  padding: 0.2em;
+
+  // Calendar buttons
+  &.button {
+    background-color: transparent;
+    border: none;
+    margin: 1em;
+    padding: 0.5em;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: $base01;
+    }
+  }
+
+  // Selected date (today)
+  &:selected {
+    background-color: $base01;
+    box-shadow: inset 0 -8px 0 0 rgba($base0D, 0.5),
+                inset 0 0 0 1px $base0D;
+    border-radius: 5px;
+    color: $base05;
+  }
+
+  // Calendar header (month/year)
+  &.header {
+    background-color: transparent;
+    border: none;
+    color: rgba($base05, 0.5);
+    font-weight: bold;
+  }
+
+  // Highlighted dates (current month)
+  &.highlight {
+    background-color: transparent;
+    color: rgba($base0D, 0.5);
+  }
+
+  // Dates from other months
+  &:indeterminate {
+    color: rgba($base05, 0.1);
+  }
+}
