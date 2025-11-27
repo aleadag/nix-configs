@@ -11,6 +11,7 @@ in
 {
   imports = [
     ./chromium.nix
+    ./cosmic
     ./firefox.nix
     ./fonts
     ./im.nix

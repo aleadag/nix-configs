@@ -44,6 +44,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     jovian-nixos.follows = "chaotic-nyx/jovian";
+    cosmic-manager = {
+      url = "github:HeitorAugustoLN/cosmic-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
 
     # helpers
     flake-compat.url = "github:edolstra/flake-compat";
