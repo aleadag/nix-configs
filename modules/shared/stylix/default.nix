@@ -13,7 +13,10 @@
       polarity = "dark";
 
       # Wallpaper configuration
-      image = "${pkgs.pop-wallpapers}/share/backgrounds/pop/jasper-van-der-meij-97274-edit.jpg";
+      image = "${pkgs.pop-wallpapers}/share/backgrounds/pop/ahmadreza-sajadi-10140-edit.jpg";
+
+      # Image scaling mode: "fill" (default, crops), "fit" (no crop, may have bars), "center", "tile", "stretch"
+      imageScalingMode = "fill";
 
       # Font configuration
       fonts = rec {
