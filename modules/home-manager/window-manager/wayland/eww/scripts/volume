@@ -5,7 +5,7 @@ muted=$(pamixer --get-mute)
 volume=$(pamixer --get-volume)
 
 if [ "$muted" = "true" ]; then
-  echo ""
+  echo "󰝟"
 elif [ "$volume" -ge 100 ]; then
   echo " ${volume}%"
 elif [ "$volume" -ge 50 ]; then

@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Input method status for eww (fcitx5)
+
+# Check if fcitx5 is running (NixOS wraps it as .fcitx5-wrapped)
+if ! pgrep fcitx5 > /dev/null; then
+  echo ""
+  exit 0
+fi
+
+# Get current input method
+current_im=$(fcitx5-remote -n 2>/dev/null || echo "")
+
+# Icons for different input methods
+case "$current_im" in
+  "keyboard-us")
+    echo "󰌌 EN"
+    ;;
+  "pinyin"|"shuangpin")
+    echo "󰊿 CN"
+    ;;
+  *)
+    # Default keyboard icon if IM is active
+    if [ "$(fcitx5-remote)" = "2" ]; then
+      echo "󰊿"
+    else
+      echo "󰌌"
+    fi
+    ;;
+esac

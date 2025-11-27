@@ -41,6 +41,9 @@
 (defpoll idle_inhibit :interval "5s"
   "eww-idle-inhibit status")
 
+(defpoll input_method :interval "1s"
+  "eww-input-method")
+
 ;; Workspace widget (Sway)
 (defwidget workspaces_widget []
   (box :class "workspaces" :spacing 5
@@ -97,6 +100,13 @@
             :tooltip "${idle_inhibit ? 'Caffeine enabled' : 'Caffeine disabled'}"
       (label :text "${idle_inhibit ? '' : '󰾪'}"))))
 
+;; Input method widget
+(defwidget input_method_widget []
+  (eventbox :onclick "fcitx5-remote -t"
+            :onrightclick "fcitx5-configtool &"
+    (box :class "input-method" :spacing 0
+      (label :text input_method))))
+
 ;; Separator
 (defwidget separator []
   (label :class "separator" :text "|"))
@@ -136,7 +146,9 @@
     (separator)
     (dunst_widget)
     (separator)
-    (idle_inhibitor_widget)))
+    (idle_inhibitor_widget)
+    (separator)
+    (input_method_widget)))
 
 ;; Main bar
 (defwidget bar_layout []

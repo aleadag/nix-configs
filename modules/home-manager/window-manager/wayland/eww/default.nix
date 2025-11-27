@@ -44,6 +44,9 @@ let
     # Notifications
     dunst
 
+    # Input method
+    fcitx5
+
     # Other utilities
     gnused
     util-linux
