@@ -18,6 +18,7 @@ in
     ./kitty.nix
     ./mpv
     ./nixgl.nix
+    ./wechat.nix
   ];
 
   options.home-manager.desktop = {
@@ -32,7 +33,6 @@ in
       (mcomix.override {
         unrarSupport = true;
       })
-      wechat-uos
     ];
   };
 }
