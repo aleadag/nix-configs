@@ -45,6 +45,8 @@ in
       ];
 
       ignores = [
+        "**/.claude/settings.local.json"
+        "**/CLAUDE.local.md"
         "*.swp"
         "*~"
         ".clj-kondo"
