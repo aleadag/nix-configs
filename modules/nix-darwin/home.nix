@@ -20,7 +20,10 @@ in
       targets.darwin.linkApps.enable = false;
     };
 
-    users.users.${username}.home = lib.mkDefault "/Users/${username}";
+    users.users.${username} = {
+      home = lib.mkDefault "/Users/${username}";
+      uid = 502;
+    };
 
     system.primaryUser = lib.mkDefault username;
   };
