@@ -121,6 +121,9 @@ in
               # map V in vi-mode to edit the current command line in $VISUAL
               export VISUAL="$EDITOR"
               bindkey -M vicmd 'V' edit-command-line
+
+              # disable prezto utility aliases that conflict with other tools
+              unalias lk
             ''
           )
           (lib.mkOrder 1200 (
