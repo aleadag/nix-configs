@@ -52,8 +52,15 @@ in
             "app.shield.optoutstudies.enabled" = false;
             "app.normandy.enabled" = false;
 
-            # disable AI chatbox
+            # disable AI features
             "browser.ml.chat.enabled" = false;
+            "browser.ml.chat.menu" = false;
+            "browser.ml.chat.page" = false;
+            "browser.ml.chat.shortcuts" = false;
+            "browser.ml.chat.sidebar" = false;
+            "browser.ml.enable" = false;
+            "browser.ml.linkPreview.enabled" = false;
+
             "browser.newtabpage.activity-stream.showSponsored" = false;
             "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
             "browser.newtabpage.activity-stream.showSponsoredCheckboxes" = false;
