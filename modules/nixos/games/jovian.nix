@@ -12,7 +12,6 @@ let
 in
 {
   imports = [
-    flake.inputs.chaotic-nyx.nixosModules.default
     flake.inputs.jovian-nixos.nixosModules.default
   ];
 
@@ -24,13 +23,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    chaotic = {
-      # This will break NVIDIA Optimus, and doesn't make lots of sense if using
-      # proprietary drivers anyway
-      # TODO: add Intel?
-      mesa-git.enable = config.nixos.system.gpu.maker == "amd";
-    };
-
     jovian = {
       steam = {
         enable = true;
