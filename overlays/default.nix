@@ -18,11 +18,6 @@ inputs.nur.overlays.default final prev
     # namespaces
     libEx = outputs.lib;
 
-    # custom packages
-    arandr = prev.arandr.overrideAttrs (_: {
-      src = inputs.arandr;
-    });
-
     inherit (inputs.gh-gfm-preview.packages.${system}) gh-gfm-preview;
     inherit (inputs.nix-proxy-manager.packages.${system}) nix-proxy-manager;
 

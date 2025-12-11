@@ -1,21 +1,5 @@
 {
   "nodes": {
-    "arandr": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1696244654,
-        "narHash": "sha256-DJqNzbSLxwdblqLLtwqj4ob58FrB0RuaTgf6dfZ2TvA=",
-        "owner": "thiagokokada",
-        "repo": "arandr",
-        "rev": "4723af240be5c8e927bdff187fc611ec5099d8c9",
-        "type": "gitlab"
-      },
-      "original": {
-        "owner": "thiagokokada",
-        "repo": "arandr",
-        "type": "gitlab"
-      }
-    },
     "base16": {
       "inputs": {
         "fromYaml": "fromYaml"
@@ -492,7 +476,6 @@
     },
     "root": {
       "inputs": {
-        "arandr": "arandr",
         "cc-tools": "cc-tools",
         "cosmic-manager": "cosmic-manager",
         "disko": "disko",

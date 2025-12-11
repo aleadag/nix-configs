@@ -63,12 +63,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # custom packages
-    arandr = {
-      url = "gitlab:thiagokokada/arandr";
-      flake = false;
-    };
-
     zsh-proxy = {
       url = "github:SukkaW/zsh-proxy";
       flake = false;
