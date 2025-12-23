@@ -7,9 +7,7 @@ let
   cfg = config.home-manager.syncthing;
 in
 {
-  options.home-manager.syncthing.enable = lib.mkEnableOption "Syncthing config" // {
-    default = true;
-  };
+  options.home-manager.syncthing.enable = lib.mkEnableOption "Syncthing config";
 
   config = lib.mkIf cfg.enable (
     let

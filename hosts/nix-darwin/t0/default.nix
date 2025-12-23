@@ -6,8 +6,8 @@
     extraModules = {
       home.stateVersion = "25.11";
       home-manager = {
-        cli.git.git-sync.enable = true;
         cli.zsh.zprof.enable = true;
+        syncthing.enable = true;
       };
     };
   };

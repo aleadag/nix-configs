@@ -16,7 +16,6 @@ in
     gh.enable = lib.mkEnableOption "GitHub CLI config" // {
       default = true;
     };
-    git-sync.enable = lib.mkEnableOption "git-sync of notes";
     mergiraf.enable = lib.mkEnableOption "Mergiraf config" // {
       default = true;
     };
@@ -124,13 +123,6 @@ in
         };
         tag.sort = "-version:refname";
         safe.bareRepository = "explicit";
-
-        # for git-sync
-        # https://github.com/simonthum/git-sync?tab=readme-ov-file#options
-        branch.main = {
-          sync = true;
-          syncNewFiles = true;
-        };
       };
     };
 
@@ -156,18 +148,6 @@ in
         prompt = "enabled";
         aliases = {
           co = "pr checkout";
-        };
-      };
-    };
-
-    services.git-sync = {
-      inherit (cfg.git-sync) enable;
-
-      repositories = {
-        leetcode = {
-          path = "${config.home.homeDirectory}/.local/share/nvim/leetcode";
-          uri = "git+ssh://git@github.com:aleadag/leetcode.git";
-          interval = 1 * 60 * 60;
         };
       };
     };
