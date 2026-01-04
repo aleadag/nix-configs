@@ -859,23 +859,13 @@ in
             type = "lua";
             config = # lua
               ''
-                require("nvim-treesitter.configs").setup {
-                  highlight = {
-                    enable = true,
-                  },
-                  incremental_selection = {
-                    enable = true,
-                    keymaps = {
-                      init_selection = "gnn",
-                      node_incremental = "grn",
-                      scope_incremental = "grc",
-                      node_decremental = "grm",
-                    },
-                  },
-                  indent = {
-                    enable = false,
-                  },
-                }
+                -- nvim-treesitter 1.0+ removed configs module
+                -- Highlighting must be explicitly enabled via vim.treesitter.start()
+                vim.api.nvim_create_autocmd("FileType", {
+                  callback = function()
+                    pcall(vim.treesitter.start)
+                  end,
+                })
               '';
           }
           {
