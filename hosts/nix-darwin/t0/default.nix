@@ -7,6 +7,7 @@
       home.stateVersion = "25.11";
       home-manager = {
         cli.zsh.zprof.enable = true;
+        desktop.mpv.enable = true;
         syncthing.enable = true;
       };
     };
