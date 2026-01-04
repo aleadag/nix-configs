@@ -97,16 +97,15 @@ in
 
       bat = {
         enable = true;
-        package = pkgs.stable.bat;
+        package = pkgs.bat;
         # This should pick up the correct colors for the generated theme. Otherwise
         # it is possible to generate a custom bat theme to ~/.config/bat/config
         config = {
           tabs = "2";
           pager = "less -FR";
         };
-        # XXX: https://github.com/NixOS/nixpkgs/issues/454391
         extraPackages = builtins.attrValues {
-          inherit (pkgs.stable.bat-extras)
+          inherit (pkgs.bat-extras)
             batdiff
             batgrep
             batman
@@ -142,7 +141,6 @@ in
       archive = "${lib.getExe pkgs.ouch} compress";
       unarchive = "${lib.getExe pkgs.ouch} decompress";
       lsarchive = "${lib.getExe pkgs.ouch} list";
-      cal = lib.getExe' pkgs.gcal "gcal";
       ncdu = "${lib.getExe pkgs.dua} interactive";
       sloccount = lib.getExe pkgs.tokei;
       # https://unix.stackexchange.com/questions/335648/why-does-the-reset-command-include-a-delay
