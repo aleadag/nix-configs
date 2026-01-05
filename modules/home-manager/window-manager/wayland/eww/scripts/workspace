@@ -1,20 +1,15 @@
 # Workspace monitor for Sway
-# Outputs workspace buttons in eww format
+# Outputs workspace data as JSON for native eww widgets
 
-# Initial workspace state
+# Get workspace state as JSON
 workspaces() {
-  local buttons
-  buttons=$(swaymsg -t get_workspaces | jq -c '[.[] | {
+  swaymsg -t get_workspaces | jq -c '[.[] | {
     num: .num,
     name: .name,
     focused: .focused,
     visible: .visible,
     urgent: .urgent
-  }]' | jq -r '.[] |
-    "(button :class \"workspace-button" +
-    (if .focused then " focused" elif .visible then " visible" elif .urgent then " urgent" else "" end) +
-    "\" :onclick \"swaymsg workspace number " + (.num | tostring) + "\" \"" + .name + "\")"' | tr '\n' ' ')
-  echo "(box :class \"workspaces\" :spacing 5 ${buttons})"
+  }]'
 }
 
 # Print initial workspaces

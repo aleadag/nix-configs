@@ -32,7 +32,7 @@
 (deflisten dunst
   "eww-dunst")
 
-(deflisten workspaces
+(deflisten workspaces :initial "[]"
   "eww-workspace")
 
 (deflisten mode
@@ -47,7 +47,11 @@
 ;; Workspace widget (Sway)
 (defwidget workspaces_widget []
   (box :class "workspaces" :spacing 5
-    (literal :content workspaces)))
+    (for ws in workspaces
+      (button
+        :class "workspace-button ${ws.focused ? 'focused' : ''} ${ws.visible ? 'visible' : ''} ${ws.urgent ? 'urgent' : ''}"
+        :onclick "swaymsg workspace number ${ws.num}"
+        "${ws.name}"))))
 
 ;; Clock widget
 (defwidget clock_widget []
