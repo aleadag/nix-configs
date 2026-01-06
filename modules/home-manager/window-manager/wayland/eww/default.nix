@@ -44,6 +44,7 @@ let
 
     # Notifications
     dunst
+    dbus # For dbus-monitor in event-driven dunst
 
     # Input method
     fcitx5

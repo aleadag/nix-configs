@@ -1,4 +1,4 @@
-# Dunst notification status for eww (polling loop)
+# Dunst notification status for eww (event-driven via D-Bus)
 # Returns: JSON with paused state and waiting count
 # Example: {"paused": false, "waiting": 0}
 
@@ -8,15 +8,11 @@ get_status() {
   echo "{\"paused\": $paused, \"waiting\": $waiting}"
 }
 
-# Track previous state to only output on change
-prev=""
+# Initial status
+get_status
 
-# Poll every second and output on change
-while true; do
-  current=$(get_status)
-  if [ "$current" != "$prev" ]; then
-    echo "$current"
-    prev="$current"
-  fi
-  sleep 1
-done
+# Monitor D-Bus for dunst property changes
+dbus-monitor --session "interface='org.freedesktop.DBus.Properties',member='PropertiesChanged',path='/org/freedesktop/Notifications'" 2>/dev/null |
+  while read -r _; do
+    get_status
+  done
