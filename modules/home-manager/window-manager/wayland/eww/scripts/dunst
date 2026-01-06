@@ -1,22 +1,22 @@
-# Dunst notification status for eww
+# Dunst notification status for eww (polling loop)
+# Returns: JSON with paused state and waiting count
+# Example: {"paused": false, "waiting": 0}
 
-ENABLED=""
-DISABLED=""
+get_status() {
+  paused=$(dunstctl is-paused)
+  waiting=$(dunstctl count waiting 2>/dev/null || echo 0)
+  echo "{\"paused\": $paused, \"waiting\": $waiting}"
+}
 
+# Track previous state to only output on change
+prev=""
+
+# Poll every second and output on change
 while true; do
-  PAUSED=$(dunstctl is-paused)
-
-  if [ "$PAUSED" = "false" ]; then
-    echo "(label :class \"dunst enabled\" :text \"$ENABLED\")"
-  else
-    COUNT=$(dunstctl count waiting)
-    if [ "$COUNT" != "0" ] && [ "$COUNT" != "" ]; then
-      echo "(label :class \"dunst disabled\" :text \"$DISABLED ($COUNT)\")"
-    else
-      echo "(label :class \"dunst disabled\" :text \"$DISABLED\")"
-    fi
+  current=$(get_status)
+  if [ "$current" != "$prev" ]; then
+    echo "$current"
+    prev="$current"
   fi
-
-  # Wait for dunst state change
-  dunstctl subscribe >/dev/null 2>&1
+  sleep 1
 done

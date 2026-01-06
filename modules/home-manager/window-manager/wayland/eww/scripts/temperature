@@ -1,9 +1,4 @@
 # Temperature for eww
+# Returns: plain number in Celsius (e.g., "45")
 
-temp=$(cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null | awk '{printf "%.0f", $1/1000}' || echo 0)
-
-if [ "$temp" -ge 75 ]; then
-  echo "(label :class \"temperature critical\" :text \" ${temp}°C\")"
-else
-  echo "(label :class \"temperature\" :text \" ${temp}°C\")"
-fi
+awk '{printf "%.0f", $1/1000}' /sys/class/thermal/thermal_zone0/temp 2>/dev/null || echo 0

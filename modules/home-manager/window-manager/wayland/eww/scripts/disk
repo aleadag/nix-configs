@@ -1,14 +1,8 @@
 # Disk usage for eww
+# Returns: JSON with percent and available space
+# Example: {"percent": 45, "avail": "120G"}
 
 usage=$(df -h / | awk 'NR==2 {print $5}' | sed 's/%//')
 avail=$(df -h / | awk 'NR==2 {print $4}')
 
-icon=""
-
-if [ "$usage" -ge 95 ]; then
-  echo "(label :class \"disk critical\" :text \"$icon $avail\")"
-elif [ "$usage" -ge 75 ]; then
-  echo "(label :class \"disk warning\" :text \"$icon $avail\")"
-else
-  echo "(label :class \"disk\" :text \"$icon $avail\")"
-fi
+echo "{\"percent\": $usage, \"avail\": \"$avail\"}"

@@ -1,5 +1,4 @@
 # CPU load for eww
+# Returns: plain text load average (e.g., "1.23")
 
-load=$(cat /proc/loadavg | awk '{print $1}')
-
-echo "(label :class \"cpu\" :text \" $load\")"
+awk '{print $1}' /proc/loadavg

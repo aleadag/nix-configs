@@ -1,4 +1,6 @@
 # Battery status for eww
+# Returns: JSON with icon, percent, status
+# Returns empty string if no battery present
 
 BATTERY_PATH="/sys/class/power_supply/BAT0"
 
@@ -27,10 +29,4 @@ else
   icon=""
 fi
 
-if [ "$capacity" -le 10 ]; then
-  echo "(label :class \"battery critical\" :text \"$icon $capacity%\")"
-elif [ "$capacity" -le 20 ]; then
-  echo "(label :class \"battery warning\" :text \"$icon $capacity%\")"
-else
-  echo "(label :class \"battery\" :text \"$icon $capacity%\")"
-fi
+echo "{\"icon\": \"$icon\", \"percent\": $capacity, \"status\": \"$status\"}"

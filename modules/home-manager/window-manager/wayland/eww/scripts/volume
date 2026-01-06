@@ -1,15 +1,27 @@
-#!/usr/bin/env bash
-# Volume status for eww
+# Volume status for eww (streaming)
+# Returns: JSON with icon, percent, muted state
 
-muted=$(pamixer --get-mute)
-volume=$(pamixer --get-volume)
+get_volume() {
+  muted=$(pamixer --get-mute)
+  volume=$(pamixer --get-volume)
 
-if [ "$muted" = "true" ]; then
-  echo "󰝟"
-elif [ "$volume" -ge 100 ]; then
-  echo " ${volume}%"
-elif [ "$volume" -ge 50 ]; then
-  echo " ${volume}%"
-else
-  echo " ${volume}%"
-fi
+  if [ "$muted" = "true" ]; then
+    icon="󰝟"
+  elif [ "$volume" -ge 100 ]; then
+    icon=""
+  elif [ "$volume" -ge 50 ]; then
+    icon=""
+  else
+    icon=""
+  fi
+
+  echo "{\"icon\": \"$icon\", \"percent\": $volume, \"muted\": $muted}"
+}
+
+# Initial volume
+get_volume
+
+# Stream updates on sink changes
+pactl subscribe | grep --line-buffered "sink" | while read -r _; do
+  get_volume
+done

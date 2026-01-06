@@ -40,6 +40,7 @@ let
     # Audio control
     wireplumber
     pamixer
+    pulseaudio # For pactl subscribe in event-driven volume
 
     # Notifications
     dunst
@@ -93,39 +94,20 @@ let
     "0F"
   ];
 
-  colors-scss = pkgs.writeText "colors.scss" (
-    ''
-      // Generated from stylix base16 color scheme
-    ''
-    + lib.concatMapStringsSep "\n" (num: "$base${num}: ${colorsWithHash."base${num}"};") colorVars
-  );
+  # Generate colors.scss content from stylix
+  colorsScssContent = ''
+    // Generated from stylix base16 color scheme
+  ''
+  + lib.concatMapStringsSep "\n" (num: "$base${num}: ${colorsWithHash."base${num}"};") colorVars;
 
-  # Use substituteAll for more declarative config generation
-  ewwConfigDir = pkgs.stdenv.mkDerivation {
-    name = "eww-config";
-    src = ./config;
+  # Generate eww.scss with colors import prepended
+  ewwScssContent = ''
+    @import "colors.scss";
+    ${builtins.readFile ./config/eww.scss}
+  '';
 
-    nativeBuildInputs = [ pkgs.gnused ];
-
-    inherit (config.home-manager.window-manager.default) volumeControl;
-
-    buildPhase = ''
-      # Copy colors.scss
-      cp ${colors-scss} colors.scss
-
-      # Add import statement to eww.scss
-      sed -i '1i@import "colors.scss";' eww.scss
-
-      # Replace volume control placeholder with configured program
-      substituteInPlace eww.yuck \
-        --replace-fail "eww-volume-control" "$volumeControl"
-    '';
-
-    installPhase = ''
-      mkdir -p $out
-      cp -r . $out/
-    '';
-  };
+  # Volume control program from config
+  inherit (config.home-manager.window-manager.default) volumeControl;
 in
 {
   options.home-manager.window-manager.wayland.eww = {
@@ -138,10 +120,25 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # Write config files directly to ~/.config/eww/ for stable IPC socket path
+    # (eww hashes the config directory path for socket naming)
+    home.file = {
+      ".config/eww/colors.scss".text = colorsScssContent;
+      ".config/eww/eww.scss".text = ewwScssContent;
+      ".config/eww/eww.yuck".source = pkgs.substitute {
+        src = ./config/eww.yuck;
+        substitutions = [
+          "--replace-fail"
+          "eww-volume-control"
+          volumeControl
+        ];
+      };
+    };
+
     programs.eww = {
       enable = true;
       package = pkgs.eww;
-      configDir = ewwConfigDir;
+      # configDir = null means eww uses default ~/.config/eww (managed by home.file above)
     };
 
     systemd.user.services.eww = {
@@ -165,6 +162,7 @@ in
                 procps # Provides 'free' command for memory monitoring
                 iproute2 # Provides 'ip' command for network bandwidth
                 pamixer # For volume control
+                dunst # For dunstctl onclick handler
               ]
               ++ [ eww-scripts ]
             )

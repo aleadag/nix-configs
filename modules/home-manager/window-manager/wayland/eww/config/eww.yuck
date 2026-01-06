@@ -14,7 +14,8 @@
 (defpoll temperature :interval "5s"
   "eww-temperature")
 
-(defpoll volume :interval "1s"
+;; Volume is now event-driven via pactl subscribe
+(deflisten volume :initial '{"icon": "", "percent": 50, "muted": false}'
   "eww-volume")
 
 (defpoll wifi :interval "5s"
@@ -23,13 +24,13 @@
 (defpoll wifi_tooltip :interval "5s"
   "eww-wifi-tooltip")
 
-(defpoll battery :interval "5s"
+(defpoll battery :interval "5s" :initial '{"icon": "", "percent": 100, "status": "Unknown"}'
   "eww-battery")
 
-(defpoll disk :interval "5s"
+(defpoll disk :interval "5s" :initial '{"percent": 0, "avail": "?"}'
   "eww-disk")
 
-(deflisten dunst
+(deflisten dunst :initial '{"paused": false, "waiting": 0}'
   "eww-dunst")
 
 (deflisten workspaces :initial "[]"
@@ -59,43 +60,48 @@
     (box :class "clock"
       (label :text time))))
 
-;; CPU widget
+;; CPU widget - plain text load average
 (defwidget cpu_widget []
-  (literal :content cpu))
+  (label :class "cpu" :text " ${cpu}"))
 
-;; Memory widget
+;; Memory widget - plain text available memory
 (defwidget memory_widget []
-  (literal :content memory))
+  (label :class "memory" :text "󰍛 ${memory}"))
 
-;; Temperature widget
+;; Temperature widget - number with dynamic warning/critical class
 (defwidget temperature_widget []
-  (literal :content temperature))
+  (label :class "temperature ${temperature > 80 ? 'critical' : temperature > 60 ? 'warning' : ''}"
+         :text " ${temperature}°C"))
 
-;; Battery widget
+;; Battery widget - JSON with icon and percent
 (defwidget battery_widget []
-  (literal :content battery))
+  (label :class "battery ${battery.percent < 20 ? 'critical' : battery.percent < 40 ? 'warning' : ''}"
+         :text "${battery.icon} ${battery.percent}%"
+         :visible {battery != ""}))
 
-;; Disk widget
+;; Disk widget - JSON with percent and available space
 (defwidget disk_widget []
-  (literal :content disk))
+  (label :class "disk ${disk.percent > 90 ? 'critical' : disk.percent > 75 ? 'warning' : ''}"
+         :text " ${disk.avail}"))
 
 ;; Network widget
 (defwidget network_widget []
   (box :class "network" :spacing 0 :tooltip wifi_tooltip
     (label :text wifi)))
 
-;; Volume widget
+;; Volume widget - JSON with icon, percent, muted state
 (defwidget volume_widget []
   (eventbox :onclick "eww-volume-control &"
             :onrightclick "pamixer --toggle-mute"
             :onscroll "eww-volume-scroll {}"
-    (box :class "volume" :spacing 0
-      (label :text volume))))
+    (box :class "volume ${volume.muted ? 'volume-muted' : ''}" :spacing 0
+      (label :text "${volume.icon} ${volume.percent}%"))))
 
-;; Dunst notification widget
+;; Dunst notification widget - JSON with paused state
 (defwidget dunst_widget []
   (button :onclick "dunstctl set-paused toggle"
-    (literal :content dunst)))
+    (label :class "dunst ${dunst.paused ? 'disabled' : 'enabled'}"
+           :text "${dunst.paused ? (dunst.waiting > 0 ? ' (' + dunst.waiting + ')' : '') : ''}")))
 
 ;; Idle inhibitor widget
 (defwidget idle_inhibitor_widget []
