@@ -49,14 +49,15 @@
 (defwidget workspaces_widget []
   (box :class "workspaces" :spacing 5
     (for ws in workspaces
-      (button
-        :class "workspace-button ${ws.focused ? 'focused' : ''} ${ws.visible ? 'visible' : ''} ${ws.urgent ? 'urgent' : ''}"
-        :onclick "swaymsg workspace number ${ws.num}"
-        "${ws.name}"))))
+      (eventbox :cursor "pointer"
+                :onclick "swaymsg workspace number ${ws.num}"
+        (label :class "workspace-button ${ws.focused ? 'focused' : ''} ${ws.visible ? 'visible' : ''} ${ws.urgent ? 'urgent' : ''}"
+               :text "${ws.name}")))))
 
 ;; Clock widget
 (defwidget clock_widget []
   (eventbox :onclick "eww open --toggle calendar"
+             :cursor "pointer"
     (box :class "clock"
       (label :text time))))
 
@@ -94,26 +95,31 @@
   (eventbox :onclick "eww-volume-control &"
             :onrightclick "pamixer --toggle-mute"
             :onscroll "eww-volume-scroll {}"
+            :cursor "pointer"
     (box :class "volume ${volume.muted ? 'volume-muted' : ''}" :spacing 0
       (label :text "${volume.icon} ${volume.percent}%"))))
 
 ;; Dunst notification widget - JSON with paused state
 (defwidget dunst_widget []
-  (button :onclick "dunstctl set-paused toggle"
+  (eventbox :cursor "pointer"
+            :onclick "dunstctl set-paused toggle"
     (label :class "dunst ${dunst.paused ? 'disabled' : 'enabled'}"
            :text "${dunst.paused ? (dunst.waiting > 0 ? ' (' + dunst.waiting + ')' : '') : ''}")))
 
 ;; Idle inhibitor widget
 (defwidget idle_inhibitor_widget []
-  (box :class "idle-inhibitor ${idle_inhibit ? 'activated' : 'deactivated'}" :spacing 0
-    (button :onclick "eww-idle-inhibit toggle"
+  (eventbox :cursor "pointer"
+            :onclick "eww-idle-inhibit toggle"
             :tooltip "${idle_inhibit ? 'Caffeine enabled' : 'Caffeine disabled'}"
-      (label :text "${idle_inhibit ? '' : '󰾪'}"))))
+    (box :class "idle-inhibitor ${idle_inhibit ? 'activated' : 'deactivated'}" :spacing 0
+        (label :text "${idle_inhibit ? '' : '󰾪'}"))))
+
 
 ;; Input method widget
 (defwidget input_method_widget []
   (eventbox :onclick "fcitx5-remote -t"
             :onrightclick "fcitx5-configtool &"
+            :cursor "pointer"
     (box :class "input-method" :spacing 0
       (label :text input_method))))
 
