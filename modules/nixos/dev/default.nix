@@ -1,12 +1,10 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 
-let
-  inherit (config.nixos.home) username;
-in
 {
   imports = [
     ./ollama.nix
@@ -26,9 +24,7 @@ in
       home-manager.dev.enable = true;
     };
 
-    programs.adb.enable = true;
-
-    # Added user to groups
-    users.users.${username}.extraGroups = [ "adbusers" ];
+    # Android tools - systemd 258+ handles uaccess rules automatically
+    environment.systemPackages = [ pkgs.android-tools ];
   };
 }
