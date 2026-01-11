@@ -71,6 +71,8 @@ in
         window_alert_on_bell = true;
         bell_on_tab = true;
 
+        cursor_trail = 1;
+
         # Tabs
         tab_bar_edge = "top";
         tab_bar_style = "powerline";
