@@ -859,11 +859,14 @@ in
             type = "lua";
             config = # lua
               ''
+                require('nvim-treesitter').setup {}
                 -- nvim-treesitter 1.0+ removed configs module
                 -- Highlighting must be explicitly enabled via vim.treesitter.start()
                 vim.api.nvim_create_autocmd("FileType", {
+                  pattern = '*',
                   callback = function()
                     pcall(vim.treesitter.start)
+                    vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
                   end,
                 })
               '';
