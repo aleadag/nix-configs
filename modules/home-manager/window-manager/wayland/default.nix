@@ -7,12 +7,12 @@
 
 {
   imports = [
-    ./eww
     ./fuzzel.nix
     ./kanshi
     ./sway.nix
     ./swayidle.nix
     ./swaylock.nix
+    ./waybar.nix
   ];
 
   options.home-manager.window-manager.wayland.enable = lib.mkEnableOption "Wayland config" // {

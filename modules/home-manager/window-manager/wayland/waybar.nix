@@ -39,12 +39,10 @@ in
           layer = "top";
           position = "top";
           spacing = 3;
-          modules-left =
-            lib.optionals swayCfg.enable [
-              "sway/workspaces"
-              "sway/mode"
-            ]
-            ++ [ "wlr/taskbar" ];
+          modules-left = lib.optionals swayCfg.enable [
+            "sway/workspaces"
+            "sway/mode"
+          ];
           modules-center = [ "clock" ];
           modules-right =
             lib.pipe
@@ -259,10 +257,10 @@ in
               on-scroll = 1;
               on-click-right = "mode";
               format = {
-                months = "<span color='#ffead3'><b>{}</b></span>";
-                days = "<span color='#ecc6d9'><b>{}</b></span>";
-                weekdays = "<span color='#ffcc66'><b>{}</b></span>";
-                today = "<span color='#ff6699'><b><u>{}</u></b></span>";
+                months = "<span color='#${config.lib.stylix.colors.base07}'><b>{}</b></span>";
+                days = "<span color='#${config.lib.stylix.colors.base06}'><b>{}</b></span>";
+                weekdays = "<span color='#${config.lib.stylix.colors.base0A}'><b>{}</b></span>";
+                today = "<span color='#${config.lib.stylix.colors.base08}'><b><u>{}</u></b></span>";
               };
             };
           };
