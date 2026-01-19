@@ -9,6 +9,7 @@
   imports = [
     ./claude-code
     ./codex
+    ./gemini-cli
     ./httpie.nix
     ./nix.nix
     ./node.nix

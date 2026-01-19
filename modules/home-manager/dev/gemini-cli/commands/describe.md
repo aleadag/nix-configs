@@ -1,9 +1,4 @@
----
-allowed-tools: Bash(jj status:*), Bash(jj diff:*), Bash(jj describe:*), Bash(jj log:*), Bash(jj show:*)
-description: Create well-formatted change descriptions with conventional commit messages and emoji, then apply them
----
-
-# Claude Command: Describe
+# Gemini Command: Describe
 
 This command helps you create well-formatted change descriptions with conventional commit messages and emoji, and automatically applies them using `jj describe`.
 
