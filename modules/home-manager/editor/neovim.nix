@@ -590,6 +590,20 @@ in
               '';
           }
         ]
+        ++ [
+          {
+            plugin = vim-floaterm;
+            type = "lua";
+            config = # lua
+              ''
+                vim.keymap.set("n", "<leader>ft", "<cmd>FloatermToggle<cr>", { desc = "Terminal toggle" })
+                vim.keymap.set("n", "<leader>fn", "<cmd>FloatermNew<cr>", { desc = "New terminal" })
+                vim.keymap.set("n", "<leader>fp", "<cmd>FloatermPrev<cr>", { desc = "Prev terminal" })
+                vim.keymap.set("n", "<leader>fN", "<cmd>FloatermNext<cr>", { desc = "Next terminal" })
+                vim.keymap.set("n", "<leader>fk", "<cmd>FloatermKill<cr>", { desc = "Kill terminal" })
+              '';
+          }
+        ]
         ++ lib.optionals cfg.claudeCode.enable [
           {
             plugin = claudecode-nvim;
