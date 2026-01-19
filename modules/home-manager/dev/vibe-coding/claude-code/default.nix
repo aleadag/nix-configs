@@ -87,16 +87,26 @@ in
     # Create and manage ~/.claude directory
     home.file =
       let
-        # Dynamically read command files
-        commandFiles = builtins.readDir ./commands;
-        commandEntries = lib.filterAttrs (
+        # Shared commands from the vibe-coding directory
+        sharedCommandFiles = builtins.readDir ../commands;
+        sharedCommandEntries = lib.filterAttrs (
           name: type: type == "regular" && lib.hasSuffix ".md" name
-        ) commandFiles;
-        commandFileAttrs = lib.mapAttrs' (
-          name: _: lib.nameValuePair ".claude/commands/${name}" { source = ./commands/${name}; }
-        ) commandEntries;
+        ) sharedCommandFiles;
+        sharedCommandFileAttrs = lib.mapAttrs' (
+          name: _: lib.nameValuePair ".claude/commands/${name}" { source = ../commands + "/${name}"; }
+        ) sharedCommandEntries;
+
+        # Local commands
+        localCommandFiles = builtins.readDir ./commands;
+        localCommandEntries = lib.filterAttrs (
+          name: type: type == "regular" && lib.hasSuffix ".md" name
+        ) localCommandFiles;
+        localCommandFileAttrs = lib.mapAttrs' (
+          name: _: lib.nameValuePair ".claude/commands/${name}" { source = ./commands + "/${name}"; }
+        ) localCommandEntries;
       in
-      commandFileAttrs
+      sharedCommandFileAttrs
+      // localCommandFileAttrs
       // {
         ".claude/CLAUDE.md".source = ./CLAUDE.md;
 

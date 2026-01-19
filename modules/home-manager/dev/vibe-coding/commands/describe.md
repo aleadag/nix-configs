@@ -3,7 +3,7 @@ allowed-tools: Bash(jj status:*), Bash(jj diff:*), Bash(jj describe:*), Bash(jj 
 description: Create well-formatted change descriptions with conventional commit messages and emoji, then apply them
 ---
 
-# Claude Command: Describe
+# AI Command: Describe
 
 This command helps you create well-formatted change descriptions with conventional commit messages and emoji, and automatically applies them using `jj describe`.
 

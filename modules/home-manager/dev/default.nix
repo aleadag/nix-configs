@@ -7,9 +7,7 @@
 
 {
   imports = [
-    ./claude-code
-    ./codex
-    ./gemini-cli
+    ./vibe-coding
     ./httpie.nix
     ./nix.nix
     ./node.nix
