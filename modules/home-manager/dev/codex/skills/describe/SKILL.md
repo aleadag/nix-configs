@@ -9,8 +9,9 @@ Use this skill when the user asks to describe changes (like Claude Code /describ
 
 ## Workflow
 
-1. Run the script to gather context:
-   - `./scripts/describe.sh [REVSET] [--no-verify]`
+1. Gather context with Jujutsu directly:
+   - `jj status`
+   - `jj diff -r [REVSET] --git`
 2. Review the diff and decide whether to split the change. If multiple unrelated concerns are present, ask the user to split first.
 3. Generate a conventional commit message with emoji, format: `<emoji> <type>: <imperative description>`
 4. Apply it: `jj describe -m "message" [REVSET]`

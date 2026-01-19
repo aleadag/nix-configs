@@ -22,14 +22,17 @@ in
     home.activation.codexDescribeSkill = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       target="$HOME/.codex/skills/describe"
       src="${./skills/describe}"
+      tmp="$(mktemp -d)"
+
+      cp -R "$src/." "$tmp/"
 
       if [ -L "$target" ] || [ -d "$target" ]; then
+        chmod -R u+w "$target" 2>/dev/null || true
         rm -rf "$target"
       fi
 
-      mkdir -p "$target"
-      cp -R "$src/"* "$target/"
-      chmod +x "$target/scripts/describe.sh" 2>/dev/null || true
+      mkdir -p "$(dirname "$target")"
+      mv "$tmp" "$target"
     '';
   };
 }
