@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 
@@ -20,30 +19,23 @@ in
       enable = true;
     };
 
-    home.activation.codexDescribeSkill =
+    home.file =
       let
-        describeSkill = pkgs.writeText "SKILL.md" ''
-          ---
-          name: describe
-          description: Generate a conventional commit description with emoji from jj diff and apply it with jj describe
-          ---
-
-          ${builtins.readFile ./commands/describe.md}
-        '';
+        commands = builtins.readDir ./commands;
+        commandFiles = lib.filterAttrs (
+          name: type: type == "regular" && lib.hasSuffix ".md" name
+        ) commands;
+        # Map each command to .codex/skills/<name>/SKILL.md
+        skillFiles = lib.mapAttrs' (
+          name: _:
+          let
+            skillName = lib.removeSuffix ".md" name;
+          in
+          lib.nameValuePair ".codex/skills/${skillName}/SKILL.md" {
+            text = builtins.readFile (./commands + "/${name}");
+          }
+        ) commandFiles;
       in
-      lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        target="$HOME/.codex/skills/describe"
-        tmp="$(mktemp -d)"
-
-        cp "${describeSkill}" "$tmp/SKILL.md"
-
-        if [ -L "$target" ] || [ -d "$target" ]; then
-          chmod -R u+w "$target" 2>/dev/null || true
-          rm -rf "$target"
-        fi
-
-        mkdir -p "$(dirname "$target")"
-        mv "$tmp" "$target"
-      '';
+      skillFiles;
   };
 }

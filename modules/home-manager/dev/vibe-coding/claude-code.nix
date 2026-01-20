@@ -19,23 +19,9 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # Install Claude Code package and ccusage
-    home.packages =
-      with pkgs;
-      [
-        claude-code
-        just
-        # Include cc-tools binaries
-        cc-tools
-      ]
-      ++ lib.optionals (pkgs.stdenv.isLinux && pkgs.stdenv.isx86_64) [
-        # FHS environment for running Playwright browsers (x86_64 Linux only)
-        steam-run
-      ];
-
-    mutableConfig.files = {
-      # Claude Code settings which requires writabble
-      "${config.home.homeDirectory}/.claude/settings.json" = {
+    programs.claude-code = {
+      enable = true;
+      settings = {
         env = {
           BASH_DEFAULT_TIMEOUT_MS = "300000";
           BASH_MAX_TIMEOUT_MS = "600000";
@@ -84,31 +70,28 @@ in
       };
     };
 
+    # Install additional packages
+    home.packages = with pkgs; [
+      just
+      # Include cc-tools binaries
+      cc-tools
+    ];
+
     # Create and manage ~/.claude directory
     home.file =
       let
         # Shared commands from the vibe-coding directory
-        sharedCommandFiles = builtins.readDir ../commands;
+        sharedCommandFiles = builtins.readDir ./commands;
         sharedCommandEntries = lib.filterAttrs (
           name: type: type == "regular" && lib.hasSuffix ".md" name
         ) sharedCommandFiles;
         sharedCommandFileAttrs = lib.mapAttrs' (
-          name: _: lib.nameValuePair ".claude/commands/${name}" { source = ../commands + "/${name}"; }
-        ) sharedCommandEntries;
-
-        # Local commands
-        localCommandFiles = builtins.readDir ./commands;
-        localCommandEntries = lib.filterAttrs (
-          name: type: type == "regular" && lib.hasSuffix ".md" name
-        ) localCommandFiles;
-        localCommandFileAttrs = lib.mapAttrs' (
           name: _: lib.nameValuePair ".claude/commands/${name}" { source = ./commands + "/${name}"; }
-        ) localCommandEntries;
+        ) sharedCommandEntries;
       in
       sharedCommandFileAttrs
-      // localCommandFileAttrs
       // {
-        ".claude/CLAUDE.md".source = ./CLAUDE.md;
+        ".claude/CLAUDE.md".source = ./CONTEXT.md;
 
         # Create necessary directories
         ".claude/.keep".text = "";
@@ -116,13 +99,7 @@ in
         ".claude/todos/.keep".text = "";
         ".claude/statsig/.keep".text = "";
         ".claude/commands/.keep".text = "";
-      }
-      // lib.optionalAttrs pkgs.stdenv.isLinux {
-        # Playwright MCP wrapper for steam-run (Linux only)
-        ".claude/playwright-mcp-wrapper.sh" = {
-          source = ./playwright-headless-wrapper.sh;
-          executable = true;
-        };
       };
   };
 }
+

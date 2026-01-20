@@ -1,3 +1,8 @@
+---
+allowed-tools: all
+description: Analyze and fix a GitHub issue
+---
+
 Please analyze and fix the GitHub issue: $ARGUMENTS.
 
 Follow these steps:
