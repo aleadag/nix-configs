@@ -22,9 +22,7 @@ in
     home.file =
       let
         commands = builtins.readDir ./commands;
-        commandFiles = lib.filterAttrs (
-          name: type: type == "regular" && lib.hasSuffix ".md" name
-        ) commands;
+        commandFiles = lib.filterAttrs (name: type: type == "regular" && lib.hasSuffix ".md" name) commands;
         # Map each command to .codex/skills/<name>/SKILL.md
         skillFiles = lib.mapAttrs' (
           name: _:
