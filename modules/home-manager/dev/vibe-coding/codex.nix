@@ -28,7 +28,7 @@ in
           description: Generate a conventional commit description with emoji from jj diff and apply it with jj describe
           ---
 
-          ${builtins.readFile ../commands/describe.md}
+          ${builtins.readFile ./commands/describe.md}
         '';
       in
       lib.hm.dag.entryAfter [ "writeBoundary" ] ''

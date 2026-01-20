@@ -3,7 +3,7 @@
 {
   imports = [
     ./claude-code
-    ./codex
-    ./gemini-cli
+    ./codex.nix
+    ./gemini-cli.nix
   ];
 }

@@ -25,7 +25,7 @@ in
       commands = {
         describe = {
           description = "Create well-formatted change descriptions with conventional commit messages and emoji, then apply them";
-          prompt = builtins.readFile ../commands/describe.md;
+          prompt = builtins.readFile ./commands/describe.md;
           "allowed-tools" =
             "Bash(jj status:*), Bash(jj diff:*), Bash(jj describe:*), Bash(jj log:*), Bash(jj show:*)";
         };
