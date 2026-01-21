@@ -18,10 +18,34 @@ in
     programs.gemini-cli = {
       enable = true;
       settings = {
-        general.previewFeatures = true;
+        general = {
+          preferredEditor = "nvim";
+          previewFeatures = true;
+        };
+        ide.enabled = true;
+        privacy.usageStatisticsEnabled = false;
         # if we don't have this, it will ask for login for every new session
         security.auth.selectedType = "oauth-personal";
         context.fileName = [ "CONTEXT.md" ];
+        tools = {
+          autoAccept = false;
+          enableHooks = true;
+        };
+        hooks = {
+          AfterTool = [
+            {
+              matcher = "write_file|replace";
+              hooks = [
+                {
+                  name = "jj-auto-new";
+                  type = "command";
+                  command = "jj new";
+                  description = "Auto-create new change after file modification";
+                }
+              ];
+            }
+          ];
+        };
       };
       commands = {
         check = {
