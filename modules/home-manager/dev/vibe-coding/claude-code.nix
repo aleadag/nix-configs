@@ -19,28 +19,30 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    sops.secrets.anthropic_base_url = { };
+    sops.secrets.anthropic_api_key = { };
+
     programs.claude-code = {
       enable = true;
+      package = pkgs.symlinkJoin {
+        name = "claude-code-wrapped";
+        paths = [ pkgs.claude-code ];
+        buildInputs = [ pkgs.makeWrapper ];
+        postBuild = ''
+          wrapProgram $out/bin/claude \
+            --run 'export ANTHROPIC_BASE_URL="$(cat ${config.sops.secrets.anthropic_base_url.path})"' \
+            --run 'export ANTHROPIC_API_KEY="$(cat ${config.sops.secrets.anthropic_api_key.path})"'
+        '';
+      };
+      commandsDir = ./commands;
+      memory.source = ./CONTEXT.md;
       settings = {
         env = {
           BASH_DEFAULT_TIMEOUT_MS = "300000";
           BASH_MAX_TIMEOUT_MS = "600000";
           CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
-          TZ = "America/Los_Angeles";
           USE_BUILTIN_RIPGREP = "0";
-          # Use RAM-based cache on Linux (/dev/shm) or regular tmp on macOS
-          CLAUDE_STATUSLINE_CACHE_DIR = if pkgs.stdenv.isDarwin then "/tmp" else "/dev/shm";
-        }
-        // lib.optionalAttrs config.home-manager.mihomo.enable (
-          let
-            # Claude Code does not support SOCKS proxies.
-            proxy = "http://127.0.0.1:7890";
-          in
-          {
-            HTTP_PROXY = proxy;
-            HTTPS_PROXY = proxy;
-          }
-        );
+        };
 
         hooks = {
           PostToolUse = [
@@ -66,6 +68,7 @@ in
             }
           ];
         };
+
         includeCoAuthoredBy = false;
       };
     };
@@ -76,29 +79,5 @@ in
       # Include cc-tools binaries
       cc-tools
     ];
-
-    # Create and manage ~/.claude directory
-    home.file =
-      let
-        # Shared commands from the vibe-coding directory
-        sharedCommandFiles = builtins.readDir ./commands;
-        sharedCommandEntries = lib.filterAttrs (
-          name: type: type == "regular" && lib.hasSuffix ".md" name
-        ) sharedCommandFiles;
-        sharedCommandFileAttrs = lib.mapAttrs' (
-          name: _: lib.nameValuePair ".claude/commands/${name}" { source = ./commands + "/${name}"; }
-        ) sharedCommandEntries;
-      in
-      sharedCommandFileAttrs
-      // {
-        ".claude/CLAUDE.md".source = ./CONTEXT.md;
-
-        # Create necessary directories
-        ".claude/.keep".text = "";
-        ".claude/projects/.keep".text = "";
-        ".claude/todos/.keep".text = "";
-        ".claude/statsig/.keep".text = "";
-        ".claude/commands/.keep".text = "";
-      };
   };
 }
