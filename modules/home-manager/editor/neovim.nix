@@ -89,7 +89,7 @@ in
       vimAlias = true;
       vimdiffAlias = true;
 
-      extraLuaConfig = # lua
+      initLua = # lua
         ''
           -- general config
           vim.g.mapleader = ' '
