@@ -12,7 +12,7 @@
     profile.name = "docked";
     profile.outputs = [
       {
-        criteria = "Philips Consumer Electronics Company PHL 279C9 UHB2130005322";
+        criteria = "LG Electronics LG HDR 4K 0x0003D6BE";
         status = "enable";
         scale = 1.5;
       }
