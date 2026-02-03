@@ -56,16 +56,16 @@ in
           '';
         "netrc".content = # netrc
           ''
-            machine attic.tisvc.cc
+            machine attic.ticos.cloud
             password ${config.sops.placeholder.attic_token}
           '';
         "attic.toml" = {
           content = # toml
             ''
-              default-server = "tisvc"
+              default-server = "ticos-cloud"
 
-              [servers.tisvc]
-              endpoint = "https://attic.tisvc.cc"
+              [servers.ticos-cloud]
+              endpoint = "http://attic.ticos.cloud:7878"
               token = "${config.sops.placeholder.attic_token}"
             '';
           path = "${config.home.homeDirectory}/.config/attic/config.toml";
