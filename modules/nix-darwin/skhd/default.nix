@@ -208,9 +208,6 @@ in
                                            yabai -m window --grid 4:4:1:1:2:2; \
                                            sketchybar --trigger window_focus
 
-            # Close a window. Not the same as quit (legacy - use cmd+shift+slash instead)
-            cmd + shift - q       : yabai -m window --close
-
             # Focus window under mouse
             cmd + ctrl - m       : yabai -m window --focus mouse
 
