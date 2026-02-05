@@ -11,6 +11,7 @@
   light ? (lib.getExe pkgs.acpilight),
   pamixer ? (lib.getExe pkgs.pamixer),
   playerctl ? (lib.getExe pkgs.playerctl),
+  caffeine-toggle ? "caffeine-toggle",
   terminal ? config.home-manager.window-manager.default.terminal,
   statusCommand ? null,
   alt ? "Mod1",
@@ -72,7 +73,7 @@
 }:
 let
   # Modes
-  powerManagementMode = " : Screen [l]ock, [e]xit, [s]uspend, [h]ibernate, [R]eboot, [S]hutdown";
+  powerManagementMode = " : [l]ock, [e]xit, [s]uspend, [h]ibernate, [c]affeine, [R]eboot, [S]hutdown";
   resizeMode = " : [h]  , [j]  , [k]  , [l] ";
 
   # Helpers
@@ -298,6 +299,7 @@ in
             e = "mode default, exec ${msg} exit";
             s = "mode default, exec ${systemctl} suspend";
             h = "mode default, exec ${systemctl} hibernate";
+            c = "mode default, exec ${caffeine-toggle}";
             "Shift+r" = "mode default, exec ${systemctl} reboot";
             "Shift+s" = "mode default, exec ${systemctl} poweroff";
           }

@@ -56,7 +56,7 @@ in
                 (lib.optionalString cfg.battery.enable "battery")
                 "wireplumber"
                 "custom/dunst"
-                "idle_inhibitor"
+                "custom/caffeine"
                 "tray"
               ]
               [
@@ -73,14 +73,27 @@ in
             on-click = "activate";
             on-click-middle = "close";
           };
-          idle_inhibitor = {
-            format = "{icon}";
-            format-icons = {
-              deactivated = "󰾪";
-              activated = "";
-            };
-            tooltip-format-activated = "Caffeine enabled";
-            tooltip-format-deactivated = "Caffeine disabled";
+          "custom/caffeine" = {
+            exec = lib.getExe (
+              pkgs.writeShellApplication {
+                name = "caffeine-status";
+                runtimeInputs = with pkgs; [
+                  coreutils
+                  procps
+                ];
+                text = ''
+                  if pgrep -f "caffeine-inhibitor" > /dev/null; then
+                    printf '{"text": "", "class": "activated", "tooltip": "Caffeine enabled"}\n'
+                  else
+                    printf '{"text": "󰾪", "class": "deactivated", "tooltip": "Caffeine disabled"}\n'
+                  fi
+                '';
+              }
+            );
+            return-type = "json";
+            interval = 60;
+            signal = 9;
+            on-click = "caffeine-toggle";
           };
           network = {
             inherit (cfg) interval;
@@ -376,7 +389,7 @@ in
             #wireplumber.muted {
               color: @base08;
             }
-            #idle_inhibitor.activated {
+            #custom-caffeine.activated {
               background: @base08; /* Attention: Caffeine Enabled */
               color: @base00;
             }

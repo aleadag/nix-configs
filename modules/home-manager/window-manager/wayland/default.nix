@@ -7,6 +7,7 @@
 
 {
   imports = [
+    ./caffeine.nix
     ./fuzzel.nix
     ./kanshi
     ./sway.nix
