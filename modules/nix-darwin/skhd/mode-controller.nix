@@ -26,7 +26,7 @@ pkgs.writeShellApplication {
       power)
         sketchybar  --bar           color=0xff${colors.base08} \
                     --set mode_indicator drawing=on \
-                    --set mode_indicator label="[POWER] L:lock, E:logout, S:suspend, H:hibernate, shift+R:reboot, shift+S:shutdown"
+                    --set mode_indicator label="[POWER] L:lock, E:logout, S:suspend, H:hibernate, C:caffeinate, shift+R:reboot, shift+S:shutdown"
         ;;
       reload)
         sketchybar  --bar           color=0xff${colors.base0D} \

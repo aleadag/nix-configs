@@ -43,6 +43,10 @@ end
 -- Subscribe to mouse click events
 caffeine:subscribe("mouse.clicked", toggle_caffeine)
 
+-- Subscribe to custom event for external triggering (e.g. from skhd)
+sbar.add("event", "toggle_caffeine")
+caffeine:subscribe("toggle_caffeine", toggle_caffeine)
+
 -- Check initial state and set appropriate icon
 caffeine:subscribe("routine", function()
   sbar.exec("pgrep caffeinate", function(result)

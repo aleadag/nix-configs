@@ -97,7 +97,7 @@ in
             :: reload  @         : ${modeControllerCmd} reload
 
             # Mode activation (consistent with Sway/i3)
-            cmd - 0x2F             ; resize
+            cmd - 0x2F             ; resize             # cmd + . enters resize mode
             cmd + shift - escape   ; power
             cmd + shift - x        ; reload
 
@@ -275,6 +275,8 @@ in
             power < e              : skhd -k 'escape'; osascript -e 'tell app "System Events" to log out'  # logout
             power < s              : skhd -k 'escape'; pmset sleepnow  # suspend
             power < h              : skhd -k 'escape'; sudo pmset -a hibernatemode 25 && sudo pmset sleepnow  # hibernate
+            power < c              : skhd -k 'escape'; sketchybar --trigger toggle_caffeine
+
             power < shift - r      : skhd -k 'escape'; sudo shutdown -r now  # reboot
             power < shift - s      : skhd -k 'escape'; sudo shutdown -h now  # shutdown
 
