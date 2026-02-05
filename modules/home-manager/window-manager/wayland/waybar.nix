@@ -50,7 +50,7 @@ in
                 "network"
                 "disk"
                 "memory"
-                "cpu#load"
+                "cpu"
                 "temperature"
                 (lib.optionalString cfg.backlight.enable "backlight")
                 (lib.optionalString cfg.battery.enable "battery")
@@ -64,12 +64,6 @@ in
                 lib.flatten
                 # Filter optional modules
                 (lib.filter (m: m != ""))
-                # Add a separator between each module, except the last one
-                (builtins.concatMap (m: [
-                  m
-                  "custom/separator"
-                ]))
-                lib.init
               ];
           "sway/mode".tooltip = lib.mkIf swayCfg.enable false;
           "sway/workspaces".disable-scroll-wraparound = lib.mkIf swayCfg.enable true;
@@ -125,7 +119,7 @@ in
         // {
           disk = {
             inherit (cfg) interval;
-            format = "  {percentage_free}%";
+            format = " {percentage_free}%";
             states = {
               warning = 75;
               critical = 95;
@@ -140,9 +134,13 @@ in
               critical = 95;
             };
           };
-          "cpu#load" = {
+          "cpu" = {
             inherit (cfg) interval;
             format = " {load:0.1f}";
+            states = {
+              warning = 50;
+              critical = 80;
+            };
           };
           temperature = {
             format = "{icon} {temperatureC}°C";
@@ -273,21 +271,92 @@ in
             * {
               border: none;
               border-radius: 0;
+              min-height: 0;
             }
             window#waybar {
               background: @base00;
               color: @base05;
             }
+
+            /* Important System & Control Modules - Background Blocks */
+            #disk, #memory, #cpu, #temperature, #battery, #clock {
+              padding: 0px 6px;
+              margin: 0 2px;
+              border-radius: 4px;
+              color: @base00;
+            }
+            
+            #idle_inhibitor {
+              padding: 0px 10px;
+              margin: 0 2px;
+              border-radius: 4px;
+              color: @base00;
+            }
+
+            #disk {
+              background: @base09;
+              color: @base05; 
+            }
+            #memory {
+              background: @base0C;
+            }
+            #cpu {
+              background: @base07;
+            }
+            #temperature {
+              background: @base0D;
+            }
+            #battery {
+              background: @base0B;
+            }
+            #idle_inhibitor {
+              background: @base07;
+            }
+            #clock {
+              background: @base0D;
+              color: @base00;
+              padding: 0px 10px;
+              margin: 0 2px;
+            }
+
+            /* Standard Info - Text Color Only */
+            #network, #wireplumber, #backlight, #custom-dunst {
+              color: @base0E;
+              background: transparent;
+              padding: 0px 6px;
+              margin: 0 2px;
+            }
+            #wireplumber {
+              color: @base0F;
+            }
+            #backlight {
+              color: @base0A;
+            }
+
+            /* Warning/Critical States */
+            #temperature.critical, #battery.critical, #cpu.critical, #memory.critical, #disk.critical {
+              background: @base08;
+              color: @base00;
+            }
+            #battery.warning, #cpu.warning, #memory.warning, #disk.warning {
+              background: @base0A;
+              color: @base00;
+            }
+
             #submap, #mode {
               background: @base0A;
               color: @base00;
-              padding: 0 7px;
+              padding: 0px 6px;
+              margin: 0 2px;
+              border-radius: 4px;
             }
             #window {
               padding: 0 3px;
             }
             #workspaces button {
-              padding: 0 7px;
+              padding: 0px 6px;
+              border-radius: 4px;
+              margin: 0 2px;
             }
             #workspaces button.active,
             #workspaces button.focused {
@@ -298,34 +367,7 @@ in
               background: @base08;
               color: @base00;
             }
-            #temperature.critical {
-              color: @base08;
-            }
             #tray > .needs-attention {
-              color: @base08;
-            }
-            #battery.warning {
-              color: @base0A;
-            }
-            #battery.critical {
-              color: @base08;
-            }
-            #cpu.warning {
-              color: @base0A;
-            }
-            #cpu.critical {
-              color: @base08;
-            }
-            #memory.warning {
-              color: @base0A;
-            }
-            #memory.critical {
-              color: @base08;
-            }
-            #disk.warning {
-              color: @base0A;
-            }
-            #disk.critical {
               color: @base08;
             }
             #wireplumber.high {
@@ -335,7 +377,8 @@ in
               color: @base08;
             }
             #idle_inhibitor.activated {
-              color: @base08;
+              background: @base08; /* Attention: Caffeine Enabled */
+              color: @base00;
             }
             #custom-dunst.disabled {
               color: @base08;
