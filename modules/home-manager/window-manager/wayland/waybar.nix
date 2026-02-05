@@ -298,7 +298,7 @@ in
               border-radius: 4px;
               color: @base00;
             }
-            
+
             #idle_inhibitor {
               padding: 0px 10px;
               margin: 0 2px;
