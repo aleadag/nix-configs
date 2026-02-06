@@ -299,10 +299,11 @@ in
               color: @base00;
             }
 
-            #idle_inhibitor {
+            #idle_inhibitor, #custom-caffeine {
               padding: 0px 10px;
               margin: 0 2px;
               border-radius: 4px;
+              background: @base07;
               color: @base00;
             }
 
@@ -321,9 +322,6 @@ in
             }
             #battery {
               background: @base0B;
-            }
-            #idle_inhibitor {
-              background: @base07;
             }
             #clock {
               background: @base0D;
