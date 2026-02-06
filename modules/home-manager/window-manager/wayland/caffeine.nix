@@ -5,6 +5,10 @@
   ...
 }:
 let
+  caffeine-inhibitor = pkgs.writeShellScriptBin "caffeine-inhibitor" ''
+    exec ${lib.getExe' pkgs.coreutils "sleep"} infinity
+  '';
+
   caffeine-toggle = pkgs.writeShellApplication {
     name = "caffeine-toggle";
     runtimeInputs = with pkgs; [
@@ -12,6 +16,7 @@ let
       procps
       systemd
       libnotify
+      caffeine-inhibitor
     ];
     text = ''
       # Use a specific name for the inhibitor process to easily find it
@@ -22,13 +27,13 @@ let
         notify-send -u normal -t 3000 "Caffeine" "Disabled 💤"
       else
         # Start systemd-inhibit in background
-        # We use 'sleep infinity' and give it a recognizable process name
         systemd-inhibit \
           --what=idle \
           --who="caffeine-toggle" \
           --why="User requested" \
           --mode=block \
-          bash -c "exec -a $INHIBITOR_NAME sleep infinity" &        notify-send -u normal -t 3000 "Caffeine" "Enabled ☕️"
+          caffeine-inhibitor &
+        notify-send -u normal -t 3000 "Caffeine" "Enabled ☕️"
       fi
 
       # Signal waybar to update custom/caffeine if it exists
