@@ -10,6 +10,8 @@ let
   cfg = config.home-manager.nix;
 in
 {
+  imports = [ ./niks3.nix ];
+
   options.home-manager.nix.enable = lib.mkEnableOption "Nix config" // {
     default = true;
   };

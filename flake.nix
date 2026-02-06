@@ -78,6 +78,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    niks3 = {
+      url = "github:Mic92/niks3";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+    };
+
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
