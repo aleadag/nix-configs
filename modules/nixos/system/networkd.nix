@@ -11,7 +11,7 @@ in
     services.resolved = {
       enable = true;
       # Can make DNS lookups really slow
-      dnssec = "false";
+      settings.Resolve.DNSSEC = "false";
     };
     networking.useNetworkd = true;
   };
