@@ -18,7 +18,7 @@ in
       default = true;
     };
     proxy = lib.mkOption {
-      default = "socks5://127.0.0.1:7890";
+      default = "http://127.0.0.1:7890";
       example = "http://localhost:1234";
       type = with lib.types; nullOr str;
       description = "Nix daemon proxy.";
