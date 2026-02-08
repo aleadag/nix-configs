@@ -15,7 +15,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [ flake.inputs.niks3.packages.${pkgs.system}.default ];
+    home.packages = [ flake.inputs.niks3.packages.${pkgs.stdenv.hostPlatform.system}.default ];
 
     sops = {
       secrets = {
@@ -23,6 +23,14 @@ in
         # Define secrets for AWS credentials
         niks3_aws_access_key_id = { };
         niks3_aws_secret_access_key = { };
+      };
+
+      templates."niks3-aws-env" = {
+        content = ''
+          AWS_ACCESS_KEY_ID=${config.sops.placeholder.niks3_aws_access_key_id}
+          AWS_SECRET_ACCESS_KEY=${config.sops.placeholder.niks3_aws_secret_access_key}
+        '';
+        path = "${config.home.homeDirectory}/.config/niks3/aws_env";
       };
 
       templates."niks3-aws-credentials" = {
