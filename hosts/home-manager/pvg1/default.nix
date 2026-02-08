@@ -12,6 +12,7 @@
       neovim.enable = true;
     };
     gui.enable = false;
+    nix.niks3.gc.enable = true;
   };
 
   targets.genericLinux.enable = true;
