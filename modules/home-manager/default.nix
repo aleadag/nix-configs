@@ -6,7 +6,6 @@
 
 {
   imports = [
-    flake.inputs.cosmic-manager.homeManagerModules.cosmic-manager
     flake.inputs.stylix.homeModules.stylix
     flake.outputs.internal.sharedModules.default
     ./cli
