@@ -121,7 +121,7 @@ in
 
           dpmsBlock =
             let
-              xset = "${lib.getExe pkgs.xorg.xset}";
+              xset = "${lib.getExe pkgs.xset}";
             in
             {
               inherit (cfg) interval;
