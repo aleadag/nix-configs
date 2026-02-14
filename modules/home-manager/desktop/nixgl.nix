@@ -27,5 +27,6 @@ in
     };
 
     wayland.windowManager.sway.package = lib.mkForce (config.lib.nixGL.wrap pkgs.sway);
+    home-manager.window-manager.wayland.niri.package = lib.mkForce (config.lib.nixGL.wrap pkgs.niri);
   };
 }
