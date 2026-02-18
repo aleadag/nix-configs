@@ -9,7 +9,7 @@ let
   menu = lib.getExe config.programs.fuzzel.package;
   systemctl = lib.getExe' pkgs.systemd "systemctl";
   loginctl = lib.getExe' pkgs.systemd "loginctl";
-  niri = lib.getExe' pkgs.niri "niri";
+  niri = lib.getExe' cfg.package "niri";
   niriPowerMenu = pkgs.writeShellApplication {
     name = "niri-power-menu";
     runtimeInputs = [ pkgs.systemd ];
@@ -40,7 +40,8 @@ let
   inherit (config.home-manager.window-manager.default) terminal;
   inherit (config.home-manager.window-manager.default) browser;
   wallpaperMode = config.stylix.imageScalingMode;
-  xkbOptions = if config.home.keyboard != null then lib.concatStringsSep "," config.home.keyboard.options else "";
+  xkbOptions =
+    if config.home.keyboard != null then lib.concatStringsSep "," config.home.keyboard.options else "";
   quote = builtins.toJSON;
 in
 {
@@ -62,6 +63,16 @@ in
         niriPowerMenu
       ]
       ++ lib.optionals cfg.xwayland.enable [ xwayland-satellite ];
+
+    # XXX: we can remove this once HM generate niri.service
+    xdg.dataFile."wayland-sessions/niri-uwsm.desktop".text = ''
+      [Desktop Entry]
+      Name=Niri (UWSM)
+      Comment=A scrollable-tiling Wayland compositor managed by UWSM
+      Exec=${niri} --session
+      Type=Application
+      DesktopNames=niri
+    '';
 
     xdg.configFile."niri/config.kdl".source =
       let
