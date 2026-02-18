@@ -185,14 +185,21 @@ sudo systemctl daemon-reload
 sudo systemctl restart nix-daemon
 ```
 
-If you're using this configuration on a non-NixOS system, you'll need to manually install the following packages:
+If you're using this configuration on a non-NixOS system, you'll need to manually
+install the following packages:
 
-- greetd: The login manager
-- tuigreeter: The TUI greeter for greetd
-  ```bash
-  # Catppuccin Frappe Theme
-  tuigreet --time --cmd sway --theme 'text=lightcyan;prompt=green;input=lightblue;border=lightmagenta;title=magenta;greet=lightmagenta;action=lightblue;button=lightred;container=black;time=lightgreen'
-  ```
+- [greetd](https://git.sr.ht/~kennylevinsen/greetd): The login manager
+- [tuigreet](https://github.com/apognu/tuigreet): The TUI greeter for greetd
+- [uwsm](https://github.com/vaxerski/uwsm): Universal Wayland Session Manager
+
+Example `greetd` configuration using `tuigreet` and `uwsm`:
+
+```bash
+# /etc/greetd/config.toml
+[default_session]
+command = "tuigreet --time --cmd 'uwsm start niri.desktop' --theme 'text=lightcyan;prompt=green;input=lightblue;border=lightmagenta;title=magenta;greet=lightmagenta;action=lightblue;button=lightred;container=black;time=lightgreen'"
+user = "greeter"
+```
 
 Please refer to your distribution's package manager to install these dependencies.
 
