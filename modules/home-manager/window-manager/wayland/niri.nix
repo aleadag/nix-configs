@@ -726,6 +726,9 @@ in
                 NIXOS_OZONE_WL "1"
                 SDL_VIDEODRIVER "wayland"
                 _JAVA_AWT_WM_NONREPARENTING "1"
+                ${lib.optionalString (
+                  config.i18n.inputMethod.enable && config.i18n.inputMethod.type == "fcitx5"
+                ) ''XMODIFIERS "@im=fcitx"''}
             }
 
             spawn-at-startup ${quote (lib.getExe pkgs.swaybg)} "-i" ${quote config.stylix.image} "-m" ${quote wallpaperMode}
