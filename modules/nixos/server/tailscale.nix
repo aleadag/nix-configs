@@ -21,9 +21,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [ tailscale ];
-
-    # always allow traffic from your Tailscale network
+    # Always allow traffic from your Tailscale network
     networking.firewall.trustedInterfaces = [ serviceCfg.interfaceName ];
 
     services = {

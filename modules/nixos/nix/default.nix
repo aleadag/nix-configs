@@ -9,16 +9,6 @@
 
 let
   cfg = config.nixos.nix;
-  inherit (config.nixos.home) username;
-  hmAwsCredentialsFile = lib.attrByPath [
-    "home-manager"
-    "users"
-    username
-    "sops"
-    "templates"
-    "niks3-aws-credentials"
-    "path"
-  ] null config;
 in
 {
   imports = [
@@ -31,13 +21,9 @@ in
       default = true;
     };
     tmpOnDisk = lib.mkEnableOption "set nix's TMPDIR to /var/tmp (disk instead tmpfs)" // {
-      default = config.boot.tmp.useTmpfs;
-    };
-    awsCredentialsFile = lib.mkOption {
-      default = hmAwsCredentialsFile;
-      example = "/home/alexander/.config/niks3/aws_credentials";
-      type = with lib.types; nullOr str;
-      description = "AWS credentials file path for nix-daemon.";
+      # TODO: remove this once nix 2.31.0+ becomes the default
+      # https://github.com/NixOS/nixpkgs/issues/54707#issuecomment-3397189236
+      default = config.boot.tmp.useTmpfs && lib.versionAtLeast config.nix.package.version "2.31.0";
     };
   };
 
@@ -87,14 +73,7 @@ in
 
     # Change build dir to /var/tmp
     systemd.services.nix-daemon = {
-      environment = lib.mkMerge [
-        (lib.optionalAttrs cfg.tmpOnDisk {
-          TMPDIR = "/var/tmp";
-        })
-        (lib.optionalAttrs (cfg.awsCredentialsFile != null) {
-          AWS_SHARED_CREDENTIALS_FILE = cfg.awsCredentialsFile;
-        })
-      ];
+      environment.TMPDIR = lib.mkIf cfg.tmpOnDisk "/var/tmp";
     };
   };
 }

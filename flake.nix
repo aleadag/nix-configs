@@ -42,6 +42,7 @@
       url = "github:Jovian-Experiments/Jovian-NixOS";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-flatpak.url = "github:gmodena/nix-flatpak";
 
     # helpers
     flake-compat.url = "github:edolstra/flake-compat";

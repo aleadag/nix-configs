@@ -5,6 +5,9 @@
   ...
 }:
 
+let
+  inherit (config.nixos.home) username;
+in
 {
   imports = [
     ./ollama.nix
@@ -24,7 +27,11 @@
       home-manager.dev.enable = true;
     };
 
-    # Android tools - systemd 258+ handles uaccess rules automatically
-    environment.systemPackages = [ pkgs.android-tools ];
+    environment.systemPackages = with pkgs; [
+      android-tools
+    ];
+
+    # Added user to groups
+    users.users.${username}.extraGroups = [ "adbusers" ];
   };
 }

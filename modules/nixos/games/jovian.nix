@@ -13,6 +13,8 @@ in
 {
   imports = [
     flake.inputs.jovian-nixos.nixosModules.default
+    # TODO: move this somewhere else
+    flake.inputs.nix-flatpak.nixosModules.nix-flatpak
   ];
 
   options.nixos.games.jovian = {
@@ -23,26 +25,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    jovian = {
-      steam = {
-        enable = true;
-        autoStart = true;
-        user = username;
-        desktopSession = config.services.displayManager.defaultSession;
-        environment = {
-          STEAM_EXTRA_COMPAT_TOOLS_PATHS =
-            lib.makeSearchPathOutput "steamcompattool" ""
-              config.programs.steam.extraCompatPackages;
-        };
-      };
-      hardware.has.amd.gpu = config.nixos.system.gpu.maker == "amd";
-    };
-
-    programs.steam.extraCompatPackages = with pkgs; [
-      proton-cachyos
-      proton-ge-custom
-    ];
-
     nixos.home.extraModules = {
       home.file."Desktop/Return-to-Gaming-Mode.desktop".source =
         (pkgs.makeDesktopItem {
@@ -71,6 +53,34 @@ in
       };
     };
 
+    jovian = {
+      steam = {
+        enable = true;
+        autoStart = true;
+        user = username;
+        desktopSession = config.services.displayManager.defaultSession;
+        environment = {
+          STEAM_EXTRA_COMPAT_TOOLS_PATHS =
+            lib.makeSearchPathOutput "steamcompattool" ""
+              config.programs.steam.extraCompatPackages;
+        };
+      };
+      hardware.has.amd.gpu = config.nixos.system.gpu.maker == "amd";
+    };
+
+    programs.steam.extraCompatPackages = with pkgs; [
+      proton-ge-bin
+    ];
+
+    services.flatpak = {
+      enable = lib.mkDefault true;
+      packages = [
+        "com.heroicgameslauncher.hgl"
+        "net.retrodeck.retrodeck"
+      ];
+      update.auto.enable = true;
+    };
+
     specialisation = {
       game-mode = lib.mkIf cfg.bootInDesktopMode {
         configuration = {
@@ -85,10 +95,6 @@ in
           nixos.games.jovian.bootInDesktopMode = true;
           system.nixos.tags = [ "with-jovian-in-desktop-mode" ];
         };
-      };
-      # from chaotic.mesa-git
-      stable-mesa.configuration = {
-        boot.loader.systemd-boot.sortKey = "p_nixos";
       };
     };
   };

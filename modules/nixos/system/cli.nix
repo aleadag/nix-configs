@@ -21,10 +21,9 @@
         with config.boot.kernelPackages;
         [
           cpupower
-          mesa-demos
           lm_sensors
           lshw
-          net-tools
+          mesa-demos
           pciutils
           powertop
           psmisc
@@ -46,7 +45,10 @@
         withNodeJs = false;
       };
       traceroute.enable = true;
-      zsh.enable = true;
+      zsh = {
+        enable = true;
+        enableCompletion = false;
+      };
     };
   };
 }
