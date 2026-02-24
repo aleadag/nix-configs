@@ -11,6 +11,7 @@ in
 {
   imports = [
     ./homebrew.nix
+    ./paneru.nix
   ];
 
   options.home-manager.darwin = {

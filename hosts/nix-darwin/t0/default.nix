@@ -1,6 +1,8 @@
 {
   nixpkgs.hostPlatform = "aarch64-darwin";
 
+  nix-darwin.yabai.enable = false;
+
   nix-darwin.home = {
     username = "alexander";
     extraModules = {
@@ -9,6 +11,7 @@
         cli.zsh.zprof.enable = true;
         desktop.mpv.enable = true;
         syncthing.enable = true;
+        window-manager.paneru.enable = true;
       };
     };
   };

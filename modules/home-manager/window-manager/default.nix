@@ -18,6 +18,7 @@ in
 
   options.home-manager.window-manager = {
     enable = lib.mkEnableOption "window manager config";
+    paneru.enable = lib.mkEnableOption "paneru window manager";
     default = {
       browser = lib.mkOption {
         type = lib.types.str;

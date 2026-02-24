@@ -471,6 +471,26 @@
         "type": "github"
       }
     },
+    "paneru": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1771434354,
+        "narHash": "sha256-xaFw4yffvc1fey6XQXgAf4KK5zBJWrAdHoMKZoK6Nz0=",
+        "owner": "karinushka",
+        "repo": "paneru",
+        "rev": "e9cfe7f9a571c191a4fee56fa43a7bfc41458e79",
+        "type": "github"
+      },
+      "original": {
+        "owner": "karinushka",
+        "repo": "paneru",
+        "type": "github"
+      }
+    },
     "process-compose": {
       "locked": {
         "lastModified": 1767863885,
@@ -505,6 +525,7 @@
         "nixpkgs-stable": "nixpkgs-stable",
         "nur": "nur",
         "omf-proxy": "omf-proxy",
+        "paneru": "paneru",
         "sops-nix": "sops-nix",
         "stylix": "stylix",
         "systems": "systems",
