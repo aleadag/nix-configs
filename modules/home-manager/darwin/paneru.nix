@@ -37,11 +37,11 @@ in
         window_swap_last = "cmd + shift - j";
         window_focus_first = "cmd - home";
         window_focus_last = "cmd - end";
-        window_nextdisplay = "ctrl + cmd - l";
+        window_nextdisplay = "cmd + ctrl + shift - n";
         window_center = "cmd - c";
-        window_resize = "cmd - f";
-        window_fullwidth = "ctrl + cmd - m";
-        window_manage = "ctrl + cmd - t";
+        window_resize = "cmd - .";
+        window_fullwidth = "cmd + shift - m";
+        window_manage = "cmd + ctrl - t";
         window_stack = "cmd - [";
         window_unstack = "cmd - ]";
         quit = "ctrl + alt - delete";
