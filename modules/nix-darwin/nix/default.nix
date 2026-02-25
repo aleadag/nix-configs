@@ -46,7 +46,6 @@ in
   config = lib.mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
       darwin-cleanup
-      raycast
     ];
 
     nix = {
