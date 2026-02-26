@@ -30,6 +30,7 @@ in
         "linearmouse"
         "logseq"
         "microsoft-edge"
+        "gechr/tap/whichspace"
       ];
     };
 
