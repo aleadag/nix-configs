@@ -15,24 +15,26 @@ let
     runtimeInputs = [ pkgs.systemd ];
     text = ''
       action="$(
-        printf '%s\n' \
-          Exit \
-          Lock-screen \
-          Suspend \
-          Sleep \
-          Hibernate \
-          Reboot \
-          Shutdown | ${menu} -d
+        printf '%s\t%s\n' \
+          '🚪' 'Exit' \
+          '🔒' 'Lock-screen' \
+          '☕️' 'Caffeine' \
+          '⏸️' 'Suspend' \
+          '😴' 'Sleep' \
+          '💤' 'Hibernate' \
+          '🔄' 'Reboot' \
+          '📴' 'Shutdown' | ${menu} -d --tabs=4
       )"
 
       case "$action" in
-        Exit) ${niri} msg action quit ;;
-        Lock-screen) ${loginctl} lock-session ;;
-        Suspend) ${systemctl} suspend ;;
-        Sleep) ${systemctl} sleep ;;
-        Hibernate) ${systemctl} hibernate ;;
-        Reboot) ${systemctl} reboot ;;
-        Shutdown) ${systemctl} poweroff ;;
+        *Exit) ${niri} msg action quit ;;
+        *Lock-screen) ${loginctl} lock-session ;;
+        *Caffeine) caffeine-toggle ;;
+        *Suspend) ${systemctl} suspend ;;
+        *Sleep) ${systemctl} sleep ;;
+        *Hibernate) ${systemctl} hibernate ;;
+        *Reboot) ${systemctl} reboot ;;
+        *Shutdown) ${systemctl} poweroff ;;
         *) exit 0 ;;
       esac
     '';
