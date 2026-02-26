@@ -63,6 +63,37 @@
 
     # global settings are in home-manager/darwin
     # NSGlobalDomain = {};
+
+    CustomUserPreferences = {
+      "com.apple.symbolichotkeys" = {
+        AppleSymbolicHotKeys = {
+          # 64 is 'Show Spotlight search'
+          "64" = {
+            enabled = true;
+            value = {
+              parameters = [
+                100
+                2
+                1048576
+              ];
+              type = "standard";
+            };
+          };
+          # 65 is 'Show Finder search window'
+          "65" = {
+            enabled = true;
+            value = {
+              parameters = [
+                100
+                2
+                1572864
+              ];
+              type = "standard";
+            };
+          };
+        };
+      };
+    };
   };
 
   system.keyboard = {
