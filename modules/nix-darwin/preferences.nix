@@ -43,6 +43,10 @@
       spans-displays = false;
     };
 
+    universalaccess = {
+      reduceMotion = true;
+    };
+
     # dock settings
     dock = {
       # auto show and hide dock
