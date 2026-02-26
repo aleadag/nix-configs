@@ -6,7 +6,7 @@
   nix-darwin.home = {
     username = "alexander";
     extraModules = {
-      home.stateVersion = "25.11";
+      home.stateVersion = "26.05";
       home-manager = {
         cli.zsh.zprof.enable = true;
         desktop.mpv.enable = false;
