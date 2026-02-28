@@ -37,7 +37,7 @@ in
         window_focus_first = "cmd - home";
         window_focus_last = "cmd - end";
         window_nextdisplay = "cmd + ctrl + shift - n";
-        window_center = "cmd - c";
+        window_center = "cmd + shift - c";
         window_resize = "cmd - .";
         window_fullwidth = "cmd + shift - m";
         window_manage = "cmd + ctrl - t";
