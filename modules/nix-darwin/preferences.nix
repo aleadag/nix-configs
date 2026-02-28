@@ -79,7 +79,11 @@
           "118" = {
             enabled = true;
             value = {
-              parameters = [ 113 12 1048576 ];
+              parameters = [
+                113
+                12
+                1048576
+              ];
               type = "standard";
             };
           };
@@ -87,7 +91,11 @@
           "119" = {
             enabled = true;
             value = {
-              parameters = [ 119 13 1048576 ];
+              parameters = [
+                119
+                13
+                1048576
+              ];
               type = "standard";
             };
           };
@@ -95,7 +103,11 @@
           "120" = {
             enabled = true;
             value = {
-              parameters = [ 101 14 1048576 ];
+              parameters = [
+                101
+                14
+                1048576
+              ];
               type = "standard";
             };
           };
@@ -103,7 +115,11 @@
           "121" = {
             enabled = true;
             value = {
-              parameters = [ 114 15 1048576 ];
+              parameters = [
+                114
+                15
+                1048576
+              ];
               type = "standard";
             };
           };
@@ -111,7 +127,11 @@
           "122" = {
             enabled = true;
             value = {
-              parameters = [ 116 17 1048576 ];
+              parameters = [
+                116
+                17
+                1048576
+              ];
               type = "standard";
             };
           };
