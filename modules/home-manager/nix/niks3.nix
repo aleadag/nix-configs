@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  flake,
   ...
 }:
 
@@ -37,7 +36,7 @@ in
 
   config = lib.mkMerge [
     (lib.mkIf cfg.enable {
-      home.packages = [ flake.inputs.niks3.packages.${pkgs.stdenv.hostPlatform.system}.default ];
+      home.packages = [ pkgs.niks3 ];
 
       sops = {
         secrets = {
@@ -82,9 +81,7 @@ in
         Service = {
           Type = "oneshot";
           Environment = "NIKS3_SERVER_URL=${config.home.sessionVariables.NIKS3_SERVER_URL}";
-          ExecStart = "${
-            lib.getExe' flake.inputs.niks3.packages.${pkgs.stdenv.hostPlatform.system}.default "niks3"
-          } gc --older-than=${cfg.gc.olderThan} --failed-uploads-older-than=${cfg.gc.failedUploadsOlderThan}";
+          ExecStart = "${lib.getExe' pkgs.niks3 "niks3"} gc --older-than=${cfg.gc.olderThan} --failed-uploads-older-than=${cfg.gc.failedUploadsOlderThan}";
         };
       };
 
