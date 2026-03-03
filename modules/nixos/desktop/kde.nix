@@ -13,9 +13,6 @@ in
     enable = lib.mkEnableOption "KDE config" // {
       default = config.device.type == "steam-machine";
     };
-    sddm.enable = lib.mkEnableOption "KDE config" // {
-      default = config.device.type != "steam-machine";
-    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -28,10 +25,8 @@ in
         kdePackages.kcolorchooser
         kdePackages.kolourpaint
         kdePackages.ksystemlog
-        kdiskmark
-      ]
-      ++ lib.optionals cfg.sddm.enable [
         kdePackages.sddm-kcm
+        kdiskmark
       ]
       ++ lib.optionals config.services.flatpak.enable [
         kdePackages.discover
@@ -40,15 +35,17 @@ in
         kdePackages.plasma-disks
       ];
 
+    jovian.steam.desktopSession = "plasma";
+
     programs.kdeconnect.enable = true;
 
     services = {
       desktopManager.plasma6.enable = true;
       displayManager = {
-        defaultSession = "plasma";
+        defaultSession = lib.mkDefault "plasma";
         sddm = {
-          inherit (cfg.sddm) enable;
-          wayland.enable = cfg.sddm.enable;
+          enable = lib.mkDefault true;
+          wayland.enable = lib.mkDefault true;
         };
       };
     };
