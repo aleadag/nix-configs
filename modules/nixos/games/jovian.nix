@@ -29,7 +29,7 @@ in
       home.file."Desktop/Return-to-Gaming-Mode.desktop".source =
         (pkgs.makeDesktopItem {
           desktopName = "Return to Gaming Mode";
-          exec = "qdbus org.kde.Shutdown /Shutdown org.kde.Shutdown.logout";
+          exec = "steamosctl switch-to-game-mode";
           icon = "steam";
           name = "Return-to-Gaming-Mode";
           startupNotify = false;
@@ -47,10 +47,13 @@ in
         # Gamescope session does not start)
         tray = "never";
       };
+    };
 
-      xdg.stateFile."steamos-session-select" = lib.mkIf cfg.bootInDesktopMode {
-        text = config.jovian.steam.desktopSession;
-      };
+    environment.etc."sddm.conf.d/z-jovian-login-override.conf" = lib.mkIf cfg.bootInDesktopMode {
+      text = ''
+        [Autologin]
+        Session=${config.jovian.steam.desktopSession}.desktop
+      '';
     };
 
     jovian = {
