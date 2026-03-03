@@ -3,7 +3,7 @@
   home = rec {
     username = "alexander";
     homeDirectory = "/home/${username}";
-    stateVersion = "25.05";
+    stateVersion = "26.05";
 
     # Set XDG_RUNTIME_DIR for systemd user services in SSH sessions
     sessionVariables = {
