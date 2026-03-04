@@ -362,6 +362,7 @@ in
 
             // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
             // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
+            spawn-sh-at-startup "dbus-update-activation-environment --systemd --all"
             spawn-sh-at-startup "xrdb -merge ~/.Xresources"
 
             hotkey-overlay {

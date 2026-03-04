@@ -53,5 +53,19 @@
         };
       };
     };
+
+    systemd.user.services.dunst = {
+      Unit = {
+        After = [ "graphical-session.target" ];
+        PartOf = [ "graphical-session.target" ];
+      };
+      Service = {
+        inherit (config.home-manager.window-manager.systemd.service)
+          RestartSec
+          RestartSteps
+          RestartMaxDelaySec
+          ;
+      };
+    };
   };
 }
