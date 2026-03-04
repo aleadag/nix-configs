@@ -20,7 +20,7 @@ in
 
   config = lib.mkIf cfg.enable {
     sops.secrets.anthropic_base_url = { };
-    sops.secrets.anthropic_api_key = { };
+    sops.secrets.anthropic_auth_token = { };
 
     programs.claude-code = {
       enable = true;
@@ -31,7 +31,7 @@ in
         postBuild = ''
           wrapProgram $out/bin/claude \
             --run 'export ANTHROPIC_BASE_URL="$(cat ${config.sops.secrets.anthropic_base_url.path})"' \
-            --run 'export ANTHROPIC_API_KEY="$(cat ${config.sops.secrets.anthropic_api_key.path})"'
+            --run 'export ANTHROPIC_AUTH_TOKEN="$(cat ${config.sops.secrets.anthropic_auth_token.path})"'
         '';
       };
       commandsDir = ./commands;
