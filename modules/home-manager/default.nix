@@ -6,6 +6,7 @@
 
 {
   imports = [
+    flake.inputs.nix-openclaw.homeManagerModules.openclaw
     flake.inputs.stylix.homeModules.stylix
     flake.outputs.internal.sharedModules.default
     ./cli
@@ -19,6 +20,7 @@
     ./meta
     ./mihomo
     ./nix
+    ./openclaw
     ./sops.nix
     ./syncthing.nix
     ./window-manager

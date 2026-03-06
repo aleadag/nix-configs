@@ -101,6 +101,16 @@
       flake = false;
       url = "github:tinted-theming/schemes";
     };
+
+    nix-openclaw = {
+      url = "github:openclaw/nix-openclaw";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
+        flake-utils.follows = "flake-utils";
+        nix-steipete-tools.inputs.nixpkgs.follows = "nixpkgs";
+      };
+    };
   };
 
   outputs =
