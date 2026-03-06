@@ -1,6 +1,10 @@
 {
   nixpkgs.hostPlatform = "aarch64-darwin";
 
+  nixpkgs.config.permittedInsecurePackages = [
+    "openclaw-2026.2.26"
+  ];
+
   nix-darwin.home = {
     username = "alexander";
     extraModules = {
