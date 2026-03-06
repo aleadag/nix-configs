@@ -11,6 +11,8 @@ in
   options.home-manager.openclaw.enable = lib.mkEnableOption "openclaw";
 
   config = lib.mkIf cfg.enable {
+    sops.secrets.openclaw_token = { };
+
     programs.openclaw = {
       enable = true;
       documents = ./docs;
@@ -18,9 +20,11 @@ in
       config = {
         gateway = {
           mode = "local";
+          port = 19789;
+          bind = "lan";
           auth = {
             # You should change this or use a file
-            token = "change-me-locally-securely";
+            token = config.sops.placeholder.openclaw_token;
           };
         };
 
