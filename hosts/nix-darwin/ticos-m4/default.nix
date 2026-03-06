@@ -12,6 +12,7 @@
       home-manager = {
         dev.node.enable = false;
         desktop.mpv.enable = false;
+        mihomo.enable = false;
         openclaw.enable = true;
         syncthing.enable = false;
         window-manager.paneru.enable = false;
