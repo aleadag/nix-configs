@@ -21,10 +21,8 @@
     console.useXkbConfig = true;
 
     # Configure special programs (i.e. hardware access)
-    programs = {
-      dconf.enable = true;
-      light.enable = true;
-    };
+    programs.dconf.enable = true;
+    hardware.acpilight.enable = true;
 
     services = {
       # Enable autorandr service, i.e.: sleep.target
