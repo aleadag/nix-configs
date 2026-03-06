@@ -235,3 +235,17 @@ To install the [Catppuccin GRUB theme](https://github.com/catppuccin/grub), foll
    ```
 
 Note: The default flavor is `frappe`. You can replace it with other flavors if preferred (latte, macchiato, or mocha).
+
+## Troubleshooting
+
+### Firefox Extension Version Mismatch
+If you have updated a Firefox extension (like Tridactyl) in your Nix configuration but Firefox still shows the old version after activation:
+
+1.  **Restart Firefox**: Ensure all Firefox processes are fully closed and restarted.
+2.  **Clear Startup Cache**: Go to `about:support` in Firefox and click "Clear startup cache...".
+3.  **Reset Extension Metadata**: Close Firefox and delete the extension database file:
+    ```bash
+    rm ~/.mozilla/firefox/<your-profile>/extensions.json
+    ```
+    Firefox will rebuild this file and pick up the new symlink targets on the next launch.
+4.  **Check for Manual Installs**: Go to `about:addons`. If an extension has a "Remove" button instead of just "Disable", it might have been installed manually, which can override the Nix-managed version. Remove the manual install to allow Nix to manage it.
