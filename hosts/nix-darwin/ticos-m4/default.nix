@@ -10,6 +10,7 @@
     extraModules = {
       home.stateVersion = "26.05";
       home-manager = {
+        cli.pass.enable = false;
         dev.node.enable = false;
         desktop.mpv.enable = false;
         mihomo.enable = false;
