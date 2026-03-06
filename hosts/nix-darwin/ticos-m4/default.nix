@@ -21,6 +21,7 @@
   };
 
   nix-darwin = {
+    nix.proxy = null;
     homebrew.enable = false;
     kanata.enable = false;
   };
