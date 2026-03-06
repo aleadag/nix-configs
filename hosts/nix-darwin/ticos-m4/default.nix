@@ -10,6 +10,7 @@
     extraModules = {
       home.stateVersion = "26.05";
       home-manager = {
+        dev.node.enable = false;
         desktop.mpv.enable = false;
         openclaw.enable = true;
         syncthing.enable = false;
