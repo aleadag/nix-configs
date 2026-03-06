@@ -12,9 +12,7 @@ let
   cfg = config.nix-darwin.yabai;
 in
 {
-  options.nix-darwin.yabai.enable = lib.mkEnableOption "yabai config" // {
-    default = true;
-  };
+  options.nix-darwin.yabai.enable = lib.mkEnableOption "yabai config";
 
   config = lib.mkIf cfg.enable {
     services.yabai = {

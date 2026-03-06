@@ -1,8 +1,6 @@
 {
   nixpkgs.hostPlatform = "aarch64-darwin";
 
-  nix-darwin.yabai.enable = false;
-
   nix-darwin.home = {
     username = "alexander";
     extraModules = {
