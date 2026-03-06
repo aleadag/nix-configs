@@ -21,6 +21,7 @@
 
   nix-darwin = {
     homebrew.enable = false;
+    kanata.enable = false;
   };
 
   # This value determines the nix-darwin release with which your system is to
