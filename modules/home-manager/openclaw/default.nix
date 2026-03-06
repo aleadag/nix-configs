@@ -24,12 +24,6 @@ in
           };
         };
 
-        channels.feishu = {
-          appId = "";
-          appSecret = "";
-          connectionMode = "websocket";
-        };
-
         # Add Anthropic key if needed for tools/gateway
         # providers.anthropic.apiKeyFile = "${config.home.homeDirectory}/.secrets/anthropic-key";
       };
