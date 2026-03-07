@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 
@@ -10,12 +11,55 @@ in
 {
   options.home-manager.openclaw.enable = lib.mkEnableOption "openclaw";
 
+  # TODO(nix-openclaw): Remove once feishu is added to upstream generated schema.
+  # See: https://github.com/openclaw/nix-openclaw
+  options.programs.openclaw.instances = lib.mkOption {
+    type = lib.types.attrsOf (
+      lib.types.submodule {
+        options.config = lib.mkOption {
+          type = lib.types.submodule {
+            options.channels = lib.mkOption {
+              type = lib.types.nullOr (
+                lib.types.submodule {
+                  options.feishu = lib.mkOption {
+                    type = lib.types.nullOr lib.types.attrs;
+                    default = null;
+                  };
+                }
+              );
+            };
+          };
+        };
+      }
+    );
+  };
+
   config = lib.mkIf cfg.enable {
-    sops.secrets.openclaw_token = { };
+    sops.secrets = {
+      "openclaw/token" = { };
+      "openclaw/feishu/app_id" = { };
+      "openclaw/feishu/app_secret" = { };
+    };
 
     home.file.".openclaw/openclaw.json".force = true;
 
     programs.openclaw = {
+      package =
+        let
+          origPackage = config.programs.openclaw.package;
+        in
+        pkgs.symlinkJoin {
+          name = "openclaw-wrapped";
+          paths = [ origPackage ];
+          buildInputs = [ pkgs.makeWrapper ];
+          postBuild = ''
+            wrapProgram $out/bin/openclaw \
+              --run 'export OPENCLAW_GATEWAY_TOKEN="$(cat ${config.sops.secrets."openclaw/token".path})"' \
+              --run 'export FEISHU_APP_ID="$(cat ${config.sops.secrets."openclaw/feishu/app_id".path})"' \
+              --run 'export FEISHU_APP_SECRET="$(cat ${config.sops.secrets."openclaw/feishu/app_secret".path})"'
+          '';
+        };
+
       documents = ./docs;
 
       instances.default = {
@@ -26,17 +70,20 @@ in
             mode = "local";
             port = 19789;
             auth = {
-              # You should change this or use a file
-              token = config.sops.placeholder.openclaw_token;
+              mode = "token";
             };
           };
 
-          # Add Anthropic key if needed for tools/gateway
-          # providers.anthropic.apiKeyFile = "${config.home.homeDirectory}/.secrets/anthropic-key";
+          channels.feishu = {
+            enabled = true;
+            dmPolicy = "open";
+            allowFrom = [ "*" ];
+          };
+
+          plugins.entries.feishu.enabled = true;
         };
 
         plugins = [
-          # Add plugins here
         ];
       };
     };
