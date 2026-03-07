@@ -35,42 +35,44 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    sops.secrets = {
-      "openclaw/token" = { };
-      "openclaw/feishu/app_id" = { };
-      "openclaw/feishu/app_secret" = { };
+    sops = {
+      secrets = {
+        "openclaw/token" = { };
+        "openclaw/feishu/app_id" = { };
+        "openclaw/feishu/app_secret" = { };
+        "openclaw/zai_api_key" = { };
+      };
+      templates.openclaw-env = {
+        content = ''
+          OPENCLAW_GATEWAY_TOKEN=${config.sops.placeholder."openclaw/token"}
+          FEISHU_APP_ID=${config.sops.placeholder."openclaw/feishu/app_id"}
+          FEISHU_APP_SECRET=${config.sops.placeholder."openclaw/feishu/app_secret"}
+          ZAI_API_KEY=${config.sops.placeholder."openclaw/zai_api_key"}
+        '';
+        path = "${config.home.homeDirectory}/.openclaw/.env";
+      };
     };
 
     home.file.".openclaw/openclaw.json".force = true;
 
     programs.openclaw = {
-      package =
-        let
-          origPackage = config.programs.openclaw.package;
-        in
-        pkgs.symlinkJoin {
-          name = "openclaw-wrapped";
-          paths = [ origPackage ];
-          buildInputs = [ pkgs.makeWrapper ];
-          postBuild = ''
-            wrapProgram $out/bin/openclaw \
-              --run 'export OPENCLAW_GATEWAY_TOKEN="$(cat ${config.sops.secrets."openclaw/token".path})"' \
-              --run 'export FEISHU_APP_ID="$(cat ${config.sops.secrets."openclaw/feishu/app_id".path})"' \
-              --run 'export FEISHU_APP_SECRET="$(cat ${config.sops.secrets."openclaw/feishu/app_secret".path})"'
-          '';
-        };
-
+      package = pkgs.llm-agents.openclaw;
       documents = ./docs;
 
       instances.default = {
         enable = true;
         gatewayPort = 19789;
         config = {
-          gateway = {
-            mode = "local";
-            port = 19789;
-            auth = {
-              mode = "token";
+          agents = {
+            defaults = {
+              model = {
+                primary = "zai/glm-5";
+                fallbacks = [
+                  "zai/glm-4.7"
+                  "zai/glm-4.6"
+                  "zai/glm-4.5-air"
+                ];
+              };
             };
           };
 
@@ -78,6 +80,19 @@ in
             enabled = true;
             dmPolicy = "open";
             allowFrom = [ "*" ];
+            accounts.default = {
+              appId = "\${FEISHU_APP_ID}";
+              appSecret = "\${FEISHU_APP_SECRET}";
+            };
+          };
+
+          gateway = {
+            mode = "local";
+            port = 19789;
+            auth = {
+              mode = "token";
+              token = "\${OPENCLAW_GATEWAY_TOKEN}";
+            };
           };
 
           plugins.entries.feishu.enabled = true;
@@ -87,5 +102,15 @@ in
         ];
       };
     };
+
+    home.packages = [
+      (pkgs.writeShellScriptBin "openclaw-local" ''
+        set -euo pipefail
+
+        export OPENCLAW_GATEWAY_TOKEN="$(cat "${config.sops.secrets."openclaw/token".path}")"
+
+        exec ${pkgs.llm-agents.openclaw}/bin/openclaw "$@"
+      '')
+    ];
   };
 }

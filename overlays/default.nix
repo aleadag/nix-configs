@@ -2,7 +2,7 @@
 final: prev:
 
 inputs.nur.overlays.default final prev
-// inputs.nix-openclaw.overlays.default final prev
+// inputs.llm-agents.overlays.default final prev
 // (
   let
     inherit (prev.stdenv.hostPlatform) system;
