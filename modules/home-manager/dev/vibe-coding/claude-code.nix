@@ -26,7 +26,7 @@ in
       enable = true;
       package = pkgs.symlinkJoin {
         name = "claude-code-wrapped";
-        paths = [ pkgs.claude-code ];
+        paths = [ pkgs.llm-agents.claude-code ];
         buildInputs = [ pkgs.makeWrapper ];
         postBuild = ''
           wrapProgram $out/bin/claude \

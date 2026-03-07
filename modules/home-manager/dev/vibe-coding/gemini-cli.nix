@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 
@@ -17,6 +18,7 @@ in
   config = lib.mkIf cfg.enable {
     programs.gemini-cli = {
       enable = true;
+      package = pkgs.llm-agents.gemini-cli;
       settings = {
         general = {
           preferredEditor = "nvim";

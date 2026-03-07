@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 
@@ -17,6 +18,7 @@ in
   config = lib.mkIf cfg.enable {
     programs.codex = {
       enable = true;
+      package = pkgs.llm-agents.codex;
       settings = {
         analytics.enabled = false;
         check_for_update_on_startup = false;
