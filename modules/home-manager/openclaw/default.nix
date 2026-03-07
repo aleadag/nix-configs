@@ -9,7 +9,14 @@ let
   cfg = config.home-manager.openclaw;
 in
 {
-  options.home-manager.openclaw.enable = lib.mkEnableOption "openclaw";
+  options.home-manager.openclaw = {
+    enable = lib.mkEnableOption "openclaw";
+    gatewayPort = lib.mkOption {
+      type = lib.types.port;
+      default = 18789;
+      description = "The port the OpenClaw gateway will listen on.";
+    };
+  };
 
   # TODO(nix-openclaw): Remove once feishu is added to upstream generated schema.
   # See: https://github.com/openclaw/nix-openclaw
@@ -60,8 +67,9 @@ in
       documents = ./docs;
 
       instances.default = {
+        inherit (cfg) gatewayPort;
+
         enable = true;
-        gatewayPort = 19789;
         config = {
           agents = {
             defaults = {
@@ -88,7 +96,7 @@ in
 
           gateway = {
             mode = "local";
-            port = 19789;
+            port = cfg.gatewayPort;
             auth = {
               mode = "token";
               token = "\${OPENCLAW_GATEWAY_TOKEN}";

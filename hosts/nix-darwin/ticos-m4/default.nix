@@ -14,7 +14,10 @@
         dev.node.enable = false;
         desktop.mpv.enable = false;
         mihomo.enable = false;
-        openclaw.enable = true;
+        openclaw = {
+          enable = true;
+          gatewayPort = 19789;
+        };
         syncthing.enable = false;
         window-manager.paneru.enable = false;
       };
