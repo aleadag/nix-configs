@@ -7,10 +7,23 @@
 
 let
   cfg = config.home-manager.openclaw;
+  secretOpts = lib.optionalAttrs (cfg.sopsFile != null) {
+    inherit (cfg) sopsFile;
+  };
 in
 {
   options.home-manager.openclaw = {
     enable = lib.mkEnableOption "openclaw";
+
+    sopsFile = lib.mkOption {
+      type = lib.types.nullOr lib.types.path;
+      default = null;
+      description = ''
+        Optional SOPS file for OpenClaw secrets. When null, uses the global
+        `sops.defaultSopsFile`.
+      '';
+    };
+
     gatewayPort = lib.mkOption {
       type = lib.types.port;
       default = 18789;
@@ -44,16 +57,20 @@ in
   config = lib.mkIf cfg.enable {
     sops = {
       secrets = {
-        "openclaw/token" = { };
-        "openclaw/feishu/app_id" = { };
-        "openclaw/feishu/app_secret" = { };
-        "openclaw/zai_api_key" = { };
+        "openclaw/token" = secretOpts;
+        "openclaw/feishu/main/app_id" = secretOpts;
+        "openclaw/feishu/main/app_secret" = secretOpts;
+        "openclaw/feishu/aurora/app_id" = secretOpts;
+        "openclaw/feishu/aurora/app_secret" = secretOpts;
+        "openclaw/zai_api_key" = secretOpts;
       };
       templates.openclaw-env = {
         content = ''
           OPENCLAW_GATEWAY_TOKEN=${config.sops.placeholder."openclaw/token"}
-          FEISHU_APP_ID=${config.sops.placeholder."openclaw/feishu/app_id"}
-          FEISHU_APP_SECRET=${config.sops.placeholder."openclaw/feishu/app_secret"}
+          FEISHU_MAIN_APP_ID=${config.sops.placeholder."openclaw/feishu/main/app_id"}
+          FEISHU_MAIN_APP_SECRET=${config.sops.placeholder."openclaw/feishu/main/app_secret"}
+          FEISHU_AURORA_APP_ID=${config.sops.placeholder."openclaw/feishu/aurora/app_id"}
+          FEISHU_AURORA_APP_SECRET=${config.sops.placeholder."openclaw/feishu/aurora/app_secret"}
           ZAI_API_KEY=${config.sops.placeholder."openclaw/zai_api_key"}
         '';
         path = "${config.home.homeDirectory}/.openclaw/.env";
@@ -68,6 +85,7 @@ in
 
       instances.default = {
         inherit (cfg) gatewayPort;
+        package = pkgs.llm-agents.openclaw;
 
         enable = true;
         config = {
@@ -82,17 +100,47 @@ in
                 ];
               };
             };
+
+            list = [
+              { id = "main"; }
+              rec {
+                id = "aurora";
+                workspace = "${config.home.homeDirectory}/.openclaw/agents/${id}/workspace";
+                agentDir = "${config.home.homeDirectory}/.openclaw/agents/${id}/agent";
+              }
+            ];
           };
 
           channels.feishu = {
             enabled = true;
             dmPolicy = "open";
             allowFrom = [ "*" ];
-            accounts.default = {
-              appId = "\${FEISHU_APP_ID}";
-              appSecret = "\${FEISHU_APP_SECRET}";
+            accounts = {
+              main = {
+                appId = "\${FEISHU_MAIN_APP_ID}";
+                appSecret = "\${FEISHU_MAIN_APP_SECRET}";
+              };
+              aurora = {
+                appId = "\${FEISHU_AURORA_APP_ID}";
+                appSecret = "\${FEISHU_AURORA_APP_SECRET}";
+              };
             };
           };
+
+          bindings = [
+            {
+              agentId = "main";
+              match = {
+                channel = "feishu:main";
+              };
+            }
+            {
+              agentId = "aurora";
+              match = {
+                channel = "feishu:aurora";
+              };
+            }
+          ];
 
           gateway = {
             mode = "local";
@@ -102,6 +150,8 @@ in
               token = "\${OPENCLAW_GATEWAY_TOKEN}";
             };
           };
+
+          session.dmScope = "per-channel-peer";
 
           plugins.entries.feishu.enabled = true;
         };

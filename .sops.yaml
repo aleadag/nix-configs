@@ -19,10 +19,16 @@
 # sops updatekeys secrets/secrets.yaml
 keys:
   - &user_alexander age1lhvvp7hnd8pweejp7804lznq65mz4zxjn4wut0zeyxs0vr7cgqrsd4emtx
-  - &ticos_m4 age16fwhnzgsuxfj8r7mdnuavzc4lhgjtyfpeaqq2722ff9z88almyespqqyy3
+  - &host_ticos_m4 age16fwhnzgsuxfj8r7mdnuavzc4lhgjtyfpeaqq2722ff9z88almyespqqyy3
+  - &host_alexaw age1gqapceeka2jh4029kkwnecnqkvpwsv4ezgkk3kl8arlhyx8exawqd7a2hv
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:
     - age:
       - *user_alexander
-      - *ticos_m4
+      - *host_ticos_m4
+  - path_regex: hosts/home-manager/alexaw/secrets\.yaml$
+    key_groups:
+    - age:
+      - *user_alexander
+      - *host_alexaw
