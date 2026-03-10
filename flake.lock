@@ -443,17 +443,19 @@
         "home-manager": [
           "home-manager"
         ],
-        "nix-steipete-tools": "nix-steipete-tools",
+        "nix-steipete-tools": [
+          "nix-steipete-tools"
+        ],
         "nixpkgs": [
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1772998573,
-        "narHash": "sha256-9rXdKr6jOKxr7HxRdkU3EP7LyiyldgLHEKEVJu4jt2U=",
+        "lastModified": 1773111026,
+        "narHash": "sha256-LtKHvTvtSb9Sa7TxrB22TO1BNZeCcn/6HDLKzoTL/uY=",
         "owner": "openclaw",
         "repo": "nix-openclaw",
-        "rev": "22a66d212bb082d99ab9fbc7e6ddb60e2c1a2257",
+        "rev": "7be64cd9c96a2daf36603dcc3fb1e156a795555c",
         "type": "github"
       },
       "original": {
@@ -489,11 +491,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1772109967,
-        "narHash": "sha256-0oWZtmVJcI7Mc6nAXf7XM4FHLJv+H1X/8Gh31uJCyJ0=",
+        "lastModified": 1773038583,
+        "narHash": "sha256-E9Z/7U2ozB7nvCUZp9QlWllFl1yNXaInnuBSiRV5qh4=",
         "owner": "openclaw",
         "repo": "nix-steipete-tools",
-        "rev": "2b97c49e03657af1574aee5a34f57b38fba90035",
+        "rev": "561592b0b1aa9b53595618fd867be633a192da54",
         "type": "github"
       },
       "original": {
@@ -631,6 +633,7 @@
         "nix-flatpak": "nix-flatpak",
         "nix-openclaw": "nix-openclaw",
         "nix-proxy-manager": "nix-proxy-manager",
+        "nix-steipete-tools": "nix-steipete-tools",
         "nixgl": "nixgl",
         "nixpkgs": "nixpkgs",
         "nixpkgs-stable": "nixpkgs-stable",
