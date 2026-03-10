@@ -17,7 +17,7 @@ in
     ./kitty.nix
     ./mpv
     ./nixgl.nix
-    ./wechat.nix
+    ./wechat
   ];
 
   options.home-manager.desktop = {

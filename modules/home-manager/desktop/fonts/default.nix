@@ -23,5 +23,24 @@ in
       noto-fonts-cjk-serif
       noto-fonts-color-emoji
     ];
+
+    fonts.fontconfig = {
+      enable = true;
+      defaultFonts = {
+        monospace = [
+          "Noto Sans Mono"
+          "Noto Sans Mono CJK SC"
+        ];
+        serif = [
+          "Noto Serif"
+          "Noto Serif CJK SC"
+        ];
+        sansSerif = [
+          "Noto Sans"
+          "Noto Sans CJK SC"
+        ];
+        emoji = [ "Noto Color Emoji" ];
+      };
+    };
   };
 }
