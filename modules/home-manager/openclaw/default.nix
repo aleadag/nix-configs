@@ -64,6 +64,8 @@ in
         "openclaw/feishu/aurora/app_secret" = secretOpts;
         "openclaw/feishu/ticos/app_id" = secretOpts;
         "openclaw/feishu/ticos/app_secret" = secretOpts;
+        "openclaw/feishu/zsflow/app_id" = secretOpts;
+        "openclaw/feishu/zsflow/app_secret" = secretOpts;
         "openclaw/zai_api_key" = secretOpts;
       };
       templates.openclaw-env = {
@@ -75,6 +77,8 @@ in
           FEISHU_AURORA_APP_SECRET=${config.sops.placeholder."openclaw/feishu/aurora/app_secret"}
           FEISHU_TICOS_APP_ID=${config.sops.placeholder."openclaw/feishu/ticos/app_id"}
           FEISHU_TICOS_APP_SECRET=${config.sops.placeholder."openclaw/feishu/ticos/app_secret"}
+          FEISHU_ZSFLOW_APP_ID=${config.sops.placeholder."openclaw/feishu/zsflow/app_id"}
+          FEISHU_ZSFLOW_APP_SECRET=${config.sops.placeholder."openclaw/feishu/zsflow/app_secret"}
           ZAI_API_KEY=${config.sops.placeholder."openclaw/zai_api_key"}
         '';
         path = "${config.home.homeDirectory}/.openclaw/.env";
@@ -118,6 +122,10 @@ in
                 id = "ticos";
                 workspace = "~/.openclaw/workspace-ticos";
               }
+              {
+                id = "zsflow";
+                workspace = "~/.openclaw/workspace-zsflow";
+              }
             ];
           };
 
@@ -137,6 +145,10 @@ in
               ticos = {
                 appId = "\${FEISHU_TICOS_APP_ID}";
                 appSecret = "\${FEISHU_TICOS_APP_SECRET}";
+              };
+              zsflow = {
+                appId = "\${FEISHU_ZSFLOW_APP_ID}";
+                appSecret = "\${FEISHU_ZSFLOW_APP_SECRET}";
               };
             };
           };
@@ -161,6 +173,13 @@ in
               match = {
                 channel = "feishu";
                 accountId = "ticos";
+              };
+            }
+            {
+              agentId = "zsflow";
+              match = {
+                channel = "feishu";
+                accountId = "zsflow";
               };
             }
           ];
