@@ -62,6 +62,8 @@ in
         "openclaw/feishu/main/app_secret" = secretOpts;
         "openclaw/feishu/aurora/app_id" = secretOpts;
         "openclaw/feishu/aurora/app_secret" = secretOpts;
+        "openclaw/feishu/ticos/app_id" = secretOpts;
+        "openclaw/feishu/ticos/app_secret" = secretOpts;
         "openclaw/zai_api_key" = secretOpts;
       };
       templates.openclaw-env = {
@@ -71,6 +73,8 @@ in
           FEISHU_MAIN_APP_SECRET=${config.sops.placeholder."openclaw/feishu/main/app_secret"}
           FEISHU_AURORA_APP_ID=${config.sops.placeholder."openclaw/feishu/aurora/app_id"}
           FEISHU_AURORA_APP_SECRET=${config.sops.placeholder."openclaw/feishu/aurora/app_secret"}
+          FEISHU_TICOS_APP_ID=${config.sops.placeholder."openclaw/feishu/ticos/app_id"}
+          FEISHU_TICOS_APP_SECRET=${config.sops.placeholder."openclaw/feishu/ticos/app_secret"}
           ZAI_API_KEY=${config.sops.placeholder."openclaw/zai_api_key"}
         '';
         path = "${config.home.homeDirectory}/.openclaw/.env";
@@ -110,6 +114,10 @@ in
                 id = "aurora";
                 workspace = "~/.openclaw/workspace-aurora";
               }
+              {
+                id = "ticos";
+                workspace = "~/.openclaw/workspace-ticos";
+              }
             ];
           };
 
@@ -125,6 +133,10 @@ in
               aurora = {
                 appId = "\${FEISHU_AURORA_APP_ID}";
                 appSecret = "\${FEISHU_AURORA_APP_SECRET}";
+              };
+              ticos = {
+                appId = "\${FEISHU_TICOS_APP_ID}";
+                appSecret = "\${FEISHU_TICOS_APP_SECRET}";
               };
             };
           };
@@ -142,6 +154,13 @@ in
               match = {
                 channel = "feishu";
                 accountId = "aurora";
+              };
+            }
+            {
+              agentId = "ticos";
+              match = {
+                channel = "feishu";
+                accountId = "ticos";
               };
             }
           ];
