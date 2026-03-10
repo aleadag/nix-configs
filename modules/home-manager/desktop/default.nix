@@ -28,6 +28,7 @@ in
     home.packages = with pkgs; [
       android-file-transfer
       audacious
+      feishu
       libreoffice-fresh
       (mcomix.override {
         unrarSupport = true;

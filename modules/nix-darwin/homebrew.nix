@@ -24,6 +24,7 @@ in
       casks = [
         "betterdisplay"
         "domzilla-caffeine"
+        "feishu"
         "firefox"
         "google-chrome"
         "kitty"
