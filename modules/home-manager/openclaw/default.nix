@@ -102,11 +102,13 @@ in
             };
 
             list = [
-              { id = "main"; }
-              rec {
+              {
+                id = "main";
+                workspace = "~/.openclaw/workspace-main";
+              }
+              {
                 id = "aurora";
-                workspace = "${config.home.homeDirectory}/.openclaw/agents/${id}/workspace";
-                agentDir = "${config.home.homeDirectory}/.openclaw/agents/${id}/agent";
+                workspace = "~/.openclaw/workspace-aurora";
               }
             ];
           };
@@ -131,13 +133,15 @@ in
             {
               agentId = "main";
               match = {
-                channel = "feishu:main";
+                channel = "feishu";
+                accountId = "main";
               };
             }
             {
               agentId = "aurora";
               match = {
-                channel = "feishu:aurora";
+                channel = "feishu";
+                accountId = "aurora";
               };
             }
           ];
