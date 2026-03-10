@@ -26,6 +26,7 @@ creation_rules:
     key_groups:
     - age:
       - *user_alexander
+      - *host_alexaw
       - *host_ticos_m4
   - path_regex: hosts/home-manager/alexaw/secrets\.yaml$
     key_groups:
