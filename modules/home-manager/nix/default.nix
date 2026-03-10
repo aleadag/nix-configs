@@ -22,8 +22,6 @@ in
       packages = with pkgs; [
         nix-cleanup
         nix-whereis
-        # Multi-tenant Nix Binary Cache
-        attic-client
         nix-proxy-manager
       ];
       # For standalone HM usage to make e.g.: nix-shell work as expected
@@ -38,7 +36,6 @@ in
       package = lib.mkDefault pkgs.nix;
       settings = flake.outputs.internal.configs.nix;
       extraOptions = ''
-        netrc-file = ${config.sops.templates."netrc".path}
         !include ${config.sops.templates."nix-access-tokens".path}
         !include nix.local.conf
       '';
@@ -47,7 +44,6 @@ in
     # https://dl.thalheim.io/
     sops = {
       secrets = {
-        attic_token = { };
         gh_pat = { };
       };
 
@@ -56,22 +52,6 @@ in
           ''
             access-tokens = github.com=${config.sops.placeholder.gh_pat}
           '';
-        "netrc".content = # netrc
-          ''
-            machine attic.ticos.cloud
-            password ${config.sops.placeholder.attic_token}
-          '';
-        "attic.toml" = {
-          content = # toml
-            ''
-              default-server = "ticos-cloud"
-
-              [servers.ticos-cloud]
-              endpoint = "http://attic.ticos.cloud:7878"
-              token = "${config.sops.placeholder.attic_token}"
-            '';
-          path = "${config.home.homeDirectory}/.config/attic/config.toml";
-        };
       };
     };
 
