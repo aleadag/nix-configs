@@ -34,7 +34,7 @@ in
             --run 'export ANTHROPIC_AUTH_TOKEN="$(cat ${config.sops.secrets.anthropic_auth_token.path})"'
         '';
       };
-      commandsDir = ./commands;
+      skillsDir = ./skills;
       memory.source = ./CONTEXT.md;
       settings = {
         env = {

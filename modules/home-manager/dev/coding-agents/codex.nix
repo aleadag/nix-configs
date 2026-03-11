@@ -24,18 +24,7 @@ in
         check_for_update_on_startup = false;
       };
       custom-instructions = builtins.readFile ./CONTEXT.md;
-      skills =
-        let
-          commands = builtins.readDir ./commands;
-          commandFiles = lib.filterAttrs (name: type: type == "regular" && lib.hasSuffix ".md" name) commands;
-        in
-        lib.mapAttrs' (
-          name: _:
-          let
-            skillName = lib.removeSuffix ".md" name;
-          in
-          lib.nameValuePair skillName (builtins.readFile (./commands + "/${name}"))
-        ) commandFiles;
+      skills = ./skills;
     };
   };
 }

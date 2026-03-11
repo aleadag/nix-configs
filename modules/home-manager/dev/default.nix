@@ -7,7 +7,7 @@
 
 {
   imports = [
-    ./vibe-coding
+    ./coding-agents
     ./httpie.nix
     ./nix.nix
     ./node.nix
