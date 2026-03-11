@@ -81,7 +81,6 @@ in
       uutils-coreutils-noprefix
       websocat
       wget
-      railway
 
       # modern unix: https://github.com/ibraheemdev/modern-unix
       duf
