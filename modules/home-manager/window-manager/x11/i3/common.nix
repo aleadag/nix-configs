@@ -6,9 +6,9 @@
   fullScreenShot,
   menu,
   msg,
+  brightnessctl ? (lib.getExe pkgs.brightnessctl),
   browser ? config.home-manager.window-manager.default.browser,
   dunstctl ? (lib.getExe' pkgs.dunst "dunstctl"),
-  light ? (lib.getExe pkgs.acpilight),
   pamixer ? (lib.getExe pkgs.pamixer),
   playerctl ? (lib.getExe pkgs.playerctl),
   caffeine-toggle ? "caffeine-toggle",
@@ -232,8 +232,10 @@ in
       "XF86AudioLowerVolume" = "exec --no-startup-id ${pamixer} --set-limit 150 --allow-boost -d 5";
       "XF86AudioMute" = "exec --no-startup-id ${pamixer} --toggle-mute";
       "XF86AudioMicMute" = "exec --no-startup-id ${pamixer} --toggle-mute --default-source";
-      "XF86MonBrightnessUp" = "exec --no-startup-id ${light} -inc 5";
-      "XF86MonBrightnessDown" = "exec --no-startup-id ${light} -dec 5";
+
+      "XF86MonBrightnessUp" = "exec --no-startup-id ${brightnessctl} --class=backlight set +5%";
+      "XF86MonBrightnessDown" = "exec --no-startup-id ${brightnessctl} --class=backlight set -5%";
+
       "XF86AudioPlay" = "exec --no-startup-id ${playerctl} play-pause";
       "XF86AudioStop" = "exec --no-startup-id ${playerctl} stop";
       "XF86AudioNext" = "exec --no-startup-id ${playerctl} next";
