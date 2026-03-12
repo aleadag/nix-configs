@@ -7,14 +7,6 @@
 
 let
   cfg = config.home-manager.dev.gemini-cli;
-  skillCommands = {
-    check = "Fix lint, test, build, and formatting failures until the repository is green.";
-    describe = "Review a jj changeset and apply an accurate emoji conventional commit description.";
-    "fix-gh-issue" = "Investigate and fix a GitHub issue using gh and local validation.";
-    next = "Execute a production-quality implementation workflow with research, planning, implementation, and validation.";
-    prompt = "Generate a reusable implementation prompt for another coding agent.";
-    validate = "Perform a direct post-implementation review for completeness, quality, and hidden risks.";
-  };
 in
 {
   options.home-manager.dev.gemini-cli = {
@@ -57,10 +49,6 @@ in
           ];
         };
       };
-      commands = lib.mapAttrs (name: description: {
-        inherit description;
-        prompt = builtins.readFile (./skills + "/${name}/SKILL.md");
-      }) skillCommands;
     };
 
     home.file.".gemini/CONTEXT.md".source = ./CONTEXT.md;
