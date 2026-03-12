@@ -10,6 +10,7 @@ let
   cfg = config.home-manager.dev.claude-code;
   # Get cc-tools binaries from the flake
   cc-tools = flake.inputs.cc-tools.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  sharedPermissions = import ./permissions.nix { inherit lib; };
 in
 {
   options.home-manager.dev.claude-code = {
@@ -34,8 +35,8 @@ in
             --run 'export ANTHROPIC_AUTH_TOKEN="$(cat ${config.sops.secrets.anthropic_auth_token.path})"'
         '';
       };
-      skillsDir = ./skills;
       memory.source = ./CONTEXT.md;
+      skillsDir = ./skills;
       settings = {
         env = {
           BASH_DEFAULT_TIMEOUT_MS = "300000";
@@ -70,6 +71,25 @@ in
         };
 
         includeCoAuthoredBy = false;
+        permissions = {
+          allow = sharedPermissions.claudeAllowedBashPermissions ++ [
+            "Read"
+            "Edit"
+            "Write"
+            "Glob"
+            "Grep"
+            "Agent"
+          ];
+          deny = [
+            "Bash(rm -rf:*)"
+            "Bash(git push --force:*)"
+            "Bash(git reset --hard:*)"
+            "Bash(git clean -f:*)"
+            "Bash(terraform apply:*)"
+            "Bash(terraform destroy:*)"
+            "Bash(sbt publish:*)"
+          ];
+        };
       };
     };
 

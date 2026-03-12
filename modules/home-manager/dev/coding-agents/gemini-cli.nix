@@ -7,6 +7,7 @@
 
 let
   cfg = config.home-manager.dev.gemini-cli;
+  sharedPermissions = import ./permissions.nix { inherit lib; };
 in
 {
   options.home-manager.dev.gemini-cli = {
@@ -32,6 +33,7 @@ in
         tools = {
           autoAccept = false;
           enableHooks = true;
+          allowed = sharedPermissions.geminiAllowedTools;
         };
         hooks = {
           AfterTool = [
