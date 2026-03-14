@@ -829,15 +829,15 @@
     "zsh-proxy": {
       "flake": false,
       "locked": {
-        "lastModified": 1763570416,
-        "narHash": "sha256-oU/pwP8029Y/kUaFFsM4+X2Rz35PbTb9u3b62j8jURk=",
-        "owner": "SukkaW",
+        "lastModified": 1773489298,
+        "narHash": "sha256-LGlormuRshIQHXKbkwuho3ZYUUT67ebPlCvICG4LmCw=",
+        "owner": "aleadag",
         "repo": "zsh-proxy",
-        "rev": "64865320d5d2ddfcde85b4f1d79560df500d5c8f",
+        "rev": "f00471467ca8be9eefad27eaf90e9425a6f8f45a",
         "type": "github"
       },
       "original": {
-        "owner": "SukkaW",
+        "owner": "aleadag",
         "repo": "zsh-proxy",
         "type": "github"
       }

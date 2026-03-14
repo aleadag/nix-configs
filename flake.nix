@@ -60,7 +60,7 @@
     };
 
     zsh-proxy = {
-      url = "github:SukkaW/zsh-proxy";
+      url = "github:aleadag/zsh-proxy";
       flake = false;
     };
 
