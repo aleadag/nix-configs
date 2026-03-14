@@ -9,7 +9,7 @@ let
   menu = lib.getExe config.programs.fuzzel.package;
   systemctl = lib.getExe' pkgs.systemd "systemctl";
   loginctl = lib.getExe' pkgs.systemd "loginctl";
-  niri = lib.getExe' cfg.package "niri";
+  niri = if cfg.package != null then lib.getExe' cfg.package "niri" else "niri";
   niriPowerMenu = pkgs.writeShellApplication {
     name = "niri-power-menu";
     runtimeInputs = [ pkgs.systemd ];
@@ -51,7 +51,12 @@ in
     enable = lib.mkEnableOption "Niri config" // {
       default = config.home-manager.window-manager.wayland.enable;
     };
-    package = lib.mkPackageOption pkgs "niri" { };
+    package = lib.mkOption {
+      type = lib.types.nullOr lib.types.package;
+      default = pkgs.niri;
+      defaultText = lib.literalExpression "pkgs.niri";
+      description = "The niri package to use. Set to null to use the system-provided package.";
+    };
     xwayland.enable = lib.mkEnableOption "X11 support via xwayland-satellite" // {
       default = true;
     };
@@ -60,21 +65,17 @@ in
   config = lib.mkIf cfg.enable {
     home.packages =
       with pkgs;
-      [
-        cfg.package
+      (lib.optional (cfg.package != null) cfg.package)
+      ++ [
         niriPowerMenu
       ]
       ++ lib.optionals cfg.xwayland.enable [ xwayland-satellite ];
 
-    # XXX: we can remove this once HM generate niri.service
-    xdg.dataFile."wayland-sessions/niri-uwsm.desktop".text = ''
-      [Desktop Entry]
-      Name=Niri (UWSM)
-      Comment=A scrollable-tiling Wayland compositor managed by UWSM
-      Exec=${niri} --session
-      Type=Application
-      DesktopNames=niri
-    '';
+    systemd.user.packages = lib.optional (cfg.package != null) cfg.package;
+
+    xdg.dataFile."wayland-sessions/niri.desktop" = lib.mkIf (cfg.package != null) {
+      source = "${cfg.package}/share/wayland-sessions/niri.desktop";
+    };
 
     xdg.configFile."niri/config.kdl".source =
       let
@@ -362,7 +363,6 @@ in
 
             // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
             // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
-            spawn-sh-at-startup "dbus-update-activation-environment --systemd --all"
             spawn-sh-at-startup "xrdb -merge ~/.Xresources"
 
             hotkey-overlay {
@@ -741,7 +741,7 @@ in
         name = "niri-config.kdl";
         inherit text;
         checkPhase = ''
-          ${lib.getExe cfg.package} validate --config "$target"
+          ${niri} validate --config "$target"
         '';
       };
   };
