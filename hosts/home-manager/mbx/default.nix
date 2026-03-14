@@ -9,5 +9,8 @@
     window-manager.x11.enable = false;
   };
 
-  targets.genericLinux.enable = true;
+  targets.genericLinux = {
+    enable = true;
+    gpu.enable = true;
+  };
 }
