@@ -1,9 +1,9 @@
 ---
-name: describe
+name: jj-describe
 description: Review a jj changeset, decide whether it should be split, and write an accurate emoji conventional commit description with jj describe.
 ---
 
-# Describe
+# JJ-Describe
 
 Use this skill when the user wants help describing a `jj` change or curating commit messages.
 
