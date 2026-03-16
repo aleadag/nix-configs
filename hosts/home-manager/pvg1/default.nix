@@ -1,4 +1,7 @@
+{ pkgs, ... }:
 {
+  stylix.image = "${pkgs.pop-wallpapers}/share/backgrounds/pop/jasper-van-der-meij-97274-edit.jpg";
+
   home = rec {
     username = "alexander";
     homeDirectory = "/home/${username}";
