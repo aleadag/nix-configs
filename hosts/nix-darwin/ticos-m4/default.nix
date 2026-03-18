@@ -13,6 +13,13 @@
         openclaw = {
           enable = true;
           gatewayPort = 19789;
+          feishuAccounts = [ "ticos" ];
+          agents = [
+            {
+              id = "ticos";
+              feishuAccount = "ticos";
+            }
+          ];
         };
         syncthing.enable = false;
         window-manager.paneru.enable = false;

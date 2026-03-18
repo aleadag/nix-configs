@@ -18,8 +18,39 @@
     openclaw = {
       enable = true;
       sopsFile = ./secrets.yaml;
+      feishuAccounts = [
+        "main"
+        "aurora"
+        "ticos"
+        "zsflow"
+      ];
+      agents = [
+        {
+          id = "main";
+          feishuAccount = "main";
+        }
+        {
+          id = "aurora";
+          feishuAccount = "aurora";
+        }
+        {
+          id = "ticos";
+          feishuAccount = "ticos";
+        }
+        {
+          id = "zsflow";
+          feishuAccount = "zsflow";
+        }
+      ];
     };
     syncthing.enable = false;
+  };
+
+  stylix.targets = {
+    eog.enable = false;
+    gnome.enable = false;
+    gnome-text-editor.enable = false;
+    gtk.enable = false;
   };
 
   targets.genericLinux.enable = true;
