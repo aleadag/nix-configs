@@ -16,6 +16,13 @@
     };
   };
 
+  stylix.targets = {
+    eog.enable = false;
+    gnome.enable = false;
+    gnome-text-editor.enable = false;
+    gtk.enable = false;
+  };
+
   targets.genericLinux = {
     enable = true;
     gpu.enable = true;
