@@ -319,8 +319,8 @@ in
             }
 
             #disk {
-              background: @base09;
-              color: @base05; 
+              background: @base0B;
+              color: @base00;
             }
             #memory {
               background: @base0C;
