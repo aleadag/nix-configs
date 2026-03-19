@@ -83,4 +83,11 @@ in
   codexAllowedPrefixRules = map (command: lib.strings.splitString " " command) allowedShellCommands;
 
   geminiAllowedTools = map (command: "run_shell_command(${command})") allowedShellCommands;
+
+  geminiAllowedPolicyRules = map (command: {
+    toolName = "run_shell_command";
+    commandPrefix = command;
+    decision = "allow";
+    priority = 100;
+  }) allowedShellCommands;
 }

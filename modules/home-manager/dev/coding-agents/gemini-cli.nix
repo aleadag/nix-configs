@@ -33,8 +33,9 @@ in
         tools = {
           autoAccept = false;
           enableHooks = true;
-          allowed = sharedPermissions.geminiAllowedTools;
         };
+        # migrate to Policy Engine
+        policyPaths = [ "~/.gemini/policies" ];
         hooks = {
           AfterTool = [
             {
@@ -53,6 +54,11 @@ in
       };
     };
 
-    home.file.".gemini/CONTEXT.md".source = ./CONTEXT.md;
+    home.file = {
+      ".gemini/CONTEXT.md".source = ./CONTEXT.md;
+      ".gemini/policies/shell-rules.toml".source = (pkgs.formats.toml { }).generate "gemini-shell-rules" {
+        rule = sharedPermissions.geminiAllowedPolicyRules;
+      };
+    };
   };
 }
