@@ -1,7 +1,7 @@
 {
   actions = {
     # https://github.com/marketplace/actions/cachix
-    cachix-action = "cachix/cachix-action@v16";
+    cachix-action = "cachix/cachix-action@v17";
     # https://github.com/marketplace/actions/checkout
     checkout = "actions/checkout@v5";
     # https://github.com/marketplace/actions/create-pull-request
