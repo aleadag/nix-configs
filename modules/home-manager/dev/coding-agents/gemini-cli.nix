@@ -20,6 +20,11 @@ in
     programs.gemini-cli = {
       enable = true;
       package = pkgs.llm-agents.gemini-cli;
+      policies = {
+        "shell-rules" = {
+          rule = sharedPermissions.geminiAllowedPolicyRules;
+        };
+      };
       settings = {
         general = {
           preferredEditor = "nvim";
@@ -34,8 +39,6 @@ in
           autoAccept = false;
           enableHooks = true;
         };
-        # migrate to Policy Engine
-        policyPaths = [ "~/.gemini/policies" ];
         hooks = {
           AfterTool = [
             {
@@ -56,9 +59,6 @@ in
 
     home.file = {
       ".gemini/CONTEXT.md".source = ./CONTEXT.md;
-      ".gemini/policies/shell-rules.toml".source = (pkgs.formats.toml { }).generate "gemini-shell-rules" {
-        rule = sharedPermissions.geminiAllowedPolicyRules;
-      };
     };
   };
 }
