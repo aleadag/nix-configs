@@ -6,12 +6,12 @@
 }:
 
 let
-  cfg = config.home-manager.dev.codex;
+  cfg = config.home-manager.dev.coding-agents.codex;
   sharedPermissions = import ./permissions.nix { inherit lib; };
   renderPrefixRule = pattern: ''prefix_rule(pattern=${builtins.toJSON pattern}, decision="allow")'';
 in
 {
-  options.home-manager.dev.codex = {
+  options.home-manager.dev.coding-agents.codex = {
     enable = lib.mkEnableOption "Codex config" // {
       default = config.home-manager.dev.enable;
     };
@@ -24,15 +24,14 @@ in
 
     programs.codex = {
       enable = true;
+      enableMcpIntegration = true;
       package = pkgs.llm-agents.codex;
       settings = {
+        approval_policy = "on-request";
         analytics.enabled = false;
         check_for_update_on_startup = false;
-        mcp_servers = {
-          nixos = {
-            command = lib.getExe pkgs.mcp-nixos;
-          };
-        };
+        model = "gpt-5.4";
+        sandbox_mode = "workspace-write";
       };
       custom-instructions = builtins.readFile ./CONTEXT.md;
       skills = ./skills;

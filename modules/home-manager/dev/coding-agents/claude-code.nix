@@ -7,13 +7,13 @@
 }:
 
 let
-  cfg = config.home-manager.dev.claude-code;
+  cfg = config.home-manager.dev.coding-agents.claude-code;
   # Get cc-tools binaries from the flake
   cc-tools = flake.inputs.cc-tools.packages.${pkgs.stdenv.hostPlatform.system}.default;
   sharedPermissions = import ./permissions.nix { inherit lib; };
 in
 {
-  options.home-manager.dev.claude-code = {
+  options.home-manager.dev.coding-agents.claude-code = {
     enable = lib.mkEnableOption "Claude Code CLI tool" // {
       default = config.home-manager.dev.enable;
     };

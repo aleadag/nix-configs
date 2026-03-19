@@ -29,7 +29,7 @@ in
     };
     claudeCode = {
       enable = lib.mkEnableOption "Claude Code plugin" // {
-        default = config.home-manager.dev.claude-code.enable;
+        default = config.home-manager.dev.coding-agents.claude-code.enable;
       };
     };
     vimwiki = {

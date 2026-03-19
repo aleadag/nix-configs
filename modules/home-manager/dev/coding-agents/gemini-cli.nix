@@ -6,11 +6,11 @@
 }:
 
 let
-  cfg = config.home-manager.dev.gemini-cli;
+  cfg = config.home-manager.dev.coding-agents.gemini-cli;
   sharedPermissions = import ./permissions.nix { inherit lib; };
 in
 {
-  options.home-manager.dev.gemini-cli = {
+  options.home-manager.dev.coding-agents.gemini-cli = {
     enable = lib.mkEnableOption "Gemini-cli config" // {
       default = config.home-manager.dev.enable;
     };
