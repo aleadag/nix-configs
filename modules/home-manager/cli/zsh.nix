@@ -113,6 +113,8 @@ in
               setopt no_nomatch
               # disable clock
               unset RPROMPT
+              # remove prezto LESS configuration
+              unset LESS
 
               # prezto default matching does annoying partial matching
               # e.g.: something-|.json
@@ -149,7 +151,10 @@ in
 
         prezto = {
           enable = true;
-          editor.keymap = "vi";
+          editor = {
+            dotExpansion = false;
+            keymap = "vi";
+          };
           pmodules = [
             "environment"
             "terminal"
@@ -196,17 +201,6 @@ in
         ];
 
         sessionVariables = {
-          PAGER = "less";
-          LESS = lib.concatStringsSep " " [
-            "--hilite-search"
-            "--ignore-case"
-            "--long-prompt"
-            "--raw-control-chars"
-            "--chop-long-lines"
-            "--hilite-unread"
-            "--window=4"
-            "--quit-if-one-screen"
-          ];
           # Reduce time to wait for multi-key sequences
           KEYTIMEOUT = 1;
           # Set right prompt to show time
