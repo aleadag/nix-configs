@@ -156,7 +156,6 @@ in
 
     home.shellAliases = {
       gs = lib.mkIf cfg.git.enable "${lib.getExe config.programs.git.package} status";
-      cat = lib.getExe config.programs.bat.package;
       # For muscle memory...
       archive = "${lib.getExe pkgs.ouch} compress";
       unarchive = "${lib.getExe pkgs.ouch} decompress";
