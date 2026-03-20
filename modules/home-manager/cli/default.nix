@@ -99,7 +99,6 @@ in
         # it is possible to generate a custom bat theme to ~/.config/bat/config
         config = {
           tabs = "2";
-          pager = "less -FR";
         };
         extraPackages = builtins.attrValues {
           inherit (pkgs.bat-extras)
