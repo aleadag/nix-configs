@@ -19,8 +19,13 @@ in
 
   config = lib.mkIf cfg.enable {
     home.packages = [ pkgs.mcp-nixos ];
-    home.file.".codex/rules/basic.rules".text =
-      lib.concatMapStringsSep "\n" renderPrefixRule sharedPermissions.codexAllowedPrefixRules + "\n";
+    home.file = {
+      ".codex/rules/basic.rules".text =
+        lib.concatMapStringsSep "\n" renderPrefixRule sharedPermissions.codexAllowedPrefixRules + "\n";
+      # the skills folder can be a symlink, but SKILL.md cannot be a symlink:
+      # XXX: https://github.com/openai/codex/issues/10470
+      ".agents/skills".source = ./skills;
+    };
 
     programs.codex = {
       enable = true;
@@ -34,7 +39,7 @@ in
         sandbox_mode = "workspace-write";
       };
       custom-instructions = builtins.readFile ./CONTEXT.md;
-      skills = ./skills;
+      skills = { };
     };
   };
 }
