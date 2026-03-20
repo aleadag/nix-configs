@@ -1,6 +1,6 @@
 ---
 name: next
-description: Execute a production-quality implementation workflow: research first, create a plan, implement the change, and validate it before finishing.
+description: "Execute a production-quality implementation workflow: research first, create a plan, implement the change, and validate it before finishing."
 ---
 
 # Next
