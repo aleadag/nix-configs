@@ -15,6 +15,8 @@ in
     services.paneru.enable = true;
     services.paneru.settings = {
       options = {
+        animation_speed = 50;
+        auto_center = true;
         preset_column_widths = [
           0.25
           0.33
@@ -23,8 +25,8 @@ in
           0.75
         ];
         swipe_gesture_fingers = 4;
-        animation_speed = 4000;
       };
+
       bindings = {
         window_focus_west = "cmd - h";
         window_focus_east = "cmd - l";
@@ -44,6 +46,16 @@ in
         window_stack = "cmd - [";
         window_unstack = "cmd - ]";
         quit = "ctrl + alt - delete";
+      };
+
+      windows = {
+        syspref = {
+          # Title RegExp pattern is required.
+          title = ".*";
+          bundle_id = "com.apple.systempreferences";
+          # Do not manage this window, e.g. it will be floating.
+          floating = true;
+        };
       };
     };
   };
