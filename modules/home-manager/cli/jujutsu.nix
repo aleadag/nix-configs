@@ -34,7 +34,10 @@ in
         template-aliases = {
           "format_short_id(id)" = "id.shortest()";
         };
-        ui.editor = "nvim";
+        ui = {
+          editor = "nvim";
+          paginate = "never";
+        };
         user = {
           name = config.meta.fullname;
           inherit (config.meta) email;
