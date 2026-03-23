@@ -37,6 +37,14 @@ in
         check_for_update_on_startup = false;
         model = "gpt-5.4";
         sandbox_mode = "workspace-write";
+        projects = {
+          "${config.home.homeDirectory}/hacking/aleadag/nix-configs" = {
+            trust_level = "trusted";
+          };
+          "${config.home.homeDirectory}/hacking/tiwater/lucid" = {
+            trust_level = "trusted";
+          };
+        };
       };
       custom-instructions = builtins.readFile ./CONTEXT.md;
       skills = { };
