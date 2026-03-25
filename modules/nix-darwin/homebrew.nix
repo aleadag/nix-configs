@@ -29,7 +29,6 @@ in
         "google-chrome"
         "kitty"
         "linearmouse"
-        "logseq"
         "microsoft-edge"
         "gechr/tap/whichspace"
       ];

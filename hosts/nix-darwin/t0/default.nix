@@ -7,7 +7,7 @@
       home.stateVersion = "26.05";
       home-manager = {
         cli.zsh.zprof.enable = true;
-        desktop.mpv.enable = false;
+        desktop.obsidian.enable = true;
         syncthing.enable = true;
         window-manager.paneru.enable = true;
       };
