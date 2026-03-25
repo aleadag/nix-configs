@@ -9,10 +9,11 @@
   };
 
   home-manager = {
-    dev.enable = true;
     desktop.enable = true;
+    dev.enable = true;
     mihomo.enable = false;
     nix.niks3.gc.enable = true;
+    syncthing.enable = true;
     window-manager = {
       enable = true;
       x11.enable = false;
