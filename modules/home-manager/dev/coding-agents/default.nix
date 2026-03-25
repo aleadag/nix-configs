@@ -6,5 +6,6 @@
     ./codex.nix
     ./gemini-cli.nix
     ./mcp.nix
+    ./skills.nix
   ];
 }

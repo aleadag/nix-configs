@@ -126,6 +126,11 @@
         treefmt-nix.follows = "treefmt-nix";
       };
     };
+
+    obsidian-skills = {
+      url = "github:kepano/obsidian-skills?dir=skills";
+      flake = false;
+    };
   };
 
   outputs =

@@ -36,7 +36,7 @@ in
         '';
       };
       memory.source = ./CONTEXT.md;
-      skillsDir = ./skills;
+      skillsDir = config.home-manager.dev.coding-agents.skills.package;
       settings = {
         env = {
           BASH_DEFAULT_TIMEOUT_MS = "300000";

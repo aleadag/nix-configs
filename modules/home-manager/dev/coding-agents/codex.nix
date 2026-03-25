@@ -1,5 +1,6 @@
 {
   config,
+  flake,
   lib,
   pkgs,
   ...
@@ -22,9 +23,6 @@ in
     home.file = {
       ".codex/rules/basic.rules".text =
         lib.concatMapStringsSep "\n" renderPrefixRule sharedPermissions.codexAllowedPrefixRules + "\n";
-      # the skills folder can be a symlink, but SKILL.md cannot be a symlink:
-      # XXX: https://github.com/openai/codex/issues/10470
-      ".agents/skills".source = ./skills;
     };
 
     programs.codex = {
