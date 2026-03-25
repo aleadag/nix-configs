@@ -43,6 +43,11 @@ in
         "kitty_mod+i" = "goto_tab 8";
         "kitty_mod+o" = "goto_tab 9";
         "kitty_mod+p" = "goto_tab 10";
+        # https://github.com/jtroo/kanata/issues/1957
+        "f24" = "discard_event";
+        "ctrl+f24" = "discard_event";
+        "shift+f24" = "discard_event";
+        "ctrl+shift+f24" = "discard_event";
       }
       // lib.optionalAttrs cfg.scrollback-nvim.enable {
         "kitty_mod+h" = "kitty_scrollback_nvim";
