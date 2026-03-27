@@ -16,6 +16,12 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [ pkgs.nur.repos.fym998.wpsoffice-cn-fcitx ];
+    home.packages = with pkgs; [
+      pkgs.nur.repos.fym998.wpsoffice-cn-fcitx
+      corefonts
+      vista-fonts
+      wqy_zenhei
+      wqy_microhei
+    ];
   };
 }
