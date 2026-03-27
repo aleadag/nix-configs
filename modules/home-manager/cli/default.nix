@@ -49,43 +49,66 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = with pkgs; [
-      dvt
-      get-ip
-      get-ip'
-      remove-symlink
+    home = {
+      packages = with pkgs; [
+        dvt
+        get-ip
+        get-ip'
+        remove-symlink
 
-      _7zz
-      bc
-      bind.dnsutils
-      clock-rs
-      cointop
-      curl
-      dialog
-      dos2unix
-      dua
-      each
-      file
-      ffmpeg
-      hyperfine
-      imagemagick
-      lsof
-      mediainfo
-      ouch
-      page
-      pv
-      python3
-      rlwrap
-      tealdeer
-      tokei
-      uutils-coreutils-noprefix
-      websocat
-      wget
+        _7zz
+        bc
+        bind.dnsutils
+        clock-rs
+        cointop
+        curl
+        dialog
+        dos2unix
+        dua
+        each
+        file
+        ffmpeg
+        hyperfine
+        imagemagick
+        lsof
+        mediainfo
+        ouch
+        page
+        pv
+        python3
+        rlwrap
+        tealdeer
+        tokei
+        uutils-coreutils-noprefix
+        websocat
+        wget
 
-      # modern unix: https://github.com/ibraheemdev/modern-unix
-      duf
-      dust
-    ];
+        # modern unix: https://github.com/ibraheemdev/modern-unix
+        duf
+        dust
+      ];
+
+      sessionVariables = {
+        # https://github.com/sharkdp/bat/issues/2578
+        LESSUTFCHARDEF = "E000-F8FF:p,F0000-FFFFD:p,100000-10FFFD:p";
+        # https://felipec.wordpress.com/2021/06/05/adventures-with-man-color/
+        MANPAGER = "less --use-color -Dd+r -Du+b";
+        MANROFFOPT = "-c";
+      };
+
+      shellAliases = {
+        gs = lib.mkIf cfg.git.enable "${lib.getExe config.programs.git.package} status";
+        # For muscle memory...
+        archive = "${lib.getExe pkgs.ouch} compress";
+        unarchive = "${lib.getExe pkgs.ouch} decompress";
+        lsarchive = "${lib.getExe pkgs.ouch} list";
+        ncdu = "${lib.getExe pkgs.dua} interactive";
+        sloccount = lib.getExe pkgs.tokei;
+        # https://unix.stackexchange.com/questions/335648/why-does-the-reset-command-include-a-delay
+        reset = "${lib.getExe' pkgs.ncurses "tput"} reset";
+        ns = lib.mkIf config.programs.fzf.enable "${lib.getExe pkgs.nix-search-tv} print | ${lib.getExe pkgs.fzf} --preview '${lib.getExe pkgs.nix-search-tv} preview {}' --scheme history";
+      };
+    };
 
     programs = {
       aria2.enable = true;
@@ -147,24 +170,6 @@ in
       };
       nix-your-shell.enable = true;
       zoxide.enable = true;
-    };
-
-    home.sessionVariables = {
-      # https://github.com/sharkdp/bat/issues/2578
-      LESSUTFCHARDEF = "E000-F8FF:p,F0000-FFFFD:p,100000-10FFFD:p";
-    };
-
-    home.shellAliases = {
-      gs = lib.mkIf cfg.git.enable "${lib.getExe config.programs.git.package} status";
-      # For muscle memory...
-      archive = "${lib.getExe pkgs.ouch} compress";
-      unarchive = "${lib.getExe pkgs.ouch} decompress";
-      lsarchive = "${lib.getExe pkgs.ouch} list";
-      ncdu = "${lib.getExe pkgs.dua} interactive";
-      sloccount = lib.getExe pkgs.tokei;
-      # https://unix.stackexchange.com/questions/335648/why-does-the-reset-command-include-a-delay
-      reset = "${lib.getExe' pkgs.ncurses "tput"} reset";
-      ns = lib.mkIf config.programs.fzf.enable "${lib.getExe pkgs.nix-search-tv} print | ${lib.getExe pkgs.fzf} --preview '${lib.getExe pkgs.nix-search-tv} preview {}' --scheme history";
     };
   };
 }
