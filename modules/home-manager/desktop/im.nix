@@ -27,7 +27,10 @@ in
       enable = true;
       type = "fcitx5";
       fcitx5 = {
-        addons = [ fcitx5-rime-with-data ];
+        addons = [
+          fcitx5-rime-with-data
+          pkgs.fcitx5-gtk
+        ];
         waylandFrontend = config.home-manager.window-manager.wayland.enable;
         settings = {
           globalOptions = {

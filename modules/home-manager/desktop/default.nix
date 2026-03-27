@@ -18,6 +18,7 @@ in
     ./mpv
     ./obsidian.nix
     ./wechat
+    ./wps.nix
   ];
 
   options.home-manager.desktop = {
