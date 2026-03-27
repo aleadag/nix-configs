@@ -33,123 +33,130 @@ in
       };
     };
 
-    programs.git = {
-      enable = true;
-
-      attributes = lib.mkIf cfg.mergiraf.enable [
-        "* merge=mergiraf"
-      ];
-
-      ignores = [
-        "**/.claude/settings.local.json"
-        "**/CLAUDE.local.md"
-        "*.swp"
-        "*~"
-        ".clj-kondo"
-        ".dir-locals.el"
-        ".DS_Store"
-        ".lsp"
-        ".projectile"
-        "Thumbs.db"
-      ];
-
-      lfs = {
+    programs = {
+      delta = {
         enable = true;
-        skipSmudge = true;
+        enableGitIntegration = true;
+        options = {
+          navigate = true; # use n and N to move between diff sections
+        };
       };
 
-      includes = [ { path = "~/.config/git/local"; } ];
-
-      settings = {
-        user = {
-          name = config.meta.fullname;
-          inherit (config.meta) email;
-        };
-
-        alias = {
-          branch-cleanup = ''!git branch --merged | egrep -v "(^\*|master|main|dev|development)" | xargs git branch -d #'';
-          hist = "log --pretty=format:'%C(yellow)[%ad]%C(reset) %C(green)[%h]%C(reset) | %C(red)%s %C(bold red){{%an}}%C(reset) %C(blue)%d%C(reset)' --graph --date=short";
-          lol = "log --graph --decorate --oneline --abbrev-commit";
-          lola = "log --graph --decorate --oneline --abbrev-commit --all";
-          work = "log --pretty=format:'%h%x09%an%x09%ad%x09%s'";
-        };
-        init.defaultBranch = "main";
-        branch.sort = "-committerdate";
-        color.ui = true;
-        column.ui = "auto";
-        commit.verbose = true;
-        core = {
+      gh = {
+        inherit (cfg.gh) enable;
+        extensions = with pkgs; [
+          gh-dash
+          gh-markdown-preview
+        ];
+        settings = {
+          git_protocol = "ssh";
           editor = "nvim";
-          whitespace = "trailing-space,space-before-tab,indent-with-non-tab";
-        };
-        checkout = {
-          defaultRemote = "origin";
-        };
-        diff = {
-          algorithm = "histogram";
-          colorMoved = "plain";
-          mnemonicPrefix = true;
-          renames = true;
-        };
-        fetch = {
-          prune = true;
-          pruneTags = true;
-        };
-        github = {
-          user = "aleadag";
-        };
-        merge = {
-          mergiraf = lib.mkIf cfg.mergiraf.enable {
-            name = "mergiraf";
-            driver = "mergiraf merge --git %O %A %B -s %S -x %X -y %Y -p %P -l %L";
+          prompt = "enabled";
+          aliases = {
+            co = "pr checkout";
           };
-          conflictstyle = if cfg.mergiraf.enable then "diff3" else "zdiff3";
-          tool = "nvim -d";
-        };
-        pull.rebase = true;
-        push = {
-          autoSetupRemote = true;
-          followTags = true;
-          default = "simple";
-        };
-        rebase = {
-          autoSquash = true;
-          autoStash = true;
-          updateRefs = true;
-        };
-        rerere = {
-          enabled = true;
-          autoupdate = true;
-        };
-        tag.sort = "-version:refname";
-        safe.bareRepository = "explicit";
-      };
-    };
-
-    programs.delta = {
-      enable = true;
-      enableGitIntegration = true;
-      options = {
-        navigate = true; # use n and N to move between diff sections
-      };
-    };
-
-    programs.git-cliff.enable = true;
-
-    programs.gh = {
-      inherit (cfg.gh) enable;
-      extensions = with pkgs; [
-        gh-dash
-        gh-markdown-preview
-      ];
-      settings = {
-        git_protocol = "ssh";
-        editor = "nvim";
-        prompt = "enabled";
-        aliases = {
-          co = "pr checkout";
         };
       };
+
+      git = {
+        enable = true;
+
+        attributes = lib.mkIf cfg.mergiraf.enable [
+          "* merge=mergiraf"
+        ];
+
+        ignores = [
+          "**/.claude/settings.local.json"
+          "**/CLAUDE.local.md"
+          "*.swp"
+          "*~"
+          ".clj-kondo"
+          ".dir-locals.el"
+          ".DS_Store"
+          ".lsp"
+          ".projectile"
+          "Thumbs.db"
+        ];
+
+        lfs = {
+          enable = true;
+          skipSmudge = true;
+        };
+
+        includes = [ { path = "~/.config/git/local"; } ];
+
+        settings = {
+          alias =
+            let
+              git = lib.getExe config.programs.git.package;
+              awk = lib.getExe pkgs.gawk;
+              xargs = lib.getExe' pkgs.findutils "xargs";
+            in
+            {
+              branch-cleanup = ''!${git} fetch --prune && ${git} for-each-ref --format '%(refname:short) %(upstream:track)' refs/heads | ${awk} '$2 == "[gone]" {print $1}' | ${xargs} -r git branch -D'';
+              # Restores the commit message from a failed commit for some reason
+              fix-commit = ''!${git} commit -F "$(${git} rev-parse --git-dir)/COMMIT_EDITMSG" --edit'';
+              pushf = "push --force-with-lease";
+              logs = "log --show-signature";
+            };
+          branch.sort = "-committerdate";
+          checkout = {
+            defaultRemote = "origin";
+          };
+          color.ui = true;
+          column.ui = "auto";
+          commit.verbose = true;
+          core = {
+            editor = "nvim";
+            whitespace = "trailing-space,space-before-tab,indent-with-non-tab";
+          };
+          diff = {
+            algorithm = "histogram";
+            colorMoved = "plain";
+            mnemonicPrefix = true;
+            renames = true;
+          };
+          fetch = {
+            prune = true;
+            pruneTags = true;
+          };
+          github = {
+            user = "aleadag";
+          };
+          init.defaultBranch = "main";
+          merge = {
+            conflictstyle = if cfg.mergiraf.enable then "diff3" else "zdiff3";
+            mergiraf = lib.mkIf cfg.mergiraf.enable {
+              name = "mergiraf";
+              driver = "mergiraf merge --git %O %A %B -s %S -x %X -y %Y -p %P -l %L";
+            };
+            tool = "nvim -d";
+          };
+          pull.rebase = true;
+          push = {
+            autoSetupRemote = true;
+            default = "simple";
+            followTags = true;
+          };
+          rebase = {
+            autoSquash = true;
+            autoStash = true;
+            updateRefs = true;
+          };
+          rerere = {
+            autoupdate = true;
+            enabled = true;
+          };
+          safe.bareRepository = "explicit";
+          tag.sort = "-version:refname";
+          user = {
+            name = config.meta.fullname;
+            inherit (config.meta) email;
+          };
+        };
+      };
+
+      git-cliff.enable = true;
     };
   };
 }
