@@ -228,7 +228,15 @@ proxy-groups:
     <<: *standard_proxy_group
 
   - name: "🤖 ChatGPT"
-    <<: *standard_proxy_group
+    type: select
+    proxies:
+      - "🇺🇸 美国节点"
+      - "🇯🇵 日本节点"
+      - "🇨🇳 台湾节点"
+      - "🇸🇬 新加坡节点"
+      - "🔄 日本故转"
+      - "🔄 台湾故转"
+      - "🔄 新加坡故转"
 
   - name: "🐙 GitHub"
     <<: *standard_proxy_group
