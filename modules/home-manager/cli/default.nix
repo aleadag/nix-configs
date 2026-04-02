@@ -50,43 +50,46 @@ in
 
   config = lib.mkIf cfg.enable {
     home = {
-      packages = with pkgs; [
-        dvt
-        get-ip
-        get-ip'
-        remove-symlink
+      packages =
+        with pkgs;
+        [
+          dvt
+          get-ip
+          get-ip'
+          remove-symlink
 
-        _7zz
-        bc
-        bind.dnsutils
-        clock-rs
-        cointop
-        curl
-        dialog
-        dos2unix
-        dua
-        each
-        file
-        ffmpeg
-        hyperfine
-        imagemagick
-        lsof
-        mediainfo
-        ouch
-        page
-        pv
-        python3
-        rlwrap
-        tealdeer
-        tokei
-        uutils-coreutils-noprefix
-        websocat
-        wget
+          _7zz
+          bc
+          bind.dnsutils
+          clock-rs
+          cointop
+          curl
+          dialog
+          dos2unix
+          dua
+          each
+          file
+          ffmpeg
+          hyperfine
+          imagemagick
+          lsof
+          mediainfo
+          ouch
+          page
+          pv
+          python3
+          rlwrap
+          tealdeer
+          tokei
+          uutils-coreutils-noprefix
+          websocat
+          wget
 
-        # modern unix: https://github.com/ibraheemdev/modern-unix
-        duf
-        dust
-      ];
+          # modern unix: https://github.com/ibraheemdev/modern-unix
+          duf
+          dust
+        ]
+        ++ (lib.optionals stdenv.isLinux [ bluetui ]);
 
       sessionVariables = {
         # https://github.com/sharkdp/bat/issues/2578
