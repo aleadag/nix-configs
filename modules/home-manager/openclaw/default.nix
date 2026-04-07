@@ -79,29 +79,6 @@ in
     };
   };
 
-  # TODO(nix-openclaw): Remove once feishu is added to upstream generated schema.
-  # See: https://github.com/openclaw/nix-openclaw
-  options.programs.openclaw.instances = lib.mkOption {
-    type = lib.types.attrsOf (
-      lib.types.submodule {
-        options.config = lib.mkOption {
-          type = lib.types.submodule {
-            options.channels = lib.mkOption {
-              type = lib.types.nullOr (
-                lib.types.submodule {
-                  options.feishu = lib.mkOption {
-                    type = lib.types.nullOr lib.types.attrs;
-                    default = null;
-                  };
-                }
-              );
-            };
-          };
-        };
-      }
-    );
-  };
-
   config = lib.mkIf cfg.enable {
     sops = {
       secrets = lib.mkMerge (
