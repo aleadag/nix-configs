@@ -27,6 +27,10 @@ in
             sync = {
               path = "~/sync";
               devices = allDevices;
+              ignorePatterns = [
+                ".obsidian"
+                ".DS_Store"
+              ];
               ignorePerms = true;
               copyOwnershipFromParent = true;
             };
