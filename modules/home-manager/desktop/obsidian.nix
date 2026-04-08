@@ -20,10 +20,51 @@
           showLineNumber = true;
         };
       };
-      vaults = {
-        awang.target = "sync/AWANG";
-        lucid.target = "hacking/tiwater/lucid/lucid-docs";
-      };
+      vaults =
+        let
+          corePlugins = [
+            "backlink"
+            "bookmarks"
+            "command-palette"
+            "daily-notes"
+            "editor-status"
+            "file-explorer"
+            "file-recovery"
+            "global-search"
+            "graph"
+            "note-composer"
+            "outgoing-link"
+            "outline"
+            "page-preview"
+            "switcher"
+            "tag-pane"
+            "templates"
+            "word-count"
+            "zk-prefixer"
+          ];
+        in
+        {
+          awang = {
+            target = "sync/AWANG";
+            settings.corePlugins = [
+              {
+                name = "daily-notes";
+                enable = true;
+                settings = {
+                  folder = "02. Journaling";
+                };
+              }
+            ]
+            ++ corePlugins;
+          };
+          lucid = {
+            target = "hacking/tiwater/lucid/lucid-docs";
+            settings.corePlugins = [
+              "bases"
+            ]
+            ++ corePlugins;
+          };
+        };
     };
 
     stylix.targets.obsidian = {
