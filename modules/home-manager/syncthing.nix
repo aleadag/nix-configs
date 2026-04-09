@@ -34,6 +34,16 @@ in
               ignorePerms = true;
               copyOwnershipFromParent = true;
             };
+            lifewiki = {
+              path = "~/Lifewiki";
+              devices = allDevices;
+              ignorePatterns = [
+                ".obsidian"
+                ".DS_Store"
+              ];
+              ignorePerms = true;
+              copyOwnershipFromParent = true;
+            };
           };
           options = {
             relaysEnabled = true;

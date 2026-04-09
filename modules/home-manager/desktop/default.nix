@@ -16,7 +16,7 @@ in
     ./im.nix
     ./kitty.nix
     ./mpv
-    ./obsidian.nix
+    ./obsidian
     ./wechat
     ./wps.nix
   ];
