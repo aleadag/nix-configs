@@ -24,7 +24,6 @@ in
           0.66
           0.75
         ];
-        swipe_gesture_fingers = 4;
       };
 
       bindings = {
