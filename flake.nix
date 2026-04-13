@@ -127,8 +127,21 @@
       };
     };
 
+    # Agent skills
+    jujutsu-skills = {
+      url = "github:danverbraganza/jujutsu-skill";
+      flake = false;
+    };
     obsidian-skills = {
       url = "github:kepano/obsidian-skills?dir=skills";
+      flake = false;
+    };
+    openai-skills = {
+      url = "github:openai/skills";
+      flake = false;
+    };
+    superpowers = {
+      url = "github:obra/superpowers";
       flake = false;
     };
   };

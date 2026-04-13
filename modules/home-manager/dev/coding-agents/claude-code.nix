@@ -35,8 +35,7 @@ in
             --run 'export ANTHROPIC_AUTH_TOKEN="$(cat ${config.sops.secrets.anthropic_auth_token.path})"'
         '';
       };
-      memory.source = ./CONTEXT.md;
-      skillsDir = config.home-manager.dev.coding-agents.skills.package;
+      context = ./CONTEXT.md;
       settings = {
         env = {
           BASH_DEFAULT_TIMEOUT_MS = "300000";

@@ -1,5 +1,6 @@
 {
   config,
+  flake,
   lib,
   pkgs,
   ...
@@ -9,6 +10,37 @@ let
   cfg = config.home-manager.dev.coding-agents.codex;
   sharedPermissions = import ./permissions.nix { inherit lib; };
   renderPrefixRule = pattern: ''prefix_rule(pattern=${builtins.toJSON pattern}, decision="allow")'';
+  loadSkills =
+    dir:
+    let
+      entries = builtins.readDir dir;
+    in
+    builtins.listToAttrs (
+      map (name: {
+        inherit name;
+        value = dir + "/${name}";
+      }) (builtins.filter (name: entries.${name} == "directory") (builtins.attrNames entries))
+    );
+  jujutsuSkills = loadSkills (flake.inputs.jujutsu-skills);
+  superpowersSkills = loadSkills (flake.inputs.superpowers + "/skills");
+  obsidianSkills = loadSkills flake.inputs.obsidian-skills;
+  mySkills = loadSkills ./skills;
+
+  openaiCuratedSkillsDir = flake.inputs.openai-skills + "/skills/.curated";
+  openaiSkillNames = [
+    "playwright"
+    "playwright-interactive"
+    "pdf"
+    "frontend-skill"
+    "security-best-practices"
+    "security-threat-model"
+  ];
+  openaiSkills = builtins.listToAttrs (
+    map (name: {
+      inherit name;
+      value = openaiCuratedSkillsDir + "/${name}";
+    }) openaiSkillNames
+  );
 in
 {
   options.home-manager.dev.coding-agents.codex = {
@@ -33,7 +65,6 @@ in
         analytics.enabled = false;
         check_for_update_on_startup = false;
         model = "gpt-5.4";
-        sandbox_mode = "workspace-write";
         projects = {
           "${config.home.homeDirectory}/hacking/aleadag/nix-configs" = {
             trust_level = "trusted";
@@ -42,9 +73,13 @@ in
             trust_level = "trusted";
           };
         };
+        sandbox_mode = "workspace-write";
+        tui = {
+          notifications = true;
+        };
       };
-      custom-instructions = builtins.readFile ./CONTEXT.md;
-      skills = { };
+      context = builtins.readFile ./CONTEXT.md;
+      skills = superpowersSkills // obsidianSkills // openaiSkills // jujutsuSkills // mySkills;
     };
   };
 }
