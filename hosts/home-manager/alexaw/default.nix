@@ -43,7 +43,7 @@
         }
       ];
     };
-    syncthing.enable = false;
+    syncthing.enable = true;
   };
 
   stylix.targets = {
