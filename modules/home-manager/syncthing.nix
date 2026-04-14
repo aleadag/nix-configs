@@ -7,7 +7,15 @@ let
   cfg = config.home-manager.syncthing;
 in
 {
-  options.home-manager.syncthing.enable = lib.mkEnableOption "Syncthing config";
+  options.home-manager.syncthing = {
+    enable = lib.mkEnableOption "Syncthing config";
+
+    guiPort = lib.mkOption {
+      type = lib.types.port;
+      default = 8384;
+      description = "Port for the Syncthing web UI on localhost.";
+    };
+  };
 
   config = lib.mkIf cfg.enable (
     let
@@ -27,6 +35,7 @@ in
     {
       services.syncthing = {
         enable = true;
+        guiAddress = "127.0.0.1:${toString cfg.guiPort}";
         settings = {
           inherit devices;
           folders = {

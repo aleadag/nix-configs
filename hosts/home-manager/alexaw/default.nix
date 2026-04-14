@@ -43,7 +43,10 @@
         }
       ];
     };
-    syncthing.enable = true;
+    syncthing = {
+      enable = true;
+      guiPort = 8385;
+    };
   };
 
   stylix.targets = {
