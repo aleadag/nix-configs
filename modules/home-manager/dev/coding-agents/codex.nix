@@ -55,7 +55,6 @@ in
         ".codex/rules/basic.rules".text =
           lib.concatMapStringsSep "\n" renderPrefixRule sharedPermissions.codexAllowedPrefixRules + "\n";
       };
-      packages = [ pkgs.mcp-nixos ];
     };
 
     programs.codex = {
