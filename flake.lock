@@ -394,6 +394,32 @@
         "type": "github"
       }
     },
+    "lifewiki-skills": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "obsidian-skills": [
+          "obsidian-skills"
+        ]
+      },
+      "locked": {
+        "lastModified": 1776154479,
+        "narHash": "sha256-bf59vAwOsKmyfsmc/fpVmRqIruyK+eIStIQ8CwBZz08=",
+        "owner": "aleadag",
+        "repo": "lifewiki-skills",
+        "rev": "ae65ec311da45e5730b877c2c4e4afd7197eaaeb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "aleadag",
+        "repo": "lifewiki-skills",
+        "type": "github"
+      }
+    },
     "llm-agents": {
       "inputs": {
         "blueprint": "blueprint",
@@ -749,6 +775,7 @@
         "home-manager": "home-manager",
         "jovian-nixos": "jovian-nixos",
         "jujutsu-skills": "jujutsu-skills",
+        "lifewiki-skills": "lifewiki-skills",
         "llm-agents": "llm-agents",
         "nix-darwin": "nix-darwin",
         "nix-flatpak": "nix-flatpak",

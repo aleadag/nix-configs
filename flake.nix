@@ -117,6 +117,15 @@
       };
     };
 
+    lifewiki-skills = {
+      url = "github:aleadag/lifewiki-skills";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+        obsidian-skills.follows = "obsidian-skills";
+      };
+    };
+
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
       inputs = {

@@ -1,5 +1,6 @@
 {
   config,
+  flake,
   lib,
   pkgs,
   ...
@@ -7,6 +8,18 @@
 
 let
   cfg = config.home-manager.openclaw;
+  flakeInputSource =
+    input:
+    let
+      inherit (input.sourceInfo)
+        owner
+        repo
+        rev
+        narHash
+        ;
+    in
+    "github:${owner}/${repo}/${rev}?narHash=${narHash}";
+  lifewikiSkillsPluginSource = flakeInputSource flake.inputs.lifewiki-skills;
   secretOpts = lib.optionalAttrs (cfg.sopsFile != null) {
     inherit (cfg) sopsFile;
   };
@@ -110,6 +123,9 @@ in
     programs.openclaw = {
       package = pkgs.llm-agents.openclaw;
       documents = ./docs;
+      customPlugins = [
+        { source = lifewikiSkillsPluginSource; }
+      ];
 
       instances.default = {
         inherit (cfg) gatewayPort;
