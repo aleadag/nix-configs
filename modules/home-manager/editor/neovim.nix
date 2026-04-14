@@ -52,8 +52,12 @@ in
   config = lib.mkIf cfg.enable {
     home-manager.editor.neovim.standalonePackage = config.programs.neovim.finalPackage.override {
       extraName = "-standalone";
-      neovimRcContent = config.programs.neovim.generatedConfigs.viml;
-      luaRcContent = config.programs.neovim.generatedConfigs.lua;
+      neovimRcContent = config.programs.neovim.generatedConfigViml;
+      luaRcContent =
+        if lib.hasAttr "lua" config.programs.neovim.generatedConfigs then
+          config.programs.neovim.generatedConfigs.lua
+        else
+          "";
       wrapRc = true;
     };
 
