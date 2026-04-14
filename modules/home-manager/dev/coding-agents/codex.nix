@@ -15,7 +15,9 @@ let
   xdgConfigHome = lib.removePrefix config.home.homeDirectory config.xdg.configHome;
   codexConfigDir = if useXdgDirectories then "${xdgConfigHome}/codex" else ".codex";
   jjStopHook = pkgs.writeShellScript "codex-jj-stop-hook" ''
-    jj new >/dev/null 2>&1 || true
+    if jj root >/dev/null 2>&1 && [ -n "$(jj diff --summary 2>/dev/null)" ]; then
+      jj new >/dev/null 2>&1 || true
+    fi
     printf '%s\n' '{"continue":true}'
   '';
   stopHooksFile = builtins.toJSON {
