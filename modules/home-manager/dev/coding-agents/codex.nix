@@ -9,6 +9,29 @@
 let
   cfg = config.home-manager.dev.coding-agents.codex;
   sharedPermissions = import ./permissions.nix { inherit lib; };
+  codexPackage = pkgs.llm-agents.codex;
+  useXdgDirectories =
+    config.home.preferXdgDirectories && lib.versionAtLeast (lib.getVersion codexPackage) "0.2.0";
+  xdgConfigHome = lib.removePrefix config.home.homeDirectory config.xdg.configHome;
+  codexConfigDir = if useXdgDirectories then "${xdgConfigHome}/codex" else ".codex";
+  jjStopHook = pkgs.writeShellScript "codex-jj-stop-hook" ''
+    jj new >/dev/null 2>&1 || true
+    printf '%s\n' '{"continue":true}'
+  '';
+  stopHooksFile = builtins.toJSON {
+    hooks = {
+      Stop = [
+        {
+          hooks = [
+            {
+              type = "command";
+              command = jjStopHook;
+            }
+          ];
+        }
+      ];
+    };
+  };
   renderPrefixRule = pattern: ''prefix_rule(pattern=${builtins.toJSON pattern}, decision="allow")'';
   loadSkills =
     dir:
@@ -52,15 +75,18 @@ in
   config = lib.mkIf cfg.enable {
     home = {
       file = {
-        ".codex/rules/basic.rules".text =
+        "${codexConfigDir}/rules/basic.rules".text =
           lib.concatMapStringsSep "\n" renderPrefixRule sharedPermissions.codexAllowedPrefixRules + "\n";
+      }
+      // lib.optionalAttrs config.home-manager.cli.jujutsu.enable {
+        "${codexConfigDir}/hooks.json".text = stopHooksFile;
       };
     };
 
     programs.codex = {
       enable = true;
       enableMcpIntegration = false;
-      package = pkgs.llm-agents.codex;
+      package = codexPackage;
       settings = { };
       context = builtins.readFile ./CONTEXT.md;
       skills = superpowersSkills // obsidianSkills // openaiSkills // jujutsuSkills // mySkills;
