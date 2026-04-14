@@ -9,6 +9,19 @@
     hostName = "macmini53";
     desktop.enable = true;
     mihomo.enable = false;
+    openclaw = {
+      enable = true;
+      sopsFile = ./secrets.yaml;
+      feishuAccounts = [
+        "main"
+      ];
+      agents = [
+        {
+          id = "main";
+          feishuAccount = "main";
+        }
+      ];
+    };
     syncthing.enable = false;
     window-manager = {
       enable = true;
