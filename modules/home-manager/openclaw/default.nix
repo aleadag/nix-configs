@@ -114,9 +114,11 @@ in
       customPlugins = [
         {
           source = lifewikiSkillsPluginSource;
-          config.env.LIFEWIKI_VAULT = toString (
-            pkgs.writeText "openclaw-lifewiki-vault-path" "${config.home.homeDirectory}/Lifewiki"
-          );
+          config.env = {
+            LIFEWIKI_VAULT = toString (
+              pkgs.writeText "openclaw-lifewiki-vault-path" "${config.home.homeDirectory}/Lifewiki"
+            );
+          };
         }
       ];
 
@@ -159,6 +161,8 @@ in
           };
 
           session.dmScope = "per-channel-peer";
+
+          browser.executablePath = lib.getExe pkgs.google-chrome;
 
           plugins.entries.feishu.enabled = true;
         } cfg.extraInstanceConfig;
