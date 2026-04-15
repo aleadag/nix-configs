@@ -8,22 +8,15 @@
 
 let
   cfg = config.home-manager.openclaw;
-  flakeInputSource =
-    input:
+  lifewikiSkillsPluginSource =
     let
-      inherit (input.sourceInfo)
-        owner
-        repo
-        rev
-        narHash
-        ;
+      input = flake.inputs.lifewiki-skills;
     in
-    "github:${owner}/${repo}/${rev}?narHash=${narHash}";
-  lifewikiSkillsPluginSource = flakeInputSource flake.inputs.lifewiki-skills;
+    "github:aleadag/lifewiki-skills/${input.rev}?narHash=${input.narHash}";
+  realiseSymlink = "${pkgs.realise-symlink}/bin/realise-symlink";
   secretOpts = lib.optionalAttrs (cfg.sopsFile != null) {
     inherit (cfg) sopsFile;
   };
-  agentId = "main";
 
   # Helper to convert feishu account id to env var name part (e.g. "main" -> "MAIN")
   toEnv = id: lib.toUpper (lib.replaceStrings [ "-" "." ] [ "_" "_" ] id);
@@ -50,7 +43,7 @@ in
 
     workspace = lib.mkOption {
       type = lib.types.str;
-      default = "~/.openclaw/workspace-${agentId}";
+      default = "~/.openclaw/workspace";
       description = "The workspace directory for the OpenClaw agent.";
     };
 
@@ -97,34 +90,32 @@ in
       package = pkgs.llm-agents.openclaw;
       documents = ./docs;
       customPlugins = [
-        { source = lifewikiSkillsPluginSource; }
+        {
+          source = lifewikiSkillsPluginSource;
+          config.env.LIFEWIKI_VAULT = toString (
+            pkgs.writeText "openclaw-lifewiki-vault-path" "${config.home.homeDirectory}/Lifewiki"
+          );
+        }
       ];
 
       instances.default = {
         inherit (cfg) gatewayPort;
         package = pkgs.llm-agents.openclaw;
+        workspaceDir = cfg.workspace;
 
         enable = true;
         config = lib.recursiveUpdate {
-          agents = {
-            defaults = {
-              model = {
-                primary = "zai/glm-5";
-                fallbacks = [
-                  "zai/glm-4.7"
-                  "zai/glm-4.6"
-                  "zai/glm-4.5-air"
-                ];
-              };
+          agents.defaults = lib.recursiveUpdate {
+            inherit (cfg) workspace;
+            model = {
+              primary = "zai/glm-5";
+              fallbacks = [
+                "zai/glm-4.7"
+                "zai/glm-4.6"
+                "zai/glm-4.5-air"
+              ];
             };
-
-            list = [
-              (lib.recursiveUpdate {
-                id = agentId;
-                inherit (cfg) workspace;
-              } cfg.extraAgentConfig)
-            ];
-          };
+          } cfg.extraAgentConfig;
 
           channels.feishu = {
             enabled = true;
@@ -135,16 +126,6 @@ in
               appSecret = "\${FEISHU_${toEnv feishuAccount}_APP_SECRET}";
             };
           };
-
-          bindings = [
-            {
-              inherit agentId;
-              match = {
-                channel = "feishu";
-                accountId = feishuAccount;
-              };
-            }
-          ];
 
           gateway = {
             mode = "local";
@@ -159,8 +140,6 @@ in
 
           plugins.entries.feishu.enabled = true;
         } cfg.extraInstanceConfig;
-
-        plugins = [ ];
       };
     };
 
@@ -173,5 +152,23 @@ in
         exec ${pkgs.llm-agents.openclaw}/bin/openclaw "$@"
       '')
     ];
+
+    home.activation.openclawCopiedSkills = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      set -euo pipefail
+
+      skills_dir="${config.home.homeDirectory}/.openclaw/workspace/skills"
+      if [ -d "$skills_dir" ]; then
+        for skill_dir in "$skills_dir"/*; do
+          if [ -L "$skill_dir" ]; then
+            run ${realiseSymlink} "$skill_dir"
+          fi
+          if [ -d "$skill_dir" ]; then
+            while IFS= read -r -d "" path; do
+              run ${realiseSymlink} "$path"
+            done < <(find "$skill_dir" -type l -print0)
+          fi
+        done
+      fi
+    '';
   };
 }
