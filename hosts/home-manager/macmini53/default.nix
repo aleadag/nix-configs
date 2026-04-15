@@ -12,15 +12,6 @@
     openclaw = {
       enable = true;
       sopsFile = ./secrets.yaml;
-      feishuAccounts = [
-        "main"
-      ];
-      agents = [
-        {
-          id = "main";
-          feishuAccount = "main";
-        }
-      ];
     };
     syncthing.enable = false;
     window-manager = {

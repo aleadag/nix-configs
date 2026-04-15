@@ -23,9 +23,11 @@ let
   secretOpts = lib.optionalAttrs (cfg.sopsFile != null) {
     inherit (cfg) sopsFile;
   };
+  agentId = "main";
 
   # Helper to convert feishu account id to env var name part (e.g. "main" -> "MAIN")
   toEnv = id: lib.toUpper (lib.replaceStrings [ "-" "." ] [ "_" "_" ] id);
+  feishuAccount = "main";
 in
 {
   options.home-manager.openclaw = {
@@ -46,74 +48,45 @@ in
       description = "The port the OpenClaw gateway will listen on.";
     };
 
-    agents = lib.mkOption {
-      type = lib.types.listOf (
-        lib.types.submodule (
-          { config, ... }:
-          {
-            options = {
-              id = lib.mkOption {
-                type = lib.types.str;
-                description = "The unique ID of the agent.";
-              };
-              workspace = lib.mkOption {
-                type = lib.types.str;
-                default = "~/.openclaw/workspace-${config.id}";
-                description = "The workspace directory for the agent.";
-              };
-              feishuAccount = lib.mkOption {
-                type = lib.types.nullOr lib.types.str;
-                default = null;
-                description = "If set, automatically creates a feishu binding for this agent.";
-              };
-              extraConfig = lib.mkOption {
-                type = lib.types.attrs;
-                default = { };
-                description = "Extra configuration merged into the agent entry in agents.list.";
-              };
-            };
-          }
-        )
-      );
-      default = [ ];
-      description = "List of agents to configure.";
+    workspace = lib.mkOption {
+      type = lib.types.str;
+      default = "~/.openclaw/workspace-${agentId}";
+      description = "The workspace directory for the OpenClaw agent.";
     };
 
-    feishuAccounts = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [ ];
-      description = "List of feishu account IDs to configure secrets and channels for.";
+    extraAgentConfig = lib.mkOption {
+      type = lib.types.attrs;
+      default = { };
+      description = "Extra configuration merged into the OpenClaw agent config.";
     };
 
     extraInstanceConfig = lib.mkOption {
       type = lib.types.attrs;
       default = { };
-      description = "Extra configuration merged into programs.openclaw.instances.default.config.";
+      description = "Extra configuration merged into the OpenClaw instance config.";
     };
   };
 
   config = lib.mkIf cfg.enable {
     sops = {
-      secrets = lib.mkMerge (
-        [
-          { "openclaw/token" = secretOpts; }
-          { "openclaw/zai_api_key" = secretOpts; }
-        ]
-        ++ (map (id: {
-          "openclaw/feishu/${id}/app_id" = secretOpts;
-          "openclaw/feishu/${id}/app_secret" = secretOpts;
-        }) cfg.feishuAccounts)
-      );
+      secrets = lib.mkMerge [
+        { "openclaw/token" = secretOpts; }
+        { "openclaw/zai_api_key" = secretOpts; }
+        { "openclaw/feishu/${feishuAccount}/app_id" = secretOpts; }
+        { "openclaw/feishu/${feishuAccount}/app_secret" = secretOpts; }
+      ];
 
       templates.openclaw-env = {
         content = ''
           OPENCLAW_GATEWAY_TOKEN=${config.sops.placeholder."openclaw/token"}
           ZAI_API_KEY=${config.sops.placeholder."openclaw/zai_api_key"}
-        ''
-        + (lib.concatMapStringsSep "\n" (id: ''
-          FEISHU_${toEnv id}_APP_ID=${config.sops.placeholder."openclaw/feishu/${id}/app_id"}
-          FEISHU_${toEnv id}_APP_SECRET=${config.sops.placeholder."openclaw/feishu/${id}/app_secret"}
-        '') cfg.feishuAccounts);
+          FEISHU_${toEnv feishuAccount}_APP_ID=${
+            config.sops.placeholder."openclaw/feishu/${feishuAccount}/app_id"
+          }
+          FEISHU_${toEnv feishuAccount}_APP_SECRET=${
+            config.sops.placeholder."openclaw/feishu/${feishuAccount}/app_secret"
+          }
+        '';
         path = "${config.home.homeDirectory}/.openclaw/.env";
       };
     };
@@ -145,31 +118,33 @@ in
               };
             };
 
-            list = map (a: lib.recursiveUpdate { inherit (a) id workspace; } a.extraConfig) cfg.agents;
+            list = [
+              (lib.recursiveUpdate {
+                id = agentId;
+                inherit (cfg) workspace;
+              } cfg.extraAgentConfig)
+            ];
           };
 
           channels.feishu = {
             enabled = true;
             dmPolicy = "open";
             allowFrom = [ "*" ];
-            accounts = lib.genAttrs cfg.feishuAccounts (id: {
-              appId = "\${FEISHU_${toEnv id}_APP_ID}";
-              appSecret = "\${FEISHU_${toEnv id}_APP_SECRET}";
-            });
+            accounts.${feishuAccount} = {
+              appId = "\${FEISHU_${toEnv feishuAccount}_APP_ID}";
+              appSecret = "\${FEISHU_${toEnv feishuAccount}_APP_SECRET}";
+            };
           };
 
-          bindings = lib.flatten (
-            map (
-              a:
-              lib.optional (a.feishuAccount != null) {
-                agentId = a.id;
-                match = {
-                  channel = "feishu";
-                  accountId = a.feishuAccount;
-                };
-              }
-            ) cfg.agents
-          );
+          bindings = [
+            {
+              inherit agentId;
+              match = {
+                channel = "feishu";
+                accountId = feishuAccount;
+              };
+            }
+          ];
 
           gateway = {
             mode = "local";
