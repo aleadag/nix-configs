@@ -8,11 +8,28 @@
 
 let
   cfg = config.home-manager.openclaw;
+  collectSkillPaths =
+    baseDir:
+    let
+      entries = builtins.readDir baseDir;
+      names = builtins.attrNames entries;
+      isSkillDir =
+        name: entries.${name} == "directory" && builtins.pathExists (baseDir + "/${name}/SKILL.md");
+    in
+    map (name: builtins.unsafeDiscardStringContext (toString (baseDir + "/${name}"))) (
+      lib.filter isSkillDir names
+    );
   lifewikiSkillsPluginSource =
     let
       input = flake.inputs.lifewiki-skills;
     in
     "github:aleadag/lifewiki-skills/${input.rev}?narHash=${input.narHash}";
+  obsidianSkillsDir =
+    if builtins.pathExists (flake.inputs.obsidian-skills.outPath + "/skills") then
+      flake.inputs.obsidian-skills.outPath + "/skills"
+    else
+      flake.inputs.obsidian-skills.outPath;
+  obsidianSkillPaths = collectSkillPaths obsidianSkillsDir;
   realiseSymlink = "${pkgs.realise-symlink}/bin/realise-symlink";
   secretOpts = lib.optionalAttrs (cfg.sopsFile != null) {
     inherit (cfg) sopsFile;
@@ -89,6 +106,11 @@ in
     programs.openclaw = {
       package = pkgs.llm-agents.openclaw;
       documents = ./docs;
+      skills = map (source: {
+        name = builtins.baseNameOf source;
+        inherit source;
+        mode = "copy";
+      }) obsidianSkillPaths;
       customPlugins = [
         {
           source = lifewikiSkillsPluginSource;
