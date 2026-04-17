@@ -408,11 +408,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776256270,
-        "narHash": "sha256-n0bmlnLTiAdoC5DYEKzgW2m9IDZpqP7YOCwuzGw5B04=",
+        "lastModified": 1776416022,
+        "narHash": "sha256-wveGpt3XmoJxKebj5q9lLJ/qvh8kAlG/eFmgfoTKpaA=",
         "owner": "aleadag",
         "repo": "lifewiki-skills",
-        "rev": "e5b6b36bafa055e209ec25cb70b7414dfdf8b739",
+        "rev": "353cf9e6c25db5122b5022838cf621e0d29f8961",
         "type": "github"
       },
       "original": {
@@ -439,11 +439,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776351423,
-        "narHash": "sha256-JySMZu8hLD8kV2HerIZ6uZyrijc7SUaGhRAKH63X6R4=",
+        "lastModified": 1776396092,
+        "narHash": "sha256-/u2hD8oduiJheEBw00CaogcGtY1J9Ej8GhyLqACFsSM=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "1fb51dbe453f1c8ec5b7133df561512e43dc7cc2",
+        "rev": "f18497e5b190912fc7bfad822d3f6b7f02c43444",
         "type": "github"
       },
       "original": {
@@ -679,11 +679,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776373110,
-        "narHash": "sha256-I7GaZejkwE03OI7WEu56I9lEVuO1ZxIn+k1vw5EC+gw=",
+        "lastModified": 1776413539,
+        "narHash": "sha256-p2tIsqS4EPZj/lc23srVor4CojuucVueQQoN1flUQ0Q=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "11667f569d0735cc0cc8384822665fa4afb77783",
+        "rev": "f36aade4757f68a3cafdec766da4eec7487c1592",
         "type": "github"
       },
       "original": {
