@@ -408,11 +408,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776416022,
-        "narHash": "sha256-wveGpt3XmoJxKebj5q9lLJ/qvh8kAlG/eFmgfoTKpaA=",
+        "lastModified": 1776513694,
+        "narHash": "sha256-7MqcvKFmLwrfMbY8Dg9rRCq3AWKdL5rPyM1gLoZ+F7w=",
         "owner": "aleadag",
         "repo": "lifewiki-skills",
-        "rev": "353cf9e6c25db5122b5022838cf621e0d29f8961",
+        "rev": "bae41c5256fd9e60449ccb3002b51b63026189df",
         "type": "github"
       },
       "original": {
