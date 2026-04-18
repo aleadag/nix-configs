@@ -69,12 +69,12 @@ in
 
   notebook-navigator = mkObsidianPlugin {
     pname = "notebook-navigator";
-    version = "2.5.6";
+    version = "2.5.7";
     owner = "johansan";
     repo = "notebook-navigator";
-    hashMainJs = "sha256-qWJjDHQ8JeZ5XkWLPRbN426jLKCYzrjQoFj4Ncn9akA=";
-    hashManifestJson = "sha256-qoBSO5+oRJxlGYc2yRvxRSgvroS3FR4a/tjYgGf7P9g=";
-    hashStylesCss = "sha256-0aCp2/qOE+1UTDmw1MFTrdzGzpl7NEVMH5orXiOcfhE=";
+    hashMainJs = "sha256-kbafcCE5BavbU5+c+IG0huh8L2vidqS0J+0xPsqr9nQ=";
+    hashManifestJson = "sha256-cjd9E0tjg4Tms3DDQvHtTjWT3UQgc9AvAy8SEeBmwtw=";
+    hashStylesCss = "sha256-LRwM2FvhqVIIXrmPZv1gAdINgMyIlEAXEGsboR7xEHE=";
   };
 
   dataview = mkObsidianPlugin {
@@ -104,10 +104,10 @@ in
   };
 
   templater = pkgs.fetchzip {
-    url = "https://github.com/SilentVoid13/Templater/releases/download/2.18.1/templater-obsidian.zip";
+    url = "https://github.com/SilentVoid13/Templater/releases/download/2.19.0/templater-obsidian.zip";
     name = "templater-obsidian";
     stripRoot = false;
-    hash = "sha256-xh6iQn0IXsa2gJH8360MQagpJT3M4+FrdWQGMOH5d7E=";
+    hash = "sha256-m43tmBjvX8wyaw04ace3HPWE8sorQLKS053abyMvipc=";
   };
 
   tasks = pkgs.fetchzip {
