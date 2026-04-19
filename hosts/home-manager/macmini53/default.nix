@@ -8,6 +8,7 @@
   home-manager = {
     hostName = "macmini53";
     desktop.enable = true;
+    dev.enable = false;
     kanata.enable = false;
     mihomo.enable = false;
     openclaw = {
