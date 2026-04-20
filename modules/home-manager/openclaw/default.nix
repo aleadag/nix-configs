@@ -8,6 +8,8 @@
 
 let
   cfg = config.home-manager.openclaw;
+  homeDir = config.home.homeDirectory;
+  activeConfigPath = "${homeDir}/.openclaw/openclaw.active.json";
   collectSkillPaths =
     baseDir:
     let
@@ -89,7 +91,6 @@ in
       templates.openclaw-env = {
         content = ''
           OPENCLAW_GATEWAY_TOKEN=${config.sops.placeholder."openclaw/token"}
-          ZAI_API_KEY=${config.sops.placeholder."openclaw/zai_api_key"}
           FEISHU_${toEnv feishuAccount}_APP_ID=${
             config.sops.placeholder."openclaw/feishu/${feishuAccount}/app_id"
           }
@@ -100,8 +101,6 @@ in
         path = "${config.home.homeDirectory}/.openclaw/.env";
       };
     };
-
-    home.file.".openclaw/openclaw.json".force = true;
 
     programs.openclaw = {
       package = pkgs.llm-agents.openclaw;
@@ -132,14 +131,21 @@ in
           agents.defaults = lib.recursiveUpdate {
             inherit (cfg) workspace;
             model = {
-              primary = "zai/glm-5";
+              primary = "openai-codex/gpt-5.4";
               fallbacks = [
-                "zai/glm-4.7"
-                "zai/glm-4.6"
-                "zai/glm-4.5-air"
+                "openai-codex/gpt-5.3-codex-spark"
               ];
             };
           } cfg.extraAgentConfig;
+
+          auth = {
+            profiles."openai-codex:default" = {
+              provider = "openai-codex";
+              mode = "oauth";
+            };
+
+            order."openai-codex" = [ "openai-codex:default" ];
+          };
 
           channels.feishu = {
             enabled = true;
@@ -174,15 +180,17 @@ in
         set -euo pipefail
 
         export OPENCLAW_GATEWAY_TOKEN="$(cat "${config.sops.secrets."openclaw/token".path}")"
+        export OPENCLAW_CONFIG_PATH="${activeConfigPath}"
 
         exec ${pkgs.llm-agents.openclaw}/bin/openclaw "$@"
       '')
+      pkgs.nur.repos.josh.defuddle
     ];
 
     home.activation.openclawCopiedSkills = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       set -euo pipefail
 
-      skills_dir="${config.home.homeDirectory}/.openclaw/workspace/skills"
+      skills_dir="${homeDir}/.openclaw/workspace/skills"
       if [ -d "$skills_dir" ]; then
         for skill_dir in "$skills_dir"/*; do
           if [ -L "$skill_dir" ]; then
@@ -196,5 +204,51 @@ in
         done
       fi
     '';
+
+    home.activation.openclawLocalConfig =
+      let
+        jq = lib.getExe pkgs.jq;
+        generateActiveConfig = pkgs.writeShellScript "openclaw-generate-active" ''
+          set -e
+          src="$1"
+          dst="$2"
+          if [ -L "$src" ]; then
+            store_path="$(readlink "$src")"
+          elif [ -f "$src" ]; then
+            store_path="$src"
+          else
+            exit 1
+          fi
+          ${jq} '. + {"$include": ["./openclaw.local.json"]}' "$store_path" > "$dst.tmp"
+          mv "$dst.tmp" "$dst"
+        '';
+        seedLocal = pkgs.writeShellScript "openclaw-seed-local" ''
+          set -e
+          mkdir -p "$(dirname "$1")"
+          printf '{}\n' > "$1"
+        '';
+      in
+      lib.hm.dag.entryAfter [ "openclawConfigFiles" ] ''
+        LOCAL="${homeDir}/.openclaw/openclaw.local.json"
+        if [[ ! -f "$LOCAL" ]]; then
+          run ${seedLocal} "$LOCAL"
+        fi
+
+        CONFIG="${homeDir}/.openclaw/openclaw.json"
+        ACTIVE="${activeConfigPath}"
+        if [ -e "$CONFIG" ]; then
+          run ${generateActiveConfig} "$CONFIG" "$ACTIVE"
+        else
+          warnEcho "openclaw: $CONFIG not found - openclawConfigFiles may not have run"
+        fi
+      '';
+
+    home.sessionVariables.OPENCLAW_CONFIG_PATH = activeConfigPath;
+
+    systemd.user.services = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+      ${config.programs.openclaw.instances.default.systemd.unitName}.Service.Environment = lib.mkAfter [
+        "OPENCLAW_CONFIG_PATH=${activeConfigPath}"
+      ];
+    };
   };
 }
