@@ -103,7 +103,12 @@ in
 
       apps.${system}."homeActivations/${hostName}" = {
         type = "app";
-        program = "${self.outputs.homeConfigurations.${hostName}.activationPackage}/activate";
+        program = nixpkgs.lib.getExe (
+          self.outputs.legacyPackages.${system}.writeShellScriptBin "activate" ''
+            export HOME_MANAGER_BACKUP_EXT=''${HOME_MANAGER_BACKUP_EXT:-hm-backup}
+            exec ${self.outputs.homeConfigurations.${hostName}.activationPackage}/activate "$@"
+          ''
+        );
         meta.description = "Home activation script for ${hostName}";
       };
     };
