@@ -88,6 +88,8 @@ in
           # modern unix: https://github.com/ibraheemdev/modern-unix
           duf
           dust
+          fastfetch
+          procs
         ]
         ++ (lib.optionals stdenv.isLinux [ bluetui ]);
 
