@@ -276,6 +276,29 @@
         "type": "github"
       }
     },
+    "gh-gfm-preview": {
+      "inputs": {
+        "flake-compat": [
+          "flake-compat"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1776687489,
+        "narHash": "sha256-DIYT0EQxOPQzLftBuOP3nFIUUICpCvfnXqWYAApQ8W0=",
+        "owner": "thiagokokada",
+        "repo": "gh-gfm-preview",
+        "rev": "ebdcd0f54159da4593ec20012e8afe517eadb06f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "thiagokokada",
+        "repo": "gh-gfm-preview",
+        "type": "github"
+      }
+    },
     "gnome-shell": {
       "flake": false,
       "locked": {
@@ -772,6 +795,7 @@
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",
         "flake-utils": "flake-utils",
+        "gh-gfm-preview": "gh-gfm-preview",
         "hardware": "hardware",
         "home-manager": "home-manager",
         "jovian-nixos": "jovian-nixos",

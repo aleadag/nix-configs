@@ -44,6 +44,13 @@
     };
     nix-flatpak.url = "github:gmodena/nix-flatpak";
 
+    # git
+    gh-gfm-preview = {
+      url = "github:thiagokokada/gh-gfm-preview";
+      inputs.flake-compat.follows = "flake-compat";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # helpers
     flake-compat.url = "github:edolstra/flake-compat";
     flake-parts = {

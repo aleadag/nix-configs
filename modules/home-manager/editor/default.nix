@@ -3,7 +3,7 @@
 {
   imports = [
     ./helix.nix
-    ./neovim.nix
+    ./neovim
   ];
 
   options.home-manager.editor.enable = lib.mkEnableOption "editor config" // {

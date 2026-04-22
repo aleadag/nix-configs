@@ -10,6 +10,8 @@ let
   enableIcons = config.home-manager.cli.icons.enable;
   toLua = lib.generators.toLua { };
   cfg = config.home-manager.editor.neovim;
+  treesitterGrammars = lib.attrValues pkgs.vimPlugins.nvim-treesitter.parsers;
+  treesitterQueries = map (p: p.associatedQuery) treesitterGrammars;
 in
 {
   options.home-manager.editor.neovim = {
@@ -93,7 +95,8 @@ in
       vimAlias = true;
       vimdiffAlias = true;
 
-      initLua = # lua
+      initLua = lib.concatStringsSep "\n" [
+        # lua
         ''
           -- general config
           vim.g.mapleader = ' '
@@ -210,42 +213,44 @@ in
                   fcitx2zh()
               end,
           })
+        ''
+        (lib.optionalString cfg.treeSitter.enable
+          # lua
+          ''
+            local large_buffer_guard = require("large_buffer_guard")
 
-          local function preview_markdown()
-            local file = vim.fn.expand("%")
-            local on_exit_cb = function(out)
-              print("Process gh-markdown-preview exited with code:", out.code)
-            end
-            local process = vim.system(
-              {"${lib.getExe pkgs.gh-markdown-preview}", file},
-              on_exit_cb
-            )
-
-            vim.api.nvim_create_autocmd({ "BufUnload", "BufDelete" }, {
-              buffer = vim.api.nvim_get_current_buf(),
-              callback = function()
-                process:kill("sigterm")
-                -- timeout (in ms), will call KILL upon timeout
-                process:wait(500)
+            vim.api.nvim_create_autocmd("FileType", {
+              pattern = "*",
+              callback = function(ev)
+                if large_buffer_guard.is_large_buffer(ev.buf) then
+                  large_buffer_guard.notify_large_buffer_mode(ev.buf, "treesitter")
+                  pcall(vim.treesitter.stop, ev.buf)
+                  return
+                end
+                pcall(vim.treesitter.start, ev.buf)
               end,
             })
-          end
-
-          vim.api.nvim_create_autocmd({ "FileType" }, {
-            pattern = { "markdown" },
-            callback = function()
-              vim.keymap.set("n", "<Leader>P", preview_markdown, {
-                desc = "Markdown preview", buffer = true
-              })
-            end,
-          })
-        '';
+          ''
+        )
+      ];
 
       # To install non-packaged plugins, use
       # pkgs.vimUtils.buildVimPlugin { }
       plugins =
         with pkgs.vimPlugins;
         [
+          {
+            plugin = pkgs.vimUtils.buildVimPlugin {
+              pname = "large-buffer-guard-nvim";
+              version = "unstable";
+              src = ./plugins/large-buffer-guard-nvim;
+            };
+            type = "lua";
+            config = # lua
+              ''
+                require("large_buffer_guard").setup {}
+              '';
+          }
           {
             plugin = dial-nvim;
             type = "lua";
@@ -336,6 +341,20 @@ in
                 }
 
                  vim.keymap.set({"n", "x"}, "gx", "<CMD>Browse<CR>", { desc = "Open in Browse" })
+              '';
+          }
+          {
+            plugin = pkgs.vimUtils.buildVimPlugin {
+              pname = "markdown-preview-nvim";
+              version = "unstable";
+              src = ./plugins/markdown-preview-nvim;
+            };
+            type = "lua";
+            config = # lua
+              ''
+                require("markdown_preview").setup {
+                  command = { "${lib.getExe pkgs.gh-gfm-preview}" },
+                }
               '';
           }
           {
@@ -670,6 +689,8 @@ in
                 -- Setup language servers.
                 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
                 -- TODO: migrate to lsp/*.lua directory
+                local large_buffer_guard = require("large_buffer_guard")
+
                 local servers_configs = {
                   { "bashls" },
                   { "clojure_lsp" },
@@ -776,8 +797,19 @@ in
                   if not config then
                     vim.notify("No LSP config found for " .. server[1], vim.log.levels.WARN)
                   else
-                    if config.cmd and vim.fn.executable(config.cmd[1]) == 1 then
-                      vim.lsp.config[server[1]] = server.opts or {}
+                    local cmd = config.cmd
+                    local executable = nil
+
+                    if type(cmd) == "table" then
+                      executable = cmd[1]
+                    elseif type(cmd) == "string" then
+                      executable = cmd
+                    elseif type(cmd) == "function" then
+                      executable = true
+                    end
+
+                    if executable == true or executable == nil or vim.fn.executable(executable) == 1 then
+                      vim.lsp.config[server[1]] = large_buffer_guard.wrap_lsp_config(server[1], server.opts)
                       vim.lsp.enable(server[1])
                     end
                   end
@@ -850,53 +882,45 @@ in
               '';
           }
         ]
-        ++ lib.optionals cfg.treeSitter.enable [
-          {
-            plugin = nvim-ufo;
-            type = "lua";
-            config = # lua
-              ''
-                local ufo = require("ufo")
+        ++ lib.optionals cfg.treeSitter.enable (
+          [
+            {
+              plugin = nvim-ufo;
+              type = "lua";
+              config = # lua
+                ''
+                  local ufo = require("ufo")
+                  local large_buffer_guard = require("large_buffer_guard")
 
-                vim.o.foldcolumn = '0'
-                vim.o.foldlevel = 99
-                vim.o.foldlevelstart = 99
-                vim.o.foldenable = true
+                  vim.o.foldcolumn = '0'
+                  vim.o.foldlevel = 99
+                  vim.o.foldlevelstart = 99
+                  vim.o.foldenable = true
 
-                vim.keymap.set('n', 'zR', ufo.openAllFolds, { desc = "Open all folds" })
-                vim.keymap.set('n', 'zM', ufo.closeAllFolds, { desc = "Close all folds" })
-                ufo.setup {
-                  provider_selector = function(bufnr, filetype, buftype)
-                    return {'treesitter', 'indent'}
-                  end
-                }
-              '';
-          }
-          {
-            plugin = nvim-treesitter.withAllGrammars;
-            type = "lua";
-            config = # lua
-              ''
-                require('nvim-treesitter').setup {}
-                -- nvim-treesitter 1.0+ removed configs module
-                -- Highlighting must be explicitly enabled via vim.treesitter.start()
-                vim.api.nvim_create_autocmd("FileType", {
-                  pattern = '*',
-                  callback = function()
-                    pcall(vim.treesitter.start)
-                  end,
-                })
-              '';
-          }
-          {
-            plugin = nvim-ts-autotag;
-            type = "lua";
-            config = # lua
-              ''
-                require("nvim-ts-autotag").setup {}
-              '';
-          }
-        ]
+                  vim.keymap.set('n', 'zR', ufo.openAllFolds, { desc = "Open all folds" })
+                  vim.keymap.set('n', 'zM', ufo.closeAllFolds, { desc = "Close all folds" })
+                  ufo.setup {
+                    provider_selector = function(bufnr, filetype, buftype)
+                      if large_buffer_guard.is_large_buffer(bufnr) then
+                        return {'indent'}
+                      end
+                      return {'treesitter', 'indent'}
+                    end
+                  }
+                '';
+            }
+            {
+              plugin = nvim-ts-autotag;
+              type = "lua";
+              config = # lua
+                ''
+                  require("nvim-ts-autotag").setup {}
+                '';
+            }
+          ]
+          ++ treesitterGrammars
+          ++ treesitterQueries
+        )
         ++ lib.optionals cfg.vimwiki.enable [
           {
             plugin = vimwiki;
