@@ -58,22 +58,6 @@ let
   superpowersSkills = loadSkills (flake.inputs.superpowers + "/skills");
   obsidianSkills = loadSkills flake.inputs.obsidian-skills;
   mySkills = loadSkills ./skills;
-
-  openaiCuratedSkillsDir = flake.inputs.openai-skills + "/skills/.curated";
-  openaiSkillNames = [
-    "playwright"
-    "playwright-interactive"
-    "pdf"
-    "frontend-skill"
-    "security-best-practices"
-    "security-threat-model"
-  ];
-  openaiSkills = builtins.listToAttrs (
-    map (name: {
-      inherit name;
-      value = openaiCuratedSkillsDir + "/${name}";
-    }) openaiSkillNames
-  );
 in
 {
   options.home-manager.dev.coding-agents.codex = {
@@ -140,8 +124,9 @@ in
           codex_hooks = true;
         };
         personality = "pragmatic";
-        plugins."github@openai-curated" = {
-          enabled = true;
+        plugins = {
+          "build-web-apps@openai-curated".enabled = true;
+          "github@openai-curated".enabled = true;
         };
         project_doc_fallback_filenames = [ "CLAUDE.md" ];
         tui = {
@@ -155,7 +140,7 @@ in
         };
       };
       context = builtins.readFile ./CONTEXT.md;
-      skills = superpowersSkills // obsidianSkills // openaiSkills // jujutsuSkills // mySkills;
+      skills = superpowersSkills // obsidianSkills // jujutsuSkills // mySkills;
     }
     // lib.optionalAttrs hasCodexRulesOption {
       rules = {
