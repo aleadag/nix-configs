@@ -119,10 +119,16 @@ in
       package = codexPackage;
       settings = {
         analytics.enabled = false;
+        approval_policy = "on-request";
         check_for_update_on_startup = false;
         features = {
           codex_hooks = true;
         };
+        personality = "pragmatic";
+        plugins."github@openai-curated" = {
+          enabled = true;
+        };
+        project_doc_fallback_filenames = [ "CLAUDE.md" ];
         tui = {
           notifications = true;
           status_line = [
