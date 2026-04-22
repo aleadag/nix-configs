@@ -113,7 +113,7 @@ in
 
     programs.codex = {
       enable = true;
-      enableMcpIntegration = false;
+      enableMcpIntegration = true;
       package = codexPackage;
       settings = {
         analytics.enabled = false;
@@ -123,6 +123,9 @@ in
           apps = false;
           codex_hooks = true;
         };
+        model = "gpt-5.4";
+        model_reasoning_effort = "high";
+        plan_mode_reasoning_effort = "xhigh";
         personality = "pragmatic";
         plugins = {
           "build-web-apps@openai-curated".enabled = true;
@@ -136,6 +139,7 @@ in
             "current-dir"
             "context-remaining"
             "five-hour-limit"
+            "weekly-limit"
           ];
         };
       };
