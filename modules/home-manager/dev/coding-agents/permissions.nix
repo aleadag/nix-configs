@@ -61,6 +61,7 @@ let
     "terraform fmt"
     "terraform validate"
     "terraform plan"
+    "gh auth"
     "gh pr"
     "gh issue"
     "gh repo view"
