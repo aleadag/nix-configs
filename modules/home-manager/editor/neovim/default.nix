@@ -25,9 +25,7 @@ in
       default = config.home-manager.dev.enable;
     };
     vimwiki = {
-      enable = lib.mkEnableOption "Vimwiki plugin" // {
-        default = true;
-      };
+      enable = lib.mkEnableOption "Vimwiki plugin";
       folder = lib.mkOption {
         type = lib.types.str;
         default = "${config.home.homeDirectory}/sync/wiki";
