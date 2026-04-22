@@ -29,11 +29,6 @@ in
         default = config.home-manager.dev.enable;
       };
     };
-    claudeCode = {
-      enable = lib.mkEnableOption "Claude Code plugin" // {
-        default = config.home-manager.dev.coding-agents.claude-code.enable;
-      };
-    };
     vimwiki = {
       enable = lib.mkEnableOption "Vimwiki plugin" // {
         default = true;
@@ -624,59 +619,6 @@ in
                 vim.keymap.set("n", "<leader>fp", "<cmd>FloatermPrev<cr>", { desc = "Prev terminal" })
                 vim.keymap.set("n", "<leader>fN", "<cmd>FloatermNext<cr>", { desc = "Next terminal" })
                 vim.keymap.set("n", "<leader>fk", "<cmd>FloatermKill<cr>", { desc = "Kill terminal" })
-              '';
-          }
-        ]
-        ++ lib.optionals cfg.claudeCode.enable [
-          {
-            plugin = claudecode-nvim;
-            type = "lua";
-            config = # lua
-              ''
-                require("claudecode").setup {
-                  port_range = { min = 10000, max = 65535 },
-                  auto_start = true,
-                  log_level = "info",
-
-                  track_selection = true,
-                  visual_demotion_delay_ms = 50,
-
-                  terminal = {
-                    split_side = "right",
-                    split_width_percentage = 0.4,
-                  },
-                }
-
-                -- Claude Code keymaps
-                vim.keymap.set("n", "<leader>c", "<nop>", { desc = "AI/Claude Code", noremap = true, silent = true })
-                vim.keymap.set("n", "<leader>cc", "<cmd>ClaudeCode<cr>", { desc = "Toggle Claude" })
-                vim.keymap.set("n", "<leader>cF", "<cmd>ClaudeCodeFocus<cr>", { desc = "Focus Claude" })
-                vim.keymap.set("n", "<leader>cr", "<cmd>ClaudeCode --resume<cr>", { desc = "Resume Claude" })
-                vim.keymap.set("n", "<leader>cC", "<cmd>ClaudeCode --continue<cr>", { desc = "Continue Claude" })
-                vim.keymap.set("n", "<leader>cB", "<cmd>ClaudeCodeAdd %<cr>", { desc = "Add current buffer" })
-                vim.keymap.set("v", "<leader>cs", "<cmd>ClaudeCodeSend<cr>", { desc = "Send to Claude" })
-                vim.keymap.set("n", "<leader>ca", "<cmd>ClaudeCodeDiffAccept<cr>", { desc = "Accept diff" })
-                vim.keymap.set("n", "<leader>cD", "<cmd>ClaudeCodeDiffDeny<cr>", { desc = "Deny diff" })
-              '';
-          }
-          {
-            plugin = claude-fzf-nvim;
-            type = "lua";
-            config = # lua
-              ''
-                require("claude-fzf").setup {
-                  logging = {
-                    console_logging = false,
-                  },
-                }
-              '';
-          }
-          {
-            plugin = claude-fzf-history-nvim;
-            type = "lua";
-            config = # lua
-              ''
-                require("claude-fzf-history").setup()
               '';
           }
         ]
