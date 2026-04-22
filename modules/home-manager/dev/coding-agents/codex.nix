@@ -100,15 +100,29 @@ in
           backup_path="$config_path''${backup_ext:+.$backup_ext}"
           tmp="$(mktemp)"
 
-          if [ -z "$backup_ext" ] || [ ! -e "$backup_path" ] || [ ! -e "$config_path" ]; then
+          if [ ! -e "$config_path" ]; then
             rm -f "$tmp"
-            exit 0
+          elif [ -n "$backup_ext" ] && [ -e "$backup_path" ]; then
+            ${tomlMergePython} "${mergeTomlScript}" "$backup_path" "$config_path" "$tmp"
+
+            if ! ${pkgs.diffutils}/bin/cmp -s "$backup_path" "$tmp"; then
+              echo "Merged Codex config changes:"
+              ${pkgs.diffutils}/bin/diff -u "$backup_path" "$tmp" || true
+            fi
+
+            $DRY_RUN_CMD mv "$tmp" "$config_path"
+            $DRY_RUN_CMD rm -f "$backup_path"
+          elif [ -L "$config_path" ] && [[ "$(readlink "$config_path")" == /nix/store/* ]]; then
+            if [[ -v DRY_RUN ]]; then
+              echo "cat '$config_path' > '$tmp'"
+            else
+              cat "$config_path" > "$tmp"
+            fi
+
+            $DRY_RUN_CMD mv "$tmp" "$config_path"
+          else
+            rm -f "$tmp"
           fi
-
-          ${tomlMergePython} "${mergeTomlScript}" "$backup_path" "$config_path" "$tmp"
-
-          $DRY_RUN_CMD mv "$tmp" "$config_path"
-          $DRY_RUN_CMD rm -f "$backup_path"
         ''
       );
     };
