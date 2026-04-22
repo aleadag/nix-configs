@@ -24,11 +24,6 @@ in
     treeSitter.enable = lib.mkEnableOption "TreeSitter" // {
       default = config.home-manager.dev.enable;
     };
-    avante = {
-      enable = lib.mkEnableOption "Avante AI plugin" // {
-        default = config.home-manager.dev.enable;
-      };
-    };
     vimwiki = {
       enable = lib.mkEnableOption "Vimwiki plugin" // {
         default = true;
@@ -72,10 +67,6 @@ in
       ];
 
     sops.secrets.qwen_api_key = { };
-
-    home.sessionVariables = lib.optionalAttrs cfg.avante.enable {
-      AVANTE_OPENAI_API_KEY = "$(cat ${config.sops.secrets.qwen_api_key.path})";
-    };
 
     programs.neovim = {
       enable = true;
@@ -588,25 +579,6 @@ in
           mkdir-nvim
           vim-advanced-sorters
           vim-nix
-        ]
-        ++ lib.optionals cfg.avante.enable [
-          {
-            plugin = avante-nvim;
-            type = "lua";
-            config = # lua
-              ''
-                require("avante_lib").load()
-                require("avante").setup {
-                  provider = "openai",
-                  providers = {
-                    openai = {
-                      endpoint = "https://dashscope.aliyuncs.com/compatible-mode/v1",
-                      model = "qwen3-coder-plus",
-                    },
-                  },
-                }
-              '';
-          }
         ]
         ++ [
           {
