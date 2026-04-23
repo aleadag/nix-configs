@@ -19,6 +19,9 @@ in
   config = lib.mkIf cfg.enable {
     programs.gemini-cli = {
       enable = true;
+      context = {
+        CONTEXT = ./CONTEXT.md;
+      };
       package = pkgs.llm-agents.gemini-cli;
       policies = {
         "shell-rules" = {
@@ -55,10 +58,6 @@ in
           ];
         };
       };
-    };
-
-    home.file = {
-      ".gemini/CONTEXT.md".source = ./CONTEXT.md;
     };
   };
 }
