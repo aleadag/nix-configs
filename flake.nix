@@ -98,16 +98,10 @@
         nixpkgs.follows = "nixpkgs";
         nur.follows = "nur";
         systems.follows = "systems";
-        tinted-schemes.follows = "tinted-schemes";
       };
     };
 
     systems.url = "github:nix-systems/default";
-
-    tinted-schemes = {
-      flake = false;
-      url = "github:tinted-theming/schemes";
-    };
 
     nix-steipete-tools = {
       url = "github:openclaw/nix-steipete-tools";

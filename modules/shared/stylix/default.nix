@@ -1,5 +1,4 @@
 {
-  flake,
   lib,
   options,
   pkgs,
@@ -9,7 +8,7 @@
   config = {
     stylix = {
       enable = true;
-      base16Scheme = "${flake.inputs.tinted-schemes}/base16/catppuccin-frappe.yaml";
+      base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-frappe.yaml";
       polarity = "dark";
 
       # Wallpaper configuration

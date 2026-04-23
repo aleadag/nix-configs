@@ -819,7 +819,6 @@
         "stylix": "stylix",
         "superpowers": "superpowers",
         "systems": "systems",
-        "tinted-schemes": "tinted-schemes",
         "treefmt-nix": "treefmt-nix",
         "zsh-proxy": "zsh-proxy"
       }
@@ -865,9 +864,7 @@
           "systems"
         ],
         "tinted-kitty": "tinted-kitty",
-        "tinted-schemes": [
-          "tinted-schemes"
-        ],
+        "tinted-schemes": "tinted-schemes",
         "tinted-tmux": "tinted-tmux",
         "tinted-zed": "tinted-zed"
       },
@@ -935,11 +932,11 @@
     "tinted-schemes": {
       "flake": false,
       "locked": {
-        "lastModified": 1776607224,
-        "narHash": "sha256-mQOQvfjlA9CIf//Dw2s9XHY21rPFomg9lgRZiOe1m2U=",
+        "lastModified": 1776808072,
+        "narHash": "sha256-FwuOyAWXsdG7/1TpndL0gYPzBh5XOi1gNliZB774VaA=",
         "owner": "tinted-theming",
         "repo": "schemes",
-        "rev": "15197de4d1f56065255699ff7c81821473f2dd8e",
+        "rev": "d5ddce0697a91203fd3eccc40140890a69fc279e",
         "type": "github"
       },
       "original": {
