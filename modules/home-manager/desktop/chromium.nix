@@ -1,6 +1,5 @@
 {
   config,
-  pkgs,
   lib,
   ...
 }:
@@ -13,7 +12,6 @@
   config = lib.mkIf config.home-manager.desktop.chromium.enable {
     programs.chromium = {
       enable = true;
-      package = pkgs.google-chrome;
       extensions = [
         { id = "cjpalhdlnbpafiamejdnhcphjbkeiagm"; } # ublock origin
         { id = "hfjbmagddngcpeloejdejnfgbamkjaeg"; } # vimium-c
