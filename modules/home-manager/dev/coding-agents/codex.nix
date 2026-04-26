@@ -136,7 +136,7 @@ in
           notifications = true;
           status_line = [
             "model-with-reasoning"
-            "current-dir"
+            "git-branch"
             "context-remaining"
             "five-hour-limit"
             "weekly-limit"
