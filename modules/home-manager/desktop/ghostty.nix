@@ -52,6 +52,8 @@ in
           "${ghosttyMod}+n=new_tab"
           "${ghosttyMod}+enter=new_window"
           "${ghosttyMod}+backspace=reset_font_size"
+          "${ghosttyMod}+,=move_tab:-1"
+          "${ghosttyMod}+.=move_tab:1"
         ];
       }
       // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
