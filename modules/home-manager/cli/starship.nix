@@ -14,27 +14,13 @@
       enable = true;
 
       settings = {
-        # Other config here
-        format = "$all"; # Remove this line to disable the default prompt format
-        directory = {
-          truncation_length = 4;
-          style = "bold lavender";
-        };
-        # displays the exit code of the previous command
-        status.disabled = false;
+        add_newline = false;
 
-        # custom module for jj status
         custom.jj = {
-          command = "prompt";
-          format = "$output";
-          ignore_timeout = true;
-          shell = [
-            (lib.getExe pkgs.starship-jj)
-            "--ignore-working-copy"
-            "starship"
-          ];
-          use_stdin = false;
-          when = true;
+          description = "Show Jujutsu info";
+          when = "jj-starship detect";
+          shell = [ (lib.getExe pkgs.jj-starship) ];
+          format = "$output ";
         };
       };
     };
