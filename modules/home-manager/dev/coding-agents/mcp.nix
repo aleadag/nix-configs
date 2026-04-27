@@ -10,9 +10,7 @@ let
 in
 {
   options.home-manager.dev.coding-agents.mcp = {
-    enable = lib.mkEnableOption "mcp" // {
-      default = config.home-manager.dev.enable;
-    };
+    enable = lib.mkEnableOption "mcp";
   };
 
   config = lib.mkIf cfg.enable {
