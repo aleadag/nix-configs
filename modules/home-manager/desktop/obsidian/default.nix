@@ -73,7 +73,7 @@
             ++ corePlugins;
           };
           lifewiki = {
-            target = "Lifewiki";
+            target = "Sync/Lifewiki";
             settings = {
               corePlugins = [
                 "bases"

@@ -115,7 +115,7 @@ in
           source = lifewikiSkillsPluginSource;
           config.env = {
             LIFEWIKI_VAULT = toString (
-              pkgs.writeText "openclaw-lifewiki-vault-path" "${config.home.homeDirectory}/Lifewiki"
+              pkgs.writeText "openclaw-lifewiki-vault-path" "${config.home.homeDirectory}/Sync/Lifewiki"
             );
           };
         }
