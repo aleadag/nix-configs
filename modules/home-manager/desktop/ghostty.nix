@@ -54,6 +54,16 @@ in
           "${ghosttyMod}+backspace=reset_font_size"
           "${ghosttyMod}+,=move_tab:-1"
           "${ghosttyMod}+.=move_tab:1"
+          "alt+q=goto_tab:1"
+          "alt+w=goto_tab:2"
+          "alt+e=goto_tab:3"
+          "alt+r=goto_tab:4"
+          "alt+t=goto_tab:5"
+          "alt+y=goto_tab:6"
+          "alt+u=goto_tab:7"
+          "alt+i=goto_tab:8"
+          "alt+o=goto_tab:9"
+          "alt+p=goto_tab:10"
         ];
       }
       // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
