@@ -17,11 +17,6 @@ let
   get-ip' = pkgs.writeShellScriptBin "get-ip!" ''
     ${lib.getExe pkgs.curl} -Ss "https://ipapi.co/$(${lib.getExe get-ip})/yaml"
   '';
-  remove-symlink = pkgs.writeShellScriptBin "remove-symlink" ''
-    [[ -L "$1" ]] && \
-      ${lib.getExe' pkgs.coreutils "cp"} --remove-destination \
-      "$(${lib.getExe' pkgs.coreutils "readlink"} "$1")" "$1"
-  '';
 in
 {
   imports = [
@@ -56,20 +51,18 @@ in
           dvt
           get-ip
           get-ip'
-          remove-symlink
 
           _7zz
           bc
           bind.dnsutils
-          clock-rs
-          cointop
+          bulletty
           curl
           dialog
           dos2unix
           dua
           each
-          file
           ffmpeg
+          file
           hyperfine
           imagemagick
           lsof
@@ -81,15 +74,8 @@ in
           rlwrap
           tealdeer
           tokei
-          uutils-coreutils-noprefix
-          websocat
+          watch
           wget
-
-          # modern unix: https://github.com/ibraheemdev/modern-unix
-          duf
-          dust
-          fastfetch
-          procs
         ]
         ++ (lib.optionals stdenv.isLinux [ bluetui ]);
 
