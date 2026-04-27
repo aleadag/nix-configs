@@ -783,7 +783,6 @@ in
                       vim.keymap.set("n", "<leader>lr", function()
                         return ":IncRename " .. vim.fn.expand("<cword>")
                       end, { expr = true })
-                      vim.keymap.set("n", "<Leader>lr", LspRename, { desc = "LSP rename" })
                       vim.keymap.set("n", "<Leader>lf", function() vim.lsp.buf.format { async = true } end, { desc = "LSP format" })
                       vim.keymap.set("n", "<Leader>la", fzf.lsp_code_actions, { desc = "LSP code action" })
                     end,
