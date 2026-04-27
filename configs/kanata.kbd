@@ -1,26 +1,48 @@
-;; defsrc is still necessary
+;; Homerow mods configuration
+
 (defcfg
   process-unmapped-keys yes
+  concurrent-tap-hold yes
+)
+
+(defvar
+  ;; Timing parameters
+  tap-timeout 200
+  hold-timeout 150  ;; Reduced for faster mod activation
+
+  ;; Keys on same hand that trigger early tap
+  ;; EXCLUDING homerow mod keys so they can combine smoothly
+  left-hand-keys (
+    q w e r t
+    g  ;; excluding a s d f
+    z x c v b
+  )
+
+  right-hand-keys (
+    y u i o p
+    h  ;; excluding j k l ;
+    n m , . /
+  )
 )
 
 (defsrc
   caps a s d f j k l ;
 )
-(defvar
-  tap-time 150
-  hold-time 200
-)
+
 
 (defalias
-  escctrl (tap-hold 100 100 esc lctl)
-  a (multi f24 (tap-hold $tap-time $hold-time a lmet))
-  s (multi f24 (tap-hold $tap-time $hold-time s lalt))
-  d (multi f24 (tap-hold $tap-time $hold-time d lsft))
-  f (multi f24 (tap-hold $tap-time $hold-time f lctl))
-  j (multi f24 (tap-hold $tap-time $hold-time j rctl))
-  k (multi f24 (tap-hold $tap-time $hold-time k rsft))
-  l (multi f24 (tap-hold $tap-time $hold-time l ralt))
-  ; (multi f24 (tap-hold $tap-time $hold-time ; rmet))
+  escctrl (tap-hold 200 200 esc lctl)
+  ;; Left hand homerow mods
+  a (tap-hold-release-keys $tap-timeout $hold-timeout a lmet $left-hand-keys)
+  s (tap-hold-release-keys $tap-timeout $hold-timeout s lalt $left-hand-keys)
+  d (tap-hold-release-keys $tap-timeout $hold-timeout d lsft $left-hand-keys)
+  f (tap-hold-release-keys $tap-timeout $hold-timeout f lctl $left-hand-keys)
+
+  ;; Right hand homerow mods (matching pairs)
+  j (tap-hold-release-keys $tap-timeout $hold-timeout j rctl $right-hand-keys)
+  k (tap-hold-release-keys $tap-timeout $hold-timeout k rsft $right-hand-keys)
+  l (tap-hold-release-keys $tap-timeout $hold-timeout l ralt $right-hand-keys)
+  ; (tap-hold-release-keys $tap-timeout $hold-timeout ; rmet $right-hand-keys)
 )
 
 (deflayer base
