@@ -21,7 +21,7 @@ in
         enable = true;
         # package = pkgs.pass.withExtensions (exts: [ exts.pass-import ]);
         settings = {
-          PASSWORD_STORE_DIR = "$HOME/sync/pass";
+          PASSWORD_STORE_DIR = "$HOME/Pass";
           PASSWORD_STORE_CLIP_TIME = "60";
         };
       };

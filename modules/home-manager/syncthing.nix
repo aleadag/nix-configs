@@ -5,6 +5,7 @@
 }:
 let
   cfg = config.home-manager.syncthing;
+  inherit (config.home-manager) hostName;
 in
 {
   options.home-manager.syncthing = {
@@ -25,12 +26,11 @@ in
         pvg1.id = "L33VADA-RGQEHMK-F5EYEKX-L3RSW3O-IH2WCTQ-FX6FS5F-2A7GTMP-XY5A5QU";
         t0.id = "AULBO4N-7IFZFNV-4JAIL6G-5XL3KFY-WWR5BEH-UXOPALL-4XK5CE6-AORWDQL";
       };
-      syncDevices = [
+      allDevices = builtins.attrNames devices;
+      passDevices = [
         "mbx"
-        "pvg1"
         "t0"
       ];
-      lifewikiDevices = syncDevices ++ [ "macmini53" ];
     in
     {
       services.syncthing = {
@@ -39,14 +39,16 @@ in
         settings = {
           inherit devices;
           folders = {
-            sync = {
-              path = "~/sync";
-              devices = syncDevices;
+            Sync = {
+              path = "~/Sync";
+              devices = allDevices;
               copyOwnershipFromParent = true;
             };
-            lifewiki = {
-              path = "~/Lifewiki";
-              devices = lifewikiDevices;
+          }
+          // lib.optionalAttrs (config.home-manager.cli.pass.enable && builtins.elem hostName passDevices) {
+            Pass = {
+              path = "~/Pass";
+              devices = passDevices;
               copyOwnershipFromParent = true;
             };
           };
