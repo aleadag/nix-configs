@@ -21,7 +21,13 @@ in
       pathsToLink = [ "/share/zsh" ];
     };
 
-    # Enable sudo via TouchID
-    security.pam.services.sudo_local.touchIdAuth = true;
+    security = {
+      # Enable sudo via TouchID
+      pam.services.sudo_local.touchIdAuth = true;
+      # Default timestamp_timeout in macOS is 0 (prompts every sudo)
+      sudo.extraConfig = ''
+        Defaults	timestamp_timeout=5
+      '';
+    };
   };
 }

@@ -66,11 +66,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    zsh-proxy = {
-      url = "github:aleadag/zsh-proxy";
-      flake = false;
-    };
-
     omf-proxy = {
       url = "github:oh-my-fish/plugin-proxy";
       flake = false;
@@ -154,6 +149,21 @@
       url = "github:obra/superpowers";
       flake = false;
     };
+
+    # zsh
+    zsh-proxy = {
+      url = "github:aleadag/zsh-proxy";
+      flake = false;
+    };
+
+    zim-completion = {
+      url = "github:zimfw/completion";
+      flake = false;
+    };
+    zim-input = {
+      url = "github:zimfw/input";
+      flake = false;
+    };
   };
 
   outputs =
@@ -199,11 +209,9 @@
           {
             devShells.default = pkgs.mkShell {
               packages = with pkgs; [
-                fd
                 neovim-standalone
                 nil
                 nixfmt
-                ripgrep
                 statix
               ];
             };

@@ -33,6 +33,7 @@ in
 
     programs.firefox = {
       enable = true;
+      configPath = lib.mkIf pkgs.stdenv.isLinux ".mozilla/firefox";
       profiles.${username} = {
         settings =
           let

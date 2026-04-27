@@ -94,14 +94,18 @@ in
         ++ (lib.optionals stdenv.isLinux [ bluetui ]);
 
       sessionVariables = {
-        # https://github.com/sharkdp/bat/issues/2578
-        LESSUTFCHARDEF = "E000-F8FF:p,F0000-FFFFD:p,100000-10FFFD:p";
+        DO_NOT_TRACK = 1;
         # https://felipec.wordpress.com/2021/06/05/adventures-with-man-color/
         MANPAGER = "less --use-color -Dd+r -Du+b";
         MANROFFOPT = "-c";
       };
+      sessionPath = [ "$HOME/.local/bin" ];
+      sessionSearchVariables.MANPATH = lib.mkAfter [ ":" ];
 
       shellAliases = {
+        l = "${lib.getExe' pkgs.coreutils "ls"} -alh --color=auto";
+        ls = "${lib.getExe' pkgs.coreutils "ls"} --color=auto";
+        ll = "${lib.getExe' pkgs.coreutils "ls"} -l --color=auto";
         gs = lib.mkIf cfg.git.enable "${lib.getExe config.programs.git.package} status";
         # For muscle memory...
         archive = "${lib.getExe pkgs.ouch} compress";
@@ -109,46 +113,15 @@ in
         lsarchive = "${lib.getExe pkgs.ouch} list";
         ncdu = "${lib.getExe pkgs.dua} interactive";
         sloccount = lib.getExe pkgs.tokei;
-        # https://unix.stackexchange.com/questions/335648/why-does-the-reset-command-include-a-delay
-        reset = "${lib.getExe' pkgs.ncurses "tput"} reset";
+        reset = lib.getExe' pkgs.ncurses "reset";
         ns = lib.mkIf config.programs.fzf.enable "${lib.getExe pkgs.nix-search-tv} print | ${lib.getExe pkgs.fzf} --preview '${lib.getExe pkgs.nix-search-tv} preview {}' --scheme history";
       };
     };
 
     programs = {
       aria2.enable = true;
+      fd.enable = true;
       jq.enable = true;
-      ripgrep.enable = true;
-
-      bat = {
-        enable = true;
-        package = pkgs.bat;
-        # This should pick up the correct colors for the generated theme. Otherwise
-        # it is possible to generate a custom bat theme to ~/.config/bat/config
-        config = {
-          tabs = "2";
-        };
-        extraPackages = builtins.attrValues {
-          inherit (pkgs.bat-extras)
-            batdiff
-            batgrep
-            batman
-            batwatch
-            ;
-        };
-      };
-      eza = {
-        enable = true;
-        git = true;
-      };
-      fzf = {
-        enable = true;
-        # fzf.fish is incompatible with other fzf plugins for fish
-        # https://github.com/PatrickF1/fzf.fish/wiki/Uninstalling-other-fzf-plugins
-        enableFishIntegration = false;
-        # fileWidgetOptions = [ "--preview 'head {}'" ];
-        # historyWidgetOptions = [ "--sort" ];
-      };
       less = {
         enable = true;
         options = {
@@ -165,7 +138,7 @@ in
         };
       };
       nix-your-shell.enable = true;
-      zoxide.enable = true;
+      ripgrep.enable = true;
     };
   };
 }
