@@ -46,6 +46,9 @@ in
 
         link-previews = true;
 
+        # https://github.com/sahaj-b/ghostty-cursor-shaders
+        custom-shader = toString ./cursor_warp.glsl;
+
         keybind = [
           "${ghosttyMod}+n=new_tab"
           "${ghosttyMod}+enter=new_window"
@@ -62,6 +65,8 @@ in
           "alt+i=goto_tab:8"
           "alt+o=goto_tab:9"
           "alt+p=goto_tab:10"
+          "alt+h=previous_tab"
+          "alt+l=next_tab"
         ];
       }
       // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {

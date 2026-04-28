@@ -13,7 +13,7 @@ in
     ./chromium.nix
     ./firefox.nix
     ./fonts
-    ./ghostty.nix
+    ./ghostty
     ./im.nix
     ./kitty.nix
     ./mpv
