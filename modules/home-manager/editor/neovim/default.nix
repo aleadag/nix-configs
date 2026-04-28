@@ -610,18 +610,26 @@ in
           ]
           ++ [
             {
-              plugin = vim-floaterm;
+              plugin = toggleterm-nvim;
               type = "lua";
               config = # lua
                 ''
-                  vim.g.floaterm_width = 0.8
-                  vim.g.floaterm_height = 0.8
+                  require("toggleterm").setup {
+                    direction = "float",
+                    float_opts = {
+                      width = function()
+                        return math.floor(vim.o.columns * 0.9)
+                      end,
+                      height = function()
+                        return math.floor(vim.o.lines * 0.9)
+                      end,
+                    },
+                  }
 
-                  vim.keymap.set("n", "<leader>ft", "<cmd>FloatermToggle<cr>", { desc = "Terminal toggle" })
-                  vim.keymap.set("n", "<leader>fn", "<cmd>FloatermNew<cr>", { desc = "New terminal" })
-                  vim.keymap.set("n", "<leader>fp", "<cmd>FloatermPrev<cr>", { desc = "Prev terminal" })
-                  vim.keymap.set("n", "<leader>fN", "<cmd>FloatermNext<cr>", { desc = "Next terminal" })
-                  vim.keymap.set("n", "<leader>fk", "<cmd>FloatermKill<cr>", { desc = "Kill terminal" })
+                  vim.keymap.set("n", "<leader>ft", "<cmd>ToggleTerm<cr>", { desc = "Terminal toggle" })
+                  vim.keymap.set("n", "<leader>fn", "<cmd>TermNew<cr>", { desc = "New terminal" })
+                  vim.keymap.set("n", "<leader>fs", "<cmd>TermSelect<cr>", { desc = "Select terminal" })
+                  vim.keymap.set("n", "<leader>fT", "<cmd>ToggleTermToggleAll<cr>", { desc = "Toggle all terminals" })
                 '';
             }
           ]
