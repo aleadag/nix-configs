@@ -19,6 +19,7 @@ let
     "jj abandon"
     "jj bookmark"
     "jj commit"
+    "jj desc"
     "jj describe"
     "jj diff"
     "jj git"
