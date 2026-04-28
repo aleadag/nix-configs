@@ -14,9 +14,7 @@ in
     enable = lib.mkEnableOption "Ghostty config" // {
       default = config.home-manager.desktop.enable || config.home-manager.darwin.enable;
     };
-    useSuperKeybindings = lib.mkEnableOption "keybindings with Super/Command" // {
-      default = config.home-manager.darwin.enable;
-    };
+    useSuperKeybindings = lib.mkEnableOption "keybindings with Super/Command";
     fontSize = lib.mkOption {
       type = lib.types.float;
       description = "Font size.";
