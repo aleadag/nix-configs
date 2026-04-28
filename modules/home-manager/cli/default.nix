@@ -21,6 +21,7 @@ in
 {
   imports = [
     ./btop.nix
+    ./bulletty.nix
     ./git.nix
     ./htop.nix
     ./irssi.nix
@@ -55,7 +56,6 @@ in
           _7zz
           bc
           bind.dnsutils
-          bulletty
           curl
           dialog
           dos2unix
