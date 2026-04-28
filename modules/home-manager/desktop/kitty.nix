@@ -32,17 +32,16 @@ in
         "kitty_mod+n" = "new_tab_with_cwd"; # moved from 't' to avoid conflict
         "kitty_mod+enter" = "new_window_with_cwd";
         "kitty_mod+backspace" = "change_font_size all 0";
-        # QWERTY tab navigation (consistent with window manager)
-        "kitty_mod+q" = "goto_tab 1";
-        "kitty_mod+w" = "goto_tab 2";
-        "kitty_mod+e" = "goto_tab 3";
-        "kitty_mod+r" = "goto_tab 4";
-        "kitty_mod+t" = "goto_tab 5";
-        "kitty_mod+y" = "goto_tab 6";
-        "kitty_mod+u" = "goto_tab 7";
-        "kitty_mod+i" = "goto_tab 8";
-        "kitty_mod+o" = "goto_tab 9";
-        "kitty_mod+p" = "goto_tab 10";
+        "alt+q" = "goto_tab 1";
+        "alt+w" = "goto_tab 2";
+        "alt+e" = "goto_tab 3";
+        "alt+r" = "goto_tab 4";
+        "alt+t" = "goto_tab 5";
+        "alt+y" = "goto_tab 6";
+        "alt+u" = "goto_tab 7";
+        "alt+i" = "goto_tab 8";
+        "alt+o" = "goto_tab 9";
+        "alt+p" = "goto_tab 10";
         # https://github.com/jtroo/kanata/issues/1957
         "f24" = "discard_event";
         "ctrl+f24" = "discard_event";

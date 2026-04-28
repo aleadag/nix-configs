@@ -1,3 +1,5 @@
+{ config, lib, ... }:
+
 {
   home = rec {
     username = "alexander";
@@ -17,6 +19,7 @@
     };
     syncthing.enable = true;
     window-manager = {
+      default.terminal = lib.getExe config.programs.kitty.package;
       enable = true;
       x11.enable = false;
     };
