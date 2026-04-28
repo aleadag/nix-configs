@@ -51,7 +51,7 @@
         in
         {
           lucid = {
-            target = "hacking/tiwater/lucid/lucid-docs";
+            target = "hacking/tiwater/lucid-docs";
             settings.corePlugins = [
               "file-explorer"
             ]
