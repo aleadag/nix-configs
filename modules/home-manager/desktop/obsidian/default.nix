@@ -50,21 +50,6 @@
           plugins = pkgs.callPackage ./plugins.nix { inherit pkgs; };
         in
         {
-          awang = {
-            target = "sync/AWANG";
-            settings.corePlugins = [
-              {
-                name = "daily-notes";
-                enable = true;
-                settings = {
-                  autorun = false;
-                  folder = "-Daily-Notes";
-                  template = "5-Templates/Daily-Notes";
-                };
-              }
-            ]
-            ++ corePlugins;
-          };
           lucid = {
             target = "hacking/tiwater/lucid/lucid-docs";
             settings.corePlugins = [
