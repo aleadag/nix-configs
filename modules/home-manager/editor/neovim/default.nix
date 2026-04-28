@@ -614,6 +614,9 @@ in
               type = "lua";
               config = # lua
                 ''
+                  vim.g.floaterm_width = 0.8
+                  vim.g.floaterm_height = 0.8
+
                   vim.keymap.set("n", "<leader>ft", "<cmd>FloatermToggle<cr>", { desc = "Terminal toggle" })
                   vim.keymap.set("n", "<leader>fn", "<cmd>FloatermNew<cr>", { desc = "New terminal" })
                   vim.keymap.set("n", "<leader>fp", "<cmd>FloatermPrev<cr>", { desc = "Prev terminal" })
