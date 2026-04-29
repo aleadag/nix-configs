@@ -40,9 +40,8 @@ in
         window-inherit-working-directory = true;
         tab-inherit-working-directory = true;
         split-inherit-working-directory = true;
-        window-decoration = "none";
         window-inherit-font-size = true;
-        window-show-tab-bar = "auto";
+        window-show-tab-bar = "always"; # without window decoration, we will always show tabbar
 
         link-previews = true;
 
@@ -70,6 +69,7 @@ in
         ];
       }
       // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
+        window-decoration = "none";
         gtk-custom-css = toString (
           pkgs.writeText "ghostty-linux-tabs.css"
             # css

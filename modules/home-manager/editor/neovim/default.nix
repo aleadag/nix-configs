@@ -124,7 +124,7 @@ in
     in
     {
       home-manager.editor.neovim = {
-        standalonePackage = standalonePackage;
+        inherit standalonePackage;
         toggleterm.terminals = {
           codex = {
             enable = lib.mkDefault config.home-manager.dev.coding-agents.codex.enable;
