@@ -12,6 +12,37 @@ let
   cfg = config.home-manager.editor.neovim;
   treesitterGrammars = lib.attrValues pkgs.vimPlugins.nvim-treesitter.parsers;
   treesitterQueries = map (p: p.associatedQuery) treesitterGrammars;
+  terminalType = lib.types.submodule (
+    { name, ... }:
+    {
+      options = {
+        enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Whether to enable this ToggleTerm terminal.";
+        };
+        command = lib.mkOption {
+          type = lib.types.str;
+          description = "Command to run in the terminal.";
+        };
+        displayName = lib.mkOption {
+          type = lib.types.str;
+          default = name;
+          description = "Display name for the terminal.";
+        };
+        key = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          default = null;
+          description = "Normal mode keymap used to toggle the terminal.";
+        };
+        description = lib.mkOption {
+          type = lib.types.str;
+          default = name;
+          description = "Keymap description.";
+        };
+      };
+    }
+  );
 in
 {
   options.home-manager.editor.neovim = {
@@ -23,6 +54,11 @@ in
     };
     treeSitter.enable = lib.mkEnableOption "TreeSitter" // {
       default = config.home-manager.dev.enable;
+    };
+    toggleterm.terminals = lib.mkOption {
+      type = lib.types.attrsOf terminalType;
+      default = { };
+      description = "Named ToggleTerm terminals.";
     };
     vimwiki = {
       enable = lib.mkEnableOption "Vimwiki plugin";
@@ -42,6 +78,28 @@ in
   config = lib.mkIf cfg.enable (
     let
       inherit (config.programs) neovim;
+      enabledToggletermTerminals = lib.filterAttrs (
+        _: terminal: terminal.enable
+      ) cfg.toggleterm.terminals;
+      renderTerminal = _name: terminal: ''
+        do
+          local terminal = Terminal:new {
+            cmd = ${toLua terminal.command},
+            display_name = ${toLua terminal.displayName},
+            direction = "float",
+            hidden = true,
+            on_open = function()
+              vim.cmd("startinsert!")
+            end,
+          }
+
+          ${lib.optionalString (terminal.key != null) ''
+            vim.keymap.set("n", ${toLua terminal.key}, function()
+              terminal:toggle()
+            end, { desc = ${toLua terminal.description} })
+          ''}
+        end
+      '';
       standalonePackage =
         (neovim.finalPackage.override {
           extraName = "-standalone";
@@ -65,7 +123,25 @@ in
       '';
     in
     {
-      home-manager.editor.neovim.standalonePackage = standalonePackage;
+      home-manager.editor.neovim = {
+        standalonePackage = standalonePackage;
+        toggleterm.terminals = {
+          codex = {
+            enable = lib.mkDefault config.home-manager.dev.coding-agents.codex.enable;
+            command = lib.mkDefault "codex";
+            displayName = lib.mkDefault "Codex";
+            key = lib.mkDefault "<leader>fc";
+            description = lib.mkDefault "Codex";
+          };
+          jjui = {
+            enable = lib.mkDefault config.home-manager.cli.jujutsu.enable;
+            command = lib.mkDefault "jjui";
+            displayName = lib.mkDefault "Jujutsu UI";
+            key = lib.mkDefault "<leader>fj";
+            description = lib.mkDefault "Jujutsu UI";
+          };
+        };
+      };
 
       home.checks = [ checkPackage ];
 
@@ -625,6 +701,9 @@ in
                       end,
                     },
                   }
+
+                  local Terminal = require("toggleterm.terminal").Terminal
+                  ${lib.concatStringsSep "\n" (lib.mapAttrsToList renderTerminal enabledToggletermTerminals)}
 
                   vim.keymap.set("n", "<leader>ft", "<cmd>ToggleTerm<cr>", { desc = "Terminal toggle" })
                   vim.keymap.set("n", "<leader>fn", "<cmd>TermNew<cr>", { desc = "New terminal" })
