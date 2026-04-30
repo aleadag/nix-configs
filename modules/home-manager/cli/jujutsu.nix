@@ -1,6 +1,5 @@
 {
   config,
-  pkgs,
   lib,
   ...
 }:
@@ -16,33 +15,32 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.shellAliases = {
-      ju = "jjui";
-    };
-
-    home.packages = with pkgs; [
-      jjui
-    ];
-
-    home.file.".config/jjui/config.toml".source = (pkgs.formats.toml { }).generate "jjui-config" {
-      ui.auto_refresh_interval = 10; # seconds
-    };
-
-    programs.jujutsu = {
-      enable = true;
-      settings = {
-        template-aliases = {
-          "format_short_id(id)" = "id.shortest()";
+    programs = {
+      jujutsu = {
+        enable = true;
+        settings = {
+          template-aliases = {
+            "format_short_id(id)" = "id.shortest()";
+          };
+          ui = {
+            editor = "nvim";
+            paginate = "never";
+          };
+          user = {
+            name = config.meta.fullname;
+            inherit (config.meta) email;
+          };
         };
-        ui = {
-          editor = "nvim";
-          paginate = "never";
-        };
-        user = {
-          name = config.meta.fullname;
-          inherit (config.meta) email;
+      };
+
+      jjui = {
+        enable = true;
+        settings = {
+          ui.auto_refresh_interval = 10; # seconds
         };
       };
     };
+
+    home.shellAliases.ju = "jjui";
   };
 }
