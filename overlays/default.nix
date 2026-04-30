@@ -22,6 +22,11 @@ inputs.nur.overlays.default final prev
     inherit (inputs.gh-gfm-preview.packages.${system}) gh-gfm-preview;
     inherit (inputs.nix-proxy-manager.packages.${system}) nix-proxy-manager;
 
+    # https://github.com/NixOS/nixpkgs/issues/507531
+    direnv = prev.direnv.overrideAttrs (_: {
+      doCheck = !prev.stdenv.isDarwin;
+    });
+
     neovim-standalone =
       let
         hostName = "neovim-standalone";
