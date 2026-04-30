@@ -153,12 +153,19 @@ in
           };
           init.defaultBranch = "main";
           merge = {
-            conflictstyle = if cfg.mergiraf.enable then "diff3" else "zdiff3";
             mergiraf = lib.mkIf cfg.mergiraf.enable {
               name = "mergiraf";
               driver = "mergiraf merge --git %O %A %B -s %S -x %X -y %Y -p %P -l %L";
             };
-            tool = "nvim -d";
+            conflictstyle = if cfg.mergiraf.enable then "diff3" else "zdiff3";
+            tool = "nvimdiff";
+          };
+          mergetool = {
+            prompt = false;
+            keepBackup = false;
+          };
+          "mergetool \"nvimdiff\"" = {
+            layout = "LOCAL,BASE,REMOTE / MERGED";
           };
           pull.rebase = true;
           push = {
