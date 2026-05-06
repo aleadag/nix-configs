@@ -259,6 +259,11 @@ proxy-groups:
   - name: "💰 PayPal"
     <<: *standard_proxy_group
 
+  - name: "📦 大文件下载"
+    type: url-test
+    <<: *auto_test
+    filter: (?i)^(?!.*倍率)[^\x00-\x7F]+\s+(?:Large|Super)\b.*$
+
   - name: "🍎 Apple"
     type: select
     proxies:
@@ -367,6 +372,7 @@ rules:
   - RULE-SET,private_domain,🔗 直连
   # Order matters, MUST before ChatGPT
   - RULE-SET,cc_domain,👨🏻‍💻 Vibe Coding
+  - RULE-SET,large_download_domain,📦 大文件下载
   - RULE-SET,apple_domain,🍎 Apple
   - RULE-SET,proxylite,🚀 默认代理
   - RULE-SET,ai,🤖 ChatGPT
@@ -395,6 +401,17 @@ rule-providers:
   private_domain:
     <<: *domain_rule_provider
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs
+
+  large_download_domain:
+    type: inline
+    behavior: classical
+    payload:
+      - DOMAIN-SUFFIX,huggingface.co
+      - DOMAIN-SUFFIX,storage.googleapis.com
+      - DOMAIN-REGEX,^.+\.s3\.[^.]+\.amazonaws\.com$
+      - DOMAIN-SUFFIX,healthdata.gov
+      - DOMAIN-SUFFIX,imaging.datacommons.cancer.gov
+      - DOMAIN-SUFFIX,grand-challenge.org
 
   proxylite:
     <<: *classical_rule_provider
