@@ -98,18 +98,12 @@
 
     systems.url = "github:nix-systems/default";
 
-    nix-steipete-tools = {
-      url = "github:openclaw/nix-steipete-tools";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     nix-openclaw = {
       url = "github:openclaw/nix-openclaw";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager";
         flake-utils.follows = "flake-utils";
-        nix-steipete-tools.follows = "nix-steipete-tools";
       };
     };
 
