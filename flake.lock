@@ -170,6 +170,29 @@
         "type": "github"
       }
     },
+    "eilmeldung": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1778086273,
+        "narHash": "sha256-VaPA7dxcue48sZ8elFYwMonQiNgrP2QZWFTfDYDeXDc=",
+        "owner": "christo-auer",
+        "repo": "eilmeldung",
+        "rev": "2809238dd4def58c8eac2af3f618e05fea55c7f4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "christo-auer",
+        "repo": "eilmeldung",
+        "type": "github"
+      }
+    },
     "firefox-gnome-theme": {
       "flake": false,
       "locked": {
@@ -728,6 +751,7 @@
       "inputs": {
         "cc-tools": "cc-tools",
         "disko": "disko",
+        "eilmeldung": "eilmeldung",
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",
         "flake-utils": "flake-utils",

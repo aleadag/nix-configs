@@ -6,6 +6,7 @@
 
 {
   imports = [
+    flake.inputs.eilmeldung.homeManager.default
     flake.inputs.stylix.homeModules.stylix
     flake.outputs.internal.sharedModules.default
     ./cc-connect
