@@ -53,7 +53,10 @@ in
         cfg.codexPackage
       ];
 
-      file.".cc-connect/config.toml".source = configFile;
+      file.".cc-connect/config.toml" = {
+        source = configFile;
+        force = true;
+      };
     };
 
     systemd.user.services.cc-connect = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
