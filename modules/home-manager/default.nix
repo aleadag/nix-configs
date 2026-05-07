@@ -6,9 +6,9 @@
 
 {
   imports = [
-    flake.inputs.nix-openclaw.homeManagerModules.openclaw
     flake.inputs.stylix.homeModules.stylix
     flake.outputs.internal.sharedModules.default
+    ./cc-connect
     ./cli
     ./crostini.nix
     ./darwin
@@ -20,7 +20,6 @@
     ./meta
     ./mihomo
     ./nix
-    ./openclaw
     ./sops.nix
     ./syncthing.nix
     ./window-manager

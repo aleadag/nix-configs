@@ -98,15 +98,6 @@
 
     systems.url = "github:nix-systems/default";
 
-    nix-openclaw = {
-      url = "github:openclaw/nix-openclaw";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        home-manager.follows = "home-manager";
-        flake-utils.follows = "flake-utils";
-      };
-    };
-
     lifewiki-skills = {
       url = "github:aleadag/lifewiki-skills";
       inputs = {

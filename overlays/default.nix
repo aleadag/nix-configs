@@ -48,6 +48,8 @@ inputs.nur.overlays.default final prev
 
     darwin-cleanup = final.nix-cleanup.override { isNixDarwin = true; };
 
+    cc-connect = prev.callPackage ../packages/cc-connect { };
+
     nix-whereis = prev.callPackage ../packages/nix-whereis { };
 
     run-bg-alias = name: command: prev.callPackage ../packages/run-bg-alias { inherit name command; };
