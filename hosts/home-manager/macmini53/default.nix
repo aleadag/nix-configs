@@ -17,6 +17,12 @@
       enable = true;
       environmentFiles = [ config.sops.templates.cc-connect-env.path ];
       settings = {
+        language = "zh";
+        display = {
+          thinking_messages = false;
+          tool_messages = false;
+          mode = "compact";
+        };
         log.level = "info";
         projects = [
           {
@@ -25,7 +31,7 @@
               type = "codex";
               options = {
                 work_dir = "${config.home.homeDirectory}/Sync/Lifewiki";
-                mode = "suggest";
+                mode = "full-auto";
               };
             };
             platforms = [
