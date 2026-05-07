@@ -406,6 +406,7 @@ rule-providers:
     type: inline
     behavior: classical
     payload:
+      - DOMAIN-SUFFIX,docker.com
       - DOMAIN-SUFFIX,huggingface.co
       - DOMAIN-SUFFIX,storage.googleapis.com
       - DOMAIN-REGEX,^.+\.s3\.[^.]+\.amazonaws\.com$
