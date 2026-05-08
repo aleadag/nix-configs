@@ -26,7 +26,6 @@ in
     ./htop.nix
     ./irssi.nix
     ./jujutsu.nix
-    ./man.nix
     ./pass.nix
     ./ssh
     ./starship.nix
@@ -123,6 +122,27 @@ in
           window = 4;
         };
       };
+      man =
+        let
+          mandocWrapped =
+            with pkgs;
+            symlinkJoin {
+              name = "${mandoc.name}-wrapped";
+              paths = [ mandoc ];
+              nativeBuildInputs = [ makeWrapper ];
+              postBuild = ''
+                rm -f "$out/bin/man"
+                makeWrapper ${lib.getExe mandoc} "$out/bin/man" \
+                  --run 'if [ -t 1 ]; then cols="$(${lib.getExe' ncurses "tput"} cols 2>/dev/null || true)"; if [ -n "$cols" ]; then set -- -O "width=$cols" "$@"; fi; fi'
+              '';
+            };
+        in
+        {
+          generateCaches = true;
+          package = mandocWrapped;
+          man-db.enable = false;
+          mandoc.enable = true;
+        };
       nix-your-shell.enable = true;
       ripgrep.enable = true;
     };
