@@ -18,8 +18,10 @@ in
     subpixelRender.enable = lib.mkEnableOption "subpixel render" // {
       default =
         (!config.home-manager.darwin.enable)
-        && (if cfgFc.antialiasing != null then cfgFc.antialiasing else false)
-        && (cfgFc.subpixelRendering != "none");
+        && cfgFc.antialiasing != null
+        && cfgFc.antialiasing
+        && cfgFc.subpixelRendering != null
+        && cfgFc.subpixelRendering != "none";
     };
     proxy.enable = lib.mkEnableOption "Enable proxy" // {
       default = config.home-manager.mihomo.enable;
