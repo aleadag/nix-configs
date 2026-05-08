@@ -22,7 +22,6 @@ in
     homebrew = {
       enable = true;
       casks = [
-        "betterdisplay"
         "domzilla-caffeine"
         "feishu"
         "firefox"
