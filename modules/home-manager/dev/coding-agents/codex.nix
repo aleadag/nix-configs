@@ -121,7 +121,7 @@ in
         check_for_update_on_startup = false;
         features = {
           apps = false;
-          codex_hooks = true;
+          hooks = true;
         };
         model = "gpt-5.5";
         model_reasoning_effort = "high";
