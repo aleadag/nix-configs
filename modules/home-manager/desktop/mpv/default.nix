@@ -15,12 +15,12 @@ in
     };
     profile = lib.mkOption {
       type = with lib.types; listOf str;
-      default = [ "gpu-hq" ];
+      default = [ ];
       description = "Default mpv profile(s).";
     };
     hq.enable = lib.mkEnableOption "high-quality config (needs good CPU/GPU)";
-    vapoursynth.enable = lib.mkEnableOption "VapourSynth config" // {
-      default = pkgs.stdenv.isLinux;
+    vapoursynth.enable = lib.mkEnableOption "Vapoursynth config" // {
+      default = lib.meta.availableOn pkgs.stdenv.hostPlatform pkgs.vapoursynth;
     };
   };
 
@@ -38,9 +38,7 @@ in
       };
 
       config = {
-        inherit (cfg) profile;
-        osd-font-size = 14;
-        osd-level = 3;
+        profile = lib.mkIf (cfg.profile != [ ]) cfg.profile;
         slang = "enUS,enGB,en,eng,ptBR,pt,por";
         alang = "ja,jpn,enUS,enGB,en,eng,ptBR,pt,por";
       };
@@ -60,12 +58,6 @@ in
           tscale-radius = 1.025;
           video-sync = "display-resample";
           blend-subtitles = "video";
-        };
-
-        hq-scale = {
-          scale = "ewa_lanczossharp";
-          dscale = "mitchell";
-          cscale = "spline36"; # alternatively ewa_lanczossoft
         };
 
         hwdec = {
