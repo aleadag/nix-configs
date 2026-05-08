@@ -23,6 +23,7 @@ in
     ./btop.nix
     ./bulletty.nix
     ./git.nix
+    ./gnu.nix
     ./htop.nix
     ./irssi.nix
     ./jujutsu.nix
