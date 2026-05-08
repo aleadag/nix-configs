@@ -28,7 +28,6 @@ in
 
   config = lib.mkIf cfg.enable {
     home.packages = with pkgs; [
-      android-file-transfer
       audacious
       feishu
       libreoffice-fresh
