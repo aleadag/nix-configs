@@ -101,6 +101,7 @@ in
         sloccount = lib.getExe pkgs.tokei;
         reset = lib.getExe' pkgs.ncurses "reset";
         ns = lib.mkIf config.programs.fzf.enable "${lib.getExe pkgs.nix-search-tv} print | ${lib.getExe pkgs.fzf} --preview '${lib.getExe pkgs.nix-search-tv} preview {}' --scheme history";
+        nb = lib.getExe pkgs.eilmeldung;
       };
     };
 
