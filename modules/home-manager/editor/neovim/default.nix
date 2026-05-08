@@ -709,6 +709,16 @@ in
                     require("remember").setup {}
                   '';
               }
+              {
+                plugin = leetcode-nvim;
+                type = "lua";
+                config = # lua
+                  ''
+                    require("leetcode").setup {
+                      lang = "python3";
+                    }
+                  '';
+              }
               diffview-nvim
               lexima-vim
               mkdir-nvim
