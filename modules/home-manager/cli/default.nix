@@ -74,6 +74,7 @@ in
           python3
           rlwrap
           tealdeer
+          viu
           tokei
           watch
           wget
