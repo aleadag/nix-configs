@@ -99,6 +99,7 @@ in
           "*.swp"
           "*~"
           ".clj-kondo"
+          ".codex"
           ".dir-locals.el"
           ".DS_Store"
           ".lsp"
