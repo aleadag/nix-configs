@@ -1,4 +1,4 @@
-{ ... }:
+_:
 
 {
   services.kanshi.settings = [

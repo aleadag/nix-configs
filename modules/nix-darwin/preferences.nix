@@ -1,5 +1,6 @@
 # https://github.com/kclejeune/system/blob/master/modules/darwin/preferences.nix
-{ ... }:
+_:
+
 {
   system.defaults = {
     # login window settings
