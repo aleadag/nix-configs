@@ -87,13 +87,11 @@ in
         tab_title_max_length = 30;
 
         # Misc
-        allow_remote_control = "socket-only";
         clipboard_control = "write-clipboard write-primary read-clipboard read-primary";
         editor = lib.mkIf config.home-manager.window-manager.enable config.home-manager.window-manager.default.editor;
         # ctrl+shift+l / super+l
         enabled_layouts = "tall,fat,grid,horizontal,vertical,stack";
         hide_window_decorations = "titlebar-only";
-        listen_on = "unix:/tmp/kitty";
         macos_menubar_title_max_length = 50;
         macos_quit_when_last_window_closed = true;
         macos_show_window_title_in = "window";
@@ -108,6 +106,11 @@ in
 
         # Fix for Wayland slow scrolling
         touch_scroll_multiplier = lib.mkIf config.home-manager.desktop.enable "5.0";
+      }
+      // lib.optionalAttrs cfg.scrollback-nvim.enable {
+        allow_remote_control = "socket-only";
+        listen_on = "unix:/tmp/kitty";
+        shell_integration = true;
       };
 
       darwinLaunchOptions = [
