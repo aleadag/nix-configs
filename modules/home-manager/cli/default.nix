@@ -106,7 +106,6 @@ in
 
     programs = {
       aria2.enable = true;
-      eilmeldung.enable = true;
       fd.enable = true;
       jq.enable = true;
       less = {
