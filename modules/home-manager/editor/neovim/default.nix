@@ -187,6 +187,10 @@ in
                 -- load .exrc, .nvimrc and .nvim.lua local files
                 vim.opt.exrc = true
 
+                -- set terminal/window title to nvim and the current directory
+                vim.opt.title = true
+                vim.opt.titlestring = "nvim: %{fnamemodify(getcwd(), ':~')}"
+
                 -- highlight current line (enabled by mini.basics)
                 vim.opt.cursorline = false
 
