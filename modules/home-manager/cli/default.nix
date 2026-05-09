@@ -68,6 +68,7 @@ in
           imagemagick
           lsof
           mediainfo
+          newsgoat
           ouch
           page
           pv

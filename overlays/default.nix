@@ -50,6 +50,8 @@ inputs.nur.overlays.default final prev
 
     cc-connect = prev.callPackage ../packages/cc-connect { };
 
+    newsgoat = prev.callPackage ../packages/newsgoat { };
+
     nix-whereis = prev.callPackage ../packages/nix-whereis { };
 
     run-bg-alias = name: command: prev.callPackage ../packages/run-bg-alias { inherit name command; };
