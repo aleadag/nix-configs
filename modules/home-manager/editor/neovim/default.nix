@@ -719,7 +719,10 @@ in
                 config = # lua
                   ''
                     require("leetcode").setup {
-                      lang = "python3";
+                      lang = "python3",
+                      storage = {
+                        home = "${config.home.homeDirectory}/Sync/leetcode",
+                      },
                     }
                   '';
               }
