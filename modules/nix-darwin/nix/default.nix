@@ -78,7 +78,7 @@ in
         (libEx.translateKeys {
           "extra-substituters" = "substituters";
           "extra-trusted-public-keys" = "trusted-public-keys";
-        } flake.outputs.internal.configs.nix)
+        } flake.outputs.lib.internal.configs.nix)
         {
           trusted-users = [
             "root"
@@ -89,7 +89,7 @@ in
     };
 
     nixpkgs = {
-      config = flake.outputs.internal.configs.nixpkgs;
+      config = flake.outputs.lib.internal.configs.nixpkgs;
       overlays = [
         flake.outputs.overlays.default
       ];

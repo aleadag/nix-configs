@@ -34,7 +34,7 @@ in
     # sudo echo "trusted-users = @wheel" >> /etc/nix/nix.conf
     nix = {
       package = lib.mkDefault pkgs.nix;
-      settings = flake.outputs.internal.configs.nix;
+      settings = flake.outputs.lib.internal.configs.nix;
       extraOptions = ''
         !include ${config.sops.templates."nix-access-tokens".path}
         !include nix.local.conf
@@ -58,6 +58,6 @@ in
     # Config for ad-hoc nix commands invocation
     xdg.configFile."nixpkgs/config.nix".text =
       lib.generators.toPretty { }
-        flake.outputs.internal.configs.nixpkgs;
+        flake.outputs.lib.internal.configs.nixpkgs;
   };
 }

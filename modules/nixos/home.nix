@@ -11,7 +11,7 @@ let
 in
 {
   imports = [
-    (flake.outputs.internal.sharedModules.helpers.mkHomeModule "nixos")
+    (flake.outputs.lib.internal.sharedModules.helpers.mkHomeModule "nixos")
     flake.inputs.home-manager.nixosModules.home-manager
   ];
 

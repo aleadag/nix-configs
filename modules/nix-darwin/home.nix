@@ -11,7 +11,7 @@ let
 in
 {
   imports = [
-    (flake.outputs.internal.sharedModules.helpers.mkHomeModule "nix-darwin")
+    (flake.outputs.lib.internal.sharedModules.helpers.mkHomeModule "nix-darwin")
     flake.inputs.home-manager.darwinModules.home-manager
   ];
 

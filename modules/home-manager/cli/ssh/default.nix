@@ -20,27 +20,26 @@
 
         includes = [ "local.d/*" ];
 
-        extraConfig = lib.optionalString config.home-manager.darwin.enable ''
-          IgnoreUnknown UseKeychain
-          UseKeychain yes
-        '';
-
-        matchBlocks = {
+        settings = {
           "*" = {
-            addKeysToAgent = "yes";
-            compression = true;
-            forwardAgent = true;
-            serverAliveCountMax = 2;
-            serverAliveInterval = 300;
-            sendEnv = [ "COLORTERM" ];
+            AddKeysToAgent = "yes";
+            Compression = true;
+            ForwardAgent = true;
+            ServerAliveCountMax = 2;
+            ServerAliveInterval = 300;
+            SendEnv = [ "COLORTERM" ];
+          }
+          // lib.optionalAttrs config.home-manager.darwin.enable {
+            IgnoreUnknown = "UseKeychain";
+            UseKeychain = "yes";
           };
           "github.com" = {
-            identityFile = config.sops.secrets.ssh_gh_key.path;
+            IdentityFile = config.sops.secrets.ssh_gh_key.path;
             # This need to set per request
             # proxyCommand = "nc -x 127.0.0.1:7890 %h %p";
           };
           "hf.co" = {
-            identityFile = config.sops.secrets.ssh_hf_key.path;
+            IdentityFile = config.sops.secrets.ssh_hf_key.path;
           };
         };
       };

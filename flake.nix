@@ -164,12 +164,13 @@
     libEx.recursiveMergeAttrs (
       [
         {
-          lib = libEx;
-          internal = {
-            configs = import ./configs;
-            sharedModules = {
-              default = import ./modules/shared;
-              helpers = import ./modules/shared/helpers;
+          lib = libEx // {
+            internal = {
+              configs = import ./configs;
+              sharedModules = {
+                default = import ./modules/shared;
+                helpers = import ./modules/shared/helpers;
+              };
             };
           };
           darwinModules.default = import ./modules/nix-darwin;
@@ -183,7 +184,7 @@
           let
             pkgs = import nixpkgs {
               inherit system;
-              config = self.outputs.internal.configs.nixpkgs;
+              config = self.outputs.lib.internal.configs.nixpkgs;
               overlays = [
                 self.overlays.default
                 inputs.nur.overlays.default

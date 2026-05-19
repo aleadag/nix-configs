@@ -3,7 +3,7 @@
 {
   imports = [
     flake.inputs.stylix.darwinModules.stylix
-    flake.outputs.internal.sharedModules.default
+    flake.outputs.lib.internal.sharedModules.default
     ./cli.nix
     ./home.nix
     ./homebrew.nix
