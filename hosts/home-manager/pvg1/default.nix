@@ -20,6 +20,8 @@
     };
   };
 
+  programs.swaylock.package = null;
+
   targets.genericLinux = {
     enable = true;
     gpu = {

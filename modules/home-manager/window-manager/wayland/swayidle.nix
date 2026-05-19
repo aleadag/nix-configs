@@ -7,7 +7,12 @@
 
 let
   cfg = config.home-manager.window-manager.wayland.swayidle;
-  swaylock = "${lib.getExe config.programs.swaylock.package} -f";
+  swaylockBin =
+    if config.programs.swaylock.package == null then
+      "/usr/bin/swaylock"
+    else
+      lib.getExe config.programs.swaylock.package;
+  swaylock = "${swaylockBin} -f";
   niri = lib.getExe' pkgs.niri "niri";
   swaymsg = lib.getExe' pkgs.sway "swaymsg";
   notify = toString (
