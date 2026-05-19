@@ -67,6 +67,8 @@ in
             "browser.quitShortcut.disabled" = true;
             "browser.tabs.crashReporting.sendReport" = false;
             "browser.urlbar.suggest.quicksuggest.sponsored" = false;
+            # Work around Firefox Wayland popup/menu regressions after output changes.
+            "widget.wayland.use-move-to-rect" = false;
 
             # telemetry
             "datareporting.policy.dataSubmissionEnable" = false;
