@@ -42,11 +42,14 @@ let
     );
 in
 {
-  options.home-manager.window-manager.wayland.swayidle.enable =
-    lib.mkEnableOption "swayidle config"
-    // {
+  options.home-manager.window-manager.wayland.swayidle = {
+    enable = lib.mkEnableOption "swayidle config" // {
       default = config.home-manager.window-manager.wayland.enable;
     };
+    powerOffDisplays.enable = lib.mkEnableOption "powering off displays while idle" // {
+      default = true;
+    };
+  };
 
   config = lib.mkIf cfg.enable {
     home.packages = with pkgs; [ swayidle ];
@@ -67,12 +70,12 @@ in
           timeout = 600;
           command = swaylock;
         }
-        {
-          timeout = 605;
-          command = display "off";
-          resumeCommand = display "on";
-        }
-      ];
+      ]
+      ++ lib.optional cfg.powerOffDisplays.enable {
+        timeout = 605;
+        command = display "off";
+        resumeCommand = display "on";
+      };
     };
 
     systemd.user.services.swayidle = {
