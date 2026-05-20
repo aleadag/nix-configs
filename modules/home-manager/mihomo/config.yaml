@@ -247,7 +247,7 @@ proxy-groups:
   - name: "🪟 Microsoft"
     <<: *standard_proxy_group
 
-  - name: "₿ Binance"
+  - name: "₿ Crypto"
     <<: *standard_proxy_group
 
   - name: "✈️ Telegram"
@@ -278,11 +278,6 @@ proxy-groups:
 
   - name: "❓ 漏网之鱼"
     <<: *standard_proxy_group
-
-  - name: "👨🏻‍💻 Vibe Coding"
-    type: select
-    include-all: true
-    filter: (?i)pro-us1
 
   - name: "🇭🇰 香港节点"
     type: select
@@ -371,7 +366,6 @@ rules:
   - RULE-SET,private_ip,🔗 直连
   - RULE-SET,private_domain,🔗 直连
   # Order matters, MUST before ChatGPT
-  - RULE-SET,cc_domain,👨🏻‍💻 Vibe Coding
   - RULE-SET,large_download_domain,📦 大文件下载
   - RULE-SET,apple_domain,🍎 Apple
   - RULE-SET,proxylite,🚀 默认代理
@@ -381,7 +375,7 @@ rules:
   - RULE-SET,google_domain,🔎 Google
   - RULE-SET,onedrive_domain,☁️ OneDrive
   - RULE-SET,microsoft_domain,🪟 Microsoft
-  - RULE-SET,binance_domain,₿ Binance
+  - RULE-SET,crypto_domain,₿ Crypto
   - RULE-SET,speedtest_domain,🎯 Speedtest
   - RULE-SET,telegram_domain,✈️ Telegram
   - RULE-SET,paypal_domain,💰 PayPal
@@ -438,10 +432,6 @@ rule-providers:
     <<: *domain_rule_provider
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/telegram.mrs
 
-  cc_domain:
-    <<: *domain_rule_provider
-    url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/anthropic.mrs
-
   paypal_domain:
     <<: *domain_rule_provider
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/paypal.mrs
@@ -462,9 +452,9 @@ rule-providers:
     <<: *domain_rule_provider
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/ookla-speedtest.mrs
 
-  binance_domain:
+  crypto_domain:
     <<: *domain_rule_provider
-    url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/binance.mrs
+    url: https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-cryptocurrency.mrs
 
   gfw_domain:
     <<: *domain_rule_provider
