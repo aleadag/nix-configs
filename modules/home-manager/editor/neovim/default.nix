@@ -403,8 +403,9 @@ in
                 type = "lua";
                 config = # lua
                   ''
-                    require("guess-indent").setup {}
-                    vim.keymap.set("n", "<Leader>i", "<CMD>GuessIndent<CR>", { desc = "Guess indent" })
+                    local guess_indent = require("guess-indent")
+                    guess_indent.setup {}
+                    vim.keymap.set("n", "<Leader>i", guess_indent.set_from_buffer, { desc = "Guess indent" })
                   '';
               }
               {
@@ -412,14 +413,14 @@ in
                 type = "lua";
                 config = # lua
                   ''
-
-                     require("gx").setup {
-                       handler_options = {
-                         search_engine = "duckduckgo"
-                       }
+                    local gx = require("gx")
+                    gx.setup {
+                      handler_options = {
+                        search_engine = "duckduckgo"
+                      }
                     }
 
-                     vim.keymap.set({"n", "x"}, "gx", "<CMD>Browse<CR>", { desc = "Open in Browse" })
+                    vim.keymap.set({"n", "x"}, "gx", gx.open, { desc = "Open in Browse" })
                   '';
               }
               {
@@ -662,6 +663,9 @@ in
                   ''
                     local oil = require("oil")
                     oil.setup {
+                      columns = {
+                        ${lib.optionalString enableIcons (toLua "icon")}
+                      },
                       skip_confirm_for_simple_edits = true,
                       constrain_cursor = "name",
                       watch_for_changes = true,
