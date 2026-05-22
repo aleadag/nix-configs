@@ -21,6 +21,7 @@
     home.packages = with pkgs; [
       bash-language-server
       expect
+      just
       marksman
       shellcheck
     ];
