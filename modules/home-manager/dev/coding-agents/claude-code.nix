@@ -1,6 +1,5 @@
 {
   config,
-  flake,
   lib,
   pkgs,
   ...
@@ -8,8 +7,6 @@
 
 let
   cfg = config.home-manager.dev.coding-agents.claude-code;
-  # Get cc-tools binaries from the flake
-  cc-tools = flake.inputs.cc-tools.packages.${pkgs.stdenv.hostPlatform.system}.default;
   sharedPermissions = import ./permissions.nix { inherit lib; };
 in
 {
@@ -45,17 +42,6 @@ in
         };
 
         hooks = {
-          PostToolUse = [
-            {
-              matcher = "Write|Edit|MultiEdit";
-              hooks = [
-                {
-                  type = "command";
-                  command = "${cc-tools}/bin/cc-tools-validate";
-                }
-              ];
-            }
-          ];
           Stop = [
             {
               matcher = "";
@@ -91,12 +77,5 @@ in
         };
       };
     };
-
-    # Install additional packages
-    home.packages = with pkgs; [
-      just
-      # Include cc-tools binaries
-      cc-tools
-    ];
   };
 }

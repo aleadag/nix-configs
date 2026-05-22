@@ -126,29 +126,6 @@
         "type": "github"
       }
     },
-    "cc-tools": {
-      "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1779390432,
-        "narHash": "sha256-el+0sPeHj20TPkj/ke50bY5lUNNX/ERpCWTP3842lZw=",
-        "owner": "Veraticus",
-        "repo": "cc-tools",
-        "rev": "eb43a293b436392f045b446950fdf14e2dd2c55d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Veraticus",
-        "repo": "cc-tools",
-        "type": "github"
-      }
-    },
     "disko": {
       "inputs": {
         "nixpkgs": [
@@ -725,7 +702,6 @@
     },
     "root": {
       "inputs": {
-        "cc-tools": "cc-tools",
         "disko": "disko",
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",
