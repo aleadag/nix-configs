@@ -8,9 +8,11 @@
 {
   imports = [
     ./coding-agents
+    ./go.nix
     ./httpie.nix
     ./nix.nix
     ./node.nix
+    ./python.nix
   ];
 
   options.home-manager.dev.enable = lib.mkEnableOption "dev config" // {

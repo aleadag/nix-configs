@@ -17,6 +17,8 @@ in
     home = {
       packages = with pkgs; [
         nodejs
+        typescript-language-server
+        vscode-langservers-extracted
       ];
 
       sessionPath = [ "${homeDirectory}/.npm-packages/bin" ];
