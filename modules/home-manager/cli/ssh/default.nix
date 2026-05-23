@@ -22,7 +22,7 @@
 
         settings = {
           "*" = {
-            AddKeysToAgent = "yes";
+            AddKeysToAgent = true;
             Compression = true;
             ForwardAgent = true;
             ServerAliveCountMax = 2;
