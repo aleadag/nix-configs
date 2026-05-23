@@ -12,11 +12,16 @@ let
   cfg = config.home-manager.editor.neovim;
   treesitterGrammars = lib.attrValues pkgs.vimPlugins.nvim-treesitter.parsers;
   treesitterQueries = map (p: p.associatedQuery) treesitterGrammars;
+  treesitterInheritedQueries = pkgs.runCommandLocal "treesitter-inherited-queries" { } ''
+    mkdir -p "$out/queries"
+    cp -R ${pkgs.vimPlugins.nvim-treesitter}/runtime/queries/ecma "$out/queries/"
+    cp -R ${pkgs.vimPlugins.nvim-treesitter}/runtime/queries/jsx "$out/queries/"
+  '';
   # Build a single package so we link this once
   treesitterPackage = pkgs.buildEnv {
     pname = "treesitter-parsers-and-queries";
     version = "unstable";
-    paths = treesitterGrammars ++ treesitterQueries;
+    paths = treesitterGrammars ++ treesitterQueries ++ [ treesitterInheritedQueries ];
     ignoreCollisions = true;
   };
   terminalType = lib.types.submodule (
