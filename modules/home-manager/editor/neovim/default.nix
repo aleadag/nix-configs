@@ -728,7 +728,7 @@ in
                 config = # lua
                   ''
                     require("leetcode").setup {
-                      lang = "python3",
+                      lang = "typescript",
                       storage = {
                         home = "${config.home.homeDirectory}/Sync/leetcode",
                       },
