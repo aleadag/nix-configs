@@ -261,11 +261,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776687489,
-        "narHash": "sha256-DIYT0EQxOPQzLftBuOP3nFIUUICpCvfnXqWYAApQ8W0=",
+        "lastModified": 1779641808,
+        "narHash": "sha256-5skdk3Jx5Uq0SanrIaRtEdJdX06yABVQNbqUYBQpHWc=",
         "owner": "thiagokokada",
         "repo": "gh-gfm-preview",
-        "rev": "ebdcd0f54159da4593ec20012e8afe517eadb06f",
+        "rev": "8c9ed790b03884133a9bc81dddbd0112492747cb",
         "type": "github"
       },
       "original": {
@@ -313,11 +313,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779507042,
-        "narHash": "sha256-7wOwi8B6D0BYsieZCnHZZj2sNUzgJhLoIVSfkwB7lxQ=",
+        "lastModified": 1779627636,
+        "narHash": "sha256-J6JGf42zNzLo/CrRdKb5dNznpLI+eGxN/5KTLG1Mo5s=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "509ed3c603349a9d43de9e2ae6613baea6bd5b34",
+        "rev": "044c30c19550c0557997dece4ce9e54d2fa77ba1",
         "type": "github"
       },
       "original": {
@@ -422,11 +422,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779562633,
-        "narHash": "sha256-ghA+NawrPtsZQjwWqakkcCzpKShzTKhpnjEhWNjdnN0=",
+        "lastModified": 1779658164,
+        "narHash": "sha256-4aMduafr5I23zPPNpmRmrs96gQHjGQKnvYK3xzWJ3bA=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "0b49e4b9ddbf30370a9c3a96a5ff94c51b33d0ed",
+        "rev": "66a33f136b86e9904059b1a888aa5cbc8562ddda",
         "type": "github"
       },
       "original": {
@@ -614,11 +614,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779565654,
-        "narHash": "sha256-yf2/RMk2xF+p1IENFo2fb0cw6NO6e1hF1lvFrX+apyE=",
+        "lastModified": 1779658007,
+        "narHash": "sha256-AcQs6FXapv22iE29APRbWn0ngyWMZsTZ+6SnuzqV5zU=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "686d85f95ee094d69ebbbc645a57799b2d811a51",
+        "rev": "75dfabf3e9f969d44131e98d37994f413400d624",
         "type": "github"
       },
       "original": {
@@ -631,11 +631,11 @@
       "flake": false,
       "locked": {
         "dir": "skills",
-        "lastModified": 1778185448,
-        "narHash": "sha256-2kr8fmkuxRLaTy2O+dTv9K+75mRIqkLmaArw2/hj5uc=",
+        "lastModified": 1779638361,
+        "narHash": "sha256-KwmnZrHkl/LqMLF+P0YnIqEpL3lGa6DSRUTgqYK1fes=",
         "owner": "kepano",
         "repo": "obsidian-skills",
-        "rev": "ac9398734fe719565809f7a6048b05c36b1ca38f",
+        "rev": "553ef99aa3306dd23f268e1ba9af752577684f69",
         "type": "github"
       },
       "original": {
@@ -687,11 +687,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779273149,
-        "narHash": "sha256-hxr93gUqHyEczCzZn1yWvVlHpQxDqqjKFB6POG6AgPo=",
+        "lastModified": 1779618578,
+        "narHash": "sha256-a5WVNXJ48K5wWq3v2XPkVvE5DE80SwbIfr9MxbA1BB0=",
         "owner": "karinushka",
         "repo": "paneru",
-        "rev": "b0037d715ff397713f2f259379b13bc5346b81ff",
+        "rev": "c6e9c74cf5062db6b337b870d869ebde2ba4edb6",
         "type": "github"
       },
       "original": {
