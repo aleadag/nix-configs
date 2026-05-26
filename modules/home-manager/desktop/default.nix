@@ -27,13 +27,18 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = with pkgs; [
-      audacious
-      feishu
-      libreoffice-fresh
-      (mcomix.override {
-        unrarSupport = true;
-      })
-    ];
+    home.packages =
+      with pkgs;
+      [
+        audacious
+        feishu
+        libreoffice-fresh
+        (mcomix.override {
+          unrarSupport = true;
+        })
+      ]
+      ++ (lib.optionals stdenv.hostPlatform.isLinux [
+        telegram-desktop
+      ]);
   };
 }

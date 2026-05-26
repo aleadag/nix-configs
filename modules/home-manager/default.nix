@@ -15,7 +15,6 @@
     ./desktop
     ./dev
     ./editor
-    ./gui
     ./kanata
     ./meta
     ./mihomo
