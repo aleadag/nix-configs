@@ -17,7 +17,6 @@
       enable = false;
       neovim.enable = true;
     };
-    gui.enable = false;
   };
 
   # Disable dconf since we don't have GUI and it requires D-Bus
