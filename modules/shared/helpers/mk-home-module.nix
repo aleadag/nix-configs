@@ -41,6 +41,9 @@ in
       backupFileExtension = "hm-backup";
       useUserPackages = true;
       useGlobalPkgs = true;
+      sharedModules = [
+        { stylix.overlays.enable = false; }
+      ];
       users.${cfg.username} = {
         inherit (config) meta device;
         imports = [ flake.outputs.homeModules.default ] ++ cfg.extraModules;
