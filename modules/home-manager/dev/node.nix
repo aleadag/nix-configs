@@ -32,5 +32,9 @@ in
           MANPATH = [ "${NPM_PACKAGES}/share/man" ];
         };
     };
+
+    programs.bun = {
+      enable = true;
+    };
   };
 }
