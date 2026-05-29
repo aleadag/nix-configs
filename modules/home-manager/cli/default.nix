@@ -74,6 +74,7 @@ in
           pv
           python3
           rlwrap
+          rustnet
           tealdeer
           viu
           tokei
