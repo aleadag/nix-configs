@@ -74,14 +74,16 @@ in
           pv
           python3
           rlwrap
-          rustnet
           tealdeer
           viu
           tokei
           watch
           wget
         ]
-        ++ (lib.optionals stdenv.isLinux [ bluetui ]);
+        ++ (lib.optionals stdenv.isLinux [
+          bluetui
+          rustnet
+        ]);
 
       sessionVariables = {
         DO_NOT_TRACK = 1;
