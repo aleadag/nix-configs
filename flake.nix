@@ -180,7 +180,6 @@
               config = self.outputs.lib.internal.configs.nixpkgs;
               overlays = [
                 self.overlays.default
-                inputs.nur.overlays.default
               ];
             };
             treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;

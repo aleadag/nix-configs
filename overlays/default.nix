@@ -1,8 +1,12 @@
 { inputs, outputs, ... }:
 final: prev:
 
-inputs.nur.overlays.default final prev
-// inputs.llm-agents.overlays.default final prev
+let
+  nurOverlay = inputs.nur.overlays.default final prev;
+  llmAgentsOverlay = inputs.llm-agents.overlays.default final prev;
+in
+nurOverlay
+// llmAgentsOverlay
 // (
   let
     inherit (prev.stdenv.hostPlatform) system;
@@ -53,6 +57,8 @@ inputs.nur.overlays.default final prev
     newsgoat = prev.callPackage ../packages/newsgoat { };
 
     nix-whereis = prev.callPackage ../packages/nix-whereis { };
+
+    wpsoffice-cn-fcitx = final.callPackage ../packages/wpsoffice-cn-fcitx { };
 
     run-bg-alias = name: command: prev.callPackage ../packages/run-bg-alias { inherit name command; };
 
