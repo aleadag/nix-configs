@@ -119,7 +119,7 @@ in
                 touchpad {
                     // off
                     tap
-                    // dwt
+                    dwt
                     // dwtp
                     // drag false
                     // drag-lock
