@@ -122,6 +122,7 @@ in
         features = {
           apps = false;
           hooks = true;
+          memories = true;
         };
         model = "gpt-5.5";
         model_reasoning_effort = "high";
