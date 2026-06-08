@@ -11,13 +11,13 @@ let
 in
 {
   options.home-manager.dev.coding-agents.gemini-cli = {
-    enable = lib.mkEnableOption "Gemini-cli config" // {
+    enable = lib.mkEnableOption "Antigravity CLI config" // {
       default = config.home-manager.dev.enable;
     };
   };
 
   config = lib.mkIf cfg.enable {
-    programs.gemini-cli = {
+    programs.antigravity-cli = {
       enable = true;
       context = {
         CONTEXT = ./CONTEXT.md;
