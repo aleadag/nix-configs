@@ -15,6 +15,7 @@ in
     nix-darwin.home.extraModules = {
       programs = {
         firefox.package = null;
+        ghostty.package = null;
         kitty.package = null;
       };
     };
@@ -26,6 +27,7 @@ in
         "feishu"
         "firefox"
         "google-chrome"
+        "ghostty"
         "kitty"
         "linearmouse"
         "microsoft-edge"
