@@ -149,6 +149,14 @@ in
           mandoc.enable = true;
         };
       nix-your-shell.enable = true;
+      readline = {
+        enable = true;
+        variables = {
+          keymap = "vi";
+          editing-mode = "vi";
+          show-mode-in-prompt = true;
+        };
+      };
       ripgrep.enable = true;
     };
   };
