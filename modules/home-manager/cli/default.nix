@@ -71,6 +71,7 @@ in
           newsgoat
           ouch
           page
+          parallel
           pv
           python3
           rlwrap
