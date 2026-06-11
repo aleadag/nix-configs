@@ -76,6 +76,7 @@ in
           rlwrap
           tealdeer
           viu
+          vitaly
           tokei
           watch
           wget

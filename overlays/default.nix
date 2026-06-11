@@ -58,6 +58,8 @@ nurOverlay
 
     nix-whereis = prev.callPackage ../packages/nix-whereis { };
 
+    vitaly = prev.callPackage ../packages/vitaly { };
+
     wpsoffice-cn-fcitx = final.callPackage ../packages/wpsoffice-cn-fcitx { };
 
     run-bg-alias = name: command: prev.callPackage ../packages/run-bg-alias { inherit name command; };
