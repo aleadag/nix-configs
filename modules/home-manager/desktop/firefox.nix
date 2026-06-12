@@ -35,6 +35,7 @@ in
 
     programs.firefox = {
       enable = true;
+      package = pkgs.firefox-bin;
       configPath = lib.mkIf pkgs.stdenv.isLinux ".mozilla/firefox";
       profiles.${username} = {
         settings =

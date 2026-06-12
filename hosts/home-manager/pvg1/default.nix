@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ flake, pkgs, ... }:
 {
   stylix.image = "${pkgs.pop-wallpapers}/share/backgrounds/pop/jasper-van-der-meij-97274-edit.jpg";
 
@@ -22,6 +22,10 @@
   };
 
   programs.swaylock.package = null;
+
+  nixpkgs.config = flake.outputs.lib.internal.configs.nixpkgs // {
+    cudaSupport = true;
+  };
 
   targets.genericLinux = {
     enable = true;
