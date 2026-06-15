@@ -14,7 +14,7 @@ in
   config = lib.mkIf cfg.enable {
     nix-darwin.home.extraModules = {
       programs = {
-        firefox.package = null;
+        firefox.package = lib.mkForce null;
         ghostty.package = null;
         kitty.package = null;
       };
