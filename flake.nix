@@ -110,6 +110,14 @@
       };
     };
 
+    codexctl = {
+      url = "github:aleadag/codexctl";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
+
     # Agent skills
     jujutsu-skills = {
       url = "github:danverbraganza/jujutsu-skill";

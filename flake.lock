@@ -126,6 +126,29 @@
         "type": "github"
       }
     },
+    "codexctl": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1781528685,
+        "narHash": "sha256-Wa6+bkGhvPDdVME2uWr7tC73mtZ/xiCcT2GyC19x7ZI=",
+        "owner": "aleadag",
+        "repo": "codexctl",
+        "rev": "932f99490832c42531927c58415d4c428f562e92",
+        "type": "github"
+      },
+      "original": {
+        "owner": "aleadag",
+        "repo": "codexctl",
+        "type": "github"
+      }
+    },
     "disko": {
       "inputs": {
         "nixpkgs": [
@@ -718,6 +741,7 @@
     },
     "root": {
       "inputs": {
+        "codexctl": "codexctl",
         "disko": "disko",
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",

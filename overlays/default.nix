@@ -26,6 +26,8 @@ nurOverlay
     inherit (inputs.gh-gfm-preview.packages.${system}) gh-gfm-preview;
     inherit (inputs.nix-proxy-manager.packages.${system}) nix-proxy-manager;
 
+    codexctl = inputs.codexctl.packages.${system}.default;
+
     neovim-standalone =
       let
         hostName = "neovim-standalone";
