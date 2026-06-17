@@ -12,7 +12,7 @@ in
 {
   options.home-manager.dev.coding-agents.gemini-cli = {
     enable = lib.mkEnableOption "Antigravity CLI config" // {
-      default = config.home-manager.dev.enable;
+      default = config.home-manager.dev.coding-agents.enable;
     };
   };
 

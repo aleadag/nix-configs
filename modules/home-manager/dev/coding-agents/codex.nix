@@ -62,7 +62,7 @@ in
 {
   options.home-manager.dev.coding-agents.codex = {
     enable = lib.mkEnableOption "Codex config" // {
-      default = config.home-manager.dev.enable;
+      default = config.home-manager.dev.coding-agents.enable;
     };
   };
 

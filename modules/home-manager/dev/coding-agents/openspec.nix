@@ -11,7 +11,7 @@ in
 {
   options.home-manager.dev.coding-agents.openspec = {
     enable = lib.mkEnableOption "Openspec config" // {
-      default = config.home-manager.dev.enable;
+      default = config.home-manager.dev.coding-agents.enable;
     };
   };
 

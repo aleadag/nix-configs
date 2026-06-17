@@ -1,4 +1,9 @@
-{ ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   imports = [
@@ -8,4 +13,12 @@
     ./mcp.nix
     ./openspec.nix
   ];
+
+  options.home-manager.dev.coding-agents.enable = lib.mkEnableOption "coding agent config" // {
+    default = config.home-manager.dev.enable;
+  };
+
+  config = lib.mkIf config.home-manager.dev.coding-agents.enable {
+    home.packages = [ pkgs.ctx7 ];
+  };
 }

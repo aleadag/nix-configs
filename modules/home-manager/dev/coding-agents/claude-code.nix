@@ -12,7 +12,7 @@ in
 {
   options.home-manager.dev.coding-agents.claude-code = {
     enable = lib.mkEnableOption "Claude Code CLI tool" // {
-      default = config.home-manager.dev.enable;
+      default = config.home-manager.dev.coding-agents.enable;
     };
   };
 
