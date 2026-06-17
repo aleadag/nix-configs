@@ -7,14 +7,10 @@
 
 let
   cfg = config.home-manager.dev.coding-agents.mcp;
-  codingAgents = config.home-manager.dev.coding-agents;
 in
 {
   options.home-manager.dev.coding-agents.mcp = {
-    enable = lib.mkEnableOption "mcp" // {
-      default =
-        codingAgents.claude-code.enable || codingAgents.codex.enable || codingAgents.gemini-cli.enable;
-    };
+    enable = lib.mkEnableOption "mcp";
   };
 
   config = lib.mkIf cfg.enable {
