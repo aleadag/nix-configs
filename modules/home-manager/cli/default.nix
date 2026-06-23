@@ -68,6 +68,7 @@ in
           imagemagick
           lsof
           mediainfo
+          nur.repos.mio.breathe-cli
           ouch
           page
           parallel
