@@ -76,6 +76,7 @@ in
           python3
           rlwrap
           tealdeer
+          tree
           viu
           vitaly
           tokei
