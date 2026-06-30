@@ -38,6 +38,10 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    home.packages = [
+      pkgs.nerd-fonts.symbols-only
+    ];
+
     programs.waybar = {
       enable = true;
       systemd.enable = true;
@@ -295,6 +299,7 @@ in
             * {
               border: none;
               border-radius: 0;
+              font-family: "${config.stylix.fonts.monospace.name}", "Symbols Nerd Font", "${config.stylix.fonts.emoji.name}";
               min-height: 0;
             }
             window#waybar {

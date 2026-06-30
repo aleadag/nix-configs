@@ -20,8 +20,8 @@
       # Font configuration
       fonts = {
         monospace = {
-          package = pkgs.noto-fonts-cjk-sans;
-          name = "Noto Sans Mono CJK SC";
+          package = pkgs.nerd-fonts.hack;
+          name = "Hack Nerd Font Mono";
         };
         sansSerif = {
           package = pkgs.noto-fonts-cjk-sans;
