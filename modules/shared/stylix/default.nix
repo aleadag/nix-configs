@@ -18,16 +18,19 @@
       imageScalingMode = "fill";
 
       # Font configuration
-      fonts = rec {
+      fonts = {
         monospace = {
-          package = pkgs.nerd-fonts.hack;
-          name = "Hack Nerd Font Mono";
+          package = pkgs.noto-fonts-cjk-sans;
+          name = "Noto Sans Mono CJK SC";
         };
         sansSerif = {
-          package = pkgs.roboto;
-          name = "Roboto";
+          package = pkgs.noto-fonts-cjk-sans;
+          name = "Noto Sans CJK SC";
         };
-        serif = sansSerif;
+        serif = {
+          package = pkgs.noto-fonts-cjk-serif;
+          name = "Noto Serif CJK SC";
+        };
         emoji = {
           package = pkgs.noto-fonts-color-emoji;
           name = "Noto Color Emoji";
