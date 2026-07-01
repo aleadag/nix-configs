@@ -11,6 +11,7 @@
   home-manager = {
     desktop.enable = true;
     dev.enable = true;
+    kanata.enable = false;
     mihomo.enable = false;
     nix.niks3.gc.enable = true;
     syncthing.enable = true;
