@@ -36,13 +36,13 @@ in
             cmd - left             : yabai -m space --focus prev
             cmd - right            : yabai -m space --focus next
 
-            # QWERTY workspace navigation (consistent with Sway/i3).
-            # Desktops 1-5 are handled by macOS symbolic hotkeys in preferences.nix.
-            cmd - y                : yabai -m space --focus 6
-            cmd - u                : yabai -m space --focus 7
-            cmd - i                : yabai -m space --focus 8
-            cmd - o                : yabai -m space --focus 9
-            cmd - p                : yabai -m space --focus 10
+            # Native macOS desktops. Desktops 1-5 are handled by macOS
+            # symbolic hotkeys in preferences.nix.
+            cmd + alt - y          : yabai -m space --focus 6
+            cmd + alt - u          : yabai -m space --focus 7
+            cmd + alt - i          : yabai -m space --focus 8
+            cmd + alt - o          : yabai -m space --focus 9
+            cmd + alt - p          : yabai -m space --focus 10
 
             # Terminal (consistent with Sway: Super+Return)
             cmd - return           : open -na "Kitty"
@@ -125,17 +125,17 @@ in
                                      yabai -m window --grid 4:4:1:1:2:2; \
                                      sketchybar --trigger window_focus
 
-            # Move windows to workspaces (QWERTY pattern)
-            cmd + shift - q        : yabai -m window --space 1; yabai -m space --focus 1
-            cmd + shift - w        : yabai -m window --space 2; yabai -m space --focus 2
-            cmd + shift - e        : yabai -m window --space 3; yabai -m space --focus 3
-            cmd + shift - r        : yabai -m window --space 4; yabai -m space --focus 4
-            cmd + shift - t        : yabai -m window --space 5; yabai -m space --focus 5
-            cmd + shift - y        : yabai -m window --space 6; yabai -m space --focus 6
-            cmd + shift - u        : yabai -m window --space 7; yabai -m space --focus 7
-            cmd + shift - i        : yabai -m window --space 8; yabai -m space --focus 8
-            cmd + shift - o        : yabai -m window --space 9; yabai -m space --focus 9
-            cmd + shift - p        : yabai -m window --space 10; yabai -m space --focus 10
+            # Move windows to native macOS desktops (QWERTY pattern)
+            cmd + alt + shift - q  : yabai -m window --space 1; yabai -m space --focus 1
+            cmd + alt + shift - w  : yabai -m window --space 2; yabai -m space --focus 2
+            cmd + alt + shift - e  : yabai -m window --space 3; yabai -m space --focus 3
+            cmd + alt + shift - r  : yabai -m window --space 4; yabai -m space --focus 4
+            cmd + alt + shift - t  : yabai -m window --space 5; yabai -m space --focus 5
+            cmd + alt + shift - y  : yabai -m window --space 6; yabai -m space --focus 6
+            cmd + alt + shift - u  : yabai -m window --space 7; yabai -m space --focus 7
+            cmd + alt + shift - i  : yabai -m window --space 8; yabai -m space --focus 8
+            cmd + alt + shift - o  : yabai -m window --space 9; yabai -m space --focus 9
+            cmd + alt + shift - p  : yabai -m window --space 10; yabai -m space --focus 10
 
             # Focus mode toggle (consistent with Sway: Super+Shift+comma)
             cmd + shift - 0x2B     : yabai -m window --focus mouse  # comma key

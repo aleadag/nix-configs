@@ -82,62 +82,62 @@ _:
           "52" = {
             enabled = false;
           };
-          # 118: Switch to Desktop 1 (Cmd+q)
+          # 118: Switch to Desktop 1 (Cmd+Alt+q)
           "118" = {
             enabled = true;
             value = {
               parameters = [
                 113
                 12
-                1048576
+                1572864
               ];
               type = "standard";
             };
           };
-          # 119: Switch to Desktop 2 (Cmd+w)
+          # 119: Switch to Desktop 2 (Cmd+Alt+w)
           "119" = {
             enabled = true;
             value = {
               parameters = [
                 119
                 13
-                1048576
+                1572864
               ];
               type = "standard";
             };
           };
-          # 120: Switch to Desktop 3 (Cmd+e)
+          # 120: Switch to Desktop 3 (Cmd+Alt+e)
           "120" = {
             enabled = true;
             value = {
               parameters = [
                 101
                 14
-                1048576
+                1572864
               ];
               type = "standard";
             };
           };
-          # 121: Switch to Desktop 4 (Cmd+r)
+          # 121: Switch to Desktop 4 (Cmd+Alt+r)
           "121" = {
             enabled = true;
             value = {
               parameters = [
                 114
                 15
-                1048576
+                1572864
               ];
               type = "standard";
             };
           };
-          # 122: Switch to Desktop 5 (Cmd+t)
+          # 122: Switch to Desktop 5 (Cmd+Alt+t)
           "122" = {
             enabled = true;
             value = {
               parameters = [
                 116
                 17
-                1048576
+                1572864
               ];
               type = "standard";
             };
