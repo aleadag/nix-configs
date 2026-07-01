@@ -69,6 +69,13 @@ in
         quit = "ctrl + alt - delete";
       };
 
+      decorations = {
+        active.border = {
+          enabled = true;
+          color = "#${config.lib.stylix.colors.base0D}";
+        };
+      };
+
       windows = {
         syspref = {
           # Title RegExp pattern is required.
