@@ -70,6 +70,12 @@ _:
     # NSGlobalDomain = {};
 
     CustomUserPreferences = {
+      NSGlobalDomain = {
+        NSUserKeyEquivalents = {
+          Quit = "@~\\U001B";
+        };
+      };
+
       "com.apple.symbolichotkeys" = {
         AppleSymbolicHotKeys = {
           # 52 is 'Turn Dock Hiding On/Off'

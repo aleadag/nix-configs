@@ -36,12 +36,8 @@ in
             cmd - left             : yabai -m space --focus prev
             cmd - right            : yabai -m space --focus next
 
-            # QWERTY workspace navigation (consistent with Sway/i3)
-            cmd - q                : yabai -m space --focus 1
-            cmd - w                : yabai -m space --focus 2
-            cmd - e                : yabai -m space --focus 3
-            cmd - r                : yabai -m space --focus 4
-            cmd - t                : yabai -m space --focus 5
+            # QWERTY workspace navigation (consistent with Sway/i3).
+            # Desktops 1-5 are handled by macOS symbolic hotkeys in preferences.nix.
             cmd - y                : yabai -m space --focus 6
             cmd - u                : yabai -m space --focus 7
             cmd - i                : yabai -m space --focus 8
@@ -193,9 +189,6 @@ in
 
             # toggle window native fullscreen (legacy - moved to utility layer)
             cmd + shift - n       : yabai -m window --toggle native-fullscreen
-
-            # Quit application (consistent with macOS: Super+Alt+Q)
-            cmd + alt - q       : osascript -e 'tell application "System Events" to set frontApp to name of first application process whose frontmost is true' -e 'tell application frontApp to quit'
 
             # Fast focus display (consistent with Sway utility layer pattern)
             cmd + alt - h       : yabai -m display --focus west || yabai -m display --focus recent
