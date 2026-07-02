@@ -68,7 +68,10 @@ in
 
   config = lib.mkIf cfg.enable {
     home = {
-      packages = [ pkgs.codexctl ];
+      packages = with pkgs; [
+        codexctl
+        defuddle
+      ];
       file =
         lib.optionalAttrs (!hasCodexRulesOption) {
           "${codexConfigDir}/rules/basic.rules".text = basicRules;
