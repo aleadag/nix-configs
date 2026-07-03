@@ -38,8 +38,8 @@ in
       };
       fzf = {
         enable = true;
-        fileWidgetOptions = [ "--preview 'head {}'" ];
-        historyWidgetOptions = [ "--sort" ];
+        fileWidget.options = [ "--preview 'head {}'" ];
+        historyWidget.options = [ "--sort" ];
       };
       zsh = {
         enable = true;

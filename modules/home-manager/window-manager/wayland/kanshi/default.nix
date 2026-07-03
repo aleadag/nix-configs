@@ -29,12 +29,12 @@ in
     # Useful to get the list of monitors
     home.packages = with pkgs; [ wlr-randr ];
 
-    services.kanshi = {
+    services.kanshi = lib.mkIf (cfg.extraSettings != [ ]) {
       enable = true;
       settings = cfg.extraSettings;
     };
 
-    systemd.user.services.kanshi = {
+    systemd.user.services.kanshi = lib.mkIf (cfg.extraSettings != [ ]) {
       Service = {
         inherit (config.home-manager.window-manager.systemd.service)
           RestartSec
