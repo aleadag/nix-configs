@@ -362,7 +362,8 @@ proxy-groups:
 # 此规则部分没有做防泄露处理，因为弊严重大于利！
 rules:
   - DOMAIN-SUFFIX,qichiyu.com,🚀 默认代理
-  - DOMAIN-SUFFIX,meituan88.com,🔗 直连
+  # Keep local Mihomo's proxy tunnels direct when an upstream router also runs Mihomo.
+  - RULE-SET,pc_proxy_nodes,🔗 直连
   - RULE-SET,private_ip,🔗 直连
   - RULE-SET,private_domain,🔗 直连
   # Order matters, MUST before ChatGPT
@@ -395,6 +396,42 @@ rule-providers:
   private_domain:
     <<: *domain_rule_provider
     url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs
+
+  pc_proxy_nodes:
+    type: inline
+    behavior: classical
+    payload:
+      - DOMAIN-SUFFIX,alibabamysql.com
+      - DOMAIN-SUFFIX,bananenpannenkoekjes.com
+      - DOMAIN-SUFFIX,barbecuepie.com
+      - DOMAIN-SUFFIX,chianginc.com
+      - DOMAIN-SUFFIX,crabyakiniku.com
+      - DOMAIN-SUFFIX,dimsumyumcha.com
+      - DOMAIN-SUFFIX,eisbeinhock.com
+      - DOMAIN-SUFFIX,fishchipsexpress.com
+      - DOMAIN-SUFFIX,meituan88.com
+      - DOMAIN-SUFFIX,nigirocloud.com
+      - DOMAIN-SUFFIX,vegemitepie.com
+      - DOMAIN-SUFFIX,volcengine.douyinclientapi.com
+      # Snapshot of currently resolved node IPs; refresh when subscriptions change.
+      - IP-CIDR,45.13.196.249/32,no-resolve
+      - IP-CIDR,45.13.197.250/32,no-resolve
+      - IP-CIDR,45.89.218.53/32,no-resolve
+      - IP-CIDR,45.141.47.164/32,no-resolve
+      - IP-CIDR,84.75.202.105/32,no-resolve
+      - IP-CIDR,103.181.164.2/32,no-resolve
+      - IP-CIDR,113.46.237.97/32,no-resolve
+      - IP-CIDR,113.46.237.98/32,no-resolve
+      - IP-CIDR,113.46.237.99/32,no-resolve
+      - IP-CIDR,113.46.237.220/32,no-resolve
+      - IP-CIDR,113.46.237.225/32,no-resolve
+      - IP-CIDR,185.49.35.57/32,no-resolve
+      - IP-CIDR,193.8.125.74/32,no-resolve
+      - IP-CIDR,193.187.118.99/32,no-resolve
+      - IP-CIDR,194.104.144.210/32,no-resolve
+      - IP-CIDR,194.124.227.35/32,no-resolve
+      - IP-CIDR,201.4.43.10/32,no-resolve
+      - IP-CIDR,210.61.187.170/32,no-resolve
 
   large_download_domain:
     type: inline
