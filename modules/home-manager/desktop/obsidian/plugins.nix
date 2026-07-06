@@ -69,12 +69,12 @@ in
 
   notebook-navigator = mkObsidianPlugin {
     pname = "notebook-navigator";
-    version = "2.5.7";
+    version = "3.2.2";
     owner = "johansan";
     repo = "notebook-navigator";
-    hashMainJs = "sha256-kbafcCE5BavbU5+c+IG0huh8L2vidqS0J+0xPsqr9nQ=";
-    hashManifestJson = "sha256-cjd9E0tjg4Tms3DDQvHtTjWT3UQgc9AvAy8SEeBmwtw=";
-    hashStylesCss = "sha256-LRwM2FvhqVIIXrmPZv1gAdINgMyIlEAXEGsboR7xEHE=";
+    hashMainJs = "sha256-nh9sqjOmglMYD0TA6WLkN/d6mO31QA3AzMMTj495bv8=";
+    hashManifestJson = "sha256-kpYI69RaCubbyyFGebtkMMi/NzeWpSN2n4od0GM+rh8=";
+    hashStylesCss = "sha256-WZHFg/mJZIRM6TZefys/zFeRIHJzXWg+Wr5Fwariazg=";
   };
 
   dataview = mkObsidianPlugin {
@@ -89,12 +89,12 @@ in
 
   quickadd = mkObsidianPlugin {
     pname = "quickadd";
-    version = "2.12.0";
+    version = "2.17.2";
     owner = "chhoumann";
     repo = "quickadd";
-    hashMainJs = "sha256-4JQDvZ4g/pev/R1TIlugn76tp/XgJN3otkxYkFKb/74=";
-    hashManifestJson = "sha256-jquOX5wWMt/waHXHm7VYMqCoL2/s4kbgVyjKvb6CSIk=";
-    hashStylesCss = "sha256-6CDyjLti9gRyegen3uYUOG52XvPZi8VBrIY85ZYby6I=";
+    hashMainJs = "sha256-yPODyV+r+LFzyNd+BIUlCjsuCXPbYa6ZRcBlzNxuI34=";
+    hashManifestJson = "sha256-2eyUCo9zsO5bbG52SiiOuekZHWDcS0M+UtMeVX83Dbo=";
+    hashStylesCss = "sha256-SxnWmpiiLFx777fYQa4SzfkHYgdMfMgZNeDbjjLGBd0=";
   };
 
   periodic-notes = pkgs.fetchzip {
@@ -104,15 +104,15 @@ in
   };
 
   templater = pkgs.fetchzip {
-    url = "https://github.com/SilentVoid13/Templater/releases/download/2.19.0/templater-obsidian.zip";
+    url = "https://github.com/SilentVoid13/Templater/releases/download/2.23.1/templater-obsidian.zip";
     name = "templater-obsidian";
     stripRoot = false;
-    hash = "sha256-m43tmBjvX8wyaw04ace3HPWE8sorQLKS053abyMvipc=";
+    hash = "sha256-3OLukyblgf+zw/Nt8obliCpCMsWBNNaHcDaDh43DUmY=";
   };
 
   tasks = pkgs.fetchzip {
-    url = "https://github.com/obsidian-tasks-group/obsidian-tasks/releases/download/7.23.1/obsidian-tasks-7.23.1.zip";
+    url = "https://github.com/obsidian-tasks-group/obsidian-tasks/releases/download/8.2.2/obsidian-tasks-8.2.2.zip";
     name = "obsidian-tasks";
-    hash = "sha256-/iHHTVzN3Cv7w4kwlfHUghnSsT8VFt3G75aetdk0OGE=";
+    hash = "sha256-m5MoupjOV97tIAq3KTlrgHlqSrrGWGb+kA7Q2yAbcFw=";
   };
 }
