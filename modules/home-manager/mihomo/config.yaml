@@ -188,7 +188,6 @@ dns:
     - localhost.ptlogin2.qq.com
     - +.msftconnecttest.com
     - +.msftncsi.com
-    - time.*.com
   default-nameserver:
     - 223.5.5.5
   proxy-server-nameserver:
