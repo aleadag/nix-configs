@@ -8,6 +8,11 @@
 let
   cfg = config.home-manager.dev.coding-agents.claude-code;
   sharedPermissions = import ./permissions.nix { inherit lib; };
+  claudeZai = pkgs.writeShellScriptBin "claude-zai" ''
+    export ANTHROPIC_BASE_URL="$(cat ${config.sops.secrets.claude_zai_base_url.path})"
+    export ANTHROPIC_AUTH_TOKEN="$(cat ${config.sops.secrets.claude_zai_auth_token.path})"
+    exec ${config.programs.claude-code.package}/bin/claude "$@"
+  '';
 in
 {
   options.home-manager.dev.coding-agents.claude-code = {
@@ -17,21 +22,12 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    sops.secrets.anthropic_base_url = { };
-    sops.secrets.anthropic_auth_token = { };
+    sops.secrets.claude_zai_base_url = { };
+    sops.secrets.claude_zai_auth_token = { };
 
     programs.claude-code = {
       enable = true;
-      package = pkgs.symlinkJoin {
-        name = "claude-code-wrapped";
-        paths = [ pkgs.llm-agents.claude-code ];
-        buildInputs = [ pkgs.makeWrapper ];
-        postBuild = ''
-          wrapProgram $out/bin/claude \
-            --run 'export ANTHROPIC_BASE_URL="$(cat ${config.sops.secrets.anthropic_base_url.path})"' \
-            --run 'export ANTHROPIC_AUTH_TOKEN="$(cat ${config.sops.secrets.anthropic_auth_token.path})"'
-        '';
-      };
+      package = pkgs.llm-agents.claude-code;
       context = ./CONTEXT.md;
       settings = {
         env = {
@@ -77,5 +73,7 @@ in
         };
       };
     };
+
+    home.packages = [ claudeZai ];
   };
 }
