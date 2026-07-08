@@ -10,6 +10,7 @@ let
 in
 {
   imports = [
+    ./anki.nix
     ./chromium.nix
     ./firefox.nix
     ./fonts
