@@ -19,6 +19,10 @@
   };
 
   config = lib.mkIf config.home-manager.dev.coding-agents.enable {
-    home.packages = [ pkgs.ctx7 ];
+    home.packages = with pkgs; [
+      ctx7
+      llm-agents.beads
+      llm-agents.beads-viewer
+    ];
   };
 }
