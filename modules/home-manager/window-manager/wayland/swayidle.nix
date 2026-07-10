@@ -7,13 +7,14 @@
 
 let
   cfg = config.home-manager.window-manager.wayland.swayidle;
+  niriCfg = config.home-manager.window-manager.wayland.niri;
   swaylockBin =
     if config.programs.swaylock.package == null then
       "/usr/bin/swaylock"
     else
       lib.getExe config.programs.swaylock.package;
   swaylock = "${swaylockBin} -f";
-  niri = lib.getExe' pkgs.niri "niri";
+  niri = if niriCfg.package != null then lib.getExe' niriCfg.package "niri" else "niri";
   swaymsg = lib.getExe' pkgs.sway "swaymsg";
   notify = toString (
     pkgs.writeShellScript "notify" ''
