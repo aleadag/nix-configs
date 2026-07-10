@@ -139,10 +139,11 @@ in
         check_for_update_on_startup = false;
         features = {
           apps = false;
+          code_mode_host = false;
           hooks = true;
           memories = true;
         };
-        model = "gpt-5.5";
+        model = "gpt-5.6-sol";
         model_reasoning_effort = "high";
         plan_mode_reasoning_effort = "xhigh";
         personality = "pragmatic";
