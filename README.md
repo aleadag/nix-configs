@@ -168,14 +168,14 @@ install the following packages:
 
 - [greetd](https://git.sr.ht/~kennylevinsen/greetd): The login manager
 - [tuigreet](https://github.com/apognu/tuigreet): The TUI greeter for greetd
-- [uwsm](https://github.com/vaxerski/uwsm): Universal Wayland Session Manager
 
-Example `greetd` configuration using `tuigreet` and `uwsm`:
+The Home Manager Niri module installs `niri-session`, so UWSM is not required.
+For example, `mbx` launches Niri directly from `tuigreet`:
 
 ```bash
 # /etc/greetd/config.toml
 [default_session]
-command = "tuigreet --time --cmd 'uwsm start niri.desktop' --theme 'text=lightcyan;prompt=green;input=lightblue;border=lightmagenta;title=magenta;greet=lightmagenta;action=lightblue;button=lightred;container=black;time=lightgreen'"
+command = "tuigreet --time --cmd 'niri-session' --theme 'text=lightcyan;prompt=green;input=lightblue;border=lightmagenta;title=magenta;greet=lightmagenta;action=lightblue;button=lightred;container=black;time=lightgreen'"
 user = "greeter"
 ```
 
