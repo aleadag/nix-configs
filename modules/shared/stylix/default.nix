@@ -37,9 +37,19 @@
         };
       };
     }
+    // lib.optionalAttrs (options ? stylix.cursor) {
+      cursor = {
+        package = pkgs.nordzy-cursor-theme;
+        name = "Nordzy-cursors";
+        size = 32;
+      };
+    }
     // lib.optionalAttrs (options ? stylix.homeManagerIntegration) {
       # NixOS-specific: disable home-manager integration
       homeManagerIntegration.autoImport = false;
     };
+  }
+  // lib.optionalAttrs (options ? home.pointerCursor) {
+    home.pointerCursor.enable = lib.mkIf pkgs.stdenv.hostPlatform.isLinux true;
   };
 }
