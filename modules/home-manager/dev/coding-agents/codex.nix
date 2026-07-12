@@ -2,7 +2,6 @@
   config,
   flake,
   lib,
-  options,
   pkgs,
   ...
 }:
@@ -23,26 +22,11 @@ let
     fi
     printf '%s\n' '{"continue":true}'
   '';
-  stopHooksFile = builtins.toJSON {
-    hooks = {
-      Stop = [
-        {
-          hooks = [
-            {
-              type = "command";
-              command = jjStopHook;
-            }
-          ];
-        }
-      ];
-    };
-  };
   mergeTomlScript = pkgs.writeText "codex-merge-config.py" (builtins.readFile ./merge-config.py);
   tomlMergePython = lib.getExe (pkgs.python3.withPackages (ps: [ ps.tomlkit ]));
   renderPrefixRule = pattern: ''prefix_rule(pattern=${builtins.toJSON pattern}, decision="allow")'';
   basicRules =
     lib.concatMapStringsSep "\n" renderPrefixRule sharedPermissions.codexAllowedPrefixRules + "\n";
-  hasCodexRulesOption = options.programs.codex ? rules;
   loadSkills =
     dir:
     let
@@ -72,13 +56,6 @@ in
         codexctl
         defuddle
       ];
-      file =
-        lib.optionalAttrs (!hasCodexRulesOption) {
-          "${codexConfigDir}/rules/basic.rules".text = basicRules;
-        }
-        // lib.optionalAttrs config.home-manager.cli.jujutsu.enable {
-          "${codexConfigDir}/hooks.json".text = stopHooksFile;
-        };
       activation.mergeCodexConfig = lib.mkIf (isTomlConfig && config.programs.codex.settings != { }) (
         lib.hm.dag.entryAfter [ "linkGeneration" ] ''
           set -euo pipefail
@@ -133,6 +110,19 @@ in
       enable = true;
       enableMcpIntegration = true;
       package = codexPackage;
+      rules.basic = basicRules;
+      hooks = lib.optionalAttrs config.home-manager.cli.jujutsu.enable {
+        Stop = [
+          {
+            hooks = [
+              {
+                type = "command";
+                command = jjStopHook;
+              }
+            ];
+          }
+        ];
+      };
       settings = {
         analytics.enabled = false;
         approval_policy = "on-request";
@@ -165,11 +155,6 @@ in
       };
       context = builtins.readFile ./CONTEXT.md;
       skills = superpowersSkills // obsidianSkills // jujutsuSkills // mySkills;
-    }
-    // lib.optionalAttrs hasCodexRulesOption {
-      rules = {
-        basic = basicRules;
-      };
     };
   };
 }
