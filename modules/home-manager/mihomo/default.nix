@@ -11,13 +11,19 @@ let
     ;
 
   cfg = config.home-manager.mihomo;
-  mihomoTemplate = builtins.readFile (
-    pkgs.replaceVars ./config.yaml {
-      inherit (config.sops.placeholder) airport1;
-      inherit (config.sops.placeholder) airport2;
-      inherit (config.sops.placeholder) mihomo_secret;
-    }
-  );
+  mihomoTemplate =
+    builtins.replaceStrings
+      [
+        "@airport1@"
+        "@airport2@"
+        "@mihomo_secret@"
+      ]
+      (with config.sops.placeholder; [
+        airport1
+        airport2
+        mihomo_secret
+      ])
+      (builtins.readFile ./config.yaml);
 
   mkUnit = package: {
     Unit.Description = "mihomo";
