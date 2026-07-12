@@ -3,11 +3,9 @@ final: prev:
 
 let
   nurOverlay = inputs.nur.overlays.default final prev;
-  llmAgentsOverlay = inputs.llm-agents.overlays.default final prev;
   niriOverlay = inputs.niri.overlays.niri final prev;
 in
 nurOverlay
-// llmAgentsOverlay
 // niriOverlay
 // (
   let
@@ -29,6 +27,8 @@ nurOverlay
     inherit (inputs.nix-proxy-manager.packages.${system}) nix-proxy-manager;
 
     codexctl = inputs.codexctl.packages.${system}.default;
+
+    llm-agents = inputs.llm-agents.packages.${system};
 
     neovim-standalone =
       let
