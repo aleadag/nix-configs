@@ -7,11 +7,10 @@
 
 {
   imports = [
+    ./antigravity-cli.nix
     ./claude-code.nix
     ./codex.nix
-    ./antigravity-cli.nix
     ./mcp.nix
-    ./openspec.nix
   ];
 
   options.home-manager.dev.coding-agents.enable = lib.mkEnableOption "coding agent config" // {
