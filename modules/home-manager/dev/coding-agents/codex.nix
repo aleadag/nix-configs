@@ -39,7 +39,6 @@ let
       }) (builtins.filter (name: entries.${name} == "directory") (builtins.attrNames entries))
     );
   jujutsuSkills = loadSkills flake.inputs.jujutsu-skills;
-  superpowersSkills = loadSkills (flake.inputs.superpowers + "/skills");
   obsidianSkills = loadSkills flake.inputs.obsidian-skills;
   mySkills = loadSkills ./skills;
 in
@@ -53,6 +52,8 @@ in
   config = lib.mkIf cfg.enable {
     home = {
       packages = with pkgs; [
+        llm-agents.beads
+        llm-agents.beads-viewer
         codexctl
         defuddle
       ];
@@ -110,6 +111,15 @@ in
       enable = true;
       enableMcpIntegration = true;
       package = codexPackage;
+      plugins = [
+        (pkgs.fetchFromGitHub {
+          name = "beads-superpowers";
+          owner = "DollarDill";
+          repo = "beads-superpowers";
+          rev = "d48ccb9ea91a1ffa485965c7efbaa98f63e8bfbe";
+          hash = "sha256-MHgKiCE5rn4L3ZcdTiDTeTXTo81dFBXccTR7GHbrlsk=";
+        })
+      ];
       rules.basic = basicRules;
       hooks = lib.optionalAttrs config.home-manager.cli.jujutsu.enable {
         Stop = [
@@ -154,7 +164,7 @@ in
         };
       };
       context = builtins.readFile ./CONTEXT.md;
-      skills = superpowersSkills // obsidianSkills // jujutsuSkills // mySkills;
+      skills = obsidianSkills // jujutsuSkills // mySkills;
     };
   };
 }
