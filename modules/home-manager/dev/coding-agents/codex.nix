@@ -93,20 +93,6 @@ in
       );
     };
 
-    systemd.user.services.codexctl-headless = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
-      Unit.Description = "codexctl headless";
-
-      Install.WantedBy = [ "default.target" ];
-
-      Service = {
-        Environment = [
-          "PATH=${lib.makeBinPath [ codexPackage ]}:${config.home.profileDirectory}/bin"
-        ];
-        ExecStart = "${lib.getExe pkgs.codexctl} --headless --json --interval 2000";
-        Restart = "on-failure";
-      };
-    };
-
     programs.codex = {
       enable = true;
       enableMcpIntegration = true;
