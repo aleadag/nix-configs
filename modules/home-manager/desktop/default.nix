@@ -34,9 +34,6 @@ in
         audacious
         feishu
         libreoffice-fresh
-        (mcomix.override {
-          unrarSupport = true;
-        })
       ]
       ++ (lib.optionals stdenv.hostPlatform.isLinux [
         telegram-desktop
