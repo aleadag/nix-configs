@@ -7,6 +7,17 @@
 
 let
   cfg = config.home-manager.desktop.kitty;
+  kittyPackage = pkgs.symlinkJoin {
+    name = "${pkgs.kitty.name}-single-instance";
+    paths = [ pkgs.kitty ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram "$out/bin/kitty" \
+        --run 'if [[ -z "''${TMPDIR:-}" ]]; then export TMPDIR="''${XDG_RUNTIME_DIR:?TMPDIR and XDG_RUNTIME_DIR are both unset}"; fi' \
+        --run 'case "''${1:-}" in @ | +*) ;; *) set -- --single-instance "$@" ;; esac'
+    '';
+    inherit (pkgs.kitty) meta;
+  };
 in
 {
   options.home-manager.desktop.kitty = {
@@ -22,8 +33,13 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    home-manager.window-manager.default.terminal = lib.mkIf pkgs.stdenv.hostPlatform.isLinux (
+      lib.mkDefault (lib.getExe kittyPackage)
+    );
+
     programs.kitty = {
       enable = true;
+      package = lib.mkDefault kittyPackage;
       actionAliases = {
         "kitty_scrollback_nvim" =
           lib.optionalString cfg.scrollback-nvim.enable "kitten ${pkgs.vimPlugins.kitty-scrollback-nvim}/python/kitty_scrollback_nvim.py";
@@ -69,6 +85,9 @@ in
         repaint_delay = 10;
         input_delay = 0;
 
+        allow_remote_control = "socket-only";
+        listen_on = "unix:\${TMPDIR}/kitty";
+
         # Bell
         bell_on_tab = "🔔 ";
         enable_audio_bell = false;
@@ -112,8 +131,6 @@ in
         touch_scroll_multiplier = lib.mkIf config.home-manager.desktop.enable "5.0";
       }
       // lib.optionalAttrs cfg.scrollback-nvim.enable {
-        allow_remote_control = "socket-only";
-        listen_on = "unix:/tmp/kitty";
         shell_integration = true;
       };
 
