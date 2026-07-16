@@ -106,17 +106,19 @@
         "flake-utils": [
           "flake-utils"
         ],
-        "home-manager": "home-manager",
+        "home-manager": [
+          "home-manager"
+        ],
         "nixpkgs": [
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1784205238,
-        "narHash": "sha256-a2l9hh34yz5DJUb2SbDYFGZ59JS6NnKlCwFziJuncf4=",
+        "lastModified": 1784516887,
+        "narHash": "sha256-vCn5UpFFQclE1ZHL46jAlroj/iRaG39P0bZUtcu71Ts=",
         "owner": "aleadag",
         "repo": "codexctl",
-        "rev": "75fa86f66e6002bdc1fae8e1912b18ecf0bc9401",
+        "rev": "c13a9b9c3fa38b72952f787ecf9d8c3452b65d01",
         "type": "github"
       },
       "original": {
@@ -309,27 +311,6 @@
       }
     },
     "home-manager": {
-      "inputs": {
-        "nixpkgs": [
-          "codexctl",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1784129366,
-        "narHash": "sha256-N5JiyICSeQF14x+OQebNyPpYowOT9Rs1iKyeCylSzOA=",
-        "owner": "nix-community",
-        "repo": "home-manager",
-        "rev": "165228b0efefc3e635e5174020c40ea64271dc25",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "home-manager",
-        "type": "github"
-      }
-    },
-    "home-manager_2": {
       "inputs": {
         "nixpkgs": [
           "nixpkgs"
@@ -804,7 +785,7 @@
         "flake-utils": "flake-utils",
         "gh-gfm-preview": "gh-gfm-preview",
         "hardware": "hardware",
-        "home-manager": "home-manager_2",
+        "home-manager": "home-manager",
         "jovian-nixos": "jovian-nixos",
         "jujutsu-skills": "jujutsu-skills",
         "lifewiki-skills": "lifewiki-skills",
