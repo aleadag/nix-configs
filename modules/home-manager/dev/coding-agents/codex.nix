@@ -54,7 +54,7 @@ in
     home = {
       packages = with pkgs; [
         llm-agents.beads
-        llm-agents.beads-viewer
+        llm-agents.mardi-gras
         codexctl
         defuddle
       ];
