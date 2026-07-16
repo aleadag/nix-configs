@@ -13,6 +13,7 @@ let
     export ANTHROPIC_AUTH_TOKEN="$(cat ${config.sops.secrets.claude_zai_auth_token.path})"
     exec ${config.programs.claude-code.package}/bin/claude "$@"
   '';
+  yeggeInstructions = builtins.readFile ./agents/yegge.md;
 in
 {
   options.home-manager.dev.coding-agents.claude-code = {
@@ -29,6 +30,15 @@ in
       enable = true;
       package = pkgs.llm-agents.claude-code;
       context = ./CONTEXT.md;
+      agents.yegge = ''
+        ---
+        name: yegge
+        description: Primary session orchestrator that triages requests and coordinates non-trivial work through the applicable skills.
+        model: inherit
+        ---
+
+        ${yeggeInstructions}
+      '';
       settings = {
         env = {
           BASH_DEFAULT_TIMEOUT_MS = "300000";

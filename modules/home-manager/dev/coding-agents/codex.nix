@@ -41,6 +41,7 @@ let
   jujutsuSkills = loadSkills flake.inputs.jujutsu-skills;
   obsidianSkills = loadSkills flake.inputs.obsidian-skills;
   mySkills = loadSkills ./skills;
+  yeggeInstructions = builtins.readFile ./agents/yegge.md;
 in
 {
   options.home-manager.dev.coding-agents.codex = {
@@ -106,6 +107,7 @@ in
           hash = "sha256-MHgKiCE5rn4L3ZcdTiDTeTXTo81dFBXccTR7GHbrlsk=";
         })
       ];
+      profiles.yegge.developer_instructions = yeggeInstructions;
       rules.basic = basicRules;
       hooks = lib.optionalAttrs config.home-manager.cli.jujutsu.enable {
         Stop = [
