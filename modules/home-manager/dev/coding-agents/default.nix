@@ -19,6 +19,8 @@
 
   config = lib.mkIf config.home-manager.dev.coding-agents.enable {
     home.packages = with pkgs; [
+      llm-agents.agent-deck
+      tmux # requires by agent-deck
       ctx7
     ];
   };
