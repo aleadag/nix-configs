@@ -114,11 +114,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784516887,
-        "narHash": "sha256-vCn5UpFFQclE1ZHL46jAlroj/iRaG39P0bZUtcu71Ts=",
+        "lastModified": 1784602723,
+        "narHash": "sha256-YMvF2oYT2NwUmEtAu+JRnP4fGJbdQDuIGBef//pLAwk=",
         "owner": "aleadag",
         "repo": "codexctl",
-        "rev": "c13a9b9c3fa38b72952f787ecf9d8c3452b65d01",
+        "rev": "8ec747c7736fd4c2bf2a5913498dfb4d72e96a56",
         "type": "github"
       },
       "original": {

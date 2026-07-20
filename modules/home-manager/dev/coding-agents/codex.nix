@@ -44,8 +44,6 @@ let
   yeggeInstructions = builtins.readFile ./agents/yegge.md;
 in
 {
-  imports = [ flake.inputs.codexctl.homeManagerModules.default ];
-
   options.home-manager.dev.coding-agents.codex = {
     enable = lib.mkEnableOption "Codex config" // {
       default = config.home-manager.dev.coding-agents.enable;
@@ -154,18 +152,6 @@ in
       };
       context = builtins.readFile ./CONTEXT.md;
       skills = obsidianSkills // jujutsuSkills // mySkills;
-    };
-
-    programs.codexctl = {
-      enable = true;
-      settings.brain = {
-        enabled = true;
-        endpoint = "http://localhost:11434/api/generate";
-        model = "gemma4:e4b";
-        auto = false;
-        timeout_ms = 25000;
-        terminal_auto_approve_fallback = false;
-      };
     };
   };
 }
