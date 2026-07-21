@@ -7,11 +7,6 @@ description: Review a change, decide whether it should be split, and write an ac
 
 Use this skill when the user wants help writing or curating a commit message, regardless of VCS.
 
-For the final apply step, load exactly one reference:
-
-- Git: [references/git.md](references/git.md)
-- Jujutsu: [references/jj.md](references/jj.md)
-
 ## Workflow
 
 1. Inspect the requested change scope before writing a message.

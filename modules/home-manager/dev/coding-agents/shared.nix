@@ -1,5 +1,7 @@
 {
+  config ? { },
   flake,
+  lib,
   pkgs,
   ...
 }:
@@ -22,8 +24,10 @@ let
   jujutsuSkills = loadSkills flake.inputs.jujutsu-skills;
   obsidianSkills = loadSkills flake.inputs.obsidian-skills;
 
-  # Local skills (repository-specific)
-  localSkills = loadSkills ./skills;
+  # Local skills (explicitly listed, each as a package)
+  localSkills = {
+    commit-message = import ./skills/commit-message { inherit config lib pkgs; };
+  };
 
   # All skills combined
   allSkills = jujutsuSkills // obsidianSkills // localSkills;
