@@ -30,6 +30,7 @@ in
     ./pass.nix
     ./ssh
     ./starship.nix
+    ./tmux.nix
     ./yazi.nix
     ./zellij.nix
     ./zsh.nix
