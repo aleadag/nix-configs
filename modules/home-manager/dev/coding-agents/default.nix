@@ -35,7 +35,6 @@ in
         enable = true;
         settings = {
           default_tool = "codex";
-          theme = "dark";
           claude = {
             command = "claude-zai";
             dangerous_mode = false;

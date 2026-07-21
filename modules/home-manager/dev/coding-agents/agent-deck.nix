@@ -25,8 +25,8 @@ in
   config = lib.mkIf cfg.enable {
     home.packages = with pkgs; [
       llm-agents.agent-deck
-      tmux
     ];
+    home-manager.cli.tmux.enable = true;
 
     xdg.configFile."agent-deck/config.toml".source =
       configToml.generate "agent-deck-config.toml" cfg.settings;
