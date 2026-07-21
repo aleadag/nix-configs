@@ -29,6 +29,15 @@ in
       enable = true;
       package = pkgs.llm-agents.claude-code;
       context = ./CONTEXT.md;
+      plugins = [
+        (pkgs.fetchFromGitHub {
+          name = "beads-superpowers";
+          owner = "DollarDill";
+          repo = "beads-superpowers";
+          rev = "d48ccb9ea91a1ffa485965c7efbaa98f63e8bfbe";
+          hash = "sha256-MHgKiCE5rn4L3ZcdTiDTeTXTo81dFBXccTR7GHbrlsk=";
+        })
+      ];
       settings = {
         env = {
           BASH_DEFAULT_TIMEOUT_MS = "300000";
