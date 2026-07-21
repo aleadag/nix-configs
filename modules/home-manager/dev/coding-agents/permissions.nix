@@ -1,6 +1,28 @@
 { lib }:
 
 let
+  # Core tool permissions (file operations, search, etc.)
+  basicToolPermissions = [
+    "Read"
+    "Edit"
+    "Write"
+    "Glob"
+    "Grep"
+    "Agent"
+  ];
+
+  # Dangerous commands that should be explicitly denied
+  deniedShellCommands = [
+    "rm -rf"
+    "git push --force"
+    "git reset --hard"
+    "git clean -f"
+    "terraform apply"
+    "terraform destroy"
+    "sbt publish"
+  ];
+
+  # Allowed shell commands (read-only and safe operations)
   allowedShellCommands = [
     "cat"
     "cd"
@@ -77,13 +99,24 @@ let
     "nixfmt"
   ];
 in
-{
-  inherit allowedShellCommands;
+rec {
+  inherit
+    allowedShellCommands
+    basicToolPermissions
+    deniedShellCommands
+    ;
 
+  # Claude Code format: Bash(command:*)
   claudeAllowedBashPermissions = map (command: "Bash(${command}:*)") allowedShellCommands;
 
+  claudeDeniedBashPermissions = map (command: "Bash(${command}:*)") deniedShellCommands;
+
+  claudeFullPermissions = claudeAllowedBashPermissions ++ basicToolPermissions;
+
+  # Codex format: list of command parts for prefix rules
   codexAllowedPrefixRules = map (command: lib.strings.splitString " " command) allowedShellCommands;
 
+  # Gemini format: run_shell_command(command)
   geminiAllowedTools = map (command: "run_shell_command(${command})") allowedShellCommands;
 
   geminiAllowedPolicyRules = map (command: {

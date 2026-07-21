@@ -1,14 +1,16 @@
 {
   config,
-  flake,
   lib,
   pkgs,
+  flake,
   ...
 }:
 
 let
   cfg = config.home-manager.dev.coding-agents.codex;
   sharedPermissions = import ./permissions.nix { inherit lib; };
+  shared = import ./shared.nix { inherit lib pkgs flake; };
+
   codexPackage = pkgs.llm-agents.codex;
   codexVersion = lib.getVersion codexPackage;
   isTomlConfig = lib.versionAtLeast codexVersion "0.2.0";
@@ -27,21 +29,6 @@ let
   renderPrefixRule = pattern: ''prefix_rule(pattern=${builtins.toJSON pattern}, decision="allow")'';
   basicRules =
     lib.concatMapStringsSep "\n" renderPrefixRule sharedPermissions.codexAllowedPrefixRules + "\n";
-  loadSkills =
-    dir:
-    let
-      entries = builtins.readDir dir;
-    in
-    builtins.listToAttrs (
-      map (name: {
-        inherit name;
-        value = dir + "/${name}";
-      }) (builtins.filter (name: entries.${name} == "directory") (builtins.attrNames entries))
-    );
-  jujutsuSkills = loadSkills flake.inputs.jujutsu-skills;
-  obsidianSkills = loadSkills flake.inputs.obsidian-skills;
-  mySkills = loadSkills ./skills;
-  yeggeInstructions = builtins.readFile ./agents/yegge.md;
 in
 {
   options.home-manager.dev.coding-agents.codex = {
@@ -97,16 +84,8 @@ in
       enable = true;
       enableMcpIntegration = true;
       package = codexPackage;
-      plugins = [
-        (pkgs.fetchFromGitHub {
-          name = "beads-superpowers";
-          owner = "DollarDill";
-          repo = "beads-superpowers";
-          rev = "d48ccb9ea91a1ffa485965c7efbaa98f63e8bfbe";
-          hash = "sha256-MHgKiCE5rn4L3ZcdTiDTeTXTo81dFBXccTR7GHbrlsk=";
-        })
-      ];
-      profiles.yegge.developer_instructions = yeggeInstructions;
+      plugins = shared.sharedPlugins;
+      profiles.yegge.developer_instructions = shared.yeggeInstructions;
       rules.basic = basicRules;
       hooks = lib.optionalAttrs config.home-manager.cli.jujutsu.enable {
         Stop = [
@@ -150,11 +129,11 @@ in
           ];
         };
       };
-      context = builtins.readFile ./CONTEXT.md;
+      context = shared.sharedContext;
       skills =
-        obsidianSkills
-        // lib.optionalAttrs config.home-manager.cli.jujutsu.enable jujutsuSkills
-        // mySkills;
+        shared.obsidianSkills
+        // lib.optionalAttrs config.home-manager.cli.jujutsu.enable shared.jujutsuSkills
+        // shared.localSkills;
     };
   };
 }

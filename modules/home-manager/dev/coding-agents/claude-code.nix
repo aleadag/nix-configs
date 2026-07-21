@@ -1,5 +1,6 @@
 {
   config,
+  flake,
   lib,
   pkgs,
   ...
@@ -8,12 +9,13 @@
 let
   cfg = config.home-manager.dev.coding-agents.claude-code;
   sharedPermissions = import ./permissions.nix { inherit lib; };
+  shared = import ./shared.nix { inherit flake lib pkgs; };
+
   claudeZai = pkgs.writeShellScriptBin "claude-zai" ''
     export ANTHROPIC_BASE_URL="$(cat ${config.sops.secrets.claude_zai_base_url.path})"
     export ANTHROPIC_AUTH_TOKEN="$(cat ${config.sops.secrets.claude_zai_auth_token.path})"
     exec ${config.programs.claude-code.package}/bin/claude "$@"
   '';
-  yeggeInstructions = builtins.readFile ./agents/yegge.md;
 in
 {
   options.home-manager.dev.coding-agents.claude-code = {
@@ -29,16 +31,9 @@ in
     programs.claude-code = {
       enable = true;
       package = pkgs.llm-agents.claude-code;
-      context = ./CONTEXT.md;
-      plugins = [
-        (pkgs.fetchFromGitHub {
-          name = "beads-superpowers";
-          owner = "DollarDill";
-          repo = "beads-superpowers";
-          rev = "d48ccb9ea91a1ffa485965c7efbaa98f63e8bfbe";
-          hash = "sha256-MHgKiCE5rn4L3ZcdTiDTeTXTo81dFBXccTR7GHbrlsk=";
-        })
-      ];
+      context = shared.sharedContext;
+      plugins = shared.sharedPlugins;
+      skills = lib.optionalAttrs config.home-manager.cli.jujutsu.enable shared.jujutsuSkills // shared.obsidianSkills // shared.localSkills;
       agents.yegge = ''
         ---
         name: yegge
@@ -46,7 +41,7 @@ in
         model: inherit
         ---
 
-        ${yeggeInstructions}
+        ${shared.yeggeInstructions}
       '';
       settings = {
         env = {
@@ -72,23 +67,8 @@ in
 
         includeCoAuthoredBy = false;
         permissions = {
-          allow = sharedPermissions.claudeAllowedBashPermissions ++ [
-            "Read"
-            "Edit"
-            "Write"
-            "Glob"
-            "Grep"
-            "Agent"
-          ];
-          deny = [
-            "Bash(rm -rf:*)"
-            "Bash(git push --force:*)"
-            "Bash(git reset --hard:*)"
-            "Bash(git clean -f:*)"
-            "Bash(terraform apply:*)"
-            "Bash(terraform destroy:*)"
-            "Bash(sbt publish:*)"
-          ];
+          allow = sharedPermissions.claudeFullPermissions;
+          deny = sharedPermissions.claudeDeniedBashPermissions;
         };
       };
     };

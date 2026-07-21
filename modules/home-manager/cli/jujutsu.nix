@@ -9,9 +9,7 @@ let
 in
 {
   options.home-manager.cli.jujutsu = {
-    enable = lib.mkEnableOption "Jujutsu config" // {
-      default = config.home-manager.cli.enable;
-    };
+    enable = lib.mkEnableOption "Jujutsu config";
   };
 
   config = lib.mkIf cfg.enable {
