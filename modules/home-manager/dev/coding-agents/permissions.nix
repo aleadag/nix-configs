@@ -24,6 +24,10 @@ let
 
   # Allowed shell commands (read-only and safe operations)
   allowedShellCommands = [
+    "bd create"
+    "bd close"
+    "bd update"
+    "bd show"
     "cat"
     "cd"
     "echo"
