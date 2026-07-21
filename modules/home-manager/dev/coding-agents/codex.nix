@@ -151,7 +151,10 @@ in
         };
       };
       context = builtins.readFile ./CONTEXT.md;
-      skills = obsidianSkills // jujutsuSkills // mySkills;
+      skills =
+        obsidianSkills
+        // lib.optionalAttrs config.home-manager.cli.jujutsu.enable jujutsuSkills
+        // mySkills;
     };
   };
 }
