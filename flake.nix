@@ -122,6 +122,7 @@
       url = "github:aleadag/codexctl";
       inputs = {
         nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
         flake-utils.follows = "flake-utils";
       };
     };
