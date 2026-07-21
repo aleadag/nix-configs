@@ -57,13 +57,13 @@
 
   sops = {
     secrets = {
-      "openclaw/feishu/main/app_id".sopsFile = ./secrets.yaml;
-      "openclaw/feishu/main/app_secret".sopsFile = ./secrets.yaml;
+      "feishu/main/app_id".sopsFile = ./secrets.yaml;
+      "feishu/main/app_secret".sopsFile = ./secrets.yaml;
     };
 
     templates.cc-connect-env.content = ''
-      CC_CONNECT_FEISHU_APP_ID=${config.sops.placeholder."openclaw/feishu/main/app_id"}
-      CC_CONNECT_FEISHU_APP_SECRET=${config.sops.placeholder."openclaw/feishu/main/app_secret"}
+      CC_CONNECT_FEISHU_APP_ID=${config.sops.placeholder."feishu/main/app_id"}
+      CC_CONNECT_FEISHU_APP_SECRET=${config.sops.placeholder."feishu/main/app_secret"}
     '';
   };
 
