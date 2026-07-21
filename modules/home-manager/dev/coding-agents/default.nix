@@ -11,6 +11,7 @@ let
 in
 {
   imports = [
+    ./agent-deck.nix
     ./antigravity-cli.nix
     ./claude-code.nix
     ./codex.nix
@@ -30,9 +31,33 @@ in
 
   config = lib.mkMerge [
     (lib.mkIf cfg.enable {
+      home-manager.dev.coding-agents.agent-deck = {
+        enable = true;
+        settings = {
+          default_tool = "codex";
+          theme = "dark";
+          claude = {
+            command = "claude-zai";
+            dangerous_mode = false;
+          };
+          global_search = {
+            enabled = true;
+            tier = "auto";
+            recent_days = 90;
+          };
+          logs = {
+            max_size_mb = 10;
+            max_lines = 10000;
+          };
+          ui = {
+            preview_pct = 65;
+          };
+        };
+      };
+    })
+
+    (lib.mkIf cfg.enable {
       home.packages = with pkgs; [
-        llm-agents.agent-deck
-        tmux # requires by agent-deck
         ctx7
       ];
     })
