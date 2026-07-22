@@ -76,47 +76,6 @@ let
     printf '%s\n' '{"continue":true}'
   '';
 
-  # Activation helper for making store-managed configs writable and merging runtime additions
-  mkWritableConfigActivation =
-    {
-      name,
-      path,
-      format ? "json",
-    }:
-    lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-      set -euo pipefail
-
-      config_path="${path}"
-      backup_ext="''${HOME_MANAGER_BACKUP_EXT:-}"
-      backup_path="$config_path''${backup_ext:+.$backup_ext}"
-      tmp="$(mktemp)"
-
-      if [ ! -e "$config_path" ]; then
-        rm -f "$tmp"
-      elif [ -n "$backup_ext" ] && [ -e "$backup_path" ]; then
-        ${lib.getExe pkgs.yq-go} eval-all -p=${format} -o=${format} '. as $item ireduce ({}; . * $item)' "$backup_path" "$config_path" > "$tmp"
-
-        if ! ${pkgs.diffutils}/bin/cmp -s "$backup_path" "$tmp"; then
-          echo "Merged ${name} config changes:"
-          ${pkgs.diffutils}/bin/diff -u "$backup_path" "$tmp" || true
-        fi
-
-        $DRY_RUN_CMD mv "$tmp" "$config_path"
-        $DRY_RUN_CMD chmod 600 "$config_path"
-        $DRY_RUN_CMD rm -f "$backup_path"
-      elif [ -L "$config_path" ] && [[ "$(readlink "$config_path")" == /nix/store/* ]]; then
-        if [[ -v DRY_RUN ]]; then
-          echo "cat '$config_path' > '$tmp'"
-        else
-          cat "$config_path" > "$tmp"
-        fi
-
-        $DRY_RUN_CMD mv "$tmp" "$config_path"
-        $DRY_RUN_CMD chmod 600 "$config_path"
-      else
-        rm -f "$tmp"
-      fi
-    '';
 in
 {
   inherit
@@ -132,6 +91,5 @@ in
     loadSkills
     permissions
     yeggeInstructions
-    mkWritableConfigActivation
     ;
 }

@@ -37,15 +37,12 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.activation.mergeCodexConfig =
+    mutableConfig.files.${codexConfigPath} =
       lib.mkIf (isTomlConfig && config.programs.codex.settings != { })
-        (
-          shared.mkWritableConfigActivation {
-            name = "Codex";
-            path = codexConfigPath;
-            format = "toml";
-          }
-        );
+        {
+          format = "toml";
+          settings = config.programs.codex.settings;
+        };
 
     programs.codex = {
       enable = true;
