@@ -61,6 +61,8 @@ in
     (lib.mkIf cfg.enable {
       home.packages = with pkgs; [
         ctx7
+        llm-agents.beads
+        llm-agents.mardi-gras
       ];
     })
 

@@ -40,8 +40,6 @@ in
   config = lib.mkIf cfg.enable {
     home = {
       packages = with pkgs; [
-        llm-agents.beads
-        llm-agents.mardi-gras
         defuddle
       ];
       activation.mergeCodexConfig = lib.mkIf (isTomlConfig && config.programs.codex.settings != { }) (

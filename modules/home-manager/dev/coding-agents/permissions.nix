@@ -16,7 +16,9 @@ let
   allowedShellCommands = [
     "bd create"
     "bd close"
+    "bd prime"
     "bd update"
+    "bd ready"
     "bd show"
     "cat"
     "cd"
