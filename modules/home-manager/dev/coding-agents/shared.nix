@@ -29,9 +29,6 @@ let
     commit-message = import ./skills/commit-message { inherit config lib pkgs; };
   };
 
-  # All skills combined
-  allSkills = jujutsuSkills // obsidianSkills // localSkills;
-
   # Shared plugins - defined once, used by both tools
   sharedPlugins = [
     (pkgs.fetchFromGitHub {
@@ -42,6 +39,18 @@ let
       hash = "sha256-MHgKiCE5rn4L3ZcdTiDTeTXTo81dFBXccTR7GHbrlsk=";
     })
   ];
+
+  # Extract skills embedded inside plugins
+  pluginSkills = lib.foldl' (
+    acc: plugin:
+    let
+      skillsDir = plugin + "/skills";
+    in
+    if builtins.pathExists skillsDir then acc // loadSkills skillsDir else acc
+  ) { } sharedPlugins;
+
+  # All skills combined
+  allSkills = jujutsuSkills // obsidianSkills // localSkills // pluginSkills;
 
   # Shared context file
   sharedContext = ./CONTEXT.md;
@@ -55,6 +64,7 @@ in
     jujutsuSkills
     obsidianSkills
     localSkills
+    pluginSkills
     loadSkills
     sharedPlugins
     sharedContext

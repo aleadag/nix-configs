@@ -33,7 +33,10 @@ in
       package = pkgs.llm-agents.claude-code;
       context = shared.sharedContext;
       plugins = shared.sharedPlugins;
-      skills = lib.optionalAttrs config.home-manager.cli.jujutsu.enable shared.jujutsuSkills // shared.obsidianSkills // shared.localSkills;
+      skills =
+        lib.optionalAttrs config.home-manager.cli.jujutsu.enable shared.jujutsuSkills
+        // shared.obsidianSkills
+        // shared.localSkills;
       agents.yegge = ''
         ---
         name: yegge

@@ -66,6 +66,7 @@ let
     "rg"
     "sed"
     "stat"
+    "statix check"
     "which"
     "tree"
     "mkdir"
@@ -120,13 +121,7 @@ rec {
   # Codex format: list of command parts for prefix rules
   codexAllowedPrefixRules = map (command: lib.strings.splitString " " command) allowedShellCommands;
 
-  # Gemini format: run_shell_command(command)
-  geminiAllowedTools = map (command: "run_shell_command(${command})") allowedShellCommands;
-
-  geminiAllowedPolicyRules = map (command: {
-    toolName = "run_shell_command";
-    commandPrefix = command;
-    decision = "allow";
-    priority = 100;
-  }) allowedShellCommands;
+  # Antigravity-cli format: command()
+  agyAllowedShellCommands = map (command: "command(${command})") allowedShellCommands;
+  agyDeniedShellCommands = map (command: "command(${command})") deniedShellCommands;
 }

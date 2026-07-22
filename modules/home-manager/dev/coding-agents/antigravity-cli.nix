@@ -1,62 +1,54 @@
 {
   config,
+  flake,
   lib,
   pkgs,
   ...
 }:
 
 let
-  cfg = config.home-manager.dev.coding-agents.gemini-cli;
+  cfg = config.home-manager.dev.coding-agents.antigravity-cli;
   sharedPermissions = import ./permissions.nix { inherit lib; };
+  shared = import ./shared.nix { inherit flake lib pkgs; };
 in
 {
-  options.home-manager.dev.coding-agents.gemini-cli = {
-    enable = lib.mkEnableOption "Antigravity CLI config" // {
-      default = config.home-manager.dev.coding-agents.enable;
+  options.home-manager.dev.coding-agents = {
+    antigravity-cli.enable = lib.mkEnableOption "Antigravity CLI config" // {
+      default =
+        config.home-manager.dev.coding-agents.enable
+        || config.home-manager.dev.coding-agents.gemini-cli.enable;
     };
+
+    gemini-cli.enable = lib.mkEnableOption "Antigravity CLI config (deprecated alias)";
   };
 
   config = lib.mkIf cfg.enable {
     programs.antigravity-cli = {
       enable = true;
+      package = pkgs.llm-agents.antigravity-cli;
+
+      enableMcpIntegration = true;
       context = {
-        CONTEXT = ./CONTEXT.md;
+        CONTEXT = shared.sharedContext;
+        YEGGE = shared.yeggeInstructions;
       };
-      package = pkgs.llm-agents.gemini-cli;
-      policies = {
-        "shell-rules" = {
-          rule = sharedPermissions.geminiAllowedPolicyRules;
-        };
+      defaultModel = "gemini-3.6-flash";
+      permissions = {
+        allow = sharedPermissions.agyAllowedShellCommands ++ [
+          "write_file(/)"
+          "read_file(/)"
+          "read_file(/nix/store)"
+        ];
+        deny = sharedPermissions.agyDeniedShellCommands;
       };
+      skills =
+        shared.obsidianSkills
+        // lib.optionalAttrs config.home-manager.cli.jujutsu.enable shared.jujutsuSkills
+        // shared.localSkills
+        // shared.pluginSkills;
       settings = {
-        general = {
-          preferredEditor = "nvim";
-          previewFeatures = true;
-        };
-        ide.enabled = true;
-        privacy.usageStatisticsEnabled = false;
-        # if we don't have this, it will ask for login for every new session
-        security.auth.selectedType = "oauth-personal";
-        context.fileName = [ "CONTEXT.md" ];
-        tools = {
-          autoAccept = false;
-          enableHooks = true;
-        };
-        hooks = {
-          AfterTool = [
-            {
-              matcher = "write_file|replace";
-              hooks = [
-                {
-                  name = "jj-auto-new";
-                  type = "command";
-                  command = "jj new";
-                  description = "Auto-create new change after file modification";
-                }
-              ];
-            }
-          ];
-        };
+        artifactReviewPolicy = "agent-decides";
+        enableTelemetry = false;
       };
     };
   };

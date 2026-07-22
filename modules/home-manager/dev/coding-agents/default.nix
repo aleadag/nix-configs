@@ -39,6 +39,9 @@ in
             command = "claude-zai";
             dangerous_mode = false;
           };
+          gemini = {
+            command = "agy";
+          };
           global_search = {
             enabled = true;
             tier = "auto";
