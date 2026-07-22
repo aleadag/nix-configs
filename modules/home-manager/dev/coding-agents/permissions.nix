@@ -56,12 +56,35 @@ let
   ];
 
   bdCommands = [
-    "bd create"
+    "bd blocked"
+    "bd children"
     "bd close"
+    "bd comment"
+    "bd comments"
+    "bd context"
+    "bd create"
+    "bd dep"
+    "bd doctor"
+    "bd dolt"
+    "bd export"
+    "bd import"
+    "bd info"
+    "bd link"
+    "bd list"
+    "bd memories"
+    "bd note"
     "bd prime"
-    "bd update"
+    "bd priority"
     "bd ready"
+    "bd recall"
+    "bd recompute-blocked"
+    "bd remember"
+    "bd reopen"
+    "bd search"
     "bd show"
+    "bd status"
+    "bd update"
+    "bd version"
   ];
 
   gitCommands = [
