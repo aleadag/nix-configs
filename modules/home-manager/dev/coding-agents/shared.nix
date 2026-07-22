@@ -35,8 +35,8 @@ let
       name = "beads-superpowers";
       owner = "DollarDill";
       repo = "beads-superpowers";
-      rev = "d48ccb9ea91a1ffa485965c7efbaa98f63e8bfbe";
-      hash = "sha256-MHgKiCE5rn4L3ZcdTiDTeTXTo81dFBXccTR7GHbrlsk=";
+      rev = "v0.15.0";
+      hash = "sha256-zT56CUynU+bjlC2F5LsfiFyX3aQ+OLNCMPxzq/Rwr4A=";
     })
   ];
 
