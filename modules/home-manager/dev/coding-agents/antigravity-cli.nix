@@ -20,6 +20,10 @@ let
 
   allowedCommands = map (command: "command(${command})") allowedShellCommands;
   deniedCommands = map (command: "command(${command})") deniedShellCommands;
+
+  statusLineScript = pkgs.writeShellScript "agy-statusline" (
+    builtins.readFile ./scripts/statusline.sh
+  );
 in
 {
   options.home-manager.dev.coding-agents = {
@@ -69,6 +73,10 @@ in
       settings = {
         artifactReviewPolicy = "agent-decides";
         enableTelemetry = false;
+        statusLine = {
+          command = "${statusLineScript}";
+          enabled = true;
+        };
       };
     };
   };
