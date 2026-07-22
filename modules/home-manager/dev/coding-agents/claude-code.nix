@@ -81,7 +81,7 @@ in
               hooks = lib.optionals config.home-manager.cli.jujutsu.enable [
                 {
                   type = "command";
-                  command = "jj new";
+                  command = shared.jjStopHook;
                 }
               ];
             }

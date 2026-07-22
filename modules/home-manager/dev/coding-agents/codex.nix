@@ -25,12 +25,6 @@ let
   xdgConfigHome = lib.removePrefix config.home.homeDirectory config.xdg.configHome;
   codexConfigDir = if useXdgDirectories then "${xdgConfigHome}/codex" else ".codex";
   codexConfigPath = "${config.home.homeDirectory}/${codexConfigDir}/config.toml";
-  jjStopHook = pkgs.writeShellScript "codex-jj-stop-hook" ''
-    if jj root >/dev/null 2>&1 && [ -n "$(jj diff --summary 2>/dev/null)" ]; then
-      jj new >/dev/null 2>&1 || true
-    fi
-    printf '%s\n' '{"continue":true}'
-  '';
   renderPrefixRule = pattern: ''prefix_rule(pattern=${builtins.toJSON pattern}, decision="allow")'';
   codexAllowedPrefixRules = map (command: lib.strings.splitString " " command) allowedShellCommands;
   basicRules = lib.concatMapStringsSep "\n" renderPrefixRule codexAllowedPrefixRules + "\n";
@@ -43,18 +37,15 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home = {
-      packages = with pkgs; [
-        defuddle
-      ];
-      activation.mergeCodexConfig = lib.mkIf (isTomlConfig && config.programs.codex.settings != { }) (
-        shared.mkWritableConfigActivation {
-          name = "Codex";
-          path = codexConfigPath;
-          format = "toml";
-        }
-      );
-    };
+    home.activation.mergeCodexConfig =
+      lib.mkIf (isTomlConfig && config.programs.codex.settings != { })
+        (
+          shared.mkWritableConfigActivation {
+            name = "Codex";
+            path = codexConfigPath;
+            format = "toml";
+          }
+        );
 
     programs.codex = {
       enable = true;
@@ -68,7 +59,7 @@ in
             hooks = [
               {
                 type = "command";
-                command = jjStopHook;
+                command = shared.jjStopHook;
               }
             ];
           }
@@ -104,11 +95,7 @@ in
           ];
         };
       };
-      context = ''
-        ${builtins.readFile shared.context}
-
-        ${shared.yeggeInstructions}
-      '';
+      context = shared.defaultContext;
       skills =
         shared.obsidianSkills
         // lib.optionalAttrs config.home-manager.cli.jujutsu.enable shared.jujutsuSkills

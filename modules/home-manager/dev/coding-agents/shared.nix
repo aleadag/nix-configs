@@ -61,6 +61,21 @@ let
   # Yegge instructions for tools that support agent profiles
   yeggeInstructions = builtins.readFile ./agents/yegge.md;
 
+  # Default context combining base CONTEXT.md and Yegge orchestrator instructions
+  defaultContext = ''
+    ${builtins.readFile ./CONTEXT.md}
+
+    ${yeggeInstructions}
+  '';
+
+  # Jujutsu stop hook script that avoids creating empty revisions
+  jjStopHook = pkgs.writeShellScript "coding-agents-jj-stop-hook" ''
+    if jj root >/dev/null 2>&1 && [ -n "$(jj diff --summary 2>/dev/null)" ]; then
+      jj new >/dev/null 2>&1 || true
+    fi
+    printf '%s\n' '{"continue":true}'
+  '';
+
   # Activation helper for making store-managed configs writable and merging runtime additions
   mkWritableConfigActivation =
     {
@@ -107,7 +122,9 @@ in
   inherit
     allSkills
     context
+    defaultContext
     jujutsuSkills
+    jjStopHook
     obsidianSkills
     localSkills
     pluginSkills
