@@ -33,6 +33,16 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    home.activation.makeAntigravitySettingsWritable =
+      lib.mkIf (config.programs.antigravity-cli.settings != { })
+        (
+          shared.mkWritableConfigActivation {
+            name = "Antigravity CLI";
+            path = "${config.home.homeDirectory}/.gemini/antigravity-cli/settings.json";
+            format = "json";
+          }
+        );
+
     programs.antigravity-cli = {
       enable = true;
       package = pkgs.llm-agents.antigravity-cli;
