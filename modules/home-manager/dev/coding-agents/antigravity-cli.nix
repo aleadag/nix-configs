@@ -68,8 +68,11 @@ in
         // shared.localSkills
         // shared.pluginSkills;
       settings = {
+        altScreenMode = "always";
         artifactReviewPolicy = "agent-decides";
         enableTelemetry = false;
+        notifications = false;
+        showFeedbackSurvey = false;
         statusLine = {
           command = "${statusLineScript}";
           enabled = true;
