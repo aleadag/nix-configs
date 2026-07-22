@@ -61,7 +61,6 @@ in
       enableMcpIntegration = true;
       package = codexPackage;
       inherit (shared) plugins;
-      profiles.yegge.developer_instructions = shared.yeggeInstructions;
       rules.basic = basicRules;
       hooks = lib.optionalAttrs config.home-manager.cli.jujutsu.enable {
         Stop = [
@@ -105,7 +104,11 @@ in
           ];
         };
       };
-      inherit (shared) context;
+      context = ''
+        ${builtins.readFile shared.context}
+
+        ${shared.yeggeInstructions}
+      '';
       skills =
         shared.obsidianSkills
         // lib.optionalAttrs config.home-manager.cli.jujutsu.enable shared.jujutsuSkills
