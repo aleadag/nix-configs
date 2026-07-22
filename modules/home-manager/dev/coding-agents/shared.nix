@@ -56,7 +56,7 @@ let
   context = ./CONTEXT.md;
 
   # Shared permissions
-  permissions = import ./permissions.nix { };
+  permissions = import ./permissions.nix { inherit config lib pkgs; };
 
   # Yegge instructions for tools that support agent profiles
   yeggeInstructions = builtins.readFile ./agents/yegge.md;

@@ -8,7 +8,14 @@
 
 let
   cfg = config.home-manager.dev.coding-agents.antigravity-cli;
-  shared = import ./shared.nix { inherit flake lib pkgs; };
+  shared = import ./shared.nix {
+    inherit
+      config
+      flake
+      lib
+      pkgs
+      ;
+  };
   inherit (shared.permissions) allowedShellCommands deniedShellCommands;
 
   allowedCommands = map (command: "command(${command})") allowedShellCommands;

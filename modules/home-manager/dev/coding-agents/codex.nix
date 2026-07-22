@@ -8,7 +8,14 @@
 
 let
   cfg = config.home-manager.dev.coding-agents.codex;
-  shared = import ./shared.nix { inherit lib pkgs flake; };
+  shared = import ./shared.nix {
+    inherit
+      config
+      lib
+      pkgs
+      flake
+      ;
+  };
   inherit (shared.permissions) allowedShellCommands;
 
   codexPackage = pkgs.llm-agents.codex;
