@@ -31,7 +31,6 @@ in
         "kitty"
         "linearmouse"
         "microsoft-edge"
-        "gechr/tap/whichspace"
       ];
     };
 
