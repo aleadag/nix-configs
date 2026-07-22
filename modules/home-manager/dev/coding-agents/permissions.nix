@@ -1,16 +1,6 @@
-{ lib }:
+_:
 
 let
-  # Core tool permissions (file operations, search, etc.)
-  basicToolPermissions = [
-    "Read"
-    "Edit"
-    "Write"
-    "Glob"
-    "Grep"
-    "Agent"
-  ];
-
   # Dangerous commands that should be explicitly denied
   deniedShellCommands = [
     "rm -rf"
@@ -104,24 +94,9 @@ let
     "nixfmt"
   ];
 in
-rec {
+{
   inherit
     allowedShellCommands
-    basicToolPermissions
     deniedShellCommands
     ;
-
-  # Claude Code format: Bash(command:*)
-  claudeAllowedBashPermissions = map (command: "Bash(${command}:*)") allowedShellCommands;
-
-  claudeDeniedBashPermissions = map (command: "Bash(${command}:*)") deniedShellCommands;
-
-  claudeFullPermissions = claudeAllowedBashPermissions ++ basicToolPermissions;
-
-  # Codex format: list of command parts for prefix rules
-  codexAllowedPrefixRules = map (command: lib.strings.splitString " " command) allowedShellCommands;
-
-  # Antigravity-cli format: command()
-  agyAllowedShellCommands = map (command: "command(${command})") allowedShellCommands;
-  agyDeniedShellCommands = map (command: "command(${command})") deniedShellCommands;
 }

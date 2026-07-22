@@ -8,8 +8,21 @@
 
 let
   cfg = config.home-manager.dev.coding-agents.claude-code;
-  sharedPermissions = import ./permissions.nix { inherit lib; };
   shared = import ./shared.nix { inherit flake lib pkgs; };
+  inherit (shared.permissions) allowedShellCommands deniedShellCommands;
+
+  basicToolPermissions = [
+    "Read"
+    "Edit"
+    "Write"
+    "Glob"
+    "Grep"
+    "Agent"
+  ];
+
+  claudeAllowedBashPermissions = map (command: "Bash(${command}:*)") allowedShellCommands;
+  claudeDeniedBashPermissions = map (command: "Bash(${command}:*)") deniedShellCommands;
+  claudeFullPermissions = claudeAllowedBashPermissions ++ basicToolPermissions;
 
   claudeZai = pkgs.writeShellScriptBin "claude-zai" ''
     export ANTHROPIC_BASE_URL="$(cat ${config.sops.secrets.claude_zai_base_url.path})"
@@ -31,8 +44,8 @@ in
     programs.claude-code = {
       enable = true;
       package = pkgs.llm-agents.claude-code;
-      context = shared.sharedContext;
-      plugins = shared.sharedPlugins;
+      inherit (shared) context;
+      inherit (shared) plugins;
       skills =
         lib.optionalAttrs config.home-manager.cli.jujutsu.enable shared.jujutsuSkills
         // shared.obsidianSkills
@@ -70,8 +83,8 @@ in
 
         includeCoAuthoredBy = false;
         permissions = {
-          allow = sharedPermissions.claudeFullPermissions;
-          deny = sharedPermissions.claudeDeniedBashPermissions;
+          allow = claudeFullPermissions;
+          deny = claudeDeniedBashPermissions;
         };
       };
     };

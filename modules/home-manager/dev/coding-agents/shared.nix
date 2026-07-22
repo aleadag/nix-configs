@@ -29,8 +29,8 @@ let
     commit-message = import ./skills/commit-message { inherit config lib pkgs; };
   };
 
-  # Shared plugins - defined once, used by both tools
-  sharedPlugins = [
+  # Plugins - defined once, used across tools
+  plugins = [
     (pkgs.fetchFromGitHub {
       name = "beads-superpowers";
       owner = "DollarDill";
@@ -47,13 +47,16 @@ let
       skillsDir = plugin + "/skills";
     in
     if builtins.pathExists skillsDir then acc // loadSkills skillsDir else acc
-  ) { } sharedPlugins;
+  ) { } plugins;
 
   # All skills combined
   allSkills = jujutsuSkills // obsidianSkills // localSkills // pluginSkills;
 
-  # Shared context file
-  sharedContext = ./CONTEXT.md;
+  # Context file
+  context = ./CONTEXT.md;
+
+  # Shared permissions
+  permissions = import ./permissions.nix { };
 
   # Yegge instructions for tools that support agent profiles
   yeggeInstructions = builtins.readFile ./agents/yegge.md;
@@ -61,13 +64,14 @@ in
 {
   inherit
     allSkills
+    context
     jujutsuSkills
     obsidianSkills
     localSkills
     pluginSkills
+    plugins
     loadSkills
-    sharedPlugins
-    sharedContext
+    permissions
     yeggeInstructions
     ;
 }

@@ -8,8 +8,11 @@
 
 let
   cfg = config.home-manager.dev.coding-agents.antigravity-cli;
-  sharedPermissions = import ./permissions.nix { inherit lib; };
   shared = import ./shared.nix { inherit flake lib pkgs; };
+  inherit (shared.permissions) allowedShellCommands deniedShellCommands;
+
+  allowedCommands = map (command: "command(${command})") allowedShellCommands;
+  deniedCommands = map (command: "command(${command})") deniedShellCommands;
 in
 {
   options.home-manager.dev.coding-agents = {
@@ -29,17 +32,17 @@ in
 
       enableMcpIntegration = true;
       context = {
-        CONTEXT = shared.sharedContext;
+        CONTEXT = shared.context;
         YEGGE = shared.yeggeInstructions;
       };
       defaultModel = "gemini-3.6-flash";
       permissions = {
-        allow = sharedPermissions.agyAllowedShellCommands ++ [
+        allow = allowedCommands ++ [
           "write_file(/)"
           "read_file(/)"
           "read_file(/nix/store)"
         ];
-        deny = sharedPermissions.agyDeniedShellCommands;
+        deny = deniedCommands;
       };
       skills =
         shared.obsidianSkills

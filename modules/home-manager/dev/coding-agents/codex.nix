@@ -8,8 +8,8 @@
 
 let
   cfg = config.home-manager.dev.coding-agents.codex;
-  sharedPermissions = import ./permissions.nix { inherit lib; };
   shared = import ./shared.nix { inherit lib pkgs flake; };
+  inherit (shared.permissions) allowedShellCommands;
 
   codexPackage = pkgs.llm-agents.codex;
   codexVersion = lib.getVersion codexPackage;
@@ -27,8 +27,8 @@ let
   mergeTomlScript = pkgs.writeText "codex-merge-config.py" (builtins.readFile ./merge-config.py);
   tomlMergePython = lib.getExe (pkgs.python3.withPackages (ps: [ ps.tomlkit ]));
   renderPrefixRule = pattern: ''prefix_rule(pattern=${builtins.toJSON pattern}, decision="allow")'';
-  basicRules =
-    lib.concatMapStringsSep "\n" renderPrefixRule sharedPermissions.codexAllowedPrefixRules + "\n";
+  codexAllowedPrefixRules = map (command: lib.strings.splitString " " command) allowedShellCommands;
+  basicRules = lib.concatMapStringsSep "\n" renderPrefixRule codexAllowedPrefixRules + "\n";
 in
 {
   options.home-manager.dev.coding-agents.codex = {
@@ -84,7 +84,7 @@ in
       enable = true;
       enableMcpIntegration = true;
       package = codexPackage;
-      plugins = shared.sharedPlugins;
+      inherit (shared) plugins;
       profiles.yegge.developer_instructions = shared.yeggeInstructions;
       rules.basic = basicRules;
       hooks = lib.optionalAttrs config.home-manager.cli.jujutsu.enable {
@@ -129,7 +129,7 @@ in
           ];
         };
       };
-      context = shared.sharedContext;
+      inherit (shared) context;
       skills =
         shared.obsidianSkills
         // lib.optionalAttrs config.home-manager.cli.jujutsu.enable shared.jujutsuSkills
