@@ -73,8 +73,8 @@ in
           memories = true;
         };
         model = "gpt-5.6-sol";
-        model_reasoning_effort = "high";
-        plan_mode_reasoning_effort = "xhigh";
+        model_reasoning_effort = "medium";
+        plan_mode_reasoning_effort = "high";
         personality = "pragmatic";
         plugins = {
           "build-web-apps@openai-curated".enabled = true;
