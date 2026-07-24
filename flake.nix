@@ -118,8 +118,8 @@
       };
     };
 
-    codexctl = {
-      url = "github:aleadag/codexctl";
+    coding-brain = {
+      url = "github:aleadag/coding-brain";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager";

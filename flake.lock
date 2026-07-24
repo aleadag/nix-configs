@@ -101,7 +101,7 @@
         "type": "github"
       }
     },
-    "codexctl": {
+    "coding-brain": {
       "inputs": {
         "flake-utils": [
           "flake-utils"
@@ -114,16 +114,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1784810155,
-        "narHash": "sha256-s15YJPT/fVSeHKTpDcpWXn/kvbIV4p+h36Osg11Gy4o=",
+        "lastModified": 1784892740,
+        "narHash": "sha256-caVoFGILLWRa4b5JD9ziJAFwZ74zXbtQvpZMhCoy0aU=",
         "owner": "aleadag",
-        "repo": "codexctl",
-        "rev": "826b0f5f01112bad24dba39545ba2713f17a2c12",
+        "repo": "coding-brain",
+        "rev": "ed157279762a021bcd56aba2220a7e14b0c29239",
         "type": "github"
       },
       "original": {
         "owner": "aleadag",
-        "repo": "codexctl",
+        "repo": "coding-brain",
         "type": "github"
       }
     },
@@ -780,7 +780,7 @@
     },
     "root": {
       "inputs": {
-        "codexctl": "codexctl",
+        "coding-brain": "coding-brain",
         "disko": "disko",
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",

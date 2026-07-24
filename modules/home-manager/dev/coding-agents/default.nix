@@ -16,7 +16,7 @@ in
     ./claude-code.nix
     ./codex.nix
     ./mcp.nix
-    flake.inputs.codexctl.homeManagerModules.default
+    flake.inputs.coding-brain.homeManagerModules.default
   ];
 
   options.home-manager.dev.coding-agents = {
