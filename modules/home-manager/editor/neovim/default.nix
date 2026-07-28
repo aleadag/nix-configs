@@ -477,6 +477,7 @@ in
                     require('mini.diff').setup {}
                     require('mini.git').setup {}
                     require('mini.jump').setup {}
+                    require('mini.pairs').setup {}
                     require('mini.statusline').setup {
                       use_icons = enable_icons,
                     }
@@ -736,7 +737,6 @@ in
                   '';
               }
               diffview-nvim
-              lexima-vim
               mkdir-nvim
               vim-advanced-sorters
               vim-nix
