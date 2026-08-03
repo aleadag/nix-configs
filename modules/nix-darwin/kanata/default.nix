@@ -5,9 +5,9 @@
   ...
 }:
 let
+  inherit (lib) getExe;
   cfg = config.nix-darwin.kanata;
   driverKitExtVersion = "6.2.0";
-  kanataBin = "/run/current-system/sw/bin/kanata";
   kanataConfigFile = ../../../configs/kanata.kbd;
   karabinerDriverKitExtDestPath = "/Applications/.Karabiner-VirtualHIDDevice-Manager.app";
   karabinerFilesPath = "/Library/Application Support/org.pqrs/Karabiner-DriverKit-VirtualHIDDevice";
@@ -15,14 +15,12 @@ let
 in
 {
   options.nix-darwin.kanata = {
-    enable = lib.mkEnableOption "kanata sudoers configuration" // {
+    enable = lib.mkEnableOption "kanata launchd service" // {
       default = true;
     };
   };
 
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = [ pkgs.kanata ];
-
     system.activationScripts.applications.text =
       pkgs.lib.mkForce # bash
         ''
@@ -79,7 +77,7 @@ in
     launchd.daemons.kanata = {
       serviceConfig = {
         ProgramArguments = [
-          kanataBin
+          (getExe pkgs.kanata)
           "--cfg"
           "${kanataConfigFile}"
           "--nodelay"
