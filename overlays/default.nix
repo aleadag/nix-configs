@@ -28,17 +28,6 @@ nurOverlay
 
     llm-agents = inputs.llm-agents.packages.${system};
 
-    ollama =
-      if prev.config.cudaSupport then
-        prev.ollama.overrideAttrs (oldAttrs: {
-          preBuild = ''
-            export CUDAToolkit_ROOT="${prev.cudaPackages.cuda_nvcc}"
-            ${oldAttrs.preBuild}
-          '';
-        })
-      else
-        prev.ollama;
-
     neovim-standalone =
       let
         hostName = "neovim-standalone";
