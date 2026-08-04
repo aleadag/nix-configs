@@ -48,7 +48,7 @@ in
       enable = true;
       enableMcpIntegration = true;
       package = codexPackage;
-      inherit (shared) plugins;
+      plugins = shared.pluginSources;
       rules.basic = basicRules;
       hooks = lib.optionalAttrs config.home-manager.cli.jujutsu.enable {
         Stop = [

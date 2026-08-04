@@ -30,15 +30,16 @@ let
   };
 
   # Plugins - defined once, used across tools
-  plugins = [
-    (pkgs.fetchFromGitHub {
+  plugins = {
+    beads-superpowers = pkgs.fetchFromGitHub {
       name = "beads-superpowers";
       owner = "DollarDill";
       repo = "beads-superpowers";
       rev = "v0.15.0";
       hash = "sha256-zT56CUynU+bjlC2F5LsfiFyX3aQ+OLNCMPxzq/Rwr4A=";
-    })
-  ];
+    };
+  };
+  pluginSources = lib.attrValues plugins;
 
   # Extract skills embedded inside plugins
   pluginSkills = lib.foldl' (
@@ -47,7 +48,7 @@ let
       skillsDir = plugin + "/skills";
     in
     if builtins.pathExists skillsDir then acc // loadSkills skillsDir else acc
-  ) { } plugins;
+  ) { } pluginSources;
 
   # All skills combined
   allSkills = jujutsuSkills // obsidianSkills // localSkills // pluginSkills;
@@ -88,6 +89,7 @@ in
     localSkills
     pluginSkills
     plugins
+    pluginSources
     loadSkills
     permissions
     yeggeInstructions
