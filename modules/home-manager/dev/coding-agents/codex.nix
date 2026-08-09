@@ -68,7 +68,7 @@ in
         check_for_update_on_startup = false;
         features = {
           apps = false;
-          code_mode_host = false;
+          code_mode_host = true;
           hooks = true;
           memories = true;
         };
