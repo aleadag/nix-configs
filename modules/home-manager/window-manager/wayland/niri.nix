@@ -110,6 +110,12 @@ let
       }
     ];
     hotkey-overlay.skip-at-startup = true;
+
+    # Ask clients to omit client-side decorations when possible. Explicit CSD requests are still
+    # honored. Marking clients as tiled can also remove rounded corners and fix border or
+    # focus-ring rendering behind semitransparent windows. Restart applications after changing this.
+    prefer-no-csd = true;
+
     screenshot-path = "~/Pictures/Screenshots/%Y-%m-%d_%H-%M-%S-screenshot.png";
 
     window-rules = [
