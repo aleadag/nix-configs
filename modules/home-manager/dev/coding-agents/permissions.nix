@@ -158,6 +158,7 @@ let
     "gh pr"
     "gh issue"
     "gh repo view"
+    "gh run"
   ];
 
   terraformCommands = [
