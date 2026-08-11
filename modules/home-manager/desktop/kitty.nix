@@ -33,10 +33,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home-manager.window-manager.default.terminal = lib.mkIf pkgs.stdenv.hostPlatform.isLinux (
-      lib.mkDefault (lib.getExe kittyPackage)
-    );
-
     programs.kitty = {
       enable = true;
       package = lib.mkDefault kittyPackage;

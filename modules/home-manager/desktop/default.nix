@@ -14,7 +14,6 @@ in
     ./chromium.nix
     ./firefox.nix
     ./fonts
-    ./ghostty
     ./im.nix
     ./kitty.nix
     ./mpv
