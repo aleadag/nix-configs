@@ -13,7 +13,6 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-
 DEFAULT_PLUGIN_FILE = (
     pathlib.Path(__file__).resolve().parents[1]
     / "modules"
