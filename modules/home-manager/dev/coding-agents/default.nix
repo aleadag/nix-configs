@@ -15,6 +15,7 @@ in
     ./antigravity-cli.nix
     ./claude-code.nix
     ./codex.nix
+    ./coding-brain.nix
     ./opencode.nix
     ./mcp.nix
     flake.inputs.coding-brain.homeManagerModules.default
@@ -24,33 +25,14 @@ in
     enable = lib.mkEnableOption "coding agent config" // {
       default = config.home-manager.dev.enable;
     };
-
-    coding-brain.enable = lib.mkEnableOption "Coding Brain" // {
-      default = cfg.codex.enable;
-    };
   };
 
-  config = lib.mkMerge [
-    (lib.mkIf cfg.enable {
-      home.packages = with pkgs; [
-        ctx7
-        defuddle
-        llm-agents.beads
-        llm-agents.mardi-gras
-      ];
-    })
-
-    (lib.mkIf cfg.coding-brain.enable {
-      programs.coding-brain = {
-        enable = true;
-        settings.brain = {
-          endpoint = "http://localhost:11434/api/generate";
-          model = "gemma4:e4b";
-          auto = true;
-          timeout_ms = 25000;
-          terminal_auto_approve_fallback = false;
-        };
-      };
-    })
-  ];
+  config = lib.mkIf cfg.enable {
+    home.packages = with pkgs; [
+      ctx7
+      defuddle
+      llm-agents.beads
+      llm-agents.mardi-gras
+    ];
+  };
 }
