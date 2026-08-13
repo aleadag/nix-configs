@@ -17,7 +17,28 @@ in
 
     settings = lib.mkOption {
       type = lib.types.attrs;
-      default = { };
+      default = {
+        default_tool = "codex";
+        claude = {
+          command = "claude-zai";
+          dangerous_mode = false;
+        };
+        gemini = {
+          command = "agy";
+        };
+        global_search = {
+          enabled = true;
+          tier = "auto";
+          recent_days = 90;
+        };
+        logs = {
+          max_size_mb = 10;
+          max_lines = 10000;
+        };
+        ui = {
+          preview_pct = 65;
+        };
+      };
       description = "Agent Deck configuration (converted to TOML)";
     };
   };

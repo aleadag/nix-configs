@@ -15,6 +15,7 @@ in
     ./antigravity-cli.nix
     ./claude-code.nix
     ./codex.nix
+    ./opencode.nix
     ./mcp.nix
     flake.inputs.coding-brain.homeManagerModules.default
   ];
@@ -30,34 +31,6 @@ in
   };
 
   config = lib.mkMerge [
-    (lib.mkIf cfg.enable {
-      home-manager.dev.coding-agents.agent-deck = {
-        enable = true;
-        settings = {
-          default_tool = "codex";
-          claude = {
-            command = "claude-zai";
-            dangerous_mode = false;
-          };
-          gemini = {
-            command = "agy";
-          };
-          global_search = {
-            enabled = true;
-            tier = "auto";
-            recent_days = 90;
-          };
-          logs = {
-            max_size_mb = 10;
-            max_lines = 10000;
-          };
-          ui = {
-            preview_pct = 65;
-          };
-        };
-      };
-    })
-
     (lib.mkIf cfg.enable {
       home.packages = with pkgs; [
         ctx7
