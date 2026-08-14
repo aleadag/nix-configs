@@ -14,9 +14,7 @@ let
   hasGo = config.home-manager.dev.go.enable or false;
   hasNode = config.home-manager.dev.node.enable or false;
   hasNix = (config.home-manager.dev.nix.enable or false) || (config.home-manager.dev.enable or false);
-  hasGh = config.home-manager.cli.gh.enable or false;
-  hasTerraform = config.home-manager.dev.terraform.enable or false;
-  hasSbt = config.home-manager.dev.scala.enable or false;
+  hasGh = config.home-manager.cli.git.gh.enable or false;
 
   # Dangerous commands that should be explicitly denied
   deniedShellCommands = [
@@ -47,6 +45,7 @@ let
     "sed"
     "stat"
     "which"
+    "test"
     "tree"
     "mkdir"
     "sort"
@@ -94,6 +93,7 @@ let
     "git diff"
     "git log"
     "git ls-files"
+    "git ls-remote"
     "git remote -v"
     "git rev-parse"
     "git show"
@@ -161,16 +161,6 @@ let
     "gh run"
   ];
 
-  terraformCommands = [
-    "terraform fmt"
-    "terraform validate"
-    "terraform plan"
-  ];
-
-  sbtCommands = [
-    "sbt"
-  ];
-
   # Combine allowed commands gated by home-manager module availability
   allowedShellCommands =
     baseCommands
@@ -181,9 +171,7 @@ let
     ++ lib.optionals hasGo goCommands
     ++ lib.optionals hasNode nodeCommands
     ++ lib.optionals hasNix nixCommands
-    ++ lib.optionals hasGh ghCommands
-    ++ lib.optionals hasTerraform terraformCommands
-    ++ lib.optionals hasSbt sbtCommands;
+    ++ lib.optionals hasGh ghCommands;
 in
 {
   inherit
