@@ -16,6 +16,7 @@ _:
       AppleShowAllExtensions = true;
       AppleShowAllFiles = true;
       FXEnableExtensionChangeWarning = true;
+      FXRemoveOldTrashItems = true;
       _FXShowPosixPathInTitle = true;
       _FXSortFoldersFirstOnDesktop = true;
     };
