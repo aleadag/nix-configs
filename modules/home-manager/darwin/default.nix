@@ -11,6 +11,7 @@ in
 {
   imports = [
     ./homebrew.nix
+    ./nvim-app.nix
     ./paneru.nix
   ];
 
