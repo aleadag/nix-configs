@@ -19,6 +19,7 @@ in
       type = lib.types.attrs;
       default = {
         default_tool = "codex";
+        theme = "dark";
         claude = {
           command = "claude-zai";
           dangerous_mode = false;
@@ -48,6 +49,7 @@ in
       llm-agents.agent-deck
     ];
     home-manager.cli.tmux.enable = true;
+    home.sessionVariables.AGENTDECK_COLOR = "truecolor";
 
     xdg.configFile."agent-deck/config.toml".source =
       configToml.generate "agent-deck-config.toml" cfg.settings;
