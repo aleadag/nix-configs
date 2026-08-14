@@ -50,12 +50,21 @@ in
           settings = config.programs.codex.settings;
         };
 
+    # The home-manager codex module writes `rules` as symlinks into the store,
+    # but codex's execpolicy loader skips symlinked `.rules` files, so the
+    # rules are silently ignored. Write a regular file via activation instead.
+    home.activation.writeCodexRules = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      rules_dir="${config.home.homeDirectory}/${codexConfigDir}/rules"
+      mkdir -p "$rules_dir"
+      rm -f "$rules_dir/basic.rules"
+      install -m 644 ${pkgs.writeText "codex-basic.rules" basicRules} "$rules_dir/basic.rules"
+    '';
+
     programs.codex = {
       enable = true;
       enableMcpIntegration = true;
       package = codexPackage;
       plugins = shared.pluginSources;
-      rules.basic = basicRules;
       hooks = lib.optionalAttrs config.home-manager.cli.jujutsu.enable {
         Stop = [
           {
