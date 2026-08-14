@@ -22,10 +22,8 @@
 
   config = lib.mkIf config.home-manager.dev.enable {
     home.packages = with pkgs; [
-      bash-language-server
       expect
       just
-      marksman
       shellcheck
     ];
 

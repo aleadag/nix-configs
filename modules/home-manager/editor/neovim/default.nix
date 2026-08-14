@@ -163,6 +163,11 @@ in
                 fd
                 ripgrep
               ]
+              ++ lib.optionals cfg.lsp.enable [
+                bash-language-server
+                marksman
+                yaml-language-server
+              ]
               ++ lib.optionals stdenv.isLinux [
                 fswatch
                 # For clipboard=unnamedplus
@@ -904,6 +909,7 @@ in
                       },
                       { "ruff" },
                       { "ts_ls" },
+                      { "yamlls" },
                     }
 
                     for _, server in ipairs(servers_configs) do
