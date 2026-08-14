@@ -21,8 +21,11 @@
       newSession = true;
       sensibleOnTop = true;
       secureSocket = false;
-      terminal = "screen-256color";
+      terminal = "tmux-256color";
       extraConfig = ''
+        # enable truecolor (RGB) passthrough
+        set -as terminal-features ",tmux-256color:RGB"
+
         # enable auto renaming
         setw -g automatic-rename on
 
