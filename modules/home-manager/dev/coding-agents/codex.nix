@@ -16,7 +16,7 @@ let
       flake
       ;
   };
-  inherit (shared.permissions) allowedShellCommands;
+  inherit (shared.permissions) allowedShellCommands deniedShellCommands;
 
   codexPackage = pkgs.llm-agents.codex;
   codexVersion = lib.getVersion codexPackage;
@@ -25,9 +25,15 @@ let
   xdgConfigHome = lib.removePrefix config.home.homeDirectory config.xdg.configHome;
   codexConfigDir = if useXdgDirectories then "${xdgConfigHome}/codex" else ".codex";
   codexConfigPath = "${config.home.homeDirectory}/${codexConfigDir}/config.toml";
-  renderPrefixRule = pattern: ''prefix_rule(pattern=${builtins.toJSON pattern}, decision="allow")'';
-  codexAllowedPrefixRules = map (command: lib.strings.splitString " " command) allowedShellCommands;
-  basicRules = lib.concatMapStringsSep "\n" renderPrefixRule codexAllowedPrefixRules + "\n";
+  renderPrefixRule =
+    decision: pattern:
+    "prefix_rule(pattern=${builtins.toJSON pattern}, decision=${builtins.toJSON decision})";
+  codexPrefixRules = map (command: lib.strings.splitString " " command);
+  basicRules =
+    lib.concatMapStringsSep "\n" (renderPrefixRule "allow") (codexPrefixRules allowedShellCommands)
+    + "\n"
+    + lib.concatMapStringsSep "\n" (renderPrefixRule "forbidden") (codexPrefixRules deniedShellCommands)
+    + "\n";
 in
 {
   options.home-manager.dev.coding-agents.codex = {
