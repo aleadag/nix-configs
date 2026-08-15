@@ -4,7 +4,6 @@ let
   cfg = config.nix-darwin.homebrew;
   podmanCfg = cfg.podman;
   inherit (config.nix-darwin.home) username;
-  homeDirectory = config.users.users.${username}.home;
 in
 {
   options.nix-darwin.homebrew = {
@@ -20,7 +19,7 @@ in
   config = lib.mkIf cfg.enable {
     nix-darwin.home.extraModules = {
       home-manager.dev.coding-agents.permissions.containers.enable = podmanCfg.enable;
-      home.sessionVariables.DOCKER_HOST = lib.mkIf podmanCfg.enable "unix://${homeDirectory}/.local/share/containers/podman/machine/podman.sock";
+      home.sessionVariables.DOCKER_HOST = lib.mkIf podmanCfg.enable "unix:///var/run/docker.sock";
       programs = {
         firefox.package = lib.mkForce null;
         kitty.package = null;
