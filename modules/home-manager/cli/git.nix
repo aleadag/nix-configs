@@ -137,7 +137,7 @@ in
           commit.verbose = true;
           core = {
             editor = "nvim";
-            whitespace = "trailing-space,space-before-tab,indent-with-non-tab";
+            whitespace = "trailing-space,space-before-tab";
           };
           diff = {
             algorithm = "histogram";
