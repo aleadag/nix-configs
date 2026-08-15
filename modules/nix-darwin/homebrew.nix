@@ -30,6 +30,10 @@ in
         "linearmouse"
         "microsoft-edge"
       ];
+      brews = [
+        "podman"
+        "podman-compose"
+      ];
     };
 
     home-manager.users.${username}.home-manager.darwin.homebrew = {
