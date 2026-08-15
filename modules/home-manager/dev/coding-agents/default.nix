@@ -25,6 +25,8 @@ in
     enable = lib.mkEnableOption "coding agent config" // {
       default = config.home-manager.dev.enable;
     };
+
+    permissions.containers.enable = lib.mkEnableOption "Podman-backed container command permissions";
   };
 
   config = lib.mkIf cfg.enable {

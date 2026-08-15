@@ -2,17 +2,25 @@
 
 let
   cfg = config.nix-darwin.homebrew;
+  podmanCfg = cfg.podman;
   inherit (config.nix-darwin.home) username;
+  homeDirectory = config.users.users.${username}.home;
 in
 {
   options.nix-darwin.homebrew = {
     enable = lib.mkEnableOption "Homebrew config" // {
       default = true;
     };
+
+    podman.enable = lib.mkEnableOption "Podman with Docker-compatible clients" // {
+      default = config.nix-darwin.homebrew.enable;
+    };
   };
 
   config = lib.mkIf cfg.enable {
     nix-darwin.home.extraModules = {
+      home-manager.dev.coding-agents.permissions.containers.enable = podmanCfg.enable;
+      home.sessionVariables.DOCKER_HOST = lib.mkIf podmanCfg.enable "unix://${homeDirectory}/.local/share/containers/podman/machine/podman.sock";
       programs = {
         firefox.package = lib.mkForce null;
         kitty.package = null;
@@ -30,7 +38,9 @@ in
         "linearmouse"
         "microsoft-edge"
       ];
-      brews = [
+      brews = lib.optionals podmanCfg.enable [
+        "docker"
+        "docker-compose"
         "podman"
         "podman-compose"
       ];

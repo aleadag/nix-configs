@@ -19,6 +19,7 @@ in
     nixos.home.extraModules = {
       # As a rule of thumb HM == NixOS version, unless something weird happens
       home.stateVersion = lib.mkDefault config.system.stateVersion;
+      home-manager.dev.coding-agents.permissions.containers.enable = config.virtualisation.podman.enable;
     };
 
     # Define a user account. Don't forget to set a password with ‘passwd’

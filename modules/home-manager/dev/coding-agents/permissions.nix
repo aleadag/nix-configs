@@ -15,6 +15,7 @@ let
   hasNode = config.home-manager.dev.node.enable or false;
   hasNix = (config.home-manager.dev.nix.enable or false) || (config.home-manager.dev.enable or false);
   hasGh = config.home-manager.cli.git.gh.enable or false;
+  hasContainers = config.home-manager.dev.coding-agents.permissions.containers.enable or false;
 
   # Dangerous commands that should be explicitly denied
   deniedShellCommands = [
@@ -25,7 +26,8 @@ let
     "terraform apply"
     "terraform destroy"
     "sbt publish"
-  ];
+  ]
+  ++ lib.optionals hasContainers containerDeniedCommands;
 
   # Base Unix and text processing tools (always allowed)
   baseCommands = [
@@ -161,6 +163,67 @@ let
     "gh run"
   ];
 
+  commonContainerAllowedCommands = [
+    "ps"
+    "images"
+    "inspect"
+    "logs"
+    "info"
+    "version"
+    "port"
+    "top"
+    "stats"
+    "container inspect"
+    "container ls"
+    "image inspect"
+    "image ls"
+    "network inspect"
+    "network ls"
+    "volume inspect"
+    "volume ls"
+    "system df"
+  ];
+
+  commonContainerDeniedCommands = [
+    "system prune"
+    "container prune"
+    "image prune"
+    "network prune"
+    "volume prune"
+  ];
+
+  containerAllowedCommands =
+    lib.concatMap (runtime: map (command: "${runtime} ${command}") commonContainerAllowedCommands) [
+      "podman"
+      "docker"
+    ]
+    ++ map (command: "podman ${command}") [
+      "pod inspect"
+      "pod ps"
+      "machine inspect"
+      "machine list"
+    ]
+    ++ [
+      "podman-compose --version"
+      "docker-compose version"
+    ];
+
+  containerDeniedCommands =
+    lib.concatMap (runtime: map (command: "${runtime} ${command}") commonContainerDeniedCommands) [
+      "podman"
+      "docker"
+    ]
+    ++ map (command: "podman ${command}") [
+      "system reset"
+      "pod prune"
+      "machine reset"
+      "machine rm"
+    ]
+    ++ map (command: "docker ${command}") [
+      "builder prune"
+      "buildx prune"
+    ];
+
   # Combine allowed commands gated by home-manager module availability
   allowedShellCommands =
     baseCommands
@@ -171,7 +234,8 @@ let
     ++ lib.optionals hasGo goCommands
     ++ lib.optionals hasNode nodeCommands
     ++ lib.optionals hasNix nixCommands
-    ++ lib.optionals hasGh ghCommands;
+    ++ lib.optionals hasGh ghCommands
+    ++ lib.optionals hasContainers containerAllowedCommands;
 in
 {
   inherit
