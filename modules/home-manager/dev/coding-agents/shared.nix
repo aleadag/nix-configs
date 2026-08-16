@@ -24,9 +24,9 @@ let
   jujutsuSkills = loadSkills flake.inputs.jujutsu-skills;
   obsidianSkills = loadSkills flake.inputs.obsidian-skills;
 
-  # Local skills (explicitly listed, each as a package)
+  # Local skills (explicitly listed)
   localSkills = {
-    commit-message = import ./skills/commit-message { inherit config lib pkgs; };
+    commit-message = ./skills/commit-message;
   };
 
   # Plugins - defined once, used across tools

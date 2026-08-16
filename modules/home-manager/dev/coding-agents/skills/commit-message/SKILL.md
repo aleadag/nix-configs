@@ -36,3 +36,7 @@ Use this skill when the user wants help writing or curating a commit message, re
 ## Splitting Guidance
 
 Split changes when they mix unrelated concerns, user-facing behavior with tooling churn, or large refactors with drive-by fixes. Prefer smaller, reviewable commits or changesets over one overloaded message.
+
+For the final apply step, load exactly one reference:
+
+- Git: [references/git.md](references/git.md)
