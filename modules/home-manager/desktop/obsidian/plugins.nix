@@ -7,6 +7,7 @@ let
     {
       pname,
       version,
+      manifestId ? pname,
       owner,
       repo,
       hashMainJs,
@@ -35,6 +36,7 @@ let
     in
     pkgs.stdenvNoCC.mkDerivation {
       inherit pname version;
+      passthru = { inherit manifestId; };
       dontUnpack = true;
       installPhase = ''
         runHook preInstall
@@ -80,6 +82,7 @@ in
   dataview = mkObsidianPlugin {
     pname = "obsidian-dataview";
     version = "0.5.70";
+    manifestId = "dataview";
     owner = "blacksmithgu";
     repo = "obsidian-dataview";
     hashMainJs = "sha256-a7HPcBCvrYMOc1dfyg4r+9MnnFYuPZ0k8tL0UWHrfQA=";
@@ -97,22 +100,34 @@ in
     hashStylesCss = "sha256-SxnWmpiiLFx777fYQa4SzfkHYgdMfMgZNeDbjjLGBd0=";
   };
 
-  periodic-notes = pkgs.fetchzip {
-    url = "https://github.com/liamcain/obsidian-periodic-notes/releases/download/1.0.0-beta.3/periodic-notes-1.0.0-beta.3.zip";
-    name = "periodic-notes";
-    hash = "sha256-kqs+X6wb0YTnhXX1MGPW3C9S/387FfavmmfYlCGI1dc=";
-  };
+  periodic-notes =
+    pkgs.fetchzip {
+      url = "https://github.com/liamcain/obsidian-periodic-notes/releases/download/1.0.0-beta.3/periodic-notes-1.0.0-beta.3.zip";
+      name = "periodic-notes";
+      hash = "sha256-kqs+X6wb0YTnhXX1MGPW3C9S/387FfavmmfYlCGI1dc=";
+    }
+    // {
+      manifestId = "periodic-notes";
+    };
 
-  templater = pkgs.fetchzip {
-    url = "https://github.com/SilentVoid13/Templater/releases/download/2.23.1/templater-obsidian.zip";
-    name = "templater-obsidian";
-    stripRoot = false;
-    hash = "sha256-3OLukyblgf+zw/Nt8obliCpCMsWBNNaHcDaDh43DUmY=";
-  };
+  templater =
+    pkgs.fetchzip {
+      url = "https://github.com/SilentVoid13/Templater/releases/download/2.23.1/templater-obsidian.zip";
+      name = "templater-obsidian";
+      stripRoot = false;
+      hash = "sha256-3OLukyblgf+zw/Nt8obliCpCMsWBNNaHcDaDh43DUmY=";
+    }
+    // {
+      manifestId = "templater-obsidian";
+    };
 
-  tasks = pkgs.fetchzip {
-    url = "https://github.com/obsidian-tasks-group/obsidian-tasks/releases/download/8.2.2/obsidian-tasks-8.2.2.zip";
-    name = "obsidian-tasks";
-    hash = "sha256-m5MoupjOV97tIAq3KTlrgHlqSrrGWGb+kA7Q2yAbcFw=";
-  };
+  tasks =
+    pkgs.fetchzip {
+      url = "https://github.com/obsidian-tasks-group/obsidian-tasks/releases/download/8.2.2/obsidian-tasks-8.2.2.zip";
+      name = "obsidian-tasks";
+      hash = "sha256-m5MoupjOV97tIAq3KTlrgHlqSrrGWGb+kA7Q2yAbcFw=";
+    }
+    // {
+      manifestId = "obsidian-tasks-plugin";
+    };
 }
