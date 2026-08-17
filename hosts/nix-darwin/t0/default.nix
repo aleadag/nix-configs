@@ -11,6 +11,24 @@
         syncthing.enable = true;
         window-manager.paneru.enable = true;
         dev.coding-agents.coding-brain.enable = false;
+        dev.podman.enable = true;
+      };
+
+      services.podman = {
+        useDefaultMachine = false;
+
+        machines.podman-machine-default = {
+          autoStart = false;
+          cpus = 4;
+          diskSize = 100;
+          memory = 8192;
+          rootful = false;
+          volumes = [
+            "/Users:/Users"
+            "/private:/private"
+            "/var/folders:/var/folders"
+          ];
+        };
       };
     };
   };

@@ -13,6 +13,7 @@
     ./nix.nix
     ./node.nix
     ./ollama.nix
+    ./podman.nix
     ./python.nix
   ];
 
