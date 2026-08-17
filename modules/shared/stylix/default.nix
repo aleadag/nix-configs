@@ -44,9 +44,22 @@
         size = 24;
       };
     }
+    // lib.optionalAttrs (options ? stylix.icons) {
+      icons = {
+        enable = true;
+        package = pkgs.papirus-icon-theme;
+        dark = "Papirus-Dark";
+        light = "Papirus-Light";
+      };
+    }
     // lib.optionalAttrs (options ? stylix.homeManagerIntegration) {
       # NixOS-specific: disable home-manager integration
       homeManagerIntegration.autoImport = false;
     };
+  }
+  // lib.optionalAttrs (options ? gtk) {
+    # Required so home-manager writes gtk-icon-theme-name to settings.ini and
+    # installs the icon theme package; stylix.icons only sets gtk.iconTheme.
+    gtk.enable = true;
   };
 }
