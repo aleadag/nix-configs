@@ -50,8 +50,12 @@ let
     if builtins.pathExists skillsDir then acc // loadSkills skillsDir else acc
   ) { } pluginSources;
 
-  # All skills combined
-  allSkills = jujutsuSkills // obsidianSkills // localSkills // pluginSkills;
+  # Skills gated by feature flags, for tools that should only see enabled features
+  guardedSkills =
+    lib.optionalAttrs config.home-manager.cli.jujutsu.enable jujutsuSkills
+    // lib.optionalAttrs config.home-manager.desktop.obsidian.enable obsidianSkills
+    // localSkills;
+  guardedSkillsWithPlugins = guardedSkills // pluginSkills;
 
   # Context file
   context = ./CONTEXT.md;
@@ -80,9 +84,10 @@ let
 in
 {
   inherit
-    allSkills
     context
     defaultContext
+    guardedSkills
+    guardedSkillsWithPlugins
     jujutsuSkills
     jjStopHook
     obsidianSkills

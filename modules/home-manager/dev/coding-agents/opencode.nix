@@ -56,10 +56,7 @@ in
         model = "deepseek/deepseek-v4-pro";
         permission.bash = bashPermissions;
       };
-      skills =
-        lib.optionalAttrs config.home-manager.cli.jujutsu.enable shared.jujutsuSkills
-        // shared.obsidianSkills
-        // shared.localSkills;
+      skills = shared.guardedSkillsWithPlugins;
     };
   };
 }

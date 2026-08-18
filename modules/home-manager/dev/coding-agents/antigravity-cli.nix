@@ -62,11 +62,7 @@ in
         ];
         deny = deniedCommands;
       };
-      skills =
-        shared.obsidianSkills
-        // lib.optionalAttrs config.home-manager.cli.jujutsu.enable shared.jujutsuSkills
-        // shared.localSkills
-        // shared.pluginSkills;
+      skills = shared.guardedSkillsWithPlugins;
       settings = {
         altScreenMode = "always";
         artifactReviewPolicy = "agent-decides";

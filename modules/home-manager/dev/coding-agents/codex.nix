@@ -108,10 +108,7 @@ in
         };
       };
       context = shared.defaultContext;
-      skills =
-        shared.obsidianSkills
-        // lib.optionalAttrs config.home-manager.cli.jujutsu.enable shared.jujutsuSkills
-        // shared.localSkills;
+      skills = shared.guardedSkills;
     };
   };
 }

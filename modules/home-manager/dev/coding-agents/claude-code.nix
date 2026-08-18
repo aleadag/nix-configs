@@ -53,10 +53,7 @@ in
       package = pkgs.llm-agents.claude-code;
       inherit (shared) context;
       inherit (shared) plugins;
-      skills =
-        lib.optionalAttrs config.home-manager.cli.jujutsu.enable shared.jujutsuSkills
-        // shared.obsidianSkills
-        // shared.localSkills;
+      skills = shared.guardedSkills;
       agents.yegge = ''
         ---
         name: yegge
