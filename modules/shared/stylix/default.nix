@@ -39,15 +39,18 @@
     }
     // lib.optionalAttrs (options ? stylix.cursor) {
       cursor = {
-        package = pkgs.catppuccin-cursors.frappeBlue;
-        name = "catppuccin-frappe-blue-cursors";
+        package = pkgs.catppuccin-cursors.frappeDark;
+        name = "catppuccin-frappe-dark-cursors";
         size = 24;
       };
     }
     // lib.optionalAttrs (options ? stylix.icons) {
-      icons = {
+      icons = lib.mkIf pkgs.stdenv.isLinux {
         enable = true;
-        package = pkgs.papirus-icon-theme;
+        package = pkgs.catppuccin-papirus-folders.override {
+          flavor = "frappe";
+          accent = "blue";
+        };
         dark = "Papirus-Dark";
         light = "Papirus-Light";
       };
@@ -57,7 +60,7 @@
       homeManagerIntegration.autoImport = false;
     };
   }
-  // lib.optionalAttrs (options ? gtk) {
+  // lib.optionalAttrs (options ? gtk.enable) {
     # Required so home-manager writes gtk-icon-theme-name to settings.ini and
     # installs the icon theme package; stylix.icons only sets gtk.iconTheme.
     gtk.enable = true;
