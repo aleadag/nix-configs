@@ -49,7 +49,7 @@ in
     programs.opencode = {
       enable = true;
       package = pkgs.llm-agents.opencode;
-      inherit (shared) context;
+      context = shared.defaultContext;
       settings = {
         autoshare = false;
         autoupdate = false;
