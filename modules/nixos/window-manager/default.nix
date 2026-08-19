@@ -3,8 +3,8 @@
 {
   imports = [
     ./greetd.nix
+    ./keyboard.nix
     ./wayland.nix
-    ./xserver.nix
   ];
 
   options.nixos.window-manager.enable = lib.mkEnableOption "window-manager config" // {
@@ -18,6 +18,8 @@
     nixos.home.extraModules = {
       home-manager.window-manager.enable = true;
     };
+
+    programs.dconf.enable = true;
 
     services = {
       gnome.gnome-keyring.enable = true;

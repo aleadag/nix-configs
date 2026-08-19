@@ -13,7 +13,6 @@ in
     ./dunst.nix
     ./gammastep.nix
     ./wayland
-    ./x11
   ];
 
   options.home-manager.window-manager = {

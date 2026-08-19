@@ -6,7 +6,6 @@
     desktop.enable = true;
     syncthing.enable = true;
     window-manager.enable = true;
-    window-manager.x11.enable = false;
   };
 
   targets.genericLinux = {

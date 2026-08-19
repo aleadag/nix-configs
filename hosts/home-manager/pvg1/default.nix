@@ -17,7 +17,6 @@
     syncthing.enable = true;
     window-manager = {
       enable = true;
-      x11.enable = false;
       wayland.swayidle.powerOffDisplays.enable = false;
     };
   };

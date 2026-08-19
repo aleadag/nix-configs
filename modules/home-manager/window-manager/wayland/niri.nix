@@ -140,7 +140,7 @@ let
         action.spawn-sh = terminal;
         hotkey-overlay.title = "Open Terminal";
       };
-      "Mod+M" = {
+      "Mod+B" = {
         action.spawn-sh = browser;
         hotkey-overlay.title = "Open Browser";
       };

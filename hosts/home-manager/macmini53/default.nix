@@ -51,7 +51,6 @@
     window-manager = {
       default.terminal = lib.getExe config.programs.kitty.package;
       enable = true;
-      x11.enable = false;
     };
   };
 
