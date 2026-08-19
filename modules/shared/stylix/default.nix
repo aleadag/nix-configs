@@ -46,7 +46,7 @@
       };
     }
     // lib.optionalAttrs (options ? stylix.icons) {
-      icons = lib.mkIf pkgs.stdenv.isLinux {
+      icons = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
         enable = true;
         # papirus-icon-theme propagates breeze-icons, so Papirus-Dark's
         # `Inherits=breeze-dark` chain resolves (fcitx5 tray icon, etc.).

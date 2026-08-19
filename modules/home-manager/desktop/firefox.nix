@@ -36,7 +36,7 @@ in
     programs.firefox = {
       enable = true;
       package = pkgs.firefox-bin;
-      configPath = lib.mkIf pkgs.stdenv.isLinux ".mozilla/firefox";
+      configPath = lib.mkIf pkgs.stdenv.hostPlatform.isLinux ".mozilla/firefox";
       profiles.${username} = {
         settings =
           let
@@ -76,7 +76,7 @@ in
             "datareporting.policy.dataSubmissionEnable" = false;
             "datareporting.healthreport.uploadEnabled" = false;
           }
-          // lib.optionalAttrs pkgs.stdenv.isLinux {
+          // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
             # https://wiki.archlinux.org/title/Firefox#XDG_Desktop_Portal_integration
             "widget.use-xdg-desktop-portal.file-picker" = 1;
           }

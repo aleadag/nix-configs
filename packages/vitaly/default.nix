@@ -23,7 +23,9 @@ rustPlatform.buildRustPackage rec {
 
   nativeBuildInputs = [ pkg-config ];
 
-  buildInputs = lib.optionals stdenv.isLinux [ udev ] ++ lib.optionals stdenv.isDarwin [ apple-sdk ];
+  buildInputs =
+    lib.optionals stdenv.hostPlatform.isLinux [ udev ]
+    ++ lib.optionals stdenv.hostPlatform.isDarwin [ apple-sdk ];
 
   meta = {
     description = "VIA/Vial API client and CLI tool for guiless keyboard configuration";

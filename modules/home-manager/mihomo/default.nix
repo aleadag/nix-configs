@@ -49,7 +49,7 @@ let
     };
   };
 
-  mkService = if pkgs.stdenv.isLinux then mkUnit else mkAgent;
+  mkService = if pkgs.stdenv.hostPlatform.isLinux then mkUnit else mkAgent;
 
   services = {
     mihomo = mkService pkgs.mihomo;
@@ -64,7 +64,7 @@ in
 
   config = mkIf cfg.enable (
     lib.mkMerge [
-      (mkIf pkgs.stdenv.isLinux {
+      (mkIf pkgs.stdenv.hostPlatform.isLinux {
         systemd.user.services = services;
         xdg.desktopEntries.mihomo-web-ui = {
           name = "Mihomo Web UI";
@@ -80,7 +80,7 @@ in
           ];
         };
       })
-      (mkIf pkgs.stdenv.isDarwin { launchd.agents = services; })
+      (mkIf pkgs.stdenv.hostPlatform.isDarwin { launchd.agents = services; })
       {
         # 注意规则在满足自己需求情况下，尽量做到精简，不要过度复杂，以免影响性能。
         # https://github.com/qichiyuhub/rule/blob/main/config/mihomo/config.yaml

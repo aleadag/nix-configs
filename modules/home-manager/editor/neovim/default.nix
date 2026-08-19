@@ -168,7 +168,7 @@ in
                 marksman
                 yaml-language-server
               ]
-              ++ lib.optionals stdenv.isLinux [
+              ++ lib.optionals stdenv.hostPlatform.isLinux [
                 fswatch
                 # For clipboard=unnamedplus
                 wl-clipboard

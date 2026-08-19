@@ -17,7 +17,7 @@ in
     };
   };
 
-  config = mkIf (cfg.enable && pkgs.stdenv.isLinux) {
+  config = mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isLinux) {
     # https://github.com/jtroo/kanata/blob/main/docs/setup-linux.md
     # for arch linux, one more step:
     # https://github.com/chrippa/ds4drv/issues/93#issuecomment-265300511

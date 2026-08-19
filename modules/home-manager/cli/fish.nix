@@ -59,7 +59,7 @@
           end
         ''
         +
-          lib.optionalString pkgs.stdenv.isDarwin # fish
+          lib.optionalString pkgs.stdenv.hostPlatform.isDarwin # fish
             ''
               # Set the soft ulimit to something sensible
               # https://developer.apple.com/forums/thread/735798

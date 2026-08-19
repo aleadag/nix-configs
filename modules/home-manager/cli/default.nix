@@ -84,7 +84,7 @@ in
           watch
           wget
         ]
-        ++ (lib.optionals stdenv.isLinux [
+        ++ (lib.optionals stdenv.hostPlatform.isLinux [
           bluetui
           rustnet
         ]);
