@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   options,
   pkgs,
@@ -47,10 +48,9 @@
     // lib.optionalAttrs (options ? stylix.icons) {
       icons = lib.mkIf pkgs.stdenv.isLinux {
         enable = true;
-        package = pkgs.catppuccin-papirus-folders.override {
-          flavor = "frappe";
-          accent = "blue";
-        };
+        # papirus-icon-theme propagates breeze-icons, so Papirus-Dark's
+        # `Inherits=breeze-dark` chain resolves (fcitx5 tray icon, etc.).
+        package = pkgs.papirus-icon-theme;
         dark = "Papirus-Dark";
         light = "Papirus-Light";
       };
@@ -64,5 +64,11 @@
     # Required so home-manager writes gtk-icon-theme-name to settings.ini and
     # installs the icon theme package; stylix.icons only sets gtk.iconTheme.
     gtk.enable = true;
+  }
+  // lib.optionalAttrs (options ? dconf.enable) {
+    # gtk sets dconf settings (org/gnome/desktop/interface) which trigger dconf
+    # activation. On standalone Linux (genericLinux) the dconf D-Bus service is
+    # not available, so activation fails; disable dconf there.
+    dconf.enable = lib.mkIf config.targets.genericLinux.enable false;
   };
 }
