@@ -64,11 +64,12 @@ in
         autoshare = false;
         autoupdate = false;
         model = "deepseek/deepseek-v4-pro";
+        plugin = [ shared.plugins.beads-superpowers ];
         permission.bash = bashPermissions;
         permission.external_directory = externalDirectoryPermissions;
         permission.edit = externalDirectoryReadOnly;
       };
-      skills = shared.guardedSkillsWithPlugins;
+      skills = shared.guardedSkills;
     };
   };
 }
