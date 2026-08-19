@@ -224,6 +224,16 @@ let
       "buildx prune"
     ];
 
+  # Read-only directories shared across coding agents: each agent's own config
+  # (managed by Nix, so read-only) plus the immutable Nix store.
+  commonExternalDirectories = [
+    "${config.home.homeDirectory}/.config/opencode"
+    "${config.home.homeDirectory}/.claude"
+    "${config.home.homeDirectory}/.codex"
+    "${config.home.homeDirectory}/.gemini"
+    "/nix/store"
+  ];
+
   # Combine allowed commands gated by home-manager module availability
   allowedShellCommands =
     baseCommands
@@ -240,6 +250,7 @@ in
 {
   inherit
     allowedShellCommands
+    commonExternalDirectories
     deniedShellCommands
     ;
 }

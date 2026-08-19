@@ -16,10 +16,20 @@ let
       pkgs
       ;
   };
-  inherit (shared.permissions) allowedShellCommands deniedShellCommands;
+  inherit (shared.permissions)
+    allowedShellCommands
+    commonExternalDirectories
+    deniedShellCommands
+    ;
 
   allowedCommands = map (command: "command(${command})") allowedShellCommands;
   deniedCommands = map (command: "command(${command})") deniedShellCommands;
+  directoryPermissions =
+    lib.concatMap (directory: [ "read_file(${directory})" ]) commonExternalDirectories
+    ++ [
+      "read_file(/)"
+      "write_file(/)"
+    ];
 
   statusLineScript = pkgs.writeShellScript "agy-statusline" (
     builtins.readFile ./scripts/statusline.sh
@@ -55,11 +65,7 @@ in
       };
       defaultModel = "gemini-3.6-flash";
       permissions = {
-        allow = allowedCommands ++ [
-          "write_file(/)"
-          "read_file(/)"
-          "read_file(/nix/store)"
-        ];
+        allow = allowedCommands ++ directoryPermissions;
         deny = deniedCommands;
       };
       skills = shared.guardedSkillsWithPlugins;

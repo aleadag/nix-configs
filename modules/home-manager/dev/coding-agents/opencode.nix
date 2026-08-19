@@ -16,10 +16,20 @@ let
       pkgs
       ;
   };
-  inherit (shared.permissions) allowedShellCommands deniedShellCommands;
+  inherit (shared.permissions)
+    allowedShellCommands
+    commonExternalDirectories
+    deniedShellCommands
+    ;
 
-  bashPattern = command: "${command} *";
+  bashPattern = command: "${command}*";
   allowPatterns = map bashPattern allowedShellCommands;
+  externalDirectoryPermissions = lib.genAttrs (map (
+    directory: "${directory}/**"
+  ) commonExternalDirectories) (lib.const "allow");
+  externalDirectoryReadOnly = lib.genAttrs (map (
+    directory: "${directory}/**"
+  ) commonExternalDirectories) (lib.const "deny");
 
   # Last matching rule wins: catch-all first, allows next, denies last.
   bashPermissions =
@@ -55,6 +65,8 @@ in
         autoupdate = false;
         model = "deepseek/deepseek-v4-pro";
         permission.bash = bashPermissions;
+        permission.external_directory = externalDirectoryPermissions;
+        permission.edit = externalDirectoryReadOnly;
       };
       skills = shared.guardedSkillsWithPlugins;
     };

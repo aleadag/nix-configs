@@ -16,7 +16,11 @@ let
       pkgs
       ;
   };
-  inherit (shared.permissions) allowedShellCommands deniedShellCommands;
+  inherit (shared.permissions)
+    allowedShellCommands
+    commonExternalDirectories
+    deniedShellCommands
+    ;
 
   basicToolPermissions = [
     "Read"
@@ -30,6 +34,10 @@ let
   claudeAllowedBashPermissions = map (command: "Bash(${command}:*)") allowedShellCommands;
   claudeDeniedBashPermissions = map (command: "Bash(${command}:*)") deniedShellCommands;
   claudeFullPermissions = claudeAllowedBashPermissions ++ basicToolPermissions;
+  claudeReadOnlyDirectoryPermissions = lib.concatMap (directory: [
+    "Edit(${directory}/**)"
+    "Write(${directory}/**)"
+  ]) commonExternalDirectories;
 
   claudeZai = pkgs.writeShellScriptBin "claude-zai" ''
     export ANTHROPIC_BASE_URL="$(cat ${config.sops.secrets.claude_zai_base_url.path})"
@@ -88,7 +96,8 @@ in
         includeCoAuthoredBy = false;
         permissions = {
           allow = claudeFullPermissions;
-          deny = claudeDeniedBashPermissions;
+          deny = claudeDeniedBashPermissions ++ claudeReadOnlyDirectoryPermissions;
+          additionalDirectories = commonExternalDirectories;
         };
       };
     };
