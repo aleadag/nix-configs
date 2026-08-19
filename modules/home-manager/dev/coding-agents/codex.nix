@@ -80,6 +80,7 @@ in
       settings = {
         analytics.enabled = false;
         approval_policy = "on-request";
+        approvals_reviewer = "auto_review";
         check_for_update_on_startup = false;
         features = {
           apps = false;
