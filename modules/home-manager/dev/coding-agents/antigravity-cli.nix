@@ -19,11 +19,16 @@ let
   inherit (shared.permissions)
     allowedShellCommands
     commonExternalDirectories
+    commonNetworkDomains
     deniedShellCommands
     ;
 
   allowedCommands = map (command: "command(${command})") allowedShellCommands;
   deniedCommands = map (command: "command(${command})") deniedShellCommands;
+  networkDomains = lib.unique (
+    map (lib.removePrefix "*.") (lib.filter (lib.hasPrefix "*.") commonNetworkDomains)
+  );
+  allowedNetworkReads = map (domain: "read_url(${domain})") networkDomains;
   directoryPermissions =
     lib.concatMap (directory: [ "read_file(${directory})" ]) commonExternalDirectories
     ++ [
@@ -65,7 +70,7 @@ in
       };
       defaultModel = "gemini-3.6-flash";
       permissions = {
-        allow = allowedCommands ++ directoryPermissions;
+        allow = allowedCommands ++ directoryPermissions ++ allowedNetworkReads;
         deny = deniedCommands;
       };
       skills = shared.guardedSkillsWithPlugins;

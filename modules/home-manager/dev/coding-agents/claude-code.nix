@@ -19,6 +19,7 @@ let
   inherit (shared.permissions)
     allowedShellCommands
     commonExternalDirectories
+    commonNetworkDomains
     deniedShellCommands
     ;
 
@@ -32,8 +33,10 @@ let
   ];
 
   claudeAllowedBashPermissions = map (command: "Bash(${command}:*)") allowedShellCommands;
+  claudeAllowedNetworkPermissions = map (domain: "WebFetch(domain:${domain})") commonNetworkDomains;
   claudeDeniedBashPermissions = map (command: "Bash(${command}:*)") deniedShellCommands;
-  claudeFullPermissions = claudeAllowedBashPermissions ++ basicToolPermissions;
+  claudeFullPermissions =
+    claudeAllowedBashPermissions ++ claudeAllowedNetworkPermissions ++ basicToolPermissions;
   claudeReadOnlyDirectoryPermissions = lib.concatMap (directory: [
     "Edit(${directory}/**)"
     "Write(${directory}/**)"
@@ -98,6 +101,16 @@ in
           allow = claudeFullPermissions;
           deny = claudeDeniedBashPermissions ++ claudeReadOnlyDirectoryPermissions;
           additionalDirectories = commonExternalDirectories;
+        };
+        sandbox = {
+          enabled = true;
+          failIfUnavailable = true;
+          allowUnsandboxedCommands = false;
+          autoAllowBashIfSandboxed = false;
+          network = {
+            allowedDomains = commonNetworkDomains;
+            strictAllowlist = true;
+          };
         };
       };
     };

@@ -225,6 +225,52 @@ let
       "buildx prune"
     ];
 
+  # Network domains shared across coding agents. Exact apex entries accompany
+  # wildcard entries because backend wildcard semantics exclude the apex.
+  commonNetworkDomains = [
+    "cachix.org"
+    "*.cachix.org"
+    "crates.io"
+    "*.crates.io"
+    "docker.com"
+    "*.docker.com"
+    "docker.io"
+    "*.docker.io"
+    "github.com"
+    "*.github.com"
+    "githubusercontent.com"
+    "*.githubusercontent.com"
+    "gitlab.com"
+    "*.gitlab.com"
+    "golang.org"
+    "*.golang.org"
+    "go.dev"
+    "*.go.dev"
+    "goproxy.io"
+    "*.goproxy.io"
+    "ghcr.io"
+    "*.ghcr.io"
+    "nix-community.org"
+    "*.nix-community.org"
+    "nixos.org"
+    "*.nixos.org"
+    "nodejs.org"
+    "*.nodejs.org"
+    "npmjs.org"
+    "*.npmjs.org"
+    "production.cloudflare.docker.com"
+    "pypi.org"
+    "*.pypi.org"
+    "pythonhosted.org"
+    "*.pythonhosted.org"
+    "quay.io"
+    "*.quay.io"
+    "rust-lang.org"
+    "*.rust-lang.org"
+    "rustup.rs"
+    "*.rustup.rs"
+  ];
+
   # Read-only directories shared across coding agents: each agent's own config
   # (managed by Nix, so read-only) plus the immutable Nix store.
   commonExternalDirectories = [
@@ -252,6 +298,7 @@ in
   inherit
     allowedShellCommands
     commonExternalDirectories
+    commonNetworkDomains
     deniedShellCommands
     ;
 }

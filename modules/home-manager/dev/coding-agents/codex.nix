@@ -16,7 +16,13 @@ let
       flake
       ;
   };
-  inherit (shared.permissions) allowedShellCommands deniedShellCommands;
+  inherit (shared.permissions)
+    allowedShellCommands
+    commonNetworkDomains
+    deniedShellCommands
+    ;
+
+  codexNetworkDomains = lib.genAttrs commonNetworkDomains (lib.const "allow");
 
   codexPackage = pkgs.llm-agents.codex;
   codexVersion = lib.getVersion codexPackage;
@@ -87,6 +93,10 @@ in
           code_mode_host = true;
           hooks = true;
           memories = true;
+          network_proxy = {
+            enabled = true;
+            domains = codexNetworkDomains;
+          };
         };
         model = "gpt-5.6-sol";
         model_reasoning_effort = "medium";
@@ -97,6 +107,7 @@ in
           "github@openai-curated".enabled = true;
         };
         project_doc_fallback_filenames = [ "CLAUDE.md" ];
+        sandbox_workspace_write.network_access = true;
         tui = {
           notifications = true;
           status_line = [
