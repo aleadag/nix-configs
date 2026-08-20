@@ -21,9 +21,18 @@ let
   makeActivationScript =
     filePath: fileSpec:
     let
-      settingsFile = (pkgs.formats.${fileSpec.format} { }).generate "mutable-settings" fileSpec.settings;
+      relPath = toRelPath filePath;
+      settingsFile =
+        if fileSpec.source != null then
+          fileSpec.source
+        else if fileSpec.settings != { } then
+          (pkgs.formats.${fileSpec.format} { }).generate "mutable-settings" fileSpec.settings
+        else if config.home.file ? ${relPath} && (config.home.file.${relPath}.source or null) != null then
+          config.home.file.${relPath}.source
+        else
+          null;
     in
-    ''
+    lib.optionalString (settingsFile != null) ''
       config_path="${filePath}"
       backup_ext="''${HOME_MANAGER_BACKUP_EXT:-}"
       backup_path="$config_path''${backup_ext:+.$backup_ext}"
@@ -71,6 +80,11 @@ in
               ];
               default = "json";
               description = "Serialization format of the settings file";
+            };
+            source = lib.mkOption {
+              type = lib.types.nullOr lib.types.path;
+              default = null;
+              description = "Home Manager-generated store path or file to merge";
             };
             settings = lib.mkOption {
               type = lib.types.attrs;
