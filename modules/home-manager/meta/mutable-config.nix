@@ -29,6 +29,8 @@ let
           (pkgs.formats.${fileSpec.format} { }).generate "mutable-settings" fileSpec.settings
         else if config.home.file ? ${relPath} && (config.home.file.${relPath}.source or null) != null then
           config.home.file.${relPath}.source
+        else if config.home.file ? ${filePath} && (config.home.file.${filePath}.source or null) != null then
+          config.home.file.${filePath}.source
         else
           null;
     in
@@ -65,34 +67,43 @@ in
   options.mutableConfig = {
     files = lib.mkOption {
       type = lib.types.attrsOf (
-        lib.types.submodule {
-          options = {
-            enable = lib.mkOption {
-              type = lib.types.bool;
-              default = true;
-              description = "Whether to manage this file mutably";
+        lib.types.submodule (
+          { name, ... }:
+          {
+            options = {
+              enable = lib.mkOption {
+                type = lib.types.bool;
+                default = true;
+                description = "Whether to manage this file mutably";
+              };
+              format = lib.mkOption {
+                type = lib.types.enum [
+                  "json"
+                  "toml"
+                  "yaml"
+                ];
+                default =
+                  if lib.hasSuffix ".toml" name then
+                    "toml"
+                  else if lib.hasSuffix ".yaml" name || lib.hasSuffix ".yml" name then
+                    "yaml"
+                  else
+                    "json";
+                description = "Serialization format of the settings file";
+              };
+              source = lib.mkOption {
+                type = lib.types.nullOr lib.types.path;
+                default = null;
+                description = "Home Manager-generated store path or file to merge";
+              };
+              settings = lib.mkOption {
+                type = lib.types.attrs;
+                default = { };
+                description = "Attribute set mapping file settings to merge";
+              };
             };
-            format = lib.mkOption {
-              type = lib.types.enum [
-                "json"
-                "toml"
-                "yaml"
-              ];
-              default = "json";
-              description = "Serialization format of the settings file";
-            };
-            source = lib.mkOption {
-              type = lib.types.nullOr lib.types.path;
-              default = null;
-              description = "Home Manager-generated store path or file to merge";
-            };
-            settings = lib.mkOption {
-              type = lib.types.attrs;
-              default = { };
-              description = "Attribute set mapping file settings to merge";
-            };
-          };
-        }
+          }
+        )
       );
       default = { };
       description = "Attribute set mapping target file paths to their mutable settings specification";
@@ -102,9 +113,18 @@ in
   config = lib.mkIf (activeFiles != { }) {
     # Disable home manager's management of configured files
     home.file = lib.mkMerge (
-      lib.mapAttrsToList (file: _: {
-        ${toRelPath file}.enable = lib.mkForce false;
-      }) activeFiles
+      lib.mapAttrsToList (
+        file: _:
+        let
+          rel = toRelPath file;
+        in
+        {
+          ${rel}.enable = lib.mkForce false;
+        }
+        // lib.optionalAttrs (file != rel) {
+          ${file}.enable = lib.mkForce false;
+        }
+      ) activeFiles
     );
 
     # Add activation script to merge settings
