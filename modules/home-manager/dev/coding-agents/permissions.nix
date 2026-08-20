@@ -33,6 +33,7 @@ let
   baseCommands = [
     "cat"
     "cd"
+    "date"
     "echo"
     "ls"
     "find"
