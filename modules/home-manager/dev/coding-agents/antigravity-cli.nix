@@ -25,20 +25,20 @@ let
 
   allowedCommands = map (command: "command(${command})") allowedShellCommands;
   deniedCommands = map (command: "command(${command})") deniedShellCommands;
-  networkDomains = lib.unique (
-    map (lib.removePrefix "*.") (lib.filter (lib.hasPrefix "*.") commonNetworkDomains)
-  );
+  networkDomains = lib.unique (map (lib.removePrefix "*.") commonNetworkDomains);
   allowedNetworkReads = map (domain: "read_url(${domain})") networkDomains;
-  directoryPermissions =
-    lib.concatMap (directory: [ "read_file(${directory})" ]) commonExternalDirectories
-    ++ [
-      "read_file(/)"
-      "write_file(/)"
-    ];
+  allowedDirectoryPermissions = map (directory: "read_file(${directory})") commonExternalDirectories;
+  deniedDirectoryPermissions = map (directory: "write_file(${directory})") commonExternalDirectories;
 
-  statusLineScript = pkgs.writeShellScript "agy-statusline" (
-    builtins.readFile ./scripts/statusline.sh
-  );
+  statusLineScript = pkgs.writeShellScript "agy-statusline" ''
+    export PATH="${
+      lib.makeBinPath [
+        pkgs.jq
+        pkgs.coreutils
+      ]
+    }:$PATH"
+    ${builtins.readFile ./scripts/statusline.sh}
+  '';
 in
 {
   options.home-manager.dev.coding-agents = {
@@ -52,12 +52,10 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    mutableConfig.files."${config.home.homeDirectory}/.gemini/antigravity-cli/settings.json" =
-      lib.mkIf (config.programs.antigravity-cli.settings != { })
-        {
-          format = "json";
-          settings = config.programs.antigravity-cli.settings;
-        };
+    mutableConfig.files."${config.home.homeDirectory}/.gemini/antigravity-cli/settings.json" = {
+      format = "json";
+      source = config.home.file.".gemini/antigravity-cli/settings.json".source;
+    };
 
     programs.antigravity-cli = {
       enable = true;
@@ -68,13 +66,14 @@ in
         CONTEXT = shared.context;
         YEGGE = shared.yeggeInstructions;
       };
-      defaultModel = "gemini-3.6-flash";
+      defaultModel = "gemini-3.7-flash";
       permissions = {
-        allow = allowedCommands ++ directoryPermissions ++ allowedNetworkReads;
-        deny = deniedCommands;
+        allow = allowedCommands ++ allowedDirectoryPermissions ++ allowedNetworkReads;
+        deny = deniedCommands ++ deniedDirectoryPermissions;
       };
       skills = shared.guardedSkillsWithPlugins;
       settings = {
+        agentMode = "accept-edits";
         altScreenMode = "always";
         artifactReviewPolicy = "agent-decides";
         enableTelemetry = false;

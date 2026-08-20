@@ -152,6 +152,7 @@ let
     "nix log"
     "nix path-info"
     "nix search"
+    "nix-store"
     "nixfmt"
     "statix check"
   ];
