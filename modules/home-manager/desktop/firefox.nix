@@ -61,8 +61,9 @@ in
             "browser.ai.control.translations" = "available";
 
             "browser.newtabpage.activity-stream.showSponsored" = false;
-            "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
             "browser.newtabpage.activity-stream.showSponsoredCheckboxes" = false;
+            "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
+            "browser.newtabpage.activity-stream.system.showWeatherOptIn" = false;
             "browser.newtabpage.activity-stream.default.sites" = "";
             # disable annoyinh Ctrl+Q shortcut
             "browser.quitShortcut.disabled" = true;
