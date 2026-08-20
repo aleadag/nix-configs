@@ -49,12 +49,9 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    mutableConfig.files.${codexConfigPath} =
-      lib.mkIf (isTomlConfig && config.programs.codex.settings != { })
-        {
-          format = "toml";
-          settings = config.programs.codex.settings;
-        };
+    mutableConfig.files.${codexConfigPath} = lib.mkIf isTomlConfig {
+      source = config.home.file."${codexConfigDir}/config.toml".source;
+    };
 
     # The home-manager codex module writes `rules` as symlinks into the store,
     # but codex's execpolicy loader skips symlinked `.rules` files, so the

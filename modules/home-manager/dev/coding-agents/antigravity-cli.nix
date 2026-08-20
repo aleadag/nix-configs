@@ -53,7 +53,6 @@ in
 
   config = lib.mkIf cfg.enable {
     mutableConfig.files."${config.home.homeDirectory}/.gemini/antigravity-cli/settings.json" = {
-      format = "json";
       source = config.home.file.".gemini/antigravity-cli/settings.json".source;
     };
 
