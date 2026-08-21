@@ -15,7 +15,7 @@ in
     services.paneru.enable = true;
     services.paneru.settings = {
       options = {
-        animation_speed = 150;
+        animation_speed = 50;
         auto_center = true;
         focus_follows_mouse = false;
         mouse_follows_focus = false;
