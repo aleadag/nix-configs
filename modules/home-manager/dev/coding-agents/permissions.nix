@@ -13,6 +13,7 @@ let
   hasJust = config.home-manager.dev.enable or false;
   hasGo = config.home-manager.dev.go.enable or false;
   hasNode = config.home-manager.dev.node.enable or false;
+  hasBun = config.programs.bun.enable or false;
   hasNix = (config.home-manager.dev.nix.enable or false) || (config.home-manager.dev.enable or false);
   hasGh = config.home-manager.cli.git.gh.enable or false;
   hasContainers = config.home-manager.dev.coding-agents.permissions.containers.enable or false;
@@ -38,6 +39,7 @@ let
     "cd"
     "date"
     "echo"
+    "id"
     "ls"
     "find"
     "file"
@@ -47,10 +49,13 @@ let
     "tail"
     "wc"
     "pwd"
+    "ps"
     "rg"
     "sed"
     "stat"
+    "uname"
     "which"
+    "whoami"
     "test"
     "tree"
     "mkdir"
@@ -72,6 +77,7 @@ let
     "bd doctor"
     "bd dolt"
     "bd export"
+    "bd find-duplicates"
     "bd import"
     "bd info"
     "bd link"
@@ -95,17 +101,22 @@ let
   gitCommands = [
     "git add"
     "git branch"
+    "git cherry-pick"
     "git commit"
     "git diff"
     "git fetch"
+    "git grep"
     "git log"
     "git ls-files"
     "git ls-remote"
     "git remote -v"
     "git rev-parse"
     "git show"
-    "git stash list"
+    "git stash"
     "git status"
+    "git switch"
+    "git tag"
+    "git worktree"
   ];
 
   jjCommands = [
@@ -139,18 +150,43 @@ let
   ];
 
   nodeCommands = [
+    "corepack"
+    "node"
+    "npm ci"
+    "npm install"
     "npm run"
     "npm test"
-    "npm install"
-    "npm ci"
     "npx"
-    "node"
+    "pnpm build"
+    "pnpm check"
+    "pnpm dlx"
+    "pnpm install"
+    "pnpm lint"
+    "pnpm run"
+    "pnpm test"
+  ];
+
+  bunCommands = [
+    "bun add"
+    "bun build"
+    "bun check"
+    "bun create"
+    "bun dev"
+    "bun install"
+    "bun lint"
+    "bun pm"
+    "bun run"
+    "bun test"
+    "bun x"
+    "bun"
+    "bunx"
   ];
 
   nixCommands = [
     "nix build"
     "nix flake"
     "nix develop"
+    "nix shell"
     "nix fmt"
     "nix eval"
     "nix log"
@@ -162,9 +198,10 @@ let
   ];
 
   ghCommands = [
+    "gh api"
     "gh auth"
-    "gh pr"
     "gh issue"
+    "gh pr"
     "gh repo view"
     "gh run"
   ];
@@ -293,6 +330,7 @@ let
     ++ lib.optionals hasJust justCommands
     ++ lib.optionals hasGo goCommands
     ++ lib.optionals hasNode nodeCommands
+    ++ lib.optionals hasBun bunCommands
     ++ lib.optionals hasNix nixCommands
     ++ lib.optionals hasGh ghCommands
     ++ lib.optionals hasContainers containerAllowedCommands;
