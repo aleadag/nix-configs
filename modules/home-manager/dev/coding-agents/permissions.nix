@@ -16,6 +16,9 @@ let
   hasNix = (config.home-manager.dev.nix.enable or false) || (config.home-manager.dev.enable or false);
   hasGh = config.home-manager.cli.git.gh.enable or false;
   hasContainers = config.home-manager.dev.coding-agents.permissions.containers.enable or false;
+  hasCodex = config.home-manager.dev.coding-agents.codex.enable or false;
+  hasOpencode = config.home-manager.dev.coding-agents.opencode.enable or false;
+  hasAntigravity = config.home-manager.dev.coding-agents.antigravity-cli.enable or false;
 
   # Dangerous commands that should be explicitly denied
   deniedShellCommands = [
@@ -275,13 +278,11 @@ let
 
   # Read-only directories shared across coding agents: each agent's own config
   # (managed by Nix, so read-only) plus the immutable Nix store.
-  commonExternalDirectories = [
-    "${config.home.homeDirectory}/.config/opencode"
-    "${config.home.homeDirectory}/.claude"
-    "${config.home.homeDirectory}/.codex"
-    "${config.home.homeDirectory}/.gemini"
-    "/nix/store"
-  ];
+  commonExternalDirectories =
+    lib.optional hasOpencode "${config.home.homeDirectory}/.config/opencode"
+    ++ lib.optional hasCodex "${config.home.homeDirectory}/.codex"
+    ++ lib.optional hasAntigravity "${config.home.homeDirectory}/.gemini"
+    ++ [ "/nix/store" ];
 
   # Combine allowed commands gated by home-manager module availability
   allowedShellCommands =

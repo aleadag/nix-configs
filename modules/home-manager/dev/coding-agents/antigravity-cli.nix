@@ -41,14 +41,10 @@ let
   '';
 in
 {
-  options.home-manager.dev.coding-agents = {
-    antigravity-cli.enable = lib.mkEnableOption "Antigravity CLI config" // {
-      default =
-        config.home-manager.dev.coding-agents.enable
-        || config.home-manager.dev.coding-agents.gemini-cli.enable;
+  options.home-manager.dev.coding-agents.antigravity-cli = {
+    enable = lib.mkEnableOption "Antigravity CLI config" // {
+      default = config.home-manager.dev.coding-agents.enable;
     };
-
-    gemini-cli.enable = lib.mkEnableOption "Antigravity CLI config (deprecated alias)";
   };
 
   config = lib.mkIf cfg.enable {
