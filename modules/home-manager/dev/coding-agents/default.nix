@@ -13,7 +13,6 @@ in
   imports = [
     ./agent-deck.nix
     ./antigravity-cli.nix
-    ./claude-code.nix
     ./codex.nix
     ./coding-brain.nix
     ./opencode.nix
