@@ -69,7 +69,7 @@ in
       skills = shared.guardedSkillsWithPlugins;
       settings = {
         agentMode = "accept-edits";
-        altScreenMode = "always";
+        altScreenMode = "default";
         artifactReviewPolicy = "agent-decides";
         enableTelemetry = false;
         notifications = false;
@@ -78,6 +78,7 @@ in
           command = "${statusLineScript}";
           enabled = true;
         };
+        toolPermission = "proceed-in-sandbox";
       };
     };
   };
