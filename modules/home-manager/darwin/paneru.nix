@@ -26,6 +26,7 @@ in
           0.66
           0.75
         ];
+        virtual_workspace_animations = true;
       };
 
       bindings = {
