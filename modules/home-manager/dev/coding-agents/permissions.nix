@@ -94,6 +94,7 @@ let
     "git branch"
     "git commit"
     "git diff"
+    "git fetch"
     "git log"
     "git ls-files"
     "git ls-remote"
