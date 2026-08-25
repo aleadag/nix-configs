@@ -164,6 +164,7 @@ let
     "pnpm lint"
     "pnpm run"
     "pnpm test"
+    "pnpm typecheck"
   ];
 
   bunCommands = [

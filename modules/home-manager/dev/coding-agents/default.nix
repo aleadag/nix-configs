@@ -13,6 +13,7 @@ in
   imports = [
     ./agent-deck.nix
     ./antigravity-cli.nix
+    ./beads.nix
     ./codex.nix
     ./coding-brain.nix
     ./opencode.nix
@@ -32,8 +33,6 @@ in
     home.packages = with pkgs; [
       ctx7
       defuddle
-      llm-agents.beads
-      llm-agents.mardi-gras
     ];
   };
 }
