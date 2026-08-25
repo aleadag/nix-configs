@@ -61,7 +61,9 @@ let
     "cat"
     "cd"
     "date"
+    "df"
     "diff"
+    "du"
     "echo"
     "file"
     "find"
@@ -76,6 +78,8 @@ let
     "pwd"
     "rg"
     "sed"
+    "sha256sum"
+    "shasum"
     "sort"
     "stat"
     "tail"
@@ -126,6 +130,7 @@ let
 
   # Shared canonical network domains allowed for coding agents
   commonNetworkDomains = [
+    "brew.sh"
     "cachix.org"
     "crates.io"
     "docker.com"
