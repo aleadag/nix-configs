@@ -22,8 +22,11 @@ let
     deniedShellCommands
     ;
 
+  skillCommands = shared.makeSkillCommandAllowances "${config.home.homeDirectory}/.config/opencode/skills" shared.guardedSkillsWithPlugins;
+  allAllowedShellCommands = allowedShellCommands ++ skillCommands;
+
   bashPattern = command: "${command}*";
-  allowPatterns = map bashPattern allowedShellCommands;
+  allowPatterns = map bashPattern allAllowedShellCommands;
   externalDirectoryPermissions = lib.genAttrs (map (
     directory: "${directory}/**"
   ) commonExternalDirectories) (lib.const "allow");
@@ -36,7 +39,7 @@ let
     lib.listToAttrs (
       map (
         command: lib.nameValuePair (bashPattern command) (lib.hm.dag.entryAfter [ "*" ] "allow")
-      ) allowedShellCommands
+      ) allAllowedShellCommands
     )
     // lib.listToAttrs (
       map (

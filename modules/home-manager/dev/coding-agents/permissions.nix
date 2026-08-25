@@ -92,6 +92,7 @@ let
     "whoami"
     # Nix system tools
     "nix"
+    "nix-build"
     "nix-store"
     "nix-shell"
   ];

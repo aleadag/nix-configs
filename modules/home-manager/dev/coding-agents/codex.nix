@@ -35,12 +35,14 @@ let
   xdgConfigHome = lib.removePrefix config.home.homeDirectory config.xdg.configHome;
   codexConfigDir = if useXdgDirectories then "${xdgConfigHome}/codex" else ".codex";
   codexConfigPath = "${config.home.homeDirectory}/${codexConfigDir}/config.toml";
+  skillCommands = shared.makeSkillCommandAllowances "${config.home.homeDirectory}/${codexConfigDir}/skills" shared.guardedSkillsWithPlugins;
   renderPrefixRule =
     decision: pattern:
     "prefix_rule(pattern=${builtins.toJSON pattern}, decision=${builtins.toJSON decision})";
+  allAllowedShellCommands = allowedShellCommands ++ skillCommands;
   codexPrefixRules = map (command: lib.strings.splitString " " command);
   basicRules =
-    lib.concatMapStringsSep "\n" (renderPrefixRule "allow") (codexPrefixRules allowedShellCommands)
+    lib.concatMapStringsSep "\n" (renderPrefixRule "allow") (codexPrefixRules allAllowedShellCommands)
     + "\n"
     + lib.concatMapStringsSep "\n" (renderPrefixRule "forbidden") (codexPrefixRules deniedShellCommands)
     + "\n";

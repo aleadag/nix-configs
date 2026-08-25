@@ -29,6 +29,9 @@ let
   allowedDirectoryPermissions = map (directory: "read_file(${directory})") commonExternalDirectories;
   deniedDirectoryPermissions = map (directory: "write_file(${directory})") commonExternalDirectories;
 
+  skillCommands = shared.makeSkillCommandAllowances "${config.home.homeDirectory}/.gemini/config/skills" shared.guardedSkillsWithPlugins;
+  allowedSkillCommands = map (command: "command(${command})") skillCommands;
+
   statusLineScript = pkgs.writeShellScript "agy-statusline" ''
     export PATH="${
       lib.makeBinPath [
@@ -62,7 +65,8 @@ in
       };
       defaultModel = "gemini-3.7-flash";
       permissions = {
-        allow = allowedCommands ++ allowedDirectoryPermissions ++ allowedNetworkReads;
+        allow =
+          allowedCommands ++ allowedSkillCommands ++ allowedDirectoryPermissions ++ allowedNetworkReads;
         deny = deniedCommands ++ deniedDirectoryPermissions;
       };
       skills = shared.guardedSkillsWithPlugins;
