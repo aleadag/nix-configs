@@ -25,8 +25,7 @@ let
 
   allowedCommands = map (command: "command(${command})") allowedShellCommands;
   deniedCommands = map (command: "command(${command})") deniedShellCommands;
-  networkDomains = lib.unique (map (lib.removePrefix "*.") commonNetworkDomains);
-  allowedNetworkReads = map (domain: "read_url(${domain})") networkDomains;
+  allowedNetworkReads = map (domain: "read_url(${domain})") commonNetworkDomains;
   allowedDirectoryPermissions = map (directory: "read_file(${directory})") commonExternalDirectories;
   deniedDirectoryPermissions = map (directory: "write_file(${directory})") commonExternalDirectories;
 

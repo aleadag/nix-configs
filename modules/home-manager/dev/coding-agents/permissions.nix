@@ -6,335 +6,159 @@
 }:
 
 let
-  # Direct access to home-manager options with fallback to false
-  hasJujutsu = config.home-manager.cli.jujutsu.enable or false;
-  hasGit = (config.home-manager.cli.git.enable or false) || (config.home-manager.dev.enable or false);
-  hasBeads = config.home-manager.dev.coding-agents.enable or false;
-  hasJust = config.home-manager.dev.enable or false;
-  hasGo = config.home-manager.dev.go.enable or false;
-  hasNode = config.home-manager.dev.node.enable or false;
-  hasBun = config.programs.bun.enable or false;
-  hasNix = (config.home-manager.dev.nix.enable or false) || (config.home-manager.dev.enable or false);
-  hasGh = config.home-manager.cli.git.gh.enable or false;
-  hasContainers = config.home-manager.dev.coding-agents.permissions.containers.enable or false;
-  hasCodex = config.home-manager.dev.coding-agents.codex.enable or false;
-  hasOpencode = config.home-manager.dev.coding-agents.opencode.enable or false;
-  hasAntigravity = config.home-manager.dev.coding-agents.antigravity-cli.enable or false;
+  permCfg = config.home-manager.dev.coding-agents.permissions or { };
+  hasContainers = permCfg.containers.enable or false;
+  autoDiscover = permCfg.autoDiscoverPackages or true;
+  binaryOverrides = permCfg.packageBinaryOverrides or { };
+  extraAllowed = permCfg.allowedCommands or [ ];
+  extraDenied = permCfg.deniedCommands or [ ];
 
-  # Dangerous commands that should be explicitly denied
-  deniedShellCommands = [
-    "rm -rf"
-    "git push --force"
-    "git reset --hard"
-    "git clean -f"
-    "terraform apply"
-    "terraform destroy"
-    "sbt publish"
-  ]
-  ++ lib.optionals hasContainers containerDeniedCommands;
+  containerDeniedCommands =
+    lib.concatMap
+      (
+        runtime:
+        map (cmd: "${runtime} ${cmd}") [
+          "system prune"
+          "system reset"
+          "container prune"
+          "image prune"
+          "network prune"
+          "volume prune"
+          "pod prune"
+          "builder prune"
+          "buildx prune"
+          "machine reset"
+          "machine rm"
+        ]
+      )
+      [
+        "podman"
+        "docker"
+      ];
 
-  # Base Unix and text processing tools (always allowed)
-  baseCommands = [
+  # Dangerous commands that should be explicitly denied / prompted
+  deniedShellCommands = lib.unique (
+    [
+      "rm -rf"
+      "git push"
+      "git reset --hard"
+      "git clean"
+      "jj git push"
+      "bd purge"
+      "nix-collect-garbage"
+      "nix store delete"
+      "nix-store --delete"
+      "terraform apply"
+      "terraform destroy"
+      "sbt publish"
+    ]
+    ++ lib.optionals hasContainers containerDeniedCommands
+    ++ extraDenied
+  );
+
+  # Base Unix and text processing builtins (always allowed)
+  baseShellCommands = [
     "cat"
     "cd"
     "date"
+    "diff"
     "echo"
-    "id"
-    "ls"
-    "find"
     "file"
+    "find"
     "grep"
     "head"
+    "id"
     "jq"
-    "tail"
-    "wc"
-    "pwd"
+    "ls"
+    "make"
+    "mkdir"
     "ps"
+    "pwd"
     "rg"
     "sed"
+    "sort"
     "stat"
-    "uname"
-    "which"
-    "whoami"
+    "tail"
     "test"
     "tree"
-    "mkdir"
-    "sort"
+    "uname"
     "uniq"
-    "diff"
-    "make"
-  ];
-
-  bdCommands = [
-    "bd blocked"
-    "bd children"
-    "bd close"
-    "bd comment"
-    "bd comments"
-    "bd context"
-    "bd create"
-    "bd dep"
-    "bd doctor"
-    "bd dolt"
-    "bd export"
-    "bd find-duplicates"
-    "bd import"
-    "bd info"
-    "bd link"
-    "bd list"
-    "bd memories"
-    "bd note"
-    "bd prime"
-    "bd priority"
-    "bd ready"
-    "bd recall"
-    "bd recompute-blocked"
-    "bd remember"
-    "bd reopen"
-    "bd search"
-    "bd show"
-    "bd status"
-    "bd update"
-    "bd version"
-  ];
-
-  gitCommands = [
-    "git add"
-    "git branch"
-    "git cherry-pick"
-    "git commit"
-    "git diff"
-    "git fetch"
-    "git grep"
-    "git log"
-    "git ls-files"
-    "git ls-remote"
-    "git remote -v"
-    "git rev-parse"
-    "git show"
-    "git stash"
-    "git status"
-    "git switch"
-    "git tag"
-    "git worktree"
-  ];
-
-  jjCommands = [
-    "jj abandon"
-    "jj bookmark"
-    "jj commit"
-    "jj desc"
-    "jj describe"
-    "jj diff"
-    "jj git"
-    "jj log"
-    "jj new"
-    "jj root"
-    "jj show"
-    "jj status"
-  ];
-
-  justCommands = [
-    "just build"
-    "just lint"
-    "just test"
-    "just fmt"
-  ];
-
-  goCommands = [
-    "go build"
-    "go test"
-    "go vet"
-    "go fmt"
-    "go mod tidy"
-  ];
-
-  nodeCommands = [
-    "corepack"
-    "node"
-    "npm ci"
-    "npm install"
-    "npm run"
-    "npm test"
-    "npx"
-    "pnpm build"
-    "pnpm check"
-    "pnpm dlx"
-    "pnpm install"
-    "pnpm lint"
-    "pnpm run"
-    "pnpm test"
-    "pnpm typecheck"
-  ];
-
-  bunCommands = [
-    "bun add"
-    "bun build"
-    "bun check"
-    "bun create"
-    "bun dev"
-    "bun install"
-    "bun lint"
-    "bun pm"
-    "bun run"
-    "bun test"
-    "bun x"
-    "bun"
-    "bunx"
-  ];
-
-  nixCommands = [
-    "nix build"
-    "nix flake"
-    "nix develop"
-    "nix shell"
-    "nix fmt"
-    "nix eval"
-    "nix log"
-    "nix path-info"
-    "nix search"
+    "wc"
+    "which"
+    "whoami"
+    # Nix system tools
+    "nix"
     "nix-store"
-    "nixfmt"
-    "statix check"
+    "nix-shell"
   ];
 
-  ghCommands = [
-    "gh api"
-    "gh auth"
-    "gh issue"
-    "gh pr"
-    "gh repo view"
-    "gh run"
+  # Auto-discover package binaries from config.home.packages
+  discoveredPackageCommands =
+    if autoDiscover && (config ? home.packages) then
+      lib.concatMap (
+        pkg:
+        let
+          pname = pkg.pname or (lib.getName pkg);
+        in
+        binaryOverrides.${pname} or (
+          if (pkg ? meta.mainProgram) && pkg.meta.mainProgram != null && pkg.meta.mainProgram != "" then
+            [ pkg.meta.mainProgram ]
+          else
+            [ (lib.getName pkg) ]
+        )
+      ) config.home.packages
+    else
+      [ ];
+
+  containerAllowedCommands = [
+    "podman"
+    "docker"
+    "podman-compose"
+    "docker-compose"
   ];
 
-  commonContainerAllowedCommands = [
-    "ps"
-    "images"
-    "inspect"
-    "logs"
-    "info"
-    "version"
-    "port"
-    "top"
-    "stats"
-    "container inspect"
-    "container ls"
-    "image inspect"
-    "image ls"
-    "network inspect"
-    "network ls"
-    "volume inspect"
-    "volume ls"
-    "system df"
-  ];
+  allowedShellCommands = lib.unique (
+    baseShellCommands
+    ++ discoveredPackageCommands
+    ++ lib.optionals hasContainers containerAllowedCommands
+    ++ extraAllowed
+  );
 
-  commonContainerDeniedCommands = [
-    "system prune"
-    "container prune"
-    "image prune"
-    "network prune"
-    "volume prune"
-  ];
-
-  containerAllowedCommands =
-    lib.concatMap (runtime: map (command: "${runtime} ${command}") commonContainerAllowedCommands) [
-      "podman"
-      "docker"
-    ]
-    ++ map (command: "podman ${command}") [
-      "pod inspect"
-      "pod ps"
-      "machine inspect"
-      "machine list"
-    ]
-    ++ [
-      "podman-compose --version"
-      "docker-compose version"
-    ];
-
-  containerDeniedCommands =
-    lib.concatMap (runtime: map (command: "${runtime} ${command}") commonContainerDeniedCommands) [
-      "podman"
-      "docker"
-    ]
-    ++ map (command: "podman ${command}") [
-      "system reset"
-      "pod prune"
-      "machine reset"
-      "machine rm"
-    ]
-    ++ map (command: "docker ${command}") [
-      "builder prune"
-      "buildx prune"
-    ];
-
-  # Network domains shared across coding agents. Exact apex entries accompany
-  # wildcard entries because backend wildcard semantics exclude the apex.
+  # Shared canonical network domains allowed for coding agents
   commonNetworkDomains = [
     "cachix.org"
-    "*.cachix.org"
     "crates.io"
-    "*.crates.io"
     "docker.com"
-    "*.docker.com"
     "docker.io"
-    "*.docker.io"
-    "github.com"
-    "*.github.com"
-    "githubusercontent.com"
-    "*.githubusercontent.com"
-    "gitlab.com"
-    "*.gitlab.com"
-    "golang.org"
-    "*.golang.org"
-    "go.dev"
-    "*.go.dev"
-    "goproxy.io"
-    "*.goproxy.io"
     "ghcr.io"
-    "*.ghcr.io"
+    "github.com"
+    "githubusercontent.com"
+    "gitlab.com"
+    "go.dev"
+    "golang.org"
+    "goproxy.io"
     "nix-community.org"
-    "*.nix-community.org"
     "nixos.org"
-    "*.nixos.org"
     "nodejs.org"
-    "*.nodejs.org"
     "npmjs.org"
-    "*.npmjs.org"
     "production.cloudflare.docker.com"
     "pypi.org"
-    "*.pypi.org"
     "pythonhosted.org"
-    "*.pythonhosted.org"
     "quay.io"
-    "*.quay.io"
     "rust-lang.org"
-    "*.rust-lang.org"
     "rustup.rs"
-    "*.rustup.rs"
   ];
 
   # Read-only directories shared across coding agents: each agent's own config
   # (managed by Nix, so read-only) plus the immutable Nix store.
   commonExternalDirectories =
-    lib.optional hasOpencode "${config.home.homeDirectory}/.config/opencode"
-    ++ lib.optional hasCodex "${config.home.homeDirectory}/.codex"
-    ++ lib.optional hasAntigravity "${config.home.homeDirectory}/.gemini"
+    lib.optional (config.home-manager.dev.coding-agents.opencode.enable or false
+    ) "${config.home.homeDirectory}/.config/opencode"
+    ++ lib.optional (config.home-manager.dev.coding-agents.codex.enable or false
+    ) "${config.home.homeDirectory}/.codex"
+    ++ lib.optional (config.home-manager.dev.coding-agents.antigravity-cli.enable or false
+    ) "${config.home.homeDirectory}/.gemini"
     ++ [ "/nix/store" ];
-
-  # Combine allowed commands gated by home-manager module availability
-  allowedShellCommands =
-    baseCommands
-    ++ lib.optionals hasBeads bdCommands
-    ++ lib.optionals hasGit gitCommands
-    ++ lib.optionals hasJujutsu jjCommands
-    ++ lib.optionals hasJust justCommands
-    ++ lib.optionals hasGo goCommands
-    ++ lib.optionals hasNode nodeCommands
-    ++ lib.optionals hasBun bunCommands
-    ++ lib.optionals hasNix nixCommands
-    ++ lib.optionals hasGh ghCommands
-    ++ lib.optionals hasContainers containerAllowedCommands;
 in
 {
   inherit

@@ -22,7 +22,11 @@ let
     deniedShellCommands
     ;
 
-  codexNetworkDomains = lib.genAttrs commonNetworkDomains (lib.const "allow");
+  codexDomains = lib.concatMap (domain: [
+    domain
+    "*.${domain}"
+  ]) commonNetworkDomains;
+  codexNetworkDomains = lib.genAttrs codexDomains (lib.const "allow");
 
   codexPackage = pkgs.llm-agents.codex;
   codexVersion = lib.getVersion codexPackage;
