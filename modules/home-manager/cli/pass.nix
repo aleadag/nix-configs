@@ -16,6 +16,11 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    home-manager.dev.coding-agents.permissions.deniedCommands = [
+      "pass"
+      "gpg"
+    ];
+
     programs = {
       password-store = {
         enable = true;

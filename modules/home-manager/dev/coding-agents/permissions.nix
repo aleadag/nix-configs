@@ -122,12 +122,14 @@ let
     "docker-compose"
   ];
 
-  allowedShellCommands = lib.unique (
+  candidateAllowedShellCommands = lib.unique (
     baseShellCommands
     ++ discoveredPackageCommands
     ++ lib.optionals hasContainers containerAllowedCommands
     ++ extraAllowed
   );
+
+  allowedShellCommands = lib.subtractLists deniedShellCommands candidateAllowedShellCommands;
 
   # Shared canonical network domains allowed for coding agents
   commonNetworkDomains = [
