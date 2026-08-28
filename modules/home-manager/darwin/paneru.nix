@@ -61,6 +61,7 @@ in
         window_virtualmovenum_9 = "cmd + shift - o";
         window_virtualmovenum_10 = "cmd + shift - p";
         window_nextdisplay = "cmd + ctrl + shift - n";
+        mouse_nextdisplay = "cmd + ctrl + shift - m";
         window_center = "cmd + shift - c";
         window_resize = "cmd - .";
         window_fullwidth = "cmd + shift - m";
