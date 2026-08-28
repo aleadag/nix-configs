@@ -39,7 +39,7 @@
       };
     }
     // lib.optionalAttrs (options ? stylix.cursor) {
-      cursor = {
+      cursor = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
         package = pkgs.catppuccin-cursors.frappeDark;
         name = "catppuccin-frappe-dark-cursors";
         size = 24;
