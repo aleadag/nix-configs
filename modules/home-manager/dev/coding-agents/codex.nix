@@ -98,6 +98,7 @@ in
           memories = true;
           network_proxy = {
             enabled = true;
+            allow_local_binding = true;
             domains = codexNetworkDomains;
           };
         };
