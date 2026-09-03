@@ -63,7 +63,6 @@ in
         CONTEXT = shared.context;
         YEGGE = shared.yeggeInstructions;
       };
-      defaultModel = "gemini-3.7-flash";
       permissions = {
         allow =
           allowedCommands ++ allowedSkillCommands ++ allowedDirectoryPermissions ++ allowedNetworkReads;
@@ -71,6 +70,7 @@ in
       };
       skills = shared.guardedSkillsWithPlugins;
       settings = {
+        model = "Gemini 3.8 Flash (High)";
         agentMode = "accept-edits";
         altScreenMode = "default";
         artifactReviewPolicy = "agent-decides";
