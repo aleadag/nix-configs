@@ -50,6 +50,11 @@ in
       packageBinaryOverrides = lib.mkOption {
         type = lib.types.attrsOf (lib.types.listOf lib.types.str);
         default = {
+          python3 = [
+            "python"
+            "python3"
+            "python3.14"
+          ];
           coreutils = [
             "cat"
             "cp"
