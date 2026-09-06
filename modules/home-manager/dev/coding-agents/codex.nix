@@ -102,7 +102,7 @@ in
             domains = codexNetworkDomains;
           };
         };
-        model = "gpt-5.6-sol";
+        model = "gpt-6-astra";
         model_reasoning_effort = "medium";
         plan_mode_reasoning_effort = "high";
         personality = "pragmatic";
