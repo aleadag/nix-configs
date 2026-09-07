@@ -32,7 +32,7 @@ in
       [
         audacious
         feishu
-        libreoffice-fresh
+        libreoffice-stable
       ]
       ++ (lib.optionals stdenv.hostPlatform.isLinux [
         telegram-desktop
