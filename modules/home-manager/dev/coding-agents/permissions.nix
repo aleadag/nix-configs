@@ -90,6 +90,7 @@ let
     "tar"
     "test"
     "tree"
+    "type"
     "uname"
     "uniq"
     "wc"
