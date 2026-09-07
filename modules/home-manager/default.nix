@@ -37,5 +37,7 @@
       username = lib.mkOptionDefault "awang";
       homeDirectory = lib.mkOptionDefault "/home/awang";
     };
+
+    manual.manpages.enable = false;
   };
 }
