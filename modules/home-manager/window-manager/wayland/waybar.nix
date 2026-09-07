@@ -384,6 +384,10 @@ in
               padding: 0px 6px;
               border-radius: 4px;
               margin: 0 2px;
+              color: @base05;
+            }
+            #workspaces button:hover {
+              background: @base02;
             }
             #workspaces button.active,
             #workspaces button.focused {
