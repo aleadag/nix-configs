@@ -172,10 +172,10 @@ install the following packages:
 The Home Manager Niri module installs `niri-session`, so UWSM is not required.
 For example, `mbx` launches Niri directly from `tuigreet`:
 
-```bash
+```toml
 # /etc/greetd/config.toml
 [default_session]
-command = "tuigreet --time --cmd 'niri-session' --theme 'text=lightcyan;prompt=green;input=lightblue;border=lightmagenta;title=magenta;greet=lightmagenta;action=lightblue;button=lightred;container=black;time=lightgreen'"
+command = "tuigreet --time --cmd 'niri-session' --theme 'border=#8caaee;title=#ca9ee6;greet=#babbf1;prompt=#babbf1;text=#c6d0f5;input=#c6d0f5;action=#8caaee;button=#ca9ee6;time=#a5adce;container=#303446'"
 user = "greeter"
 ```
 
