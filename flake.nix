@@ -212,6 +212,7 @@
                   neovim-standalone
                   nil
                   nixfmt
+                  sops
                   statix
                 ];
               };
