@@ -209,6 +209,7 @@
             devShells = {
               default = pkgs.mkShell {
                 packages = with pkgs; [
+                  age
                   neovim-standalone
                   nil
                   nixfmt
