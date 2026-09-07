@@ -20,11 +20,13 @@
 keys:
   - &user_alexander age1lhvvp7hnd8pweejp7804lznq65mz4zxjn4wut0zeyxs0vr7cgqrsd4emtx
   - &host_macmini53 age14w8tu6fnfcc9sdfptkzjsf8nm6s4fjprp7rqnkrzcafujm2xrvdqz0hnkw
+  - &host_pvg1 age1namyp4j4nsa6k40pyqqw8lwvtsn955tjyevmy5s0p3xj8s9zw40qjwv7kk
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:
     - age:
       - *user_alexander
+      - *host_pvg1
       - *host_macmini53
   - path_regex: hosts/home-manager/macmini53/secrets\.yaml$
     key_groups:
