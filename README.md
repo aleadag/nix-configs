@@ -170,6 +170,7 @@ install the following packages:
 
 - [greetd](https://git.sr.ht/~kennylevinsen/greetd): The login manager
 - [tuigreet](https://github.com/apognu/tuigreet): The TUI greeter for greetd
+- [udisks2](https://wiki.archlinux.org/title/Udisks): Required by `udiskie` for removable media automounting (otherwise `udiskie.service` fails)
 
 The Home Manager Niri module installs `niri-session`, so UWSM is not required.
 For example, `mbx` launches Niri directly from `tuigreet`:
@@ -229,3 +230,28 @@ If you have updated a Firefox extension (like Tridactyl) in your Nix configurati
     ```
     Firefox will rebuild this file and pick up the new symlink targets on the next launch.
 4.  **Check for Manual Installs**: Go to `about:addons`. If an extension has a "Remove" button instead of just "Disable", it might have been installed manually, which can override the Nix-managed version. Remove the manual install to allow Nix to manage it.
+
+### `udiskie.service` fails or systemd user session degraded (non-NixOS Linux)
+
+The `window-manager` module enables `services.udiskie.enable = true;` to automount removable media. `udiskie` communicates with `udisks2` over D-Bus (`org.freedesktop.UDisks2`). On generic Linux distributions (like Arch Linux), `udisks2` is a root-level system daemon and is not installed by default.
+
+**Symptom:**
+Home Manager activation reports:
+```text
+Systemd user instance is degraded:
+● udiskie.service loaded failed failed udiskie mount daemon
+```
+And `journalctl --user -u udiskie` shows:
+```text
+GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name is not activatable
+```
+
+**Fix:**
+- **To enable automounting:** Install `udisks2` via the host package manager (D-Bus will activate it on demand):
+  ```bash
+  sudo pacman -S udisks2
+  ```
+- **To disable automounting on a specific host:** In the host's configuration (e.g. `hosts/home-manager/<host>/default.nix`), disable the service:
+  ```nix
+  services.udiskie.enable = false;
+  ```
