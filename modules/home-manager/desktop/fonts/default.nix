@@ -11,8 +11,10 @@ let
 
   defaultFonts = config.fonts.fontconfig.defaultFonts;
   sansSerif = if defaultFonts.sansSerif != [ ] then lib.head defaultFonts.sansSerif else "sans-serif";
-  monospace = if defaultFonts.monospace != [ ] then lib.head defaultFonts.monospace else "monospace";
   serif = if defaultFonts.serif != [ ] then lib.head defaultFonts.serif else "serif";
+  monospace = if defaultFonts.monospace != [ ] then lib.head defaultFonts.monospace else "monospace";
+  cjkEnabled = config ? stylix.fonts.cjk && config.stylix.fonts.cjk.enable;
+  cjk = if cjkEnabled then config.stylix.fonts.cjk else null;
 in
 {
   options.home-manager.desktop.fonts = {
@@ -24,6 +26,14 @@ in
   config = lib.mkIf cfg.enable {
     fonts.fontconfig = {
       enable = true;
+      antialiasing = lib.mkDefault true;
+      hinting = lib.mkDefault "slight";
+      subpixelRendering = lib.mkDefault "rgb";
+      defaultFonts = lib.mkIf cjkEnabled {
+        monospace = lib.mkAfter [ cjk.monospace.name ];
+        sansSerif = lib.mkAfter [ cjk.sansSerif.name ];
+        serif = lib.mkAfter [ cjk.serif.name ];
+      };
       configFile = lib.mkIf isLinux {
         "49-generic-aliases" = {
           enable = true;
@@ -64,18 +74,6 @@ in
                 </edit>
               </match>
               <match target="pattern">
-                <test name="family" qual="any"><string>Noto Sans</string></test>
-                <edit name="family" mode="prepend" binding="strong">
-                  <string>${sansSerif}</string>
-                </edit>
-              </match>
-              <match target="pattern">
-                <test name="family" qual="any"><string>Noto Sans SC</string></test>
-                <edit name="family" mode="prepend" binding="strong">
-                  <string>${sansSerif}</string>
-                </edit>
-              </match>
-              <match target="pattern">
                 <test name="family" qual="any"><string>mono</string></test>
                 <edit name="family" mode="prepend" binding="strong">
                   <string>${monospace}</string>
@@ -87,18 +85,41 @@ in
                   <string>${monospace}</string>
                 </edit>
               </match>
-              <match target="pattern">
-                <test name="family" qual="any"><string>Noto Serif</string></test>
-                <edit name="family" mode="prepend" binding="strong">
-                  <string>${serif}</string>
-                </edit>
-              </match>
-              <match target="pattern">
-                <test name="family" qual="any"><string>Noto Serif SC</string></test>
-                <edit name="family" mode="prepend" binding="strong">
-                  <string>${serif}</string>
-                </edit>
-              </match>
+              ${lib.optionalString cjkEnabled ''
+                <match target="pattern">
+                  <test name="family" qual="any"><string>Noto Sans SC</string></test>
+                  <edit name="family" mode="prepend" binding="strong">
+                    <string>${cjk.sansSerif.name}</string>
+                  </edit>
+                </match>
+                <match target="pattern">
+                  <test name="family" qual="any"><string>Noto Serif SC</string></test>
+                  <edit name="family" mode="prepend" binding="strong">
+                    <string>${cjk.serif.name}</string>
+                  </edit>
+                </match>
+                <alias>
+                  <family>${sansSerif}</family>
+                  <prefer>
+                    <family>${sansSerif}</family>
+                    <family>${cjk.sansSerif.name}</family>
+                  </prefer>
+                </alias>
+                <alias>
+                  <family>${serif}</family>
+                  <prefer>
+                    <family>${serif}</family>
+                    <family>${cjk.serif.name}</family>
+                  </prefer>
+                </alias>
+                <alias>
+                  <family>${monospace}</family>
+                  <prefer>
+                    <family>${monospace}</family>
+                    <family>${cjk.monospace.name}</family>
+                  </prefer>
+                </alias>
+              ''}
             </fontconfig>
           '';
         };
@@ -125,6 +146,7 @@ in
         <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
         <fontconfig>
           <cachedir prefix="xdg">fontconfig</cachedir>
+          <include ignore_missing="yes">/etc/fonts/fonts.conf</include>
           <include ignore_missing="yes">${config.home.profileDirectory}/etc/fonts/fonts.conf</include>
           <include ignore_missing="yes">${config.home.profileDirectory}/etc/fonts/conf.d</include>
           <include ignore_missing="yes">conf.d</include>

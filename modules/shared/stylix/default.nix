@@ -5,7 +5,56 @@
   pkgs,
   ...
 }:
+let
+  fontType = lib.types.submodule {
+    options = {
+      package = lib.mkOption {
+        type = lib.types.package;
+        description = "Package providing the CJK font.";
+      };
+      name = lib.mkOption {
+        type = lib.types.str;
+        description = "Font family name.";
+      };
+    };
+  };
+  cjkPackages = lib.unique [
+    config.stylix.fonts.cjk.sansSerif.package
+    config.stylix.fonts.cjk.serif.package
+    config.stylix.fonts.cjk.monospace.package
+  ];
+in
 {
+  options.stylix.fonts.cjk = {
+    enable = lib.mkEnableOption "CJK fallback font support" // {
+      default = config.stylix.enable;
+    };
+    sansSerif = lib.mkOption {
+      type = fontType;
+      default = {
+        package = pkgs.noto-fonts-cjk-sans;
+        name = "Noto Sans CJK SC";
+      };
+      description = "CJK sans-serif font.";
+    };
+    serif = lib.mkOption {
+      type = fontType;
+      default = {
+        package = pkgs.noto-fonts-cjk-serif;
+        name = "Noto Serif CJK SC";
+      };
+      description = "CJK serif font.";
+    };
+    monospace = lib.mkOption {
+      type = fontType;
+      default = {
+        package = pkgs.noto-fonts-cjk-sans;
+        name = "Noto Sans Mono CJK SC";
+      };
+      description = "CJK monospace font.";
+    };
+  };
+
   config = {
     stylix = {
       enable = true;
@@ -25,12 +74,12 @@
           name = "Hack Nerd Font Mono";
         };
         sansSerif = {
-          package = pkgs.noto-fonts-cjk-sans;
-          name = "Noto Sans CJK SC";
+          package = pkgs.noto-fonts;
+          name = "Noto Sans";
         };
         serif = {
-          package = pkgs.noto-fonts-cjk-serif;
-          name = "Noto Serif CJK SC";
+          package = pkgs.noto-fonts;
+          name = "Noto Serif";
         };
         emoji = {
           package = pkgs.noto-fonts-color-emoji;
@@ -70,5 +119,11 @@
     # activation. On standalone Linux (genericLinux) the dconf D-Bus service is
     # not available, so activation fails; disable dconf there.
     dconf.enable = lib.mkIf config.targets.genericLinux.enable false;
+  }
+  // lib.optionalAttrs (options ? home.packages) {
+    home.packages = lib.mkIf (config.stylix.enable && config.stylix.fonts.cjk.enable) cjkPackages;
+  }
+  // lib.optionalAttrs (options ? fonts.packages) {
+    fonts.packages = lib.mkIf (config.stylix.enable && config.stylix.fonts.cjk.enable) cjkPackages;
   };
 }

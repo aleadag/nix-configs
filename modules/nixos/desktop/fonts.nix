@@ -1,6 +1,5 @@
 {
   config,
-  pkgs,
   lib,
   ...
 }:
@@ -23,21 +22,13 @@
     fonts = {
       fontDir.enable = true;
 
-      packages = with pkgs; [
-        noto-fonts
-        noto-fonts-cjk-sans
-        noto-fonts-cjk-serif
-        noto-fonts-color-emoji
-      ];
-
       fontconfig = {
         # fix emojis in Firefox
         useEmbeddedBitmaps = true;
-        defaultFonts = {
-          monospace = [ "Noto Sans Mono" ];
-          serif = [ "Noto Serif" ];
-          sansSerif = [ "Noto Sans" ];
-          emoji = [ "Noto Color Emoji" ];
+        defaultFonts = lib.mkIf (config ? stylix.fonts.cjk && config.stylix.fonts.cjk.enable) {
+          monospace = lib.mkAfter [ config.stylix.fonts.cjk.monospace.name ];
+          serif = lib.mkAfter [ config.stylix.fonts.cjk.serif.name ];
+          sansSerif = lib.mkAfter [ config.stylix.fonts.cjk.sansSerif.name ];
         };
       };
     };
