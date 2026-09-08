@@ -413,8 +413,7 @@ rule-providers:
       - DOMAIN-SUFFIX,vegemitepie.com
       - DOMAIN-SUFFIX,volcengine.douyinclientapi.com
       # Snapshot of currently resolved node IPs; refresh when subscriptions change.
-      - IP-CIDR,45.13.196.249/32,no-resolve
-      - IP-CIDR,45.13.197.250/32,no-resolve
+      - IP-CIDR,45.13.196.0/23,no-resolve
       - IP-CIDR,45.89.218.53/32,no-resolve
       - IP-CIDR,45.141.47.164/32,no-resolve
       - IP-CIDR,84.75.202.105/32,no-resolve
