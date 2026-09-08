@@ -418,11 +418,7 @@ rule-providers:
       - IP-CIDR,45.141.47.164/32,no-resolve
       - IP-CIDR,84.75.202.105/32,no-resolve
       - IP-CIDR,103.181.164.2/32,no-resolve
-      - IP-CIDR,113.46.237.97/32,no-resolve
-      - IP-CIDR,113.46.237.98/32,no-resolve
-      - IP-CIDR,113.46.237.99/32,no-resolve
-      - IP-CIDR,113.46.237.220/32,no-resolve
-      - IP-CIDR,113.46.237.225/32,no-resolve
+      - IP-CIDR,113.46.237.0/24,no-resolve
       - IP-CIDR,185.49.35.57/32,no-resolve
       - IP-CIDR,193.8.125.74/32,no-resolve
       - IP-CIDR,193.187.118.99/32,no-resolve
