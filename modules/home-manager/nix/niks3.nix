@@ -66,7 +66,7 @@ in
 
       # Point Nix/AWS SDKs to these specific files
       home.sessionVariables = {
-        NIKS3_SERVER_URL = "http://cache.dev.ticos.cloud:7788";
+        NIKS3_SERVER_URL = "https://cache.dev.tisvc.com";
         AWS_SHARED_CREDENTIALS_FILE = config.sops.templates."niks3-aws-credentials".path;
       };
     })
