@@ -87,6 +87,10 @@ in
         ];
       };
       settings = {
+        agents = {
+          default_subagent_model = "gpt-5.6-luna";
+          default_subagent_reasoning_effort = "high";
+        };
         analytics.enabled = false;
         approval_policy = "on-request";
         approvals_reviewer = "auto_review";
