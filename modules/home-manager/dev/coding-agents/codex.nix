@@ -94,6 +94,7 @@ in
         features = {
           apps = false;
           code_mode_host = true;
+          context_management.experimental_mode = true;
           hooks = true;
           memories = true;
           network_proxy = {
