@@ -7,11 +7,34 @@
 
 let
   cfg = config.home-manager.nix.niks3;
+
+  wrappedPackage = pkgs.symlinkJoin {
+    name = "${cfg.package.name}-wrapped";
+    paths = [ cfg.package ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram "$out/bin/niks3" \
+        --set NIKS3_SERVER_URL "${cfg.serverUrl}"
+    '';
+    inherit (cfg.package) meta;
+  };
 in
 {
   options.home-manager.nix.niks3 = {
     enable = lib.mkEnableOption "niks3 config" // {
       default = true;
+    };
+
+    serverUrl = lib.mkOption {
+      type = lib.types.str;
+      default = "https://cache.dev.tisvc.com";
+      description = "Niks3 cache server URL.";
+    };
+
+    package = lib.mkOption {
+      type = lib.types.package;
+      default = pkgs.niks3;
+      description = "The raw niks3 package to wrap.";
     };
 
     gc = {
@@ -36,7 +59,7 @@ in
 
   config = lib.mkMerge [
     (lib.mkIf cfg.enable {
-      home.packages = [ pkgs.niks3 ];
+      home.packages = [ wrappedPackage ];
 
       sops = {
         secrets = {
@@ -66,7 +89,6 @@ in
 
       # Point Nix/AWS SDKs to these specific files
       home.sessionVariables = {
-        NIKS3_SERVER_URL = "https://cache.dev.tisvc.com";
         AWS_SHARED_CREDENTIALS_FILE = config.sops.templates."niks3-aws-credentials".path;
       };
     })
@@ -80,8 +102,7 @@ in
         };
         Service = {
           Type = "oneshot";
-          Environment = "NIKS3_SERVER_URL=${config.home.sessionVariables.NIKS3_SERVER_URL}";
-          ExecStart = "${lib.getExe' pkgs.niks3 "niks3"} gc --older-than=${cfg.gc.olderThan} --failed-uploads-older-than=${cfg.gc.failedUploadsOlderThan}";
+          ExecStart = "${lib.getExe' wrappedPackage "niks3"} gc --older-than=${cfg.gc.olderThan} --failed-uploads-older-than=${cfg.gc.failedUploadsOlderThan}";
         };
       };
 
