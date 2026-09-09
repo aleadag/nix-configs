@@ -107,6 +107,7 @@ in
             domains = codexNetworkDomains;
           };
         };
+        feedback.enabled = false;
         model = "gpt-6-astra";
         model_reasoning_effort = "medium";
         plan_mode_reasoning_effort = "high";
