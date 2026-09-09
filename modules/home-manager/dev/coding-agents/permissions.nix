@@ -77,6 +77,7 @@ let
     "man"
     "mkdir"
     "pgrep"
+    "printf"
     "ps"
     "pwd"
     "rg"
