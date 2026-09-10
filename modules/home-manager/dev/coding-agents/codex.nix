@@ -86,49 +86,62 @@ in
           }
         ];
       };
-      settings = {
-        agents = {
-          default_subagent_model = "gpt-5.6-luna";
-          default_subagent_reasoning_effort = "high";
-        };
-        analytics.enabled = false;
-        approval_policy = "on-request";
-        approvals_reviewer = "auto_review";
-        check_for_update_on_startup = false;
-        features = {
-          apps = false;
-          code_mode_host = true;
-          context_management.experimental_mode = true;
-          hooks = true;
-          memories = true;
-          network_proxy = {
-            enabled = true;
-            allow_local_binding = true;
-            domains = codexNetworkDomains;
+      settings =
+        (pkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
+          tui = {
+            notifications = [ "agent-turn-complete" ];
+            notification_condition = "unfocused";
+            notification_method = "auto";
+          };
+        })
+        // {
+          agents = {
+            default_subagent_model = "gpt-5.6-luna";
+            default_subagent_reasoning_effort = "xhigh";
+          };
+          analytics.enabled = false;
+          approval_policy = "on-request";
+          approvals_reviewer = "auto_review";
+          check_for_update_on_startup = false;
+          features = {
+            apps = false;
+            code_mode_host = true;
+            context_management.experimental_mode = true;
+            hooks = true;
+            memories = true;
+            network_proxy = {
+              enabled = true;
+              allow_local_binding = true;
+              domains = codexNetworkDomains;
+            };
+          };
+          feedback.enabled = false;
+          file_opener = "none";
+          model = "gpt-6-astra";
+          model_reasoning_effort = "xhigh";
+          model_reasoning_summary = "auto";
+          personality = "none";
+          plugins = {
+            "build-web-apps@openai-curated".enabled = true;
+            "github@openai-curated".enabled = true;
+          };
+          project_doc_fallback_filenames = [ "CLAUDE.md" ];
+          sandbox_workspace_write.network_access = true;
+          shell_environment_policy = {
+            "inherit" = "all";
+            ignore_default_excludes = true;
+          };
+          suppress_unstable_features_warning = true;
+          tui = {
+            status_line = [
+              "model-with-reasoning"
+              "git-branch"
+              "context-remaining"
+              "five-hour-limit"
+              "weekly-limit"
+            ];
           };
         };
-        feedback.enabled = false;
-        model = "gpt-6-astra";
-        model_reasoning_effort = "medium";
-        plan_mode_reasoning_effort = "high";
-        personality = "pragmatic";
-        plugins = {
-          "build-web-apps@openai-curated".enabled = true;
-          "github@openai-curated".enabled = true;
-        };
-        project_doc_fallback_filenames = [ "CLAUDE.md" ];
-        sandbox_workspace_write.network_access = true;
-        tui = {
-          notifications = true;
-          status_line = [
-            "model-with-reasoning"
-            "git-branch"
-            "context-remaining"
-            "five-hour-limit"
-            "weekly-limit"
-          ];
-        };
-      };
       context = shared.defaultContext;
       skills = shared.guardedSkills;
     };
