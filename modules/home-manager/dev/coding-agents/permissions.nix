@@ -70,6 +70,7 @@ let
     "grep"
     "gzip"
     "head"
+    "hostname"
     "id"
     "jq"
     "ls"
