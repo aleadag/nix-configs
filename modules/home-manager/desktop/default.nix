@@ -16,6 +16,7 @@ in
     ./fonts
     ./im.nix
     ./kitty.nix
+    ./lutris.nix
     ./mpv
     ./obsidian
     ./wechat

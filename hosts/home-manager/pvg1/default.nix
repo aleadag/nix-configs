@@ -9,7 +9,10 @@
   };
 
   home-manager = {
-    desktop.enable = true;
+    desktop = {
+      enable = true;
+      lutris.enable = true;
+    };
     dev.enable = true;
     kanata.enable = false;
     mihomo.enable = false;
@@ -33,8 +36,8 @@
       enable = true;
       nvidia = {
         enable = true;
-        version = "550.144.03";
-        sha256 = "sha256-akg44s2ybkwOBzZ6wNO895nVa1KG9o+iAb49PduIqsQ=";
+        version = "610.57.04";
+        sha256 = "sha256-suk1xmuDuwDAyFe8jg7g/VLekoa0DJzB7sKafOfrEW0=";
       };
     };
   };
