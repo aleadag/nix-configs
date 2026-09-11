@@ -39,6 +39,10 @@ in
         ui = {
           preview_pct = 65;
         };
+        updates = {
+          auto_update = false;
+          check_enabled = false;
+        };
       };
       description = "Agent Deck configuration (converted to TOML)";
     };
@@ -49,7 +53,6 @@ in
       llm-agents.agent-deck
     ];
     home-manager.cli.tmux.enable = true;
-    home.sessionVariables.AGENTDECK_COLOR = "truecolor";
 
     xdg.configFile."agent-deck/config.toml".source =
       configToml.generate "agent-deck-config.toml" cfg.settings;
