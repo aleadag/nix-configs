@@ -27,5 +27,9 @@
       wdisplays
       wl-clipboard
     ];
+
+    systemd.user.packages = lib.mkIf config.xdg.portal.enable (
+      [ pkgs.xdg-desktop-portal ] ++ config.xdg.portal.extraPortals
+    );
   };
 }

@@ -371,6 +371,8 @@ in
         settings = typedSettings;
       };
 
+      xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+
       systemd.user.packages = lib.optional (cfg.package != null) cfg.package;
     })
   ];
