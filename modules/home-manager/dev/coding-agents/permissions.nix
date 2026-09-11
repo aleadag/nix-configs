@@ -88,6 +88,7 @@ let
     "sha256sum"
     "shasum"
     "sort"
+    "ss"
     "stat"
     "strings"
     "tail"
