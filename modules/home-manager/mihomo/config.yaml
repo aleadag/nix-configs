@@ -385,6 +385,8 @@ rules:
   - RULE-SET,google_ip,🔎 Google,no-resolve
   - RULE-SET,telegram_ip,✈️ Telegram,no-resolve
   - RULE-SET,cn_ip,🔗 直连
+  - IP-CIDR,0.0.0.0/0,🔗 直连,no-resolve
+  - IP-CIDR6,::/0,🔗 直连,no-resolve
   - MATCH,❓ 漏网之鱼
 
 # 规则集
@@ -412,20 +414,6 @@ rule-providers:
       - DOMAIN-SUFFIX,nigirocloud.com
       - DOMAIN-SUFFIX,vegemitepie.com
       - DOMAIN-SUFFIX,volcengine.douyinclientapi.com
-      # Snapshot of currently resolved node IPs; refresh when subscriptions change.
-      - IP-CIDR,45.13.196.0/23,no-resolve
-      - IP-CIDR,45.89.218.53/32,no-resolve
-      - IP-CIDR,45.141.47.164/32,no-resolve
-      - IP-CIDR,84.75.202.105/32,no-resolve
-      - IP-CIDR,103.181.164.2/32,no-resolve
-      - IP-CIDR,113.46.237.0/24,no-resolve
-      - IP-CIDR,185.49.35.57/32,no-resolve
-      - IP-CIDR,193.8.125.74/32,no-resolve
-      - IP-CIDR,193.187.118.99/32,no-resolve
-      - IP-CIDR,194.104.144.210/32,no-resolve
-      - IP-CIDR,194.124.227.35/32,no-resolve
-      - IP-CIDR,201.4.43.10/32,no-resolve
-      - IP-CIDR,210.61.187.170/32,no-resolve
 
   large_download_domain:
     type: inline
