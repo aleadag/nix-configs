@@ -15,6 +15,81 @@ let
   monospace = if defaultFonts.monospace != [ ] then lib.head defaultFonts.monospace else "monospace";
   cjkEnabled = config ? stylix.fonts.cjk && config.stylix.fonts.cjk.enable;
   cjk = if cjkEnabled then config.stylix.fonts.cjk else null;
+
+  aliasRules = [
+    {
+      target = sansSerif;
+      families = [
+        "system-ui"
+        "ui-sans-serif"
+        "Sans"
+        "sans"
+        "Cantarell"
+      ];
+    }
+    {
+      target = serif;
+      families = [
+        "ui-serif"
+      ];
+    }
+    {
+      target = monospace;
+      families = [
+        "mono"
+        "ui-monospace"
+      ];
+    }
+  ]
+  ++ lib.optionals cjkEnabled [
+    {
+      target = cjk.sansSerif.name;
+      families = [ "Noto Sans SC" ];
+    }
+    {
+      target = cjk.serif.name;
+      families = [ "Noto Serif SC" ];
+    }
+  ];
+
+  mkAliases = lib.concatMapStrings (
+    { target, families }:
+    lib.concatMapStrings (family: ''
+      <match target="pattern">
+        <test name="family" qual="any"><string>${family}</string></test>
+        <edit name="family" mode="prepend" binding="strong">
+          <string>${target}</string>
+        </edit>
+      </match>
+    '') families
+  );
+
+  preferFallbacks = lib.optionals cjkEnabled [
+    {
+      family = sansSerif;
+      fallback = cjk.sansSerif.name;
+    }
+    {
+      family = serif;
+      fallback = cjk.serif.name;
+    }
+    {
+      family = monospace;
+      fallback = cjk.monospace.name;
+    }
+  ];
+
+  mkPreferFallbacks = lib.concatMapStrings (
+    { family, fallback }: ''
+      <alias>
+        <family>${family}</family>
+        <prefer>
+          <family>${family}</family>
+          <family>${fallback}</family>
+        </prefer>
+      </alias>
+    ''
+  );
 in
 {
   options.home-manager.desktop.fonts = {
@@ -43,83 +118,8 @@ in
             <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
             <fontconfig>
               <description>Alias generic UI font families</description>
-              <match target="pattern">
-                <test name="family" qual="any"><string>system-ui</string></test>
-                <edit name="family" mode="prepend" binding="strong">
-                  <string>${sansSerif}</string>
-                </edit>
-              </match>
-              <match target="pattern">
-                <test name="family" qual="any"><string>ui-sans-serif</string></test>
-                <edit name="family" mode="prepend" binding="strong">
-                  <string>${sansSerif}</string>
-                </edit>
-              </match>
-              <match target="pattern">
-                <test name="family" qual="any"><string>Sans</string></test>
-                <edit name="family" mode="prepend" binding="strong">
-                  <string>${sansSerif}</string>
-                </edit>
-              </match>
-              <match target="pattern">
-                <test name="family" qual="any"><string>sans</string></test>
-                <edit name="family" mode="prepend" binding="strong">
-                  <string>${sansSerif}</string>
-                </edit>
-              </match>
-              <match target="pattern">
-                <test name="family" qual="any"><string>Cantarell</string></test>
-                <edit name="family" mode="prepend" binding="strong">
-                  <string>${sansSerif}</string>
-                </edit>
-              </match>
-              <match target="pattern">
-                <test name="family" qual="any"><string>mono</string></test>
-                <edit name="family" mode="prepend" binding="strong">
-                  <string>${monospace}</string>
-                </edit>
-              </match>
-              <match target="pattern">
-                <test name="family" qual="any"><string>ui-monospace</string></test>
-                <edit name="family" mode="prepend" binding="strong">
-                  <string>${monospace}</string>
-                </edit>
-              </match>
-              ${lib.optionalString cjkEnabled ''
-                <match target="pattern">
-                  <test name="family" qual="any"><string>Noto Sans SC</string></test>
-                  <edit name="family" mode="prepend" binding="strong">
-                    <string>${cjk.sansSerif.name}</string>
-                  </edit>
-                </match>
-                <match target="pattern">
-                  <test name="family" qual="any"><string>Noto Serif SC</string></test>
-                  <edit name="family" mode="prepend" binding="strong">
-                    <string>${cjk.serif.name}</string>
-                  </edit>
-                </match>
-                <alias>
-                  <family>${sansSerif}</family>
-                  <prefer>
-                    <family>${sansSerif}</family>
-                    <family>${cjk.sansSerif.name}</family>
-                  </prefer>
-                </alias>
-                <alias>
-                  <family>${serif}</family>
-                  <prefer>
-                    <family>${serif}</family>
-                    <family>${cjk.serif.name}</family>
-                  </prefer>
-                </alias>
-                <alias>
-                  <family>${monospace}</family>
-                  <prefer>
-                    <family>${monospace}</family>
-                    <family>${cjk.monospace.name}</family>
-                  </prefer>
-                </alias>
-              ''}
+              ${mkAliases aliasRules}
+              ${mkPreferFallbacks preferFallbacks}
             </fontconfig>
           '';
         };

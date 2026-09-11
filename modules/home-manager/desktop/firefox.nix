@@ -76,12 +76,29 @@ in
             # telemetry
             "datareporting.policy.dataSubmissionEnable" = false;
             "datareporting.healthreport.uploadEnabled" = false;
+
+            # default proportional font
+            "font.default.x-western" = "sans-serif";
           }
-          // lib.optionalAttrs (config ? stylix.fonts.cjk && config.stylix.fonts.cjk.enable) {
-            "font.name.sans-serif.zh-CN" = config.stylix.fonts.cjk.sansSerif.name;
-            "font.name.serif.zh-CN" = config.stylix.fonts.cjk.serif.name;
-            "font.name.monospace.zh-CN" = config.stylix.fonts.cjk.monospace.name;
-          }
+          // lib.optionalAttrs (config ? stylix.fonts.cjk && config.stylix.fonts.cjk.enable) (
+            let
+              inherit (config.stylix.fonts)
+                sansSerif
+                serif
+                monospace
+                cjk
+                ;
+            in
+            {
+              "font.default.zh-CN" = "sans-serif";
+              "font.name.sans-serif.zh-CN" = sansSerif.name;
+              "font.name.serif.zh-CN" = serif.name;
+              "font.name.monospace.zh-CN" = monospace.name;
+              "font.name-list.sans-serif.zh-CN" = "${sansSerif.name}, ${cjk.sansSerif.name}";
+              "font.name-list.serif.zh-CN" = "${serif.name}, ${cjk.serif.name}";
+              "font.name-list.monospace.zh-CN" = "${monospace.name}, ${cjk.monospace.name}";
+            }
+          )
           // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
             # https://wiki.archlinux.org/title/Firefox#XDG_Desktop_Portal_integration
             "widget.use-xdg-desktop-portal.file-picker" = 1;
