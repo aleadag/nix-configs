@@ -31,8 +31,8 @@ jobs:
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
           nix flake update --commit-lock-file
-      - name: 'Build Home-Manager configs for: mbx'
-        run: nix build --print-build-logs '.#homeConfigurations.mbx.activationPackage'
+      - name: 'Build Home-Manager configs for: pvg1'
+        run: nix build --print-build-logs '.#homeConfigurations.pvg1.activationPackage'
       - name: 'Build NixOS configs for: pvg1-nixos'
         run: nix build --print-build-logs '.#nixosConfigurations.pvg1-nixos.config.system.build.toplevel'
       - name: Create Pull Request

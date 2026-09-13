@@ -18,7 +18,7 @@
 
   home-manager = {
     x86_64-linux.hostNames = [
-      "mbx"
+      "pvg1"
     ];
     aarch64-linux.hostNames = [ "lckfb" ];
     aarch64-darwin.hostNames = [ "home-mac" ];

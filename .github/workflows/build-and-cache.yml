@@ -76,8 +76,8 @@ jobs:
           tool-cache: true
           usrlocal: true
           usrmisc: true
-      - name: 'Build Home-Manager configs for: mbx'
-        run: nix build --print-build-logs '.#homeConfigurations.mbx.activationPackage'
+      - name: 'Build Home-Manager configs for: pvg1'
+        run: nix build --print-build-logs '.#homeConfigurations.pvg1.activationPackage'
       - name: 'Build NixOS configs for: pvg1-nixos'
         run: nix build --print-build-logs '.#nixosConfigurations.pvg1-nixos.config.system.build.toplevel'
 name: build-and-cache
