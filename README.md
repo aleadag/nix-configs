@@ -178,9 +178,12 @@ For example, `mbx` launches Niri directly from `tuigreet`:
 ```toml
 # /etc/greetd/config.toml
 [default_session]
-command = "tuigreet --time --cmd 'niri-session' --theme 'border=#8caaee;title=#ca9ee6;greet=#babbf1;prompt=#babbf1;text=#c6d0f5;input=#c6d0f5;action=#8caaee;button=#ca9ee6;time=#a5adce;container=#303446'"
+command = "tuigreet --time --cmd 'niri-session' --theme 'border=lightblue;title=lightmagenta;greet=lightcyan;prompt=lightblue;text=white;input=white;action=lightblue;button=lightmagenta;time=gray;container=black'"
 user = "greeter"
 ```
+
+> [!TIP]
+> The Linux virtual console (TTY) uses a 16-color palette and downsamples 24-bit RGB hex colors to bright white. Using named ANSI colors (`lightblue`, `lightmagenta`, etc.) ensures proper contrast in the login terminal. On non-NixOS systems, you can also apply the [Catppuccin TTY theme](https://github.com/catppuccin/tty) to your bootloader kernel parameters to map these ANSI colors to the actual Catppuccin palette.
 
 Please refer to your distribution's package manager to install these dependencies.
 

@@ -35,7 +35,7 @@
                 "--remember-session"
                 "--time"
                 "--theme"
-                "border=#8caaee;title=#ca9ee6;greet=#babbf1;prompt=#babbf1;text=#c6d0f5;input=#c6d0f5;action=#8caaee;button=#ca9ee6;time=#a5adce;container=#303446"
+                "border=lightblue;title=lightmagenta;greet=lightcyan;prompt=lightblue;text=white;input=white;action=lightblue;button=lightmagenta;time=gray;container=black"
                 "--sessions"
                 "${lib.concatStringsSep ":" (
                   builtins.map (path: "${desktops}/${path}") [
