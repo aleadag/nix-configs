@@ -150,6 +150,18 @@ in
               }
             ''
           )
+          (lib.mkOrder 1100
+            # bash
+            ''
+              # Auto-restore cursor visibility if an interrupted program left it hidden
+              _ensure_cursor_visible() {
+                [[ "$TERM" == "dumb" ]] && return 0
+                (( $+terminfo[cnorm] )) && echoti cnorm 2>/dev/null || printf '\e[?25h'
+              }
+              autoload -Uz add-zsh-hook
+              add-zsh-hook precmd _ensure_cursor_visible
+            ''
+          )
           # history-substring-search module order is 1250
           # https://github.com/nix-community/home-manager/blob/7f8bbc93d63401e41368d6ddc46a4f631610fa90/modules/programs/zsh/history.nix#L227
           (lib.mkOrder 1300
