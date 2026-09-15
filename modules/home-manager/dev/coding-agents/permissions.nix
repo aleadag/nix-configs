@@ -12,6 +12,7 @@ let
   binaryOverrides = permCfg.packageBinaryOverrides or { };
   extraAllowed = permCfg.allowedCommands or [ ];
   extraDenied = permCfg.deniedCommands or [ ];
+  extraAllowedWriteDirectories = permCfg.allowedWriteDirectories or [ ];
 
   containerDeniedCommands =
     lib.concatMap
@@ -178,10 +179,17 @@ let
     ++ lib.optional (config.home-manager.dev.coding-agents.antigravity-cli.enable or false
     ) "${config.home.homeDirectory}/.gemini"
     ++ [ "/nix/store" ];
+
+  allowedWriteDirectories = lib.unique (
+    lib.optionals (config ? home.homeDirectory) [ config.home.homeDirectory ]
+    ++ [ "/tmp" ]
+    ++ extraAllowedWriteDirectories
+  );
 in
 {
   inherit
     allowedShellCommands
+    allowedWriteDirectories
     commonExternalDirectories
     commonNetworkDomains
     deniedShellCommands

@@ -18,6 +18,7 @@ let
   };
   inherit (shared.permissions)
     allowedShellCommands
+    allowedWriteDirectories
     commonExternalDirectories
     commonNetworkDomains
     deniedShellCommands
@@ -27,6 +28,9 @@ let
   deniedCommands = map (command: "command(${command})") deniedShellCommands;
   allowedNetworkReads = map (domain: "read_url(${domain})") commonNetworkDomains;
   allowedDirectoryPermissions = map (directory: "read_file(${directory})") commonExternalDirectories;
+  allowedWriteDirectoryPermissions = map (
+    directory: "write_file(${directory})"
+  ) allowedWriteDirectories;
   deniedDirectoryPermissions = map (directory: "write_file(${directory})") commonExternalDirectories;
 
   skillCommands = shared.makeSkillCommandAllowances "${config.home.homeDirectory}/.gemini/config/skills" shared.guardedSkillsWithPlugins;
@@ -65,14 +69,18 @@ in
       };
       permissions = {
         allow =
-          allowedCommands ++ allowedSkillCommands ++ allowedDirectoryPermissions ++ allowedNetworkReads;
+          allowedCommands
+          ++ allowedSkillCommands
+          ++ allowedDirectoryPermissions
+          ++ allowedWriteDirectoryPermissions
+          ++ allowedNetworkReads;
         deny = deniedCommands ++ deniedDirectoryPermissions;
       };
       skills = shared.guardedSkillsWithPlugins;
       settings = {
         model = "Gemini 3.8 Flash (High)";
         agentMode = "accept-edits";
-        altScreenMode = "default";
+        altScreenMode = "always";
         artifactReviewPolicy = "agent-decides";
         enableTelemetry = false;
         notifications = false;

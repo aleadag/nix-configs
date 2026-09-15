@@ -41,6 +41,15 @@ in
         description = "Extra dangerous commands explicitly denied across coding agents";
       };
 
+      allowedWriteDirectories = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [
+          config.home.homeDirectory
+          "/tmp"
+        ];
+        description = "Directories where coding agents are permitted to write files (e.g. via shell redirection)";
+      };
+
       autoDiscoverPackages = lib.mkOption {
         type = lib.types.bool;
         default = true;
