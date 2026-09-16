@@ -385,8 +385,7 @@ rules:
   - RULE-SET,google_ip,🔎 Google,no-resolve
   - RULE-SET,telegram_ip,✈️ Telegram,no-resolve
   - RULE-SET,cn_ip,🔗 直连
-  - AND,((NOT,((DOMAIN-REGEX,.+))),(IP-CIDR,0.0.0.0/0,no-resolve)),🔗 直连
-  - AND,((NOT,((DOMAIN-REGEX,.+))),(IP-CIDR6,::/0,no-resolve)),🔗 直连
+  - RULE-SET,raw_ip,🔗 直连,no-resolve
   - MATCH,❓ 漏网之鱼
 
 # 规则集
@@ -414,6 +413,13 @@ rule-providers:
       - DOMAIN-SUFFIX,nigirocloud.com
       - DOMAIN-SUFFIX,vegemitepie.com
       - DOMAIN-SUFFIX,volcengine.douyinclientapi.com
+
+  # Connections without a domain name (raw IP traffic, e.g. proxy node tunnels)
+  raw_ip:
+    type: inline
+    behavior: classical
+    payload:
+      - NOT,((DOMAIN-REGEX,.+))
 
   large_download_domain:
     type: inline
