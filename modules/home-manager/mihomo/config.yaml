@@ -363,7 +363,7 @@ rules:
   - DOMAIN-SUFFIX,qichiyu.com,🚀 默认代理
   # Keep local Mihomo's proxy tunnels direct when an upstream router also runs Mihomo.
   - RULE-SET,pc_proxy_nodes,🔗 直连
-  - RULE-SET,private_ip,🔗 直连
+  - RULE-SET,private_ip,🔗 直连,no-resolve
   - RULE-SET,private_domain,🔗 直连
   # Order matters, MUST before ChatGPT
   - RULE-SET,large_download_domain,📦 大文件下载
@@ -385,8 +385,8 @@ rules:
   - RULE-SET,google_ip,🔎 Google,no-resolve
   - RULE-SET,telegram_ip,✈️ Telegram,no-resolve
   - RULE-SET,cn_ip,🔗 直连
-  - IP-CIDR,0.0.0.0/0,🔗 直连,no-resolve
-  - IP-CIDR6,::/0,🔗 直连,no-resolve
+  - AND,((NOT,((DOMAIN-REGEX,.+))),(IP-CIDR,0.0.0.0/0,no-resolve)),🔗 直连
+  - AND,((NOT,((DOMAIN-REGEX,.+))),(IP-CIDR6,::/0,no-resolve)),🔗 直连
   - MATCH,❓ 漏网之鱼
 
 # 规则集
