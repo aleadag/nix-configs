@@ -178,12 +178,21 @@ For example, `mbx` launches Niri directly from `tuigreet`:
 ```toml
 # /etc/greetd/config.toml
 [default_session]
-command = "tuigreet --time --cmd 'niri-session' --theme 'border=lightblue;title=lightmagenta;greet=lightcyan;prompt=lightblue;text=white;input=white;action=lightblue;button=lightmagenta;time=gray;container=black'"
+command = "tuigreet --time --cmd 'niri-session' --theme 'border=blue;title=magenta;greet=white;prompt=white;text=gray;input=gray;action=blue;button=magenta;time=gray;container=black'"
 user = "greeter"
 ```
 
 > [!TIP]
-> The Linux virtual console (TTY) uses a 16-color palette and downsamples 24-bit RGB hex colors to bright white. Using named ANSI colors (`lightblue`, `lightmagenta`, etc.) ensures proper contrast in the login terminal. On non-NixOS systems, you can also apply the [Catppuccin TTY theme](https://github.com/catppuccin/tty) to your bootloader kernel parameters to map these ANSI colors to the actual Catppuccin palette.
+> The Linux virtual console (TTY) uses a 16-color palette and downsamples 24-bit RGB hex colors to bright white. Using named ANSI colors ensures proper contrast and prevents color collapse.
+>
+> On non-NixOS systems (like `mbx`), you can apply the official 16-color [Catppuccin Frappé TTY theme](https://github.com/catppuccin/tty) directly to the Linux console by adding these kernel parameters to your bootloader:
+> ```text
+> vt.default_red=48,231,166,229,140,244,129,181,98,231,166,229,140,244,129,165 vt.default_grn=52,130,209,200,170,184,200,191,104,130,209,200,170,184,200,173 vt.default_blu=70,132,137,144,238,228,190,226,128,132,137,144,238,228,190,206
+> ```
+> - **GRUB**: Append to `GRUB_CMDLINE_LINUX_DEFAULT` in `/etc/default/grub`, then run `sudo grub-mkconfig -o /boot/grub/grub.cfg`.
+> - **systemd-boot**: Append to the `options` line in `/boot/loader/entries/*.conf`.
+>
+> On NixOS systems in this flake, Stylix automatically manages these 16 console colors via `console.colors`.
 
 Please refer to your distribution's package manager to install these dependencies.
 

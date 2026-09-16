@@ -29,7 +29,7 @@
                 "--remember-session"
                 "--time"
                 "--theme"
-                "border=lightblue;title=lightmagenta;greet=lightcyan;prompt=lightblue;text=white;input=white;action=lightblue;button=lightmagenta;time=gray;container=black"
+                "border=blue;title=magenta;greet=white;prompt=white;text=gray;input=gray;action=blue;button=magenta;time=gray;container=black"
                 "--sessions"
                 "${lib.concatStringsSep ":" (
                   builtins.map (path: "${desktops}/${path}") [
