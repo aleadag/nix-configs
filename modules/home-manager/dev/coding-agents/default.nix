@@ -125,6 +125,10 @@ in
           gnused = [ "sed" ];
           gnugrep = [ "grep" ];
           gnumake = [ "make" ];
+          go = [
+            "go"
+            "gofmt"
+          ];
         };
         description = "Mapping of package names/pnames to the binary commands they provide";
       };

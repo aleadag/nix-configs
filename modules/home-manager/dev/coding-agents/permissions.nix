@@ -61,6 +61,8 @@ let
   baseShellCommands = [
     "cat"
     "cd"
+    "command"
+    "cut"
     "date"
     "df"
     "diff"
@@ -84,6 +86,7 @@ let
     "pwd"
     "rg"
     "read"
+    "readlink"
     "realpath"
     "sed"
     "sha256sum"
