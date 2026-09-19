@@ -106,3 +106,85 @@ check-integration:
     @echo "Test with:" >&2
     @echo "  just lint flake.nix" >&2
     @echo "  just test hosts/home-manager/home-mac/default.nix" >&2
+
+# Repair a Lutris wine prefix (e.g. just repair-prefix starcraft)
+repair-prefix target="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    target="{{target}}"
+
+    find_runner() {
+        local runners_dir="$HOME/.local/share/lutris/runners/wine"
+        if [[ -d "$runners_dir" ]]; then
+            find -L "$runners_dir" -maxdepth 3 -type f -name wineboot 2>/dev/null | sort -V | tail -n 1 || true
+        fi
+    }
+
+    runner=$(find_runner)
+    wineboot_cmd="${runner:-wineboot}"
+
+    if ! command -v "$wineboot_cmd" >/dev/null 2>&1 && [[ ! -x "$wineboot_cmd" ]]; then
+        echo "Error: wineboot not found in Lutris runners or PATH." >&2
+        exit 1
+    fi
+
+    repair_one() {
+        local pfx="$1"
+        if [[ ! -d "$pfx/drive_c" && ! -f "$pfx/system.reg" ]]; then
+            return 0
+        fi
+
+        echo "=== Checking Wine prefix: $pfx ==="
+        local broken_count
+        broken_count=$(find "$pfx" -xtype l | wc -l)
+        local k32="$pfx/drive_c/windows/system32/kernel32.dll"
+
+        if [[ "$broken_count" -eq 0 && -f "$k32" && -z "$target" ]]; then
+            echo "✓ Wine prefix is healthy (no repair needed)."
+            return 0
+        fi
+
+        if [[ "$broken_count" -gt 0 ]]; then
+            echo "Removing $broken_count dangling symlinks..."
+            find "$pfx" -xtype l -delete
+        fi
+
+        if [[ -f "$pfx/.update-timestamp" ]]; then
+            echo "Clearing .update-timestamp..."
+            rm -f "$pfx/.update-timestamp"
+        fi
+
+        echo "Running wineboot -u with: $wineboot_cmd"
+        WINEPREFIX="$pfx" "$wineboot_cmd" -u
+
+        if [[ -f "$k32" ]]; then
+            echo "✓ Repair completed successfully for $pfx"
+        else
+            echo "⚠ Warning: kernel32.dll not found at $k32" >&2
+            return 1
+        fi
+    }
+
+    if [[ -z "$target" ]]; then
+        games_dir="$HOME/Games"
+        if [[ ! -d "$games_dir" ]]; then
+            echo "No ~/Games directory found." >&2
+            exit 0
+        fi
+        for d in "$games_dir"/*; do
+            if [[ -e "$d" ]]; then
+                repair_one "$d"
+            fi
+        done
+    else
+        pfx="$target"
+        if [[ ! -d "$pfx" && -d "$HOME/Games/$pfx" ]]; then
+            pfx="$HOME/Games/$pfx"
+        fi
+        if [[ ! -d "$pfx" ]]; then
+            echo "Error: Directory not found: $target (checked $target and $HOME/Games/$target)" >&2
+            exit 1
+        fi
+        repair_one "$pfx"
+    fi
+
