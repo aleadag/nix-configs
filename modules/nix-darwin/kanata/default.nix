@@ -67,6 +67,35 @@ in
           echo "Completed Karabiner DriverKit VirtualHIDDevice activation"
         '';
 
+    system.activationScripts.postActivation.text = ''
+      echo "Configuring Kanata TCC permissions..."
+      KANATA_REAL_BIN="$(readlink -f "${pkgs.kanata}/bin/kanata")"
+      if [ -f "$KANATA_REAL_BIN" ]; then
+        CDHASH=$(/usr/bin/codesign -dvvv "$KANATA_REAL_BIN" 2>&1 | /usr/bin/awk -F= '/^CDHash=/{print $2}')
+        TCC_DB="/Library/Application Support/com.apple.TCC/TCC.db"
+        if [ -n "$CDHASH" ] && [ -f "$TCC_DB" ]; then
+          echo "Registering Kanata binary $KANATA_REAL_BIN ($CDHASH) in TCC database..."
+          /usr/bin/sqlite3 "$TCC_DB" "
+            DELETE FROM access WHERE client LIKE '%/bin/kanata';
+            INSERT OR REPLACE INTO access (
+              service, client, client_type, auth_value, auth_reason, auth_version,
+              csreq, indirect_object_identifier, flags, last_modified
+            ) VALUES
+              ('kTCCServiceListenEvent', '$KANATA_REAL_BIN', 1, 2, 4, 1, X'FADE0C0000000028000000010000000800000014' || unhex('$CDHASH'), 'UNUSED', 0, CAST(strftime('%s', 'now') AS INTEGER)),
+              ('kTCCServiceAccessibility', '$KANATA_REAL_BIN', 1, 2, 4, 1, X'FADE0C0000000028000000010000000800000014' || unhex('$CDHASH'), 'UNUSED', 0, CAST(strftime('%s', 'now') AS INTEGER));
+          "
+          echo "Reloading tccd to apply updated TCC permissions..."
+          /usr/bin/pkill -9 -f "tccd" || true
+          if /bin/launchctl print "system/org.nixos.kanata" >/dev/null 2>&1; then
+            echo "Restarting org.nixos.kanata..."
+            /bin/launchctl kickstart -k "system/org.nixos.kanata" || true
+          fi
+        else
+          echo "Warning: Could not extract CDHash for Kanata or TCC.db not found." >&2
+        fi
+      fi
+    '';
+
     launchd.daemons.karabiner-virtualhiddevice-daemon = {
       serviceConfig = {
         ProgramArguments = [ karabinerDaemon ];
