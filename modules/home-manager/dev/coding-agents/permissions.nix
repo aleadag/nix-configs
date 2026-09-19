@@ -98,6 +98,7 @@ let
     "tail"
     "tar"
     "test"
+    "tr"
     "tree"
     "type"
     "uname"
