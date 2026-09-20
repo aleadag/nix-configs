@@ -34,4 +34,17 @@ rec {
 
   # Translate the keys from a attrset.
   translateKeys = trans: attrset: lib.mapAttrs' (n: v: lib.nameValuePair (trans.${n} or n) v) attrset;
+
+  # Load skills from a directory - returns an attrset of name -> path
+  loadSkills =
+    dir:
+    let
+      entries = builtins.readDir dir;
+    in
+    builtins.listToAttrs (
+      map (name: {
+        inherit name;
+        value = dir + "/${name}";
+      }) (builtins.filter (name: entries.${name} == "directory") (builtins.attrNames entries))
+    );
 }
