@@ -1,6 +1,8 @@
 {
   config,
+  flake,
   lib,
+  libEx,
   ...
 }:
 
@@ -13,6 +15,14 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    home-manager.dev.coding-agents = {
+      skills = libEx.loadSkills flake.inputs.jujutsu-skills;
+      permissions.allowedCommands = [
+        "jj"
+        "jjui"
+      ];
+    };
+
     programs = {
       jujutsu = {
         enable = true;

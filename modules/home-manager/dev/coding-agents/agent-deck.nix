@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  libEx,
   pkgs,
   ...
 }:
@@ -30,7 +31,6 @@ in
         global_search = {
           enabled = true;
           tier = "auto";
-          recent_days = 90;
         };
         logs = {
           max_size_mb = 10;
@@ -53,6 +53,11 @@ in
       llm-agents.agent-deck
     ];
     home-manager.cli.tmux.enable = true;
+
+    home-manager.dev.coding-agents = {
+      skills = libEx.loadSkills (pkgs.llm-agents.agent-deck.src + "/skills");
+      permissions.allowedCommands = [ "agent-deck" ];
+    };
 
     xdg.configFile."agent-deck/config.toml".source =
       configToml.generate "agent-deck-config.toml" cfg.settings;
