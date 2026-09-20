@@ -145,7 +145,7 @@
       flake = false;
     };
     superpowers = {
-      url = "github:obra/superpowers";
+      url = "github:DollarDill/beads-superpowers";
       flake = false;
     };
 
