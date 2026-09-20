@@ -11,7 +11,6 @@ let
   shared = import ./shared.nix {
     inherit
       config
-      flake
       lib
       pkgs
       ;
@@ -33,7 +32,7 @@ let
   ) allowedWriteDirectories;
   deniedDirectoryPermissions = map (directory: "write_file(${directory})") commonExternalDirectories;
 
-  skillCommands = shared.makeSkillCommandAllowances "${config.home.homeDirectory}/.gemini/config/skills" shared.guardedSkillsWithPlugins;
+  skillCommands = shared.makeSkillCommandAllowances "${config.home.homeDirectory}/.gemini/config/skills" config.home-manager.dev.coding-agents.skills;
   allowedSkillCommands = map (command: "command(${command})") skillCommands;
 
   statusLineScript = pkgs.writeShellScript "agy-statusline" ''
@@ -76,7 +75,7 @@ in
           ++ allowedNetworkReads;
         deny = deniedCommands ++ deniedDirectoryPermissions;
       };
-      skills = shared.guardedSkillsWithPlugins;
+      skills = config.home-manager.dev.coding-agents.skills;
       settings = {
         model = "Gemini 3.8 Flash (High)";
         agentMode = "accept-edits";

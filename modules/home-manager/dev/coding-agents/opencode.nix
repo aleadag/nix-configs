@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  flake,
   ...
 }:
 
@@ -11,7 +10,6 @@ let
   shared = import ./shared.nix {
     inherit
       config
-      flake
       lib
       pkgs
       ;
@@ -22,7 +20,7 @@ let
     deniedShellCommands
     ;
 
-  skillCommands = shared.makeSkillCommandAllowances "${config.home.homeDirectory}/.config/opencode/skills" shared.guardedSkillsWithPlugins;
+  skillCommands = shared.makeSkillCommandAllowances "${config.home.homeDirectory}/.config/opencode/skills" config.home-manager.dev.coding-agents.skills;
   allAllowedShellCommands = allowedShellCommands ++ skillCommands;
 
   bashPattern = command: "${command}*";
@@ -67,12 +65,11 @@ in
         autoshare = false;
         autoupdate = false;
         model = "deepseek/deepseek-v4-pro";
-        plugin = [ shared.plugins.beads-superpowers ];
         permission.bash = bashPermissions;
         permission.external_directory = externalDirectoryPermissions;
         permission.edit = externalDirectoryReadOnly;
       };
-      skills = shared.guardedSkills;
+      skills = config.home-manager.dev.coding-agents.skills;
     };
   };
 }

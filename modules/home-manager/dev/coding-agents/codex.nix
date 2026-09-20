@@ -13,7 +13,6 @@ let
       config
       lib
       pkgs
-      flake
       ;
   };
   inherit (shared.permissions)
@@ -35,7 +34,7 @@ let
   xdgConfigHome = lib.removePrefix config.home.homeDirectory config.xdg.configHome;
   codexConfigDir = if useXdgDirectories then "${xdgConfigHome}/codex" else ".codex";
   codexConfigPath = "${config.home.homeDirectory}/${codexConfigDir}/config.toml";
-  skillCommands = shared.makeSkillCommandAllowances "${config.home.homeDirectory}/${codexConfigDir}/skills" shared.guardedSkillsWithPlugins;
+  skillCommands = shared.makeSkillCommandAllowances "${config.home.homeDirectory}/${codexConfigDir}/skills" config.home-manager.dev.coding-agents.skills;
   renderPrefixRule =
     decision: pattern:
     "prefix_rule(pattern=${builtins.toJSON pattern}, decision=${builtins.toJSON decision})";
@@ -73,7 +72,6 @@ in
       enable = true;
       enableMcpIntegration = true;
       package = codexPackage;
-      plugins = shared.pluginSources;
       hooks = lib.optionalAttrs config.home-manager.cli.jujutsu.enable {
         Stop = [
           {
@@ -143,7 +141,7 @@ in
           };
         };
       context = shared.defaultContext;
-      skills = shared.guardedSkills;
+      skills = config.home-manager.dev.coding-agents.skills;
     };
   };
 }
