@@ -26,6 +26,12 @@ in
       default = config.home-manager.dev.enable;
     };
 
+    skills = lib.mkOption {
+      type = lib.types.attrsOf (lib.types.either lib.types.path lib.types.package);
+      default = { };
+      description = "Skills to provide across coding agents (mapping of skill name to skill directory path)";
+    };
+
     permissions = {
       containers.enable = lib.mkEnableOption "Podman-backed container command permissions";
 
@@ -136,6 +142,10 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    home-manager.dev.coding-agents.skills = {
+      commit-message = ./skills/commit-message;
+    };
+
     home.packages = with pkgs; [
       ctx7
       defuddle
