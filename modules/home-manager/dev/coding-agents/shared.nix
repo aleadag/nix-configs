@@ -1,62 +1,11 @@
 {
   config ? { },
-  flake,
   lib,
   pkgs,
   ...
 }:
 
 let
-  # Load skills from a directory - returns an attrset of name -> path
-  loadSkills =
-    dir:
-    let
-      entries = builtins.readDir dir;
-    in
-    builtins.listToAttrs (
-      map (name: {
-        inherit name;
-        value = dir + "/${name}";
-      }) (builtins.filter (name: entries.${name} == "directory") (builtins.attrNames entries))
-    );
-
-  # Shared skills from flake inputs
-  jujutsuSkills = loadSkills flake.inputs.jujutsu-skills;
-  obsidianSkills = loadSkills flake.inputs.obsidian-skills;
-
-  # Local skills (explicitly listed)
-  localSkills = {
-    commit-message = ./skills/commit-message;
-  };
-
-  # Plugins - defined once, used across tools
-  plugins = {
-    beads-superpowers = pkgs.fetchFromGitHub {
-      name = "beads-superpowers";
-      owner = "DollarDill";
-      repo = "beads-superpowers";
-      rev = "v0.15.0";
-      hash = "sha256-zT56CUynU+bjlC2F5LsfiFyX3aQ+OLNCMPxzq/Rwr4A=";
-    };
-  };
-  pluginSources = lib.attrValues plugins;
-
-  # Extract skills embedded inside plugins
-  pluginSkills = lib.foldl' (
-    acc: plugin:
-    let
-      skillsDir = plugin + "/skills";
-    in
-    if builtins.pathExists skillsDir then acc // loadSkills skillsDir else acc
-  ) { } pluginSources;
-
-  # Skills gated by feature flags, for tools that should only see enabled features
-  guardedSkills =
-    lib.optionalAttrs config.home-manager.cli.jujutsu.enable jujutsuSkills
-    // lib.optionalAttrs config.home-manager.desktop.obsidian.enable obsidianSkills
-    // localSkills;
-  guardedSkillsWithPlugins = guardedSkills // pluginSkills;
-
   # Context file
   context = ./CONTEXT.md;
 
@@ -131,17 +80,8 @@ in
     context
     defaultContext
     discoverSkillScripts
-    guardedSkills
-    guardedSkillsWithPlugins
-    jujutsuSkills
     jjStopHook
-    obsidianSkills
-    localSkills
     makeSkillCommandAllowances
-    pluginSkills
-    plugins
-    pluginSources
-    loadSkills
     permissions
     yeggeInstructions
     ;
