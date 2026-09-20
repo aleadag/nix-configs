@@ -8,6 +8,54 @@
 
 let
   cfg = config.home-manager.dev.coding-agents;
+
+  scriptExtensions = [ "sh" ];
+
+  isScriptFile =
+    path:
+    let
+      fileName = baseNameOf path;
+      splitName = lib.splitString "." fileName;
+      ext = if builtins.length splitName > 1 then lib.last splitName else "";
+    in
+    lib.elem ext scriptExtensions && lib.hasPrefix "#!" (builtins.readFile path);
+
+  findScriptsInDir =
+    baseRel: dirPath:
+    if builtins.pathExists dirPath then
+      let
+        entries = builtins.readDir dirPath;
+        regularFiles = builtins.attrNames (lib.filterAttrs (_: type: type == "regular") entries);
+      in
+      lib.concatMap (
+        file:
+        let
+          fullPath = dirPath + "/${file}";
+          relPath = if baseRel == "" then file else "${baseRel}/${file}";
+        in
+        if isScriptFile fullPath then [ relPath ] else [ ]
+      ) regularFiles
+    else
+      [ ];
+
+  discoverSkillScripts =
+    skills:
+    lib.unique (
+      lib.concatLists (
+        lib.mapAttrsToList (
+          skillName: skillPath:
+          (findScriptsInDir skillName skillPath)
+          ++ (findScriptsInDir "${skillName}/scripts" (skillPath + "/scripts"))
+        ) skills
+      )
+    );
+
+  jjStopHook = pkgs.writeShellScript "coding-agents-jj-stop-hook" ''
+    if jj root >/dev/null 2>&1 && [ -n "$(jj diff --summary 2>/dev/null)" ]; then
+      jj new >/dev/null 2>&1 || true
+    fi
+    printf '%s\n' '{"continue":true}'
+  '';
 in
 {
   imports = [
@@ -18,6 +66,7 @@ in
     ./coding-brain.nix
     ./opencode.nix
     ./mcp.nix
+    ./permissions.nix
     flake.inputs.coding-brain.homeManagerModules.default
   ];
 
@@ -32,112 +81,34 @@ in
       description = "Skills to provide across coding agents (mapping of skill name to skill directory path)";
     };
 
-    permissions = {
-      containers.enable = lib.mkEnableOption "Podman-backed container command permissions";
+    plugins = lib.mkOption {
+      type = lib.types.attrsOf (lib.types.either lib.types.path lib.types.package);
+      default = { };
+      description = "Attribute set of coding agent plugins providing bundled skills, lifecycle hooks, and manifests.";
+    };
 
-      allowedCommands = lib.mkOption {
-        type = lib.types.listOf lib.types.str;
-        default = [ ];
-        description = "Extra shell commands permitted across coding agents";
-      };
+    skillScriptRelativePaths = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      internal = true;
+      readOnly = true;
+      default = discoverSkillScripts cfg.skills;
+      description = "Discovered relative script paths across all enabled skills";
+    };
 
-      deniedCommands = lib.mkOption {
-        type = lib.types.listOf lib.types.str;
-        default = [ ];
-        description = "Extra dangerous commands explicitly denied across coding agents";
-      };
+    context = lib.mkOption {
+      type = lib.types.str;
+      internal = true;
+      readOnly = true;
+      default = builtins.readFile ./CONTEXT.md;
+      description = "Shared coding agent context";
+    };
 
-      allowedWriteDirectories = lib.mkOption {
-        type = lib.types.listOf lib.types.str;
-        default = [
-          config.home.homeDirectory
-          "/tmp"
-        ];
-        description = "Directories where coding agents are permitted to write files (e.g. via shell redirection)";
-      };
-
-      autoDiscoverPackages = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Whether to automatically discover executable commands from home.packages";
-      };
-
-      packageBinaryOverrides = lib.mkOption {
-        type = lib.types.attrsOf (lib.types.listOf lib.types.str);
-        default = {
-          python3 = [
-            "python"
-            "python3"
-            "python3.14"
-          ];
-          coreutils = [
-            "cat"
-            "cp"
-            "date"
-            "diff"
-            "echo"
-            "head"
-            "id"
-            "ls"
-            "mkdir"
-            "mv"
-            "pwd"
-            "rm"
-            "sleep"
-            "sort"
-            "stat"
-            "tail"
-            "test"
-            "touch"
-            "tr"
-            "uname"
-            "uniq"
-            "wc"
-            "whoami"
-          ];
-          bun = [
-            "bun"
-            "bunx"
-          ];
-          nodejs = [
-            "corepack"
-            "node"
-            "npm"
-            "npx"
-            "pnpm"
-          ];
-          nodejs_20 = [
-            "corepack"
-            "node"
-            "npm"
-            "npx"
-            "pnpm"
-          ];
-          nodejs_22 = [
-            "corepack"
-            "node"
-            "npm"
-            "npx"
-            "pnpm"
-          ];
-          findutils = [
-            "find"
-            "xargs"
-          ];
-          diffutils = [
-            "diff"
-            "cmp"
-          ];
-          gnused = [ "sed" ];
-          gnugrep = [ "grep" ];
-          gnumake = [ "make" ];
-          go = [
-            "go"
-            "gofmt"
-          ];
-        };
-        description = "Mapping of package names/pnames to the binary commands they provide";
-      };
+    jjStopHook = lib.mkOption {
+      type = lib.types.package;
+      internal = true;
+      readOnly = true;
+      default = jjStopHook;
+      description = "Jujutsu stop hook shell script";
     };
   };
 

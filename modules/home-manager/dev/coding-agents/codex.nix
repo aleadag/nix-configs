@@ -6,15 +6,10 @@
 }:
 
 let
-  cfg = config.home-manager.dev.coding-agents.codex;
-  shared = import ./shared.nix {
-    inherit
-      config
-      lib
-      pkgs
-      ;
-  };
-  inherit (shared.permissions)
+  agentsCfg = config.home-manager.dev.coding-agents;
+  cfg = agentsCfg.codex;
+  beadsSuperpowersPlugin = agentsCfg.plugins."beads-superpowers" or null;
+  inherit (agentsCfg.permissions)
     allowedShellCommands
     commonNetworkDomains
     deniedShellCommands
@@ -33,7 +28,10 @@ let
   xdgConfigHome = lib.removePrefix config.home.homeDirectory config.xdg.configHome;
   codexConfigDir = if useXdgDirectories then "${xdgConfigHome}/codex" else ".codex";
   codexConfigPath = "${config.home.homeDirectory}/${codexConfigDir}/config.toml";
-  skillCommands = shared.makeSkillCommandAllowances "${config.home.homeDirectory}/${codexConfigDir}/skills" config.home-manager.dev.coding-agents.skills;
+  skillCommands = lib.concatMap (rel: [
+    "bash ${config.home.homeDirectory}/${codexConfigDir}/skills/${rel}"
+    "${config.home.homeDirectory}/${codexConfigDir}/skills/${rel}"
+  ]) agentsCfg.skillScriptRelativePaths;
   renderPrefixRule =
     decision: pattern:
     "prefix_rule(pattern=${builtins.toJSON pattern}, decision=${builtins.toJSON decision})";
@@ -71,18 +69,33 @@ in
       enable = true;
       enableMcpIntegration = true;
       package = codexPackage;
-      hooks = lib.optionalAttrs config.home-manager.cli.jujutsu.enable {
-        Stop = [
-          {
-            hooks = [
-              {
-                type = "command";
-                command = shared.jjStopHook;
-              }
-            ];
-          }
-        ];
-      };
+      hooks =
+        lib.optionalAttrs (beadsSuperpowersPlugin != null) {
+          SessionStart = [
+            {
+              matcher = "startup|resume|clear|compact";
+              hooks = [
+                {
+                  type = "command";
+                  command = "CODEX_PLUGIN_ROOT=${beadsSuperpowersPlugin} ${beadsSuperpowersPlugin}/hooks/run-hook.cmd session-start";
+                  async = false;
+                }
+              ];
+            }
+          ];
+        }
+        // lib.optionalAttrs config.home-manager.cli.jujutsu.enable {
+          Stop = [
+            {
+              hooks = [
+                {
+                  type = "command";
+                  command = agentsCfg.jjStopHook;
+                }
+              ];
+            }
+          ];
+        };
       settings =
         (pkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
           tui = {
@@ -139,8 +152,9 @@ in
             ];
           };
         };
-      context = shared.defaultContext;
-      skills = config.home-manager.dev.coding-agents.skills;
+      inherit (agentsCfg) context;
+      inherit (agentsCfg) skills;
+      plugins = lib.attrValues agentsCfg.plugins;
     };
   };
 }

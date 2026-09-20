@@ -6,25 +6,16 @@
 }:
 
 let
-  cfg = config.home-manager.dev.coding-agents.opencode;
-  shared = import ./shared.nix {
-    inherit
-      config
-      lib
-      pkgs
-      ;
-  };
-  inherit (shared.permissions)
+  agentsCfg = config.home-manager.dev.coding-agents;
+  cfg = agentsCfg.opencode;
+  inherit (agentsCfg.permissions)
     allowedShellCommands
     commonExternalDirectories
     deniedShellCommands
     ;
 
-  skillCommands = shared.makeSkillCommandAllowances "${config.home.homeDirectory}/.config/opencode/skills" config.home-manager.dev.coding-agents.skills;
-  allAllowedShellCommands = allowedShellCommands ++ skillCommands;
-
   bashPattern = command: "${command}*";
-  allowPatterns = map bashPattern allAllowedShellCommands;
+  allowPatterns = map bashPattern allowedShellCommands;
   externalDirectoryPermissions = lib.genAttrs (map (
     directory: "${directory}/**"
   ) commonExternalDirectories) (lib.const "allow");
@@ -37,7 +28,7 @@ let
     lib.listToAttrs (
       map (
         command: lib.nameValuePair (bashPattern command) (lib.hm.dag.entryAfter [ "*" ] "allow")
-      ) allAllowedShellCommands
+      ) allowedShellCommands
     )
     // lib.listToAttrs (
       map (
@@ -47,6 +38,14 @@ let
     )
     // {
       "*" = "ask";
+      "${config.home.homeDirectory}/.config/opencode/skills/**" = lib.hm.dag.entryAfter [ "*" ] "allow";
+      "bash ${config.home.homeDirectory}/.config/opencode/skills/**" = lib.hm.dag.entryAfter [
+        "*"
+      ] "allow";
+      "${config.home.homeDirectory}/.config/opencode/plugins/**" = lib.hm.dag.entryAfter [ "*" ] "allow";
+      "bash ${config.home.homeDirectory}/.config/opencode/plugins/**" = lib.hm.dag.entryAfter [
+        "*"
+      ] "allow";
     };
 in
 {
@@ -60,16 +59,17 @@ in
     programs.opencode = {
       enable = true;
       package = pkgs.llm-agents.opencode;
-      context = shared.defaultContext;
+      inherit (agentsCfg) context;
       settings = {
         autoshare = false;
         autoupdate = false;
         model = "deepseek/deepseek-v4-pro";
+        plugin = lib.attrValues agentsCfg.plugins;
         permission.bash = bashPermissions;
         permission.external_directory = externalDirectoryPermissions;
         permission.edit = externalDirectoryReadOnly;
       };
-      skills = config.home-manager.dev.coding-agents.skills;
+      inherit (agentsCfg) skills;
     };
   };
 }

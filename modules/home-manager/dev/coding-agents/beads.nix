@@ -2,7 +2,6 @@
   config,
   flake,
   lib,
-  libEx,
   pkgs,
   ...
 }:
@@ -18,7 +17,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home-manager.dev.coding-agents.skills = libEx.loadSkills (flake.inputs.superpowers + "/skills");
+    home-manager.dev.coding-agents.plugins.beads-superpowers = flake.inputs.superpowers;
 
     home = {
       packages = with pkgs.llm-agents; [

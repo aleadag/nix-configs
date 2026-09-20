@@ -1,18 +1,17 @@
 {
-  config ? { },
-  lib ? pkgs.lib,
-  pkgs ? null,
+  config,
+  lib,
   ...
 }:
 
 let
-  permCfg = config.home-manager.dev.coding-agents.permissions or { };
-  hasContainers = permCfg.containers.enable or false;
-  autoDiscover = permCfg.autoDiscoverPackages or true;
-  binaryOverrides = permCfg.packageBinaryOverrides or { };
-  extraAllowed = permCfg.allowedCommands or [ ];
-  extraDenied = permCfg.deniedCommands or [ ];
-  extraAllowedWriteDirectories = permCfg.allowedWriteDirectories or [ ];
+  permCfg = config.home-manager.dev.coding-agents.permissions;
+  hasContainers = permCfg.containers.enable;
+  autoDiscover = permCfg.autoDiscoverPackages;
+  binaryOverrides = permCfg.packageBinaryOverrides;
+  extraAllowed = permCfg.allowedCommands;
+  extraDenied = permCfg.deniedCommands;
+  extraAllowedWriteDirectories = permCfg.allowedWriteDirectories;
 
   containerDeniedCommands =
     lib.concatMap
@@ -37,10 +36,10 @@ let
         "docker"
       ];
 
-  # Dangerous commands that should be explicitly denied / prompted
   deniedShellCommands = lib.unique (
     [
       "rm -rf"
+      "mkfs"
       "git push"
       "git reset --hard"
       "git clean"
@@ -57,7 +56,6 @@ let
     ++ extraDenied
   );
 
-  # Base Unix and text processing builtins (always allowed)
   baseShellCommands = [
     "cat"
     "cd"
@@ -106,14 +104,12 @@ let
     "wc"
     "which"
     "whoami"
-    # Nix system tools
     "nix"
     "nix-build"
     "nix-store"
     "nix-shell"
   ];
 
-  # Auto-discover package binaries from config.home.packages
   discoveredPackageCommands =
     if autoDiscover && (config ? home.packages) then
       lib.concatMap (
@@ -147,7 +143,6 @@ let
 
   allowedShellCommands = lib.subtractLists deniedShellCommands candidateAllowedShellCommands;
 
-  # Shared canonical network domains allowed for coding agents
   commonNetworkDomains = [
     "brew.sh"
     "cachix.org"
@@ -173,8 +168,6 @@ let
     "rustup.rs"
   ];
 
-  # Read-only directories shared across coding agents: each agent's own config
-  # (managed by Nix, so read-only) plus the immutable Nix store.
   commonExternalDirectories =
     lib.optional (config.home-manager.dev.coding-agents.opencode.enable or false
     ) "${config.home.homeDirectory}/.config/opencode"
@@ -191,11 +184,152 @@ let
   );
 in
 {
-  inherit
-    allowedShellCommands
-    allowedWriteDirectories
-    commonExternalDirectories
-    commonNetworkDomains
-    deniedShellCommands
-    ;
+  options.home-manager.dev.coding-agents.permissions = {
+    containers.enable = lib.mkEnableOption "Podman-backed container command permissions";
+
+    allowedCommands = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = "Extra shell commands permitted across coding agents";
+    };
+
+    deniedCommands = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = "Extra dangerous commands explicitly denied across coding agents";
+    };
+
+    allowedWriteDirectories = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [
+        config.home.homeDirectory
+        "/tmp"
+      ];
+      description = "Directories where coding agents are permitted to write files (e.g. via shell redirection)";
+    };
+
+    autoDiscoverPackages = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Whether to automatically discover executable commands from home.packages";
+    };
+
+    packageBinaryOverrides = lib.mkOption {
+      type = lib.types.attrsOf (lib.types.listOf lib.types.str);
+      default = {
+        python3 = [
+          "python"
+          "python3"
+          "python3.14"
+        ];
+        coreutils = [
+          "cat"
+          "cp"
+          "date"
+          "diff"
+          "echo"
+          "head"
+          "id"
+          "ls"
+          "mkdir"
+          "mv"
+          "pwd"
+          "rm"
+          "sleep"
+          "sort"
+          "stat"
+          "tail"
+          "test"
+          "touch"
+          "tr"
+          "uname"
+          "uniq"
+          "wc"
+          "whoami"
+        ];
+        bun = [
+          "bun"
+          "bunx"
+        ];
+        nodejs = [
+          "corepack"
+          "node"
+          "npm"
+          "npx"
+          "pnpm"
+        ];
+        nodejs_20 = [
+          "corepack"
+          "node"
+          "npm"
+          "npx"
+          "pnpm"
+        ];
+        nodejs_22 = [
+          "corepack"
+          "node"
+          "npm"
+          "npx"
+          "pnpm"
+        ];
+        findutils = [
+          "find"
+          "xargs"
+        ];
+        diffutils = [
+          "diff"
+          "cmp"
+        ];
+        gnused = [ "sed" ];
+        gnugrep = [ "grep" ];
+        gnumake = [ "make" ];
+        go = [
+          "go"
+          "gofmt"
+        ];
+      };
+      description = "Mapping of package names/pnames to the binary commands they provide";
+    };
+
+    # Computed internal options
+    allowedShellCommands = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      internal = true;
+      readOnly = true;
+      default = allowedShellCommands;
+      description = "Final allowed shell commands across coding agents";
+    };
+
+    deniedShellCommands = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      internal = true;
+      readOnly = true;
+      default = deniedShellCommands;
+      description = "Final denied shell commands across coding agents";
+    };
+
+    commonNetworkDomains = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      internal = true;
+      readOnly = true;
+      default = commonNetworkDomains;
+      description = "Shared network domains allowed for coding agents";
+    };
+
+    commonExternalDirectories = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      internal = true;
+      readOnly = true;
+      default = commonExternalDirectories;
+      description = "Shared external read-only directories across coding agents";
+    };
+
+    finalAllowedWriteDirectories = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      internal = true;
+      readOnly = true;
+      default = allowedWriteDirectories;
+      description = "Final writable directories across coding agents";
+    };
+  };
 }
