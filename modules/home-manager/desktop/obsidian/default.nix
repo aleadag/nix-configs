@@ -13,8 +13,7 @@
   };
 
   config = lib.mkIf config.home-manager.desktop.obsidian.enable {
-    home-manager.dev.coding-agents.skills =
-      libEx.loadSkills flake.inputs.obsidian-skills;
+    home-manager.dev.coding-agents.skills = libEx.loadSkills flake.inputs.obsidian-skills;
 
     programs.obsidian = {
       enable = true;
