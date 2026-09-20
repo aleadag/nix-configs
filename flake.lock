@@ -386,22 +386,6 @@
         "type": "github"
       }
     },
-    "jujutsu-skills": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1781318777,
-        "narHash": "sha256-EcQWhnk4KQBQncemlQQTn2XXvUXVdYKkB2OJSpGQ4AI=",
-        "owner": "danverbraganza",
-        "repo": "jujutsu-skill",
-        "rev": "b0668317ec8b375ea3d5815d3f029f4104443a0b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "danverbraganza",
-        "repo": "jujutsu-skill",
-        "type": "github"
-      }
-    },
     "lifewiki-skills": {
       "inputs": {
         "flake-utils": [
@@ -789,7 +773,6 @@
         "hardware": "hardware",
         "home-manager": "home-manager",
         "jovian-nixos": "jovian-nixos",
-        "jujutsu-skills": "jujutsu-skills",
         "lifewiki-skills": "lifewiki-skills",
         "llm-agents": "llm-agents",
         "niri": "niri",

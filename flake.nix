@@ -132,10 +132,6 @@
     };
 
     # Agent skills
-    jujutsu-skills = {
-      url = "github:danverbraganza/jujutsu-skill";
-      flake = false;
-    };
     obsidian-skills = {
       url = "github:kepano/obsidian-skills?dir=skills";
       flake = false;

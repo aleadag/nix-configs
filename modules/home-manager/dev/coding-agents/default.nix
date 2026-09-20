@@ -50,12 +50,6 @@ let
       )
     );
 
-  jjStopHook = pkgs.writeShellScript "coding-agents-jj-stop-hook" ''
-    if jj root >/dev/null 2>&1 && [ -n "$(jj diff --summary 2>/dev/null)" ]; then
-      jj new >/dev/null 2>&1 || true
-    fi
-    printf '%s\n' '{"continue":true}'
-  '';
 in
 {
   imports = [
@@ -103,13 +97,6 @@ in
       description = "Shared coding agent context";
     };
 
-    jjStopHook = lib.mkOption {
-      type = lib.types.package;
-      internal = true;
-      readOnly = true;
-      default = jjStopHook;
-      description = "Jujutsu stop hook shell script";
-    };
   };
 
   config = lib.mkIf cfg.enable {

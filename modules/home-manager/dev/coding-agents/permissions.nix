@@ -43,7 +43,6 @@ let
       "git push"
       "git reset --hard"
       "git clean"
-      "jj git push"
       "bd purge"
       "nix-collect-garbage"
       "nix store delete"

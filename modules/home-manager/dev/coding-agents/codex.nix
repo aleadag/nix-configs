@@ -69,33 +69,20 @@ in
       enable = true;
       enableMcpIntegration = true;
       package = codexPackage;
-      hooks =
-        lib.optionalAttrs (beadsSuperpowersPlugin != null) {
-          SessionStart = [
-            {
-              matcher = "startup|resume|clear|compact";
-              hooks = [
-                {
-                  type = "command";
-                  command = "CODEX_PLUGIN_ROOT=${beadsSuperpowersPlugin} ${beadsSuperpowersPlugin}/hooks/run-hook.cmd session-start";
-                  async = false;
-                }
-              ];
-            }
-          ];
-        }
-        // lib.optionalAttrs config.home-manager.cli.jujutsu.enable {
-          Stop = [
-            {
-              hooks = [
-                {
-                  type = "command";
-                  command = agentsCfg.jjStopHook;
-                }
-              ];
-            }
-          ];
-        };
+      hooks = lib.optionalAttrs (beadsSuperpowersPlugin != null) {
+        SessionStart = [
+          {
+            matcher = "startup|resume|clear|compact";
+            hooks = [
+              {
+                type = "command";
+                command = "CODEX_PLUGIN_ROOT=${beadsSuperpowersPlugin} ${beadsSuperpowersPlugin}/hooks/run-hook.cmd session-start";
+                async = false;
+              }
+            ];
+          }
+        ];
+      };
       settings =
         (pkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
           tui = {

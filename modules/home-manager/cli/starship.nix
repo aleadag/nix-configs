@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 {
@@ -15,13 +14,6 @@
 
       settings = {
         add_newline = false;
-
-        custom.jj = {
-          description = "Show Jujutsu info";
-          when = "jj-starship detect";
-          shell = [ (lib.getExe pkgs.jj-starship) ];
-          format = "$output ";
-        };
       };
     };
   };

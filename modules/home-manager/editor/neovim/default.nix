@@ -141,13 +141,6 @@ in
               key = lib.mkDefault "<leader>fc";
               description = lib.mkDefault "Codex";
             };
-            jjui = {
-              enable = lib.mkDefault config.home-manager.cli.jujutsu.enable;
-              command = lib.mkDefault "jjui";
-              displayName = lib.mkDefault "Jujutsu UI";
-              key = lib.mkDefault "<leader>fj";
-              description = lib.mkDefault "Jujutsu UI";
-            };
           };
         };
 
