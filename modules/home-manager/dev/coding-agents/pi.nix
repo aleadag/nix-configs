@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  libEx,
   pkgs,
   ...
 }:
@@ -9,6 +10,11 @@ let
   agentsCfg = config.home-manager.dev.coding-agents;
   cfg = agentsCfg.pi-coding-agent;
   piCfg = config.programs.pi-coding-agent;
+
+  pluginSkills = lib.concatMapAttrs (
+    _: plugin:
+    lib.optionalAttrs (builtins.pathExists (plugin + "/skills")) (libEx.loadSkills (plugin + "/skills"))
+  ) agentsCfg.plugins;
 in
 {
   options.home-manager.dev.coding-agents.pi-coding-agent = {
@@ -24,7 +30,7 @@ in
         lib.nameValuePair "${piCfg.configDir}/skills/${name}" {
           inherit source;
         }
-      ) agentsCfg.skills;
+      ) (pluginSkills // agentsCfg.skills);
 
       sessionVariables.PI_SKIP_VERSION_CHECK = "1";
     };
@@ -34,8 +40,15 @@ in
       package = pkgs.llm-agents.pi;
       inherit (agentsCfg) context;
       settings = {
+        defaultProvider = "xai";
+        defaultModel = "grok-4.6";
+        defaultThinkingLevel = "xhigh";
         enableAnalytics = false;
         enableInstallTelemetry = false;
+        packages = lib.mapAttrsToList (_: source: {
+          source = "${source}";
+          skills = [ ];
+        }) agentsCfg.plugins;
       };
     };
   };
