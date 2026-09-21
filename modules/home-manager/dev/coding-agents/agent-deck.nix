@@ -30,6 +30,7 @@ in
         };
         global_search = {
           enabled = true;
+          recent_days = 90;
           tier = "auto";
         };
         logs = {
