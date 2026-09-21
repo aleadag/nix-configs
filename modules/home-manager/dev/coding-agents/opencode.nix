@@ -15,7 +15,15 @@ let
     ;
 
   bashPattern = command: "${command}*";
-  allowPatterns = map bashPattern allowedShellCommands;
+  skillCommands = lib.concatMap (rel: [
+    "${config.home.homeDirectory}/.config/opencode/skills/${rel}"
+    "bash ${config.home.homeDirectory}/.config/opencode/skills/${rel}"
+  ]) agentsCfg.skillScriptRelativePaths;
+  skillCommandPatterns = lib.concatMap (command: [
+    command
+    "${command} *"
+  ]) skillCommands;
+  allowPatterns = map bashPattern allowedShellCommands ++ skillCommandPatterns;
   externalDirectoryPermissions = lib.genAttrs (map (
     directory: "${directory}/**"
   ) commonExternalDirectories) (lib.const "allow");
@@ -32,20 +40,17 @@ let
     )
     // lib.listToAttrs (
       map (
+        command: lib.nameValuePair command (lib.hm.dag.entryAfter [ "*" ] "allow")
+      ) skillCommandPatterns
+    )
+    // lib.listToAttrs (
+      map (
         command:
         lib.nameValuePair (bashPattern command) (lib.hm.dag.entryAfter ([ "*" ] ++ allowPatterns) "deny")
       ) deniedShellCommands
     )
     // {
       "*" = "ask";
-      "${config.home.homeDirectory}/.config/opencode/skills/**" = lib.hm.dag.entryAfter [ "*" ] "allow";
-      "bash ${config.home.homeDirectory}/.config/opencode/skills/**" = lib.hm.dag.entryAfter [
-        "*"
-      ] "allow";
-      "${config.home.homeDirectory}/.config/opencode/plugins/**" = lib.hm.dag.entryAfter [ "*" ] "allow";
-      "bash ${config.home.homeDirectory}/.config/opencode/plugins/**" = lib.hm.dag.entryAfter [
-        "*"
-      ] "allow";
     };
 in
 {

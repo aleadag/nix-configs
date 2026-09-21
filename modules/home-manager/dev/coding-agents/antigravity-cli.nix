@@ -15,7 +15,6 @@ let
     deniedShellCommands
     ;
   allowedWriteDirectories = agentsCfg.permissions.finalAllowedWriteDirectories;
-  homeDirectoryPattern = lib.escapeRegex config.home.homeDirectory;
 
   allowedCommands = map (command: "command(${command})") allowedShellCommands;
   deniedCommands = map (command: "command(${command})") deniedShellCommands;
@@ -26,26 +25,59 @@ let
   ) allowedWriteDirectories;
   deniedDirectoryPermissions = map (directory: "write_file(${directory})") commonExternalDirectories;
 
-  allowedSkillPatterns = [
-    "command(bash ${homeDirectoryPattern}/\\.gemini/antigravity-cli/skills/.*)"
-    "command(${homeDirectoryPattern}/\\.gemini/antigravity-cli/skills/.*)"
-    "command(bash ${homeDirectoryPattern}/\\.gemini/config/plugins/.*)"
-    "command(${homeDirectoryPattern}/\\.gemini/config/plugins/.*)"
-  ];
+  allowedSkillPatterns = lib.concatMap (
+    rel:
+    let
+      skillPath = lib.escapeRegex "${config.home.homeDirectory}/.gemini/antigravity-cli/skills/${rel}";
+    in
+    [
+      "command(regex:${skillPath})"
+      "command(regex:bash ${skillPath})"
+    ]
+  ) agentsCfg.skillScriptRelativePaths;
+  allowedPluginHookPatterns = lib.concatMap (
+    plugin:
+    let
+      hookPath = "${plugin}/hooks/run-hook.cmd";
+      escapedHookPath = lib.escapeRegex hookPath;
+    in
+    lib.optionals (builtins.pathExists hookPath) [
+      "command(regex:${escapedHookPath} session-start)"
+      "command(regex:bash ${escapedHookPath} session-start)"
+    ]
+  ) (lib.attrValues agentsCfg.plugins);
+  deniedPluginHookPatterns = lib.concatMap (
+    plugin:
+    let
+      hookPath = "${plugin}/hooks/run-hook.cmd";
+      escapedHookPath = lib.escapeRegex hookPath;
+    in
+    lib.optionals (builtins.pathExists hookPath) [
+      "command(regex:${escapedHookPath} session-start .*)"
+      "command(regex:bash ${escapedHookPath} session-start .*)"
+    ]
+  ) (lib.attrValues agentsCfg.plugins);
 
   wrapAntigravityPlugin =
     name: plugin:
-    if builtins.pathExists (plugin + "/plugin.json") then
+    let
+      hasPluginManifest = builtins.pathExists (plugin + "/plugin.json");
+      hasGeminiManifest = builtins.pathExists (plugin + "/gemini-extension.json");
+      hasHooksManifest = builtins.pathExists (plugin + "/hooks/hooks.json");
+    in
+    if hasPluginManifest && !hasHooksManifest then
       plugin
-    else if builtins.pathExists (plugin + "/gemini-extension.json") then
+    else if hasPluginManifest || hasGeminiManifest then
       pkgs.runCommand "agy-plugin-${name}" { } ''
         mkdir -p "$out"
         ln -s ${plugin}/* "$out/"
-        cp "${plugin}/gemini-extension.json" "$out/plugin.json"
-        if [ -f "${plugin}/hooks/hooks.json" ]; then
-          sed 's/''${CLAUDE_PLUGIN_ROOT}/''${PLUGIN_ROOT}/g' \
+        ${lib.optionalString (!hasPluginManifest) ''
+          cp "${plugin}/gemini-extension.json" "$out/plugin.json"
+        ''}
+        ${lib.optionalString hasHooksManifest ''
+          sed 's|''${CLAUDE_PLUGIN_ROOT}|${plugin}|g' \
             "${plugin}/hooks/hooks.json" > "$out/hooks.json"
-        fi
+        ''}
       ''
     else
       throw "Antigravity plugin '${name}' has neither plugin.json nor gemini-extension.json";
@@ -91,10 +123,11 @@ in
         allow =
           allowedCommands
           ++ allowedSkillPatterns
+          ++ allowedPluginHookPatterns
           ++ allowedDirectoryPermissions
           ++ allowedWriteDirectoryPermissions
           ++ allowedNetworkReads;
-        deny = deniedCommands ++ deniedDirectoryPermissions;
+        deny = deniedCommands ++ deniedPluginHookPatterns ++ deniedDirectoryPermissions;
       };
       inherit (agentsCfg) skills;
       settings = {

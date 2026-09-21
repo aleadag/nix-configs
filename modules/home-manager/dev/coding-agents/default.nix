@@ -10,6 +10,7 @@ let
   cfg = config.home-manager.dev.coding-agents;
 
   scriptExtensions = [ "sh" ];
+  portableSkillScriptPathPattern = "[A-Za-z0-9._/-]+";
 
   isScriptFile =
     path:
@@ -50,6 +51,16 @@ let
       )
     );
 
+  validateSkillScriptRelativePaths =
+    paths:
+    let
+      invalidPaths = lib.filter (path: builtins.match portableSkillScriptPathPattern path == null) paths;
+    in
+    if invalidPaths == [ ] then
+      paths
+    else
+      throw "Unsafe standalone skill script relative path(s): ${lib.concatStringsSep ", " invalidPaths}. Paths must contain only ASCII letters, digits, '.', '_', '-', and '/'.";
+
 in
 {
   imports = [
@@ -85,7 +96,7 @@ in
       type = lib.types.listOf lib.types.str;
       internal = true;
       readOnly = true;
-      default = discoverSkillScripts cfg.skills;
+      default = validateSkillScriptRelativePaths (discoverSkillScripts cfg.skills);
       description = "Discovered relative script paths across all enabled skills";
     };
 
