@@ -14,6 +14,14 @@ in
   };
 
   config = lib.mkIf config.home-manager.dev.node.enable {
+    home-manager.dev.coding-agents.permissions.allowedCommands = [
+      "node"
+      "npm"
+      "npx"
+      "bun"
+      "bunx"
+    ];
+
     home = {
       packages = with pkgs; [
         nodejs

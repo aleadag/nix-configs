@@ -144,6 +144,11 @@
       url = "github:DollarDill/beads-superpowers";
       flake = false;
     };
+    # Keep tag in sync with pkgs.llm-agents.agent-deck.version
+    agent-deck-src = {
+      url = "github:asheshgoplani/agent-deck/v1.16.13";
+      flake = false;
+    };
 
     # zsh
     zsh-proxy = {

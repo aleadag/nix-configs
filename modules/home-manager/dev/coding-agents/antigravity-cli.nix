@@ -68,7 +68,7 @@ let
     if hasPluginManifest && !hasHooksManifest then
       plugin
     else if hasPluginManifest || hasGeminiManifest then
-      pkgs.runCommand "agy-plugin-${name}" { } ''
+      pkgs.runCommandLocal "agy-plugin-${name}" { } ''
         mkdir -p "$out"
         ln -s ${plugin}/* "$out/"
         ${lib.optionalString (!hasPluginManifest) ''
@@ -114,8 +114,6 @@ in
     programs.antigravity-cli = {
       enable = true;
       package = pkgs.llm-agents.antigravity-cli;
-
-      enableMcpIntegration = true;
       context = {
         CONTEXT = agentsCfg.context;
       };

@@ -16,8 +16,8 @@ let
 
   bashPattern = command: "${command}*";
   skillCommands = lib.concatMap (rel: [
-    "${config.home.homeDirectory}/.config/opencode/skills/${rel}"
-    "bash ${config.home.homeDirectory}/.config/opencode/skills/${rel}"
+    "${config.xdg.configHome}/opencode/skills/${rel}"
+    "bash ${config.xdg.configHome}/opencode/skills/${rel}"
   ]) agentsCfg.skillScriptRelativePaths;
   skillCommandPatterns = lib.concatMap (command: [
     command

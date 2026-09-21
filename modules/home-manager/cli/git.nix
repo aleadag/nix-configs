@@ -22,6 +22,11 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    home-manager.dev.coding-agents.permissions.allowedCommands = [
+      "git"
+    ]
+    ++ lib.optionals cfg.gh.enable [ "gh" ];
+
     home = {
       packages =
         with pkgs;

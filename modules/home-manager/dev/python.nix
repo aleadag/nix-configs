@@ -11,6 +11,12 @@
   };
 
   config = lib.mkIf config.home-manager.dev.python.enable {
+    home-manager.dev.coding-agents.permissions.allowedCommands = [
+      "python"
+      "python3"
+      "uv"
+    ];
+
     home.packages = with pkgs; [
       pyright
       python3

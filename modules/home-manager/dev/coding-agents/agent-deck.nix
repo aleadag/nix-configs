@@ -1,5 +1,6 @@
 {
   config,
+  flake,
   lib,
   libEx,
   pkgs,
@@ -17,7 +18,7 @@ in
     };
 
     settings = lib.mkOption {
-      type = lib.types.attrs;
+      inherit (configToml) type;
       default = {
         default_tool = "codex";
         theme = "dark";
@@ -50,13 +51,11 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = with pkgs; [
-      llm-agents.agent-deck
-    ];
-    home-manager.cli.tmux.enable = true;
+    home.packages = [ pkgs.llm-agents.agent-deck ];
+    home-manager.cli.tmux.enable = lib.mkDefault true;
 
     home-manager.dev.coding-agents = {
-      skills = libEx.loadSkills (pkgs.llm-agents.agent-deck.src + "/skills");
+      skills = libEx.loadSkills (flake.inputs.agent-deck-src + "/skills");
       permissions.allowedCommands = [ "agent-deck" ];
     };
 

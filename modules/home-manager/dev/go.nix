@@ -15,6 +15,11 @@ in
   };
 
   config = lib.mkIf config.home-manager.dev.go.enable {
+    home-manager.dev.coding-agents.permissions.allowedCommands = [
+      "go"
+      "gofmt"
+    ];
+
     programs.go = {
       enable = true;
       env = { inherit GOBIN GOPATH; };

@@ -82,13 +82,13 @@ in
     };
 
     skills = lib.mkOption {
-      type = lib.types.attrsOf (lib.types.either lib.types.path lib.types.package);
+      type = lib.types.attrsOf lib.types.path;
       default = { };
       description = "Skills to provide across coding agents (mapping of skill name to skill directory path)";
     };
 
     plugins = lib.mkOption {
-      type = lib.types.attrsOf (lib.types.either lib.types.path lib.types.package);
+      type = lib.types.attrsOf lib.types.path;
       default = { };
       description = "Attribute set of coding agent plugins providing bundled skills, lifecycle hooks, and manifests.";
     };
@@ -97,7 +97,6 @@ in
       type = lib.types.listOf lib.types.str;
       internal = true;
       readOnly = true;
-      default = validateSkillScriptRelativePaths (discoverSkillScripts cfg.skills);
       description = "Discovered relative script paths across all enabled skills";
     };
 
@@ -111,14 +110,21 @@ in
 
   };
 
-  config = lib.mkIf cfg.enable {
-    home-manager.dev.coding-agents.skills = {
-      commit-message = ./skills/commit-message;
-    };
+  config = lib.mkMerge [
+    {
+      home-manager.dev.coding-agents.skillScriptRelativePaths = validateSkillScriptRelativePaths (
+        discoverSkillScripts cfg.skills
+      );
+    }
+    (lib.mkIf cfg.enable {
+      home-manager.dev.coding-agents.skills = {
+        commit-message = ./skills/commit-message;
+      };
 
-    home.packages = with pkgs; [
-      ctx7
-      defuddle
-    ];
-  };
+      home.packages = with pkgs; [
+        ctx7
+        defuddle
+      ];
+    })
+  ];
 }

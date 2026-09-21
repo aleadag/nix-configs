@@ -17,7 +17,13 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home-manager.dev.coding-agents.plugins.beads-superpowers = flake.inputs.superpowers;
+    home-manager.dev.coding-agents = {
+      plugins.beads-superpowers = flake.inputs.superpowers;
+      permissions.allowedCommands = [
+        "bd"
+        "beads"
+      ];
+    };
 
     home = {
       packages = with pkgs.llm-agents; [

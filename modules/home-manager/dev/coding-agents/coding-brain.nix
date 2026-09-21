@@ -9,11 +9,7 @@ let
 in
 {
   options.home-manager.dev.coding-agents.coding-brain = {
-    enable = lib.mkEnableOption "Coding Brain" // {
-      default =
-        config.home-manager.dev.coding-agents.codex.enable
-        && (config.programs.codex.settings.approvals_reviewer or null) != "auto_review";
-    };
+    enable = lib.mkEnableOption "Coding Brain";
   };
 
   config = lib.mkIf cfg.enable {
