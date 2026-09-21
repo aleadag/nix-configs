@@ -70,6 +70,7 @@ in
     ./codex.nix
     ./coding-brain.nix
     ./opencode.nix
+    ./pi.nix
     ./mcp.nix
     ./permissions.nix
     flake.inputs.coding-brain.homeManagerModules.default
