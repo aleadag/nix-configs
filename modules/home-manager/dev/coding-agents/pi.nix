@@ -41,7 +41,7 @@ in
       inherit (agentsCfg) context;
       settings = {
         defaultProvider = "xai";
-        defaultModel = "grok-4.6";
+        defaultModel = "grok-4.7";
         defaultThinkingLevel = "xhigh";
         enableAnalytics = false;
         enableInstallTelemetry = false;
