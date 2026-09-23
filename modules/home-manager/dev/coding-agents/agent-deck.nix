@@ -13,9 +13,7 @@ let
 in
 {
   options.home-manager.dev.coding-agents.agent-deck = {
-    enable = lib.mkEnableOption "Agent Deck CLI tool" // {
-      default = config.home-manager.dev.coding-agents.enable;
-    };
+    enable = lib.mkEnableOption "Agent Deck CLI tool";
 
     settings = lib.mkOption {
       inherit (configToml) type;
