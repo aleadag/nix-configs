@@ -40,11 +40,15 @@ in
       package = pkgs.llm-agents.pi;
       inherit (agentsCfg) context;
       settings = {
-        defaultProvider = "xai";
-        defaultModel = "grok-4.6";
-        defaultThinkingLevel = "high";
+        defaultProvider = "openai-codex";
+        defaultModel = "gpt-6-luna";
+        defaultThinkingLevel = "xhigh";
         enableAnalytics = false;
         enableInstallTelemetry = false;
+        enabledModels = [
+          "grok-4.6"
+          "gpt-6-*"
+        ];
         packages = lib.mapAttrsToList (_: source: {
           source = "${source}";
           skills = [ ];
