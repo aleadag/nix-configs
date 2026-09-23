@@ -20,7 +20,17 @@ in
     programs.herdr = {
       enable = true;
       package = pkgs.llm-agents.herdr;
-      settings = { };
+      settings = {
+        onboarding = false;
+        theme = {
+          name = "terminal";
+          auto_switch = false;
+          custom = {
+            active_row_bg = "#${config.lib.stylix.colors.base02}";
+            selection_bg = "#${config.lib.stylix.colors.base01}";
+          };
+        };
+      };
     };
   };
 }
