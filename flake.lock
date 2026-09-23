@@ -877,16 +877,17 @@
     "superpowers": {
       "flake": false,
       "locked": {
-        "lastModified": 1785124593,
-        "narHash": "sha256-hpW4wM6Z2e55Q08SiZHB+V1mhJagRDaRwsKg30PKqOk=",
-        "owner": "DollarDill",
-        "repo": "beads-superpowers",
-        "rev": "35fe0d121bf7fa0c116bcf589cfb4383bc77d818",
+        "lastModified": 1790069886,
+        "narHash": "sha256-avGGcjSVCFnubp4n8GALP70Qvh9YyoUw0hU/8sLkjgA=",
+        "owner": "aleadag",
+        "repo": "superpowers",
+        "rev": "91107117d058cade32c50518cffb1669ecb033db",
         "type": "github"
       },
       "original": {
-        "owner": "DollarDill",
-        "repo": "beads-superpowers",
+        "owner": "aleadag",
+        "ref": "beads",
+        "repo": "superpowers",
         "type": "github"
       }
     },

@@ -141,7 +141,7 @@
       flake = false;
     };
     superpowers = {
-      url = "github:DollarDill/beads-superpowers";
+      url = "github:aleadag/superpowers/beads";
       flake = false;
     };
     # Keep tag in sync with pkgs.llm-agents.agent-deck.version
