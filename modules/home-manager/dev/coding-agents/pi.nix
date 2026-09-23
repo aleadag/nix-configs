@@ -41,8 +41,8 @@ in
       inherit (agentsCfg) context;
       settings = {
         defaultProvider = "openai-codex";
-        defaultModel = "gpt-6-luna";
-        defaultThinkingLevel = "xhigh";
+        defaultModel = "gpt-6-sol";
+        defaultThinkingLevel = "medium";
         enableAnalytics = false;
         enableInstallTelemetry = false;
         enabledModels = [
