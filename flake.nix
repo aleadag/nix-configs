@@ -149,6 +149,11 @@
       url = "github:asheshgoplani/agent-deck/v1.16.13";
       flake = false;
     };
+    # Keep tag in sync with pkgs.llm-agents.herdr.version
+    herdr-src = {
+      url = "github:herdrdev/herdr/v0.9.1";
+      flake = false;
+    };
 
     # zsh
     zsh-proxy = {

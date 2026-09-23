@@ -1,5 +1,6 @@
 {
   config,
+  flake,
   lib,
   pkgs,
   ...
@@ -14,6 +15,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    home-manager.dev.coding-agents.skills.herdr = flake.inputs.herdr-src + "/skills/herdr";
+
     programs.herdr = {
       enable = true;
       package = pkgs.llm-agents.herdr;
