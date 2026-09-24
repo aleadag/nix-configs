@@ -330,23 +330,6 @@
         "type": "github"
       }
     },
-    "herdr-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1789583424,
-        "narHash": "sha256-N6+kprfWRyh0AkAiopkGsNXUGGORyPVFHEaDHCpGQs8=",
-        "owner": "herdrdev",
-        "repo": "herdr",
-        "rev": "065ef9d6a531c49fb8bee7e818ef837065b21ee9",
-        "type": "github"
-      },
-      "original": {
-        "owner": "herdrdev",
-        "ref": "v0.9.1",
-        "repo": "herdr",
-        "type": "github"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -788,7 +771,6 @@
         "flake-utils": "flake-utils",
         "gh-gfm-preview": "gh-gfm-preview",
         "hardware": "hardware",
-        "herdr-src": "herdr-src",
         "home-manager": "home-manager",
         "jovian-nixos": "jovian-nixos",
         "lifewiki-skills": "lifewiki-skills",

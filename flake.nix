@@ -144,11 +144,6 @@
       url = "github:aleadag/superpowers/beads";
       flake = false;
     };
-    # Keep tag in sync with pkgs.llm-agents.herdr.version
-    herdr-src = {
-      url = "github:herdrdev/herdr/v0.9.1";
-      flake = false;
-    };
 
     # zsh
     zsh-proxy = {
