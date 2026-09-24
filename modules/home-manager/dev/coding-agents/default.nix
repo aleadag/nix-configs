@@ -64,7 +64,6 @@ let
 in
 {
   imports = [
-    ./agent-deck.nix
     ./antigravity-cli.nix
     ./beads.nix
     ./codex.nix

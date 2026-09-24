@@ -1,22 +1,5 @@
 {
   "nodes": {
-    "agent-deck-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1789840130,
-        "narHash": "sha256-1kfI8nzURDAHp67Mt7PushWo3uYAu5Sc4kLpMsOL7o4=",
-        "owner": "asheshgoplani",
-        "repo": "agent-deck",
-        "rev": "5dcc5a9995254a97c09901532d19a6ca498ae59e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "asheshgoplani",
-        "ref": "v1.16.13",
-        "repo": "agent-deck",
-        "type": "github"
-      }
-    },
     "base16": {
       "inputs": {
         "fromYaml": "fromYaml"
@@ -798,7 +781,6 @@
     },
     "root": {
       "inputs": {
-        "agent-deck-src": "agent-deck-src",
         "coding-brain": "coding-brain",
         "disko": "disko",
         "flake-compat": "flake-compat",

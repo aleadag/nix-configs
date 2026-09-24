@@ -144,11 +144,6 @@
       url = "github:aleadag/superpowers/beads";
       flake = false;
     };
-    # Keep tag in sync with pkgs.llm-agents.agent-deck.version
-    agent-deck-src = {
-      url = "github:asheshgoplani/agent-deck/v1.16.13";
-      flake = false;
-    };
     # Keep tag in sync with pkgs.llm-agents.herdr.version
     herdr-src = {
       url = "github:herdrdev/herdr/v0.9.1";
