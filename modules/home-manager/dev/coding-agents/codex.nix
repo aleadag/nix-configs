@@ -110,8 +110,8 @@ in
             };
             feedback.enabled = false;
             file_opener = "none";
-            model = "gpt-5.6-luna";
-            model_reasoning_effort = "xhigh";
+            model = "gpt-6-sol";
+            model_reasoning_effort = "medium";
             model_reasoning_summary = "auto";
             personality = "none";
             plugins = {
