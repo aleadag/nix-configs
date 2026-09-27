@@ -41,7 +41,7 @@ in
       inherit (agentsCfg) context;
       settings = {
         defaultProvider = "openai-codex";
-        defaultModel = "gpt-6-sol";
+        defaultModel = "gpt-6-astra";
         defaultThinkingLevel = "medium";
         enableAnalytics = false;
         enableInstallTelemetry = false;
