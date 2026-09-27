@@ -10,7 +10,9 @@ let
 in
 {
   options.home-manager.dev.coding-agents.herdr = {
-    enable = lib.mkEnableOption "Herdr";
+    enable = lib.mkEnableOption "Herdr" // {
+      default = config.home-manager.dev.coding-agents.enable;
+    };
   };
 
   config = lib.mkIf cfg.enable {
