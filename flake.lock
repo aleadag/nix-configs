@@ -762,6 +762,23 @@
         "type": "github"
       }
     },
+    "pi-herdr-subagents": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788300506,
+        "narHash": "sha256-c8zNMN5624hvGckWZDtQ5pnfxrnYDuB477xdlbbsPzk=",
+        "owner": "modem-dev",
+        "repo": "pi-herdr-subagents",
+        "rev": "b6987324284b1fa22b2eb9f0effaf956ada27333",
+        "type": "github"
+      },
+      "original": {
+        "owner": "modem-dev",
+        "repo": "pi-herdr-subagents",
+        "rev": "b6987324284b1fa22b2eb9f0effaf956ada27333",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "coding-brain": "coding-brain",
@@ -787,6 +804,7 @@
         "omf-proxy": "omf-proxy",
         "openai-skills": "openai-skills",
         "paneru": "paneru",
+        "pi-herdr-subagents": "pi-herdr-subagents",
         "sops-nix": "sops-nix",
         "stylix": "stylix",
         "superpowers": "superpowers",

@@ -131,6 +131,11 @@
       };
     };
 
+    pi-herdr-subagents = {
+      url = "github:modem-dev/pi-herdr-subagents/b6987324284b1fa22b2eb9f0effaf956ada27333";
+      flake = false;
+    };
+
     # Agent skills
     obsidian-skills = {
       url = "github:kepano/obsidian-skills?dir=skills";
@@ -221,7 +226,13 @@
                 ];
               };
             };
-            checks.formatting = treefmtEval.config.build.check self;
+            checks = {
+              formatting = treefmtEval.config.build.check self;
+              pi-herdr-subagents = import ./tests/pi-herdr-subagents.nix {
+                flake = self;
+                inherit pkgs;
+              };
+            };
             formatter = treefmtEval.config.build.wrapper;
             legacyPackages = pkgs;
           }

@@ -89,7 +89,7 @@ in
         lib.recursiveUpdate
           {
             agents = {
-              default_subagent_model = "gpt-5.6-luna";
+              default_subagent_model = "gpt-6-luna";
               default_subagent_reasoning_effort = "xhigh";
             };
             analytics.enabled = false;
@@ -110,7 +110,7 @@ in
             };
             feedback.enabled = false;
             file_opener = "none";
-            model = "gpt-6-astra";
+            model = "gpt-6-sol";
             model_reasoning_effort = "medium";
             model_reasoning_summary = "auto";
             personality = "none";
