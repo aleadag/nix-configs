@@ -13,10 +13,38 @@ in
     enable = lib.mkEnableOption "Herdr" // {
       default = config.home-manager.dev.coding-agents.enable;
     };
+
+    plugins = lib.mkOption {
+      type = lib.types.listOf lib.types.package;
+      default = [ ];
+      description = "List of Herdr plugin packages to link into Herdr on activation.";
+    };
   };
 
   config = lib.mkIf cfg.enable {
     home-manager.dev.coding-agents.skills.herdr = pkgs.llm-agents.herdr.src + "/skills/herdr";
+
+    home.activation.unlinkHerdrPlugins = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      $DRY_RUN_CMD ${lib.getExe config.programs.herdr.package} plugin unlink herdr-navigator || true
+      $DRY_RUN_CMD ${lib.getExe config.programs.herdr.package} plugin unlink herdr.collie || true
+    '';
+
+    home.activation.linkHerdrPlugins = lib.mkIf (cfg.plugins != [ ]) (
+      lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        ${lib.concatMapStringsSep "\n" (plugin: ''
+          _plugin_path="${plugin}"
+          if [ -f "$_plugin_path/herdr-plugin.toml" ]; then
+            $DRY_RUN_CMD ${lib.getExe config.programs.herdr.package} plugin link "$_plugin_path" --enabled || true
+          elif [ -d "$_plugin_path/libexec/herdr/plugins" ]; then
+            for manifest in "$_plugin_path"/libexec/herdr/plugins/*/herdr-plugin.toml; do
+              if [ -f "$manifest" ]; then
+                $DRY_RUN_CMD ${lib.getExe config.programs.herdr.package} plugin link "$(dirname "$manifest")" --enabled || true
+              fi
+            done
+          fi
+        '') cfg.plugins}
+      ''
+    );
 
     programs.herdr = {
       enable = true;

@@ -68,6 +68,7 @@ in
     ./beads.nix
     ./codex.nix
     ./coding-brain.nix
+    ./collie.nix
     ./herdr.nix
     ./opencode.nix
     ./pi.nix

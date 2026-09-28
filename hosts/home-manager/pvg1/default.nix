@@ -18,7 +18,13 @@
       enable = true;
       lutris.enable = true;
     };
-    dev.enable = true;
+    dev = {
+      enable = true;
+      coding-agents.collie = {
+        enable = true;
+        publicHosts = [ "pvg1.tailbea285.ts.net" ];
+      };
+    };
     kanata.enable = false;
     mihomo.enable = false;
     nix.niks3.gc.enable = true;
