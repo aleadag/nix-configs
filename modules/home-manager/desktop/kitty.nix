@@ -13,7 +13,6 @@ let
     nativeBuildInputs = [ pkgs.makeWrapper ];
     postBuild = ''
       wrapProgram "$out/bin/kitty" \
-        --run 'if [[ -z "''${TMPDIR:-}" ]]; then export TMPDIR="''${XDG_RUNTIME_DIR:?TMPDIR and XDG_RUNTIME_DIR are both unset}"; fi' \
         --run 'case "''${1:-}" in @ | +*) ;; *) set -- --single-instance "$@" ;; esac'
     '';
     inherit (pkgs.kitty) meta;
@@ -82,7 +81,11 @@ in
         input_delay = 0;
 
         allow_remote_control = "socket-only";
-        listen_on = "unix:\${TMPDIR}/kitty";
+        listen_on =
+          if pkgs.stdenv.hostPlatform.isDarwin then
+            "unix:\${TMPDIR}/kitty"
+          else
+            "unix:\${XDG_RUNTIME_DIR}/kitty";
 
         # Bell
         bell_on_tab = "🔔 ";
