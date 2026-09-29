@@ -4,7 +4,7 @@
   home = rec {
     username = "alexander";
     homeDirectory = "/home/${username}";
-    stateVersion = "26.05";
+    stateVersion = "26.11";
   };
 
   home-manager = {

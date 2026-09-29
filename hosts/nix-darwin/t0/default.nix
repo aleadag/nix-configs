@@ -4,7 +4,7 @@
   nix-darwin.home = {
     username = "alexander";
     extraModules = {
-      home.stateVersion = "26.05";
+      home.stateVersion = "26.11";
       home-manager = {
         cli.zsh.zprof.enable = true;
         desktop.obsidian.enable = true;

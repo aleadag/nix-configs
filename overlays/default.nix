@@ -42,7 +42,7 @@ nurOverlay
                 treeSitter.enable = true;
               };
             };
-            home.stateVersion = "26.05";
+            home.stateVersion = "26.11";
           };
         };
       in
