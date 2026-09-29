@@ -128,6 +128,8 @@ let
     "brew.sh"
     "cachix.org"
     "crates.io"
+    "cursor.com"
+    "cursor.sh"
     "docker.com"
     "docker.io"
     "ghcr.io"
@@ -158,6 +160,7 @@ let
         "${config.home.homeDirectory}/.codex"
     )
     ++ lib.optional agentsCfg.antigravity-cli.enable "${config.home.homeDirectory}/.gemini"
+    ++ lib.optional agentsCfg.cursor-agent.enable "${config.home.homeDirectory}/.cursor"
     ++ [ "/nix/store" ];
 
   allowedWriteDirectories = lib.unique (

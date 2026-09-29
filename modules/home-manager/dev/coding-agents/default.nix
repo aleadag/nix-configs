@@ -69,6 +69,7 @@ in
     ./codex.nix
     ./coding-brain.nix
     ./collie.nix
+    ./cursor-agent.nix
     ./herdr.nix
     ./opencode.nix
     ./pi.nix
