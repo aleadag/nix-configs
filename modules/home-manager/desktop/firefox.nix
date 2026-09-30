@@ -31,7 +31,10 @@ in
   config = lib.mkIf cfg.enable {
     home.packages = [ pkgs.tridactyl-native ];
 
-    stylix.targets.firefox.profileNames = [ username ];
+    stylix.targets.firefox = {
+      profileNames = [ username ];
+      colorTheme.enable = true;
+    };
 
     programs.firefox = {
       enable = true;
@@ -47,6 +50,11 @@ in
             };
           in
           {
+            # theme: default to dark mode for UI and web content
+            "browser.theme.content-theme" = 0;
+            "browser.theme.toolbar-theme" = 0;
+            "layout.css.prefers-color-scheme.content-override" = 0;
+
             # don't mess up with paste
             "dom.event.clipboardevents.enabled" = false;
             # enable hw video acceleration, if supported
