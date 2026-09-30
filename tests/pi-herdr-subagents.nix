@@ -17,6 +17,7 @@ let
           home-manager.dev.coding-agents = {
             pi-coding-agent.enable = lib.mkForce pi;
             herdr.enable = lib.mkForce herdr;
+            beads.enable = lib.mkForce false;
           };
         }
       ];

@@ -232,6 +232,10 @@
                 flake = self;
                 inherit pkgs;
               };
+              herdr-beads = import ./tests/herdr-beads.nix {
+                flake = self;
+                inherit pkgs;
+              };
             };
             formatter = treefmtEval.config.build.wrapper;
             legacyPackages = pkgs;

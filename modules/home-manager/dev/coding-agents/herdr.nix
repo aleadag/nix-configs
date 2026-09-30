@@ -6,7 +6,9 @@
 }:
 
 let
-  cfg = config.home-manager.dev.coding-agents.herdr;
+  agentsCfg = config.home-manager.dev.coding-agents;
+  cfg = agentsCfg.herdr;
+  beadsPlugin = pkgs.herdr-beads;
 in
 {
   options.home-manager.dev.coding-agents.herdr = {
@@ -22,11 +24,17 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home-manager.dev.coding-agents.skills.herdr = pkgs.llm-agents.herdr.src + "/skills/herdr";
+    home-manager.dev.coding-agents = {
+      skills.herdr = pkgs.llm-agents.herdr.src + "/skills/herdr";
+      herdr.plugins = lib.optional agentsCfg.beads.enable beadsPlugin;
+    };
 
     home.activation.unlinkHerdrPlugins = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       $DRY_RUN_CMD ${lib.getExe config.programs.herdr.package} plugin unlink herdr-navigator || true
       $DRY_RUN_CMD ${lib.getExe config.programs.herdr.package} plugin unlink herdr.collie || true
+      ${lib.optionalString (!agentsCfg.beads.enable) ''
+        $DRY_RUN_CMD ${lib.getExe config.programs.herdr.package} plugin unlink herdr-beads || true
+      ''}
     '';
 
     home.activation.linkHerdrPlugins = lib.mkIf (cfg.plugins != [ ]) (
@@ -76,6 +84,20 @@ in
 
         session.resume_agents_on_restore = true;
         experimental.kitty_graphics = true;
+      }
+      // lib.optionalAttrs agentsCfg.beads.enable {
+        keys.command = [
+          {
+            key = "prefix+shift+b";
+            type = "plugin_action";
+            command = "herdr-beads.open-dock";
+          }
+          {
+            key = "prefix+shift+k";
+            type = "plugin_action";
+            command = "herdr-beads.open-board";
+          }
+        ];
       };
     };
   };
