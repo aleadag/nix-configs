@@ -19,7 +19,7 @@ try {
   chmodSync(piBin, 0o755);
 
   for (const [role, model, thinking] of [
-    ["planner", "openai-codex/gpt-6-astra", "high"],
+    ["planner", "openai-codex/gpt-6.1-sol", "xhigh"],
     ["worker", "openai-codex/gpt-6-luna", "xhigh"],
     ["reviewer", "openai-codex/gpt-6-sol", "medium"],
   ]) {

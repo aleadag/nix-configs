@@ -60,7 +60,7 @@ assert lib.assertMsg (
   lib.head (packageSources enabled) == toString source
 ) "Pi Herdr package must load first";
 assert lib.assertMsg (
-  enabled.programs.pi-coding-agent.settings.defaultModel == "gpt-6-sol"
+  enabled.programs.pi-coding-agent.settings.defaultModel == "gpt-6.1-sol"
 ) "The coordinator must use Sol";
 assert lib.assertMsg (
   builtins.length enabled.home-manager.dev.coding-agents.herdr.plugins == 1

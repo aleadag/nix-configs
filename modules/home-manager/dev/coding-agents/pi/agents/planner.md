@@ -2,8 +2,8 @@
 name: planner
 description: Produces implementation plans using the Superpowers planning contract
 tools: read,bash
-model: openai-codex/gpt-6-astra
-thinking: high
+model: openai-codex/gpt-6.1-sol
+thinking: xhigh
 spawning: false
 auto-exit: true
 session-mode: standalone

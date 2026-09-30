@@ -56,13 +56,13 @@ in
         agentsCfg.context + lib.optionalString agentsCfg.herdr.enable (builtins.readFile ./pi/HERDR.md);
       settings = {
         defaultProvider = "openai-codex";
-        defaultModel = "gpt-6-sol";
+        defaultModel = "gpt-6.1-sol";
         defaultThinkingLevel = "medium";
         enableAnalytics = false;
         enableInstallTelemetry = false;
         enabledModels = [
           "grok-4.6"
-          "gpt-6-*"
+          "gpt-6*"
         ];
         packages =
           lib.optionals agentsCfg.herdr.enable [
