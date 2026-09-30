@@ -81,6 +81,9 @@ in
 
     systemd.user.services.swayidle = {
       Service = {
+        Environment = lib.mkForce [
+          "PATH=/run/wrappers/bin:/usr/bin:/bin:${lib.makeBinPath [ pkgs.bash ]}"
+        ];
         inherit (config.home-manager.window-manager.systemd.service)
           RestartSec
           RestartSteps
