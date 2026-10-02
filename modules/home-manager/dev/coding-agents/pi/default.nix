@@ -33,7 +33,7 @@ in
           }
         ) (pluginSkills // agentsCfg.skills)
         // lib.optionalAttrs agentsCfg.herdr.enable {
-          "${piCfg.configDir}/skills/subagents".source = ./pi/skills/subagents;
+          "${piCfg.configDir}/skills/subagents".source = ./skills/subagents;
         };
 
       sessionVariables.PI_SKIP_VERSION_CHECK = "1";

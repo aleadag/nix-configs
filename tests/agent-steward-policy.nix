@@ -31,8 +31,9 @@ pkgs.runCommand "agent-steward-policy-check"
         spawn = builtins.readFile ../modules/home-manager/dev/coding-agents/agent-steward/spawn.sh;
         policyNix = builtins.readFile ./agent-steward-policy.nix;
         subagents = builtins.readFile ../modules/home-manager/dev/coding-agents/pi/skills/subagents/SKILL.md;
-        piModule = builtins.readFile ../modules/home-manager/dev/coding-agents/pi.nix;
+        piModule = builtins.readFile ../modules/home-manager/dev/coding-agents/pi/default.nix;
         roles = builtins.mapAttrs (_: path: builtins.readFile path) {
+          explore = ../modules/home-manager/dev/coding-agents/pi/skills/subagents/agents/explore.md;
           planner = ../modules/home-manager/dev/coding-agents/pi/skills/subagents/agents/planner.md;
           worker = ../modules/home-manager/dev/coding-agents/pi/skills/subagents/agents/worker.md;
           reviewer = ../modules/home-manager/dev/coding-agents/pi/skills/subagents/agents/reviewer.md;

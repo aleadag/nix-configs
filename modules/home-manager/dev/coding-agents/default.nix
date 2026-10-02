@@ -73,7 +73,7 @@ in
     ./cursor-agent.nix
     ./herdr.nix
     ./opencode.nix
-    ./pi.nix
+    ./pi
     ./mcp.nix
     ./permissions.nix
     flake.inputs.coding-brain.homeManagerModules.default

@@ -9,6 +9,7 @@ Pi does not provide a `subagent` tool. If another instruction tells you to use a
 
 Named roles live next to this skill:
 
+- explore — `agents/explore.md` (read-only codebase investigation; use for `@explore` / `Explore` requests)
 - planner — `agents/planner.md`
 - worker — `agents/worker.md`
 - reviewer — `agents/reviewer.md`

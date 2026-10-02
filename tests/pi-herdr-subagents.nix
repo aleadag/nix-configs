@@ -46,9 +46,7 @@ let
     && lib.all (
       plugin: !(lib.hasInfix "pi-herdr-subagents" (toString plugin))
     ) config.home-manager.dev.coding-agents.herdr.plugins;
-  absent =
-    config:
-    !(builtins.hasAttr subagentsSkillPath config.home.file) && retired config;
+  absent = config: !(builtins.hasAttr subagentsSkillPath config.home.file) && retired config;
 in
 assert lib.assertMsg (
   !(enabled.home-manager.dev.coding-agents ? models)
@@ -128,9 +126,12 @@ pkgs.runCommand "pi-herdr-subagents-check"
         retiredPackage = toString source;
         piSettings = builtins.toJSON enabled.programs.pi-coding-agent.settings;
         herdrPlugins = map toString enabled.home-manager.dev.coding-agents.herdr.plugins;
+        explore = builtins.readFile (enabled.home.file.${subagentsSkillPath}.source + "/agents/explore.md");
         planner = builtins.readFile (enabled.home.file.${subagentsSkillPath}.source + "/agents/planner.md");
         worker = builtins.readFile (enabled.home.file.${subagentsSkillPath}.source + "/agents/worker.md");
-        reviewer = builtins.readFile (enabled.home.file.${subagentsSkillPath}.source + "/agents/reviewer.md");
+        reviewer = builtins.readFile (
+          enabled.home.file.${subagentsSkillPath}.source + "/agents/reviewer.md"
+        );
         context = enabled.programs.pi-coding-agent.context;
         subagentsSkill = builtins.readFile ../modules/home-manager/dev/coding-agents/pi/skills/subagents/SKILL.md;
         coordinatorSkill = builtins.readFile (

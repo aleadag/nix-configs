@@ -17,7 +17,7 @@ for (const plugin of config.herdrPlugins) {
   );
 }
 
-for (const role of ["planner", "worker", "reviewer"]) {
+for (const role of ["explore", "planner", "worker", "reviewer"]) {
   const frontmatter = config[role].split("---")[1];
   assert.match(frontmatter, new RegExp(`^name: ${role}$`, "m"));
   assert.match(frontmatter, /^auto-exit: true$/m);
@@ -29,6 +29,7 @@ assert.ok(config.stewardSkill, "the coordinator must discover the agent-steward 
 assert.match(config.coordinatorSkill, /name: agent-to-agent/);
 assert.match(config.coordinatorSkill, /steward-spawn/);
 assert.match(config.subagentsSkill, /name: subagents/);
+assert.match(config.subagentsSkill, /agents\/explore\.md/);
 assert.match(config.subagentsSkill, /agents\/planner\.md/);
 assert.match(config.subagentsSkill, /agents\/worker\.md/);
 assert.match(config.subagentsSkill, /agents\/reviewer\.md/);

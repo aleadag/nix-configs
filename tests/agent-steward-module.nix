@@ -125,7 +125,7 @@ assert absent disabled && absent parentDisabled;
 assert lib.any (
   a: !a.assertion && a.message == "agent-steward requires home-manager.sops.enable."
 ) sopsDisabledModule.config.content.assertions;
-assert builtins.readFile ../modules/home-manager/dev/coding-agents/pi.nix != "";
+assert builtins.readFile ../modules/home-manager/dev/coding-agents/pi/default.nix != "";
 pkgs.runCommand "agent-steward-module-check"
   {
     nativeBuildInputs = [ pkgs.nodejs ];
@@ -139,7 +139,7 @@ pkgs.runCommand "agent-steward-module-check"
         listsJson = toString listsJson;
         defaultWrapper = "${lib.head (wrappers enabled)}/bin/agent-steward";
         overrideWrapper = "${lib.head (wrappers changed)}/bin/agent-steward";
-        piModule = builtins.readFile ../modules/home-manager/dev/coding-agents/pi.nix;
+        piModule = builtins.readFile ../modules/home-manager/dev/coding-agents/pi/default.nix;
         stewardModule = builtins.readFile ../modules/home-manager/dev/coding-agents/agent-steward/default.nix;
         defaultModule = builtins.readFile ../modules/home-manager/dev/coding-agents/default.nix;
         newModule = builtins.pathExists ../modules/home-manager/dev/coding-agents/agent-steward/default.nix;

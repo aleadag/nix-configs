@@ -28,6 +28,7 @@ assert.match(f.spawn, /router start/);
 assert.match(f.spawn, /plugin pane open --plugin steward-argv/);
 assert.doesNotMatch(f.spawn, /--plugin pi-herdr-subagents|send-text|send-keys/);
 assert.match(f.subagents, /name: subagents/);
+assert.match(f.subagents, /agents\/explore\.md/);
 assert.match(f.subagents, /agents\/planner\.md/);
 assert.match(f.subagents, /agents\/worker\.md/);
 assert.match(f.subagents, /agents\/reviewer\.md/);
@@ -37,8 +38,17 @@ assert.match(f.subagents, /That is not a blocker/);
 assert.doesNotMatch(f.subagents, /subagent-driven-development/);
 assert.doesNotMatch(f.subagents, /--config|--dry-run|SOPS|TYPESAFE_API_KEY|planned_command\.display/);
 assert.doesNotMatch(f.piModule, /HERDR\.md|configDir}\/agents\/planner/);
-assert.match(f.piModule, /pi\/skills\/subagents/);
+assert.match(f.piModule, /\.\/skills\/subagents/);
+assert.match(f.piModule, /\(pluginSkills \/\/ agentsCfg\.skills\)/);
+assert.doesNotMatch(f.piModule, /superpowers\.patch|pi-tools\.md|piPluginSkills|piPlugins/);
 assert.match(f.piModule, /context = agentsCfg\.context;/);
+
+assert.ok(f.roles.explore, "the explore role must be supplied");
+assert.match(f.roles.explore, /^name: explore$/m);
+assert.match(f.roles.explore, /^tools: read,bash$/m);
+assert.match(f.roles.explore, /file:line/);
+assert.match(f.roles.explore, /codebase only/);
+assert.match(f.roles.explore, /Do not modify project files, run beads commands, or spawn other agents/);
 
 for (const text of Object.values(f.roles)) {
   const front = text.split("---")[1];
