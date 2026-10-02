@@ -56,7 +56,6 @@ let
   lists = home {
     extra.home-manager.dev.coding-agents.agent-steward.settings = {
       tools = [ "agy" ];
-      accounts = lib.filter (a: a.source == "antigravity") inventory.accounts;
       candidates = lib.filter (c: c.tool == "agy") inventory.candidates;
     };
   };
@@ -115,6 +114,13 @@ assert
 assert enabled.sops.secrets.typesafe_api_key.key == "typesafe_api_key";
 assert enabled.sops.secrets.typesafe_api_key.mode == "0600";
 assert !(enabled.home.sessionVariables ? TYPESAFE_API_KEY);
+assert
+  !pkgs.stdenv.hostPlatform.isLinux
+  || (
+    enabled.systemd.user.timers ? agent-steward-quota-refresh
+    && enabled.systemd.user.services ? agent-steward-quota-refresh
+  );
+assert !(disabled.systemd.user.timers or { } ? agent-steward-quota-refresh);
 assert absent disabled && absent parentDisabled;
 assert lib.any (
   a: !a.assertion && a.message == "agent-steward requires home-manager.sops.enable."

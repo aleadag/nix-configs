@@ -18,13 +18,6 @@ let
           "pi"
           "agy"
         ];
-        accounts = [
-          {
-            id = "shared";
-            source = "codex";
-            snapshot = "absent.json";
-          }
-        ];
         candidates =
           map
             (tool: {
@@ -38,8 +31,15 @@ let
                 else
                   "openai";
               model = "requested-${tool}";
-              account_id = "shared";
+              quota_bucket =
+                if tool == "pi" then
+                  "pi_codex"
+                else if tool == "agy" then
+                  "antigravity"
+                else
+                  "codex";
               quota_pool = "primary";
+              cost = 1;
               capabilities = "Synthetic offline fixture";
               thinking_levels = [
                 {

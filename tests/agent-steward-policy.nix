@@ -5,7 +5,8 @@ let
   bun = "${raw}/lib/agent-steward/bun/bin/bun";
   config = import ./agent-steward-home.nix { inherit flake pkgs; };
   skills = config.home-manager.dev.coding-agents.skills;
-  approvedRev = "48108cdab61b044e45dd3e533bae47fa4b73716b";
+  approvedRev = "f7f550d01fa1991fb15736ed459307a14cfa76e8";
+  approvedRef = "v0.1.0-alpha.3";
   beforeLock = ./fixtures/agent-steward-before.lock;
 in
 assert raw.system == system;
@@ -42,6 +43,6 @@ pkgs.runCommand "agent-steward-policy-check"
   ''
     ${bun} ${./agent-steward-policy.mjs} "$fixture"
     python3 ${./agent-steward-lock.test.py} \
-      ${beforeLock} ${../flake.lock} ${approvedRev} ${./agent-steward-lock.py}
+      ${beforeLock} ${../flake.lock} ${approvedRev} ${./agent-steward-lock.py} ${approvedRef}
     touch "$out"
   ''

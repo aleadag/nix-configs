@@ -3,18 +3,21 @@ import re
 import sys
 from pathlib import Path
 
-if len(sys.argv) not in (3, 4):
+if len(sys.argv) not in (3, 4, 5):
     raise SystemExit(
-        "usage: agent-steward-lock.py BEFORE.lock AFTER.lock [APPROVED_REV]"
+        "usage: agent-steward-lock.py BEFORE.lock AFTER.lock [APPROVED_REV [APPROVED_REF]]"
     )
 
 before = json.loads(Path(sys.argv[1]).read_text())
 after = json.loads(Path(sys.argv[2]).read_text())
-approved_revision = sys.argv[3] if len(sys.argv) == 4 else None
+approved_revision = sys.argv[3] if len(sys.argv) >= 4 else None
+approved_ref = sys.argv[4] if len(sys.argv) == 5 else None
 if approved_revision is not None and not re.fullmatch(
     r"[0-9a-f]{40}", approved_revision
 ):
     raise SystemExit("approved revision must be an explicit lowercase 40-hex commit")
+if approved_ref is not None and not re.fullmatch(r"v[0-9A-Za-z._-]+", approved_ref):
+    raise SystemExit("approved ref must be a version tag")
 
 
 def resolved(data, link):
@@ -61,7 +64,17 @@ if approved_revision is None:
 else:
     assert re.fullmatch(r"[0-9a-f]{40}", approved_revision)
     assert locked["rev"] == approved_revision
-    assert original["rev"] == approved_revision
+    if approved_ref is None:
+        assert original["rev"] == approved_revision
+        assert {key: value for key, value in original.items() if key != "rev"} == {
+            key: value for key, value in before_original.items() if key != "rev"
+        }
+    else:
+        assert original.get("ref") == approved_ref
+        assert "rev" not in original
+        assert {key: value for key, value in original.items() if key != "ref"} == {
+            key: value for key, value in before_original.items() if key not in {"rev", "ref"}
+        }
     assert locked["owner"] == original["owner"] == "aleadag"
     assert locked["repo"] == original["repo"] == "agent-steward"
     assert locked["type"] == original["type"] == "github"
@@ -77,9 +90,6 @@ else:
         key: value
         for key, value in before_locked.items()
         if key not in {"rev", "narHash", "lastModified"}
-    }
-    assert {key: value for key, value in original.items() if key != "rev"} == {
-        key: value for key, value in before_original.items() if key != "rev"
     }
 
 before_steward_inputs = before_steward.get("inputs", {})

@@ -14,11 +14,11 @@ function sorted(value) {
   return value;
 }
 assert.equal(createHash("sha256").update(JSON.stringify(sorted(original))).digest("hex"),
-  "f9e6dd235948c1fb32a6fb83a5b465e2512bc25e807b0118eafe325afc6384d2");
+  "9d2385b91dbc66162668fbe60bf90143f7e85ce27ee1aebbc59093e0173e6630");
 assert.deepEqual(original.tools, ["pi", "agy"]);
-assert.equal(original.accounts.length, 2);
+assert.equal(Object.hasOwn(original, "accounts"), false);
 assert.deepEqual(original.candidates.map(c => c.id), [
-  "sol-pi", "astra-pi", "luna-pi", "gemini-flash-low-agy", "gemini-flash-medium-agy", "gemini-flash-high-agy"
+  "sol-pi", "astra-pi", "luna-pi", "grok-4.6-pi", "gemini-flash-low-agy", "gemini-flash-medium-agy", "gemini-flash-high-agy"
 ]);
 const expected = structuredClone(original);
 expected.thresholds.risky = 0.7;
@@ -29,7 +29,6 @@ expectedPartial.thresholds.risky = 0.8;
 assert.deepEqual(JSON.parse(read(f.partialJson)), expectedPartial);
 const expectedLists = structuredClone(original);
 expectedLists.tools = ["agy"];
-expectedLists.accounts = original.accounts.filter(a => a.source === "antigravity");
 expectedLists.candidates = original.candidates.filter(c => c.tool === "agy");
 assert.deepEqual(JSON.parse(read(f.listsJson)), expectedLists);
 assert.ok(read(f.defaultWrapper).includes(f.defaultJson));
@@ -45,5 +44,8 @@ assert.deepEqual(
 assert.match(f.stewardModule, /import \.\/wrapper\.nix/);
 assert.match(f.stewardModule, /import \.\/config\.nix/);
 assert.match(f.sopsModule, /defaultSopsFile\s*=/); // existing production default retained, no secret contents read
-assert.doesNotMatch(f.stewardModule, /temp\/config|readFile.*secret|sessionVariables|systemd|launchd/);
+assert.match(f.stewardModule, /systemd\.user\.timers\.agent-steward-quota-refresh/);
+assert.match(f.stewardModule, /quota refresh/);
+assert.match(f.stewardModule, /OnCalendar = "hourly"/);
+assert.doesNotMatch(f.stewardModule, /temp\/config|readFile.*secret|sessionVariables|launchd/);
 assert.ok(["x86_64-linux", "aarch64-linux", "aarch64-darwin"].includes(f.system));

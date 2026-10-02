@@ -9,6 +9,7 @@ baseline_path = Path(sys.argv[1])
 current_path = Path(sys.argv[2])
 approved_rev = sys.argv[3]
 checker_path = Path(sys.argv[4])
+approved_ref = sys.argv[5] if len(sys.argv) > 5 else None
 baseline = json.loads(baseline_path.read_text())
 current = json.loads(current_path.read_text())
 
@@ -43,6 +44,8 @@ def check_candidate(candidate, should_pass, label, approved=True):
         args = [baseline_path, path]
         if approved:
             args.append(approved_rev)
+            if approved_ref is not None:
+                args.append(approved_ref)
         run_checker(args, should_pass, label)
 
 
@@ -64,12 +67,19 @@ legacy_steward = legacy_candidate["nodes"][
 legacy_steward["locked"] = copy.deepcopy(before_steward["locked"])
 legacy_steward["original"] = copy.deepcopy(before_steward["original"])
 
-run_checker([baseline_path, current_path, approved_rev], True, "approved final lock")
+approved_args = [approved_rev] if approved_ref is None else [approved_rev, approved_ref]
+run_checker(
+    [baseline_path, current_path, *approved_args], True, "approved final lock"
+)
 check_candidate(
     legacy_candidate, True, "legacy two-argument frozen-revision mode", approved=False
 )
 run_checker([baseline_path, current_path], False, "missing explicit approved revision")
-run_checker([baseline_path, current_path, "0" * 40], False, "wrong expected revision")
+run_checker(
+    [baseline_path, current_path, "0" * 40, *( [approved_ref] if approved_ref else [])],
+    False,
+    "wrong expected revision",
+)
 run_checker(
     [baseline_path, current_path, "invalid"], False, "malformed approved revision"
 )
@@ -78,10 +88,16 @@ mutate(
     "wrong locked revision",
     lambda data: data["nodes"]["agent-steward"]["locked"].update(rev="0" * 40),
 )
-mutate(
-    "wrong original revision",
-    lambda data: data["nodes"]["agent-steward"]["original"].update(rev="0" * 40),
-)
+if approved_ref is None:
+    mutate(
+        "wrong original revision",
+        lambda data: data["nodes"]["agent-steward"]["original"].update(rev="0" * 40),
+    )
+else:
+    mutate(
+        "wrong original ref",
+        lambda data: data["nodes"]["agent-steward"]["original"].update(ref="v0.0.0"),
+    )
 
 
 def path_pin(data):

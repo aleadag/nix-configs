@@ -3,25 +3,16 @@
     "pi"
     "agy"
   ];
-  accounts = [
-    {
-      id = "codex-subscription-local";
-      source = "codex";
-    }
-    {
-      id = "antigravity-subscription-local";
-      source = "antigravity";
-    }
-  ];
   candidates = [
     {
       id = "sol-pi";
       tool = "pi";
       provider = "openai-codex";
-      model = "gpt-6-sol";
-      account_id = "codex-subscription-local";
+      model = "gpt-6.1-sol";
+      quota_bucket = "pi_codex";
       quota_pool = "primary";
-      capabilities = "GPT-6 Sol: complex coding and agentic workflows; text and image input";
+      cost = 20;
+      capabilities = "Near-flagship complex reasoning and coding at lower cost. Use for substantial multi-file coding, refactors, and agent workflows when gpt-6-luna is too weak and gpt-6-astra is too expensive. Text and image in, tools.";
       thinking_levels = [
         {
           id = "low";
@@ -50,9 +41,10 @@
       tool = "pi";
       provider = "openai-codex";
       model = "gpt-6-astra";
-      account_id = "codex-subscription-local";
+      quota_bucket = "pi_codex";
       quota_pool = "primary";
-      capabilities = "GPT-6 Astra: hardest end-to-end reasoning, coding, research, and document tasks; text and image input";
+      cost = 100;
+      capabilities = "Most capable GPT-6 for the most demanding reasoning, architecture, research, and long coding agents. Use only when gpt-6.1-sol is likely to fail. Text and image in, tools. Do not use for routine or high-volume work.";
       thinking_levels = [
         {
           id = "low";
@@ -81,9 +73,10 @@
       tool = "pi";
       provider = "openai-codex";
       model = "gpt-6-luna";
-      account_id = "codex-subscription-local";
+      quota_bucket = "pi_codex";
       quota_pool = "primary";
-      capabilities = "GPT-6 Luna: efficient focused, high-volume tasks; text and image input";
+      cost = 1;
+      capabilities = "Most efficient GPT-6 for focused, cost-sensitive, high-volume work. Use for small edits, boilerplate, simple questions, and narrow tasks. Weakest GPT-6 here; do not use for hard multi-step reasoning or large refactors.";
       thinking_levels = [
         {
           id = "low";
@@ -108,13 +101,42 @@
       ];
     }
     {
+      id = "grok-4.6-pi";
+      tool = "pi";
+      provider = "xai";
+      model = "grok-4.6";
+      quota_bucket = "pi_xai";
+      quota_pool = "primary";
+      cost = 13;
+      capabilities = "Frontier model for coding, agentic tasks, and knowledge work. Text and image in, 500k context, function calling, structured outputs, and reasoning. Use for large-context coding and knowledge work. Not a GPT-6 substitute.";
+      thinking_levels = [
+        {
+          id = "low";
+          description = "Brief reasoning for straightforward tasks";
+        }
+        {
+          id = "medium";
+          description = "Balanced reasoning for routine work";
+        }
+        {
+          id = "high";
+          description = "Deeper reasoning for complex work";
+        }
+        {
+          id = "xhigh";
+          description = "Extended reasoning for difficult multi-step work";
+        }
+      ];
+    }
+    {
       id = "gemini-flash-low-agy";
       tool = "agy";
       provider = "google";
       model = "gemini-3.8-flash-low";
-      account_id = "antigravity-subscription-local";
+      quota_bucket = "antigravity";
       quota_pool = "primary";
-      capabilities = "Gemini 3.8 Flash: software engineering and agent workflows; Low variant for straightforward tasks";
+      cost = 8;
+      capabilities = "Fast flash lane for straightforward edits and small agent steps on Antigravity quota. Not gpt-6-astra / gpt-6.1-sol hard reasoning.";
       thinking_levels = [
         {
           id = "default";
@@ -127,9 +149,10 @@
       tool = "agy";
       provider = "google";
       model = "gemini-3.8-flash-medium";
-      account_id = "antigravity-subscription-local";
+      quota_bucket = "antigravity";
       quota_pool = "primary";
-      capabilities = "Gemini 3.8 Flash: software engineering and agent workflows; Medium variant for routine tasks";
+      cost = 8;
+      capabilities = "Fast flash lane for routine coding and typical agent workflows on Antigravity quota. Not gpt-6-astra / gpt-6.1-sol hard reasoning.";
       thinking_levels = [
         {
           id = "default";
@@ -142,9 +165,10 @@
       tool = "agy";
       provider = "google";
       model = "gemini-3.8-flash-high";
-      account_id = "antigravity-subscription-local";
+      quota_bucket = "antigravity";
       quota_pool = "primary";
-      capabilities = "Gemini 3.8 Flash: long-horizon software engineering, autonomous agents, and complex workflows; High variant";
+      cost = 8;
+      capabilities = "Strongest flash lane here for longer software-engineering and agent runs on Antigravity quota. Still a flash model, not gpt-6-astra.";
       thinking_levels = [
         {
           id = "default";

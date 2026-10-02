@@ -50,6 +50,27 @@ in
       wrapper
       spawn
     ];
+    systemd.user.services.agent-steward-quota-refresh = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+      Unit = {
+        Description = "Refresh agent-steward quota snapshots";
+        Wants = [ "network-online.target" ];
+        After = [ "network-online.target" ];
+      };
+      Service = {
+        Type = "oneshot";
+        ExecStart = "${wrapper}/bin/agent-steward quota refresh";
+        Nice = 10;
+      };
+    };
+    systemd.user.timers.agent-steward-quota-refresh = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+      Unit.Description = "Hourly agent-steward quota refresh";
+      Timer = {
+        OnCalendar = "hourly";
+        Persistent = true;
+        RandomizedDelaySec = 300;
+      };
+      Install.WantedBy = [ "timers.target" ];
+    };
     home-manager.dev.coding-agents.herdr.plugins = lib.mkIf agentsCfg.herdr.enable [ argvPlugin ];
     home-manager.dev.coding-agents.agent-steward.settings = lib.mapAttrsRecursive (
       _: value: lib.mkDefault value

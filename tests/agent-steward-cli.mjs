@@ -17,10 +17,11 @@ const expectedChanged = {
   jev: { ...original.jev, model: "jev-declarative-override" }
 };
 assert.deepEqual(changed, expectedChanged);
-const accountIds = ["codex-subscription-local", "antigravity-subscription-local"];
-const candidateIds = ["sol-pi", "astra-pi", "luna-pi", "gemini-flash-low-agy", "gemini-flash-medium-agy", "gemini-flash-high-agy"];
+const candidateIds = ["sol-pi", "astra-pi", "luna-pi", "grok-4.6-pi", "gemini-flash-low-agy", "gemini-flash-medium-agy", "gemini-flash-high-agy"];
 for (const [path, value] of [[f.generated, original], [f.overridden, changed]]) {
-  assert.deepEqual(value.accounts.map(a => a.id), accountIds);
+  assert.equal(Object.hasOwn(value, "accounts"), false);
+  assert.deepEqual(value.candidates.map(c => c.quota_bucket), ["pi_codex", "pi_codex", "pi_codex", "pi_xai", "antigravity", "antigravity", "antigravity"]);
+  assert.deepEqual(value.candidates.map(c => c.cost), [20, 100, 1, 13, 8, 8, 8]);
   assert.deepEqual(value.candidates.map(c => c.id), candidateIds);
   assert.deepEqual(ConfigSchema.parse(value), value);
   const loaded = await loadConfig(path, {
@@ -123,7 +124,7 @@ try {
     const pi = pair === "sol-pi";
     assert.deepEqual(records[0], {
       tool: pi ? "pi" : "agy", cwd: root, keyNames: [], provider: "SyntheticProvider-Only",
-      argv: pi ? ["--provider", "openai-codex", "--model", "gpt-6-sol", "--thinking", "high", "--", "User task:\n" + task]
+      argv: pi ? ["--provider", "openai-codex", "--model", "gpt-6.1-sol", "--thinking", "high", "--", "User task:\n" + task]
         : ["--model=gemini-3.8-flash-high", "--prompt-interactive=User task:\n" + task]
     });
     const liveRequests = lines(httpCapture);
