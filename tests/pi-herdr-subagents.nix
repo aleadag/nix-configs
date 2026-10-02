@@ -10,38 +10,45 @@ let
     }
     .${pkgs.stdenv.hostPlatform.system};
   withAgents =
-    pi: herdr:
+    pi: herdr: steward:
     (flake.homeConfigurations.${host}.extendModules {
       modules = [
         {
           home-manager.dev.coding-agents = {
             pi-coding-agent.enable = lib.mkForce pi;
             herdr.enable = lib.mkForce herdr;
+            agent-steward.enable = lib.mkForce steward;
             beads.enable = lib.mkForce false;
           };
         }
       ];
     }).config;
-  enabled = withAgents true true;
+  enabled = withAgents true true true;
+  stewardDisabled = withAgents true true false;
   codexAgents = enabled.programs.codex.settings.agents or { };
-  plannerPath = "${enabled.programs.pi-coding-agent.configDir}/agents/planner.md";
-  workerPath = "${enabled.programs.pi-coding-agent.configDir}/agents/worker.md";
-  reviewerPath = "${enabled.programs.pi-coding-agent.configDir}/agents/reviewer.md";
+  subagentsSkillPath = "${enabled.programs.pi-coding-agent.configDir}/skills/subagents";
   source = flake.inputs.pi-herdr-subagents;
   packageSources =
     config: map (package: package.source) (config.programs.pi-coding-agent.settings.packages or [ ]);
+  piDisabled = withAgents false true true;
+  herdrDisabled = withAgents true false true;
   disabled = [
-    (withAgents true false)
-    (withAgents false true)
-    (withAgents false false)
+    herdrDisabled
+    piDisabled
+    (withAgents false false true)
+    (withAgents true false false)
+    (withAgents false true false)
+    (withAgents false false false)
   ];
+  retired =
+    config:
+    !(lib.elem (toString source) (packageSources config))
+    && lib.all (
+      plugin: !(lib.hasInfix "pi-herdr-subagents" (toString plugin))
+    ) config.home-manager.dev.coding-agents.herdr.plugins;
   absent =
     config:
-    !(builtins.hasAttr plannerPath config.home.file)
-    && !(builtins.hasAttr workerPath config.home.file)
-    && !(builtins.hasAttr reviewerPath config.home.file)
-    && !(lib.elem (toString source) (packageSources config))
-    && config.home-manager.dev.coding-agents.herdr.plugins == [ ];
+    !(builtins.hasAttr subagentsSkillPath config.home.file) && retired config;
 in
 assert lib.assertMsg (
   !(enabled.home-manager.dev.coding-agents ? models)
@@ -49,37 +56,91 @@ assert lib.assertMsg (
 assert lib.assertMsg (
   !(codexAgents ? planner) && !(codexAgents ? worker) && !(codexAgents ? reviewer)
 ) "Pi integration must not generate Codex roles";
-assert lib.assertMsg (builtins.hasAttr plannerPath enabled.home.file)
-  "Pi Herdr planner definition is missing";
-assert lib.assertMsg (builtins.hasAttr workerPath enabled.home.file)
-  "Pi Herdr worker definition is missing";
-assert lib.assertMsg (builtins.hasAttr reviewerPath enabled.home.file)
-  "Pi Herdr reviewer definition is missing";
+assert lib.assertMsg (builtins.hasAttr subagentsSkillPath enabled.home.file)
+  "Pi subagents skill is missing when Herdr is enabled";
 assert lib.assertMsg (lib.all absent disabled)
   "Pi Herdr integration must require both Pi and Herdr";
+assert lib.assertMsg (lib.all retired (
+  [
+    enabled
+    stewardDisabled
+  ]
+  ++ disabled
+)) "The retired Pi Herdr package/plugin must not be installed, independently of steward";
+assert lib.assertMsg (builtins.hasAttr subagentsSkillPath stewardDisabled.home.file)
+  "Pi subagents skill must remain available when steward is disabled";
 assert lib.assertMsg (
-  lib.head (packageSources enabled) == toString source
-) "Pi Herdr package must load first";
+  !(stewardDisabled.home-manager.dev.coding-agents.skills ? agent-to-agent)
+  && !(stewardDisabled.home-manager.dev.coding-agents.skills ? agent-steward)
+  && !(builtins.hasAttr "${stewardDisabled.programs.pi-coding-agent.configDir}/skills/agent-to-agent" stewardDisabled.home.file)
+) "Steward-disabled configurations must not install the coordinator or steward skills";
+assert lib.assertMsg (
+  enabled.home-manager.dev.coding-agents.skills.agent-steward
+  == flake.inputs.agent-steward + "/skills/agent-steward"
+) "The steward skill must match the pinned steward source";
+assert lib.assertMsg (lib.all
+  (
+    config:
+    config.home-manager.dev.coding-agents.skills.agent-to-agent
+    == ../modules/home-manager/dev/coding-agents/skills/agent-to-agent
+  )
+  [
+    enabled
+    piDisabled
+    herdrDisabled
+  ]
+) "The shared coordinator skill must remain available independently of Pi and Herdr";
+assert lib.assertMsg (
+  enabled.home.file."${enabled.programs.pi-coding-agent.configDir}/skills/agent-to-agent".source
+  == enabled.home-manager.dev.coding-agents.skills.agent-to-agent
+) "Pi must install the shared coordinator skill without rewriting it";
+assert lib.assertMsg (lib.all
+  (
+    program:
+    !(program.enable or false)
+    || program.skills.agent-to-agent == enabled.home-manager.dev.coding-agents.skills.agent-to-agent
+  )
+  [
+    enabled.programs.codex
+    enabled.programs.opencode
+    enabled.programs.antigravity-cli
+  ]
+) "Every enabled shared-skill harness must receive the same coordinator skill";
+assert lib.assertMsg (
+  piDisabled.home-manager.dev.coding-agents.skills.agent-steward
+  == flake.inputs.agent-steward + "/skills/agent-steward"
+) "The steward skill must remain available when Pi is disabled";
+assert lib.assertMsg (
+  herdrDisabled.home-manager.dev.coding-agents.skills.agent-steward
+  == flake.inputs.agent-steward + "/skills/agent-steward"
+) "The steward skill must remain available when Herdr is disabled";
+assert lib.assertMsg (
+  !(enabled.home.sessionVariables ? TYPESAFE_API_KEY)
+) "Instruction routing must not globally export the TypeSafe key";
 assert lib.assertMsg (
   enabled.programs.pi-coding-agent.settings.defaultModel == "gpt-6.1-sol"
 ) "The coordinator must use Sol";
-assert lib.assertMsg (
-  builtins.length enabled.home-manager.dev.coding-agents.herdr.plugins == 1
-) "The bundled Herdr plugin must be linked";
-assert lib.assertMsg (
-  (lib.head enabled.home-manager.dev.coding-agents.herdr.plugins).system
-  == pkgs.stdenv.hostPlatform.system
-) "The plugin check must use the target platform";
 pkgs.runCommand "pi-herdr-subagents-check"
   {
     nativeBuildInputs = [ pkgs.nodejs ];
     configFile = pkgs.writeText "pi-herdr-test-config.json" (
       builtins.toJSON {
-        upstream = toString source;
-        planner = builtins.readFile enabled.home.file.${plannerPath}.source;
-        worker = builtins.readFile enabled.home.file.${workerPath}.source;
-        reviewer = builtins.readFile enabled.home.file.${reviewerPath}.source;
-        plugin = toString (lib.head enabled.home-manager.dev.coding-agents.herdr.plugins);
+        retiredPackage = toString source;
+        piSettings = builtins.toJSON enabled.programs.pi-coding-agent.settings;
+        herdrPlugins = map toString enabled.home-manager.dev.coding-agents.herdr.plugins;
+        planner = builtins.readFile (enabled.home.file.${subagentsSkillPath}.source + "/agents/planner.md");
+        worker = builtins.readFile (enabled.home.file.${subagentsSkillPath}.source + "/agents/worker.md");
+        reviewer = builtins.readFile (enabled.home.file.${subagentsSkillPath}.source + "/agents/reviewer.md");
+        context = enabled.programs.pi-coding-agent.context;
+        subagentsSkill = builtins.readFile ../modules/home-manager/dev/coding-agents/pi/skills/subagents/SKILL.md;
+        coordinatorSkill = builtins.readFile (
+          enabled.home-manager.dev.coding-agents.skills.agent-to-agent + "/SKILL.md"
+        );
+        stewardSkill =
+          if enabled.home-manager.dev.coding-agents.skills ? agent-steward then
+            builtins.readFile (enabled.home-manager.dev.coding-agents.skills.agent-steward + "/SKILL.md")
+          else
+            null;
       }
     );
   }

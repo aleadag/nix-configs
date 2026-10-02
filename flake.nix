@@ -131,6 +131,11 @@
       };
     };
 
+    agent-steward = {
+      url = "github:aleadag/agent-steward/48108cdab61b044e45dd3e533bae47fa4b73716b";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     pi-herdr-subagents = {
       url = "github:modem-dev/pi-herdr-subagents/b6987324284b1fa22b2eb9f0effaf956ada27333";
       flake = false;
@@ -241,6 +246,58 @@
             legacyPackages = pkgs;
           }
         ))
+        (libEx.eachSystem
+          [
+            "x86_64-linux"
+            "aarch64-linux"
+            "aarch64-darwin"
+          ]
+          (
+            system:
+            let
+              pkgs = import nixpkgs { inherit system; };
+            in
+            {
+              checks.steward-spawn = import ./tests/steward-spawn.nix { inherit pkgs; };
+              checks.agent-steward-wrapper = import ./tests/agent-steward-wrapper.nix { inherit pkgs; };
+              checks.agent-steward-module = import ./tests/agent-steward-module.nix {
+                flake = self;
+                inherit pkgs;
+              };
+              checks.agent-steward-cli = import ./tests/agent-steward-cli.nix {
+                flake = self;
+                inherit pkgs;
+              };
+              checks.agent-steward-policy = import ./tests/agent-steward-policy.nix {
+                flake = self;
+                inherit pkgs;
+              };
+            }
+          )
+        )
+        (libEx.eachSystem
+          [
+            "x86_64-linux"
+            "aarch64-linux"
+            "aarch64-darwin"
+          ]
+          (
+            system:
+            let
+              pkgs = import nixpkgs {
+                inherit system;
+                config = self.outputs.lib.internal.configs.nixpkgs;
+                overlays = [ self.overlays.default ];
+              };
+            in
+            {
+              checks.agent-steward-native-startup = import ./tests/agent-steward-native-startup.nix {
+                flake = self;
+                inherit pkgs;
+              };
+            }
+          )
+        )
       ]
       ++
         # NixOS configs

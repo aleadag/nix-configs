@@ -2,8 +2,6 @@
 name: worker
 description: Implements focused coding tasks using the Superpowers implementer contract
 tools: read,bash,edit,write
-model: openai-codex/gpt-6-luna
-thinking: xhigh
 spawning: false
 auto-exit: true
 session-mode: standalone

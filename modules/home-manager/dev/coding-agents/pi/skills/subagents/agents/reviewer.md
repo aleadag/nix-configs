@@ -2,8 +2,6 @@
 name: reviewer
 description: Reviews changes using the supplied Superpowers review contract
 tools: read,bash
-model: openai-codex/gpt-6-sol
-thinking: medium
 spawning: false
 auto-exit: true
 session-mode: standalone

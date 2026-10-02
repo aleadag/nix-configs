@@ -65,6 +65,7 @@ in
 {
   imports = [
     ./antigravity-cli.nix
+    ./agent-steward
     ./beads.nix
     ./codex.nix
     ./coding-brain.nix
