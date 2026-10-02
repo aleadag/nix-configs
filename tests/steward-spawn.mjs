@@ -13,7 +13,7 @@ const capture = join(root, "herdr.argv");
 const renameCapture = join(root, "herdr.rename");
 const childCapture = join(root, "child.argv");
 const envFile = join(root, "env");
-const env = { PATH: `${root}:${process.env.PATH}`, TYPESAFE_API_KEY: "SyntheticInherited", TEST_CAPTURE: capture, TEST_RENAME: renameCapture, TEST_CHILD: childCapture, TEST_ENV: envFile };
+const env = { PATH: `${root}:${process.env.PATH}`, TYPESAFE_API_KEY: "SyntheticInherited", TEST_CAPTURE: capture, TEST_RENAME: renameCapture, TEST_CHILD: childCapture, TEST_ENV: envFile, TEST_LAYOUT: JSON.stringify({ result: { layout: { area: { width: 160, height: 80 }, panes: [{ pane_id: "w1:p2", rect: { width: 40, height: 80 } }, { pane_id: "w1:p9", rect: { width: 120, height: 80 } }] } } }) };
 const scripts = [];
 function executable(name, text) {
   const path = join(root, name);
@@ -24,7 +24,7 @@ executable(
   "herdr",
   [
     'if [ "$1" = pane ] && [ "$2" = rename ]; then printf "%s\\0" "$@" > "$TEST_RENAME"; exit 0; fi',
-    "if [ \"$1\" = pane ] && [ \"$2\" = layout ]; then printf '%s\\n' '{\"result\":{\"layout\":{\"area\":{\"width\":160,\"height\":80},\"panes\":[{\"pane_id\":\"w1:p2\",\"rect\":{\"width\":40,\"height\":80}},{\"pane_id\":\"w1:p9\",\"rect\":{\"width\":120,\"height\":80}}]}}}'; exit 0; fi",
+    "if [ \"$1\" = pane ] && [ \"$2\" = layout ]; then printf '%s\\n' \"$TEST_LAYOUT\"; exit 0; fi",
     'printf "%s\\0" "$@" >> "$TEST_CAPTURE"',
     'env > "$TEST_ENV"',
     "printf '%s\\n' '{\"result\":{\"plugin_pane\":{\"pane\":{\"pane_id\":\"w9:p3\"}}}}'",
@@ -57,8 +57,23 @@ try {
   assert.equal(auto.status, 0, auto.stderr);
   const autoArgv = readFileSync(capture, "utf8").split("\0").filter(Boolean);
   assert.equal(autoArgv[autoArgv.indexOf("--target-pane") + 1], "w1:p9");
-  assert.equal(autoArgv[autoArgv.indexOf("--direction") + 1], "right");
   scripts.push(autoArgv[autoArgv.indexOf("--env") + 1].replace(/^PI_HERDR_LAUNCH_SCRIPT=/, ""));
+  assert.equal(autoArgv[autoArgv.indexOf("--direction") + 1], "down");
+  // Raw column counts must not make visually tall panes split right.
+  for (const [width, height, direction] of [[320, 80, "right"], [161, 80, "right"], [160, 80, "down"], [80, 80, "down"], [40, 80, "down"]]) {
+    const layout = JSON.stringify({ result: { layout: { panes: [{ pane_id: "w1:p9", rect: { width, height } }] } } });
+    const geometry = invoke(["--target-pane", "w1:p2", "--name", "unique", "--cwd", cwd, "--", instruction], { TEST_LAYOUT: layout });
+    assert.equal(geometry.status, 0, geometry.stderr);
+    const geometryArgv = readFileSync(capture, "utf8").split("\0").filter(Boolean);
+    scripts.push(geometryArgv[geometryArgv.indexOf("--env") + 1].replace(/^PI_HERDR_LAUNCH_SCRIPT=/, ""));
+    assert.equal(geometryArgv[geometryArgv.indexOf("--direction") + 1], direction, `${width} columns x ${height} rows`);
+  }
+  const explicitDown = invoke([...base.map((x) => x === "right" ? "down" : x), "--", instruction]);
+  assert.equal(explicitDown.status, 0, explicitDown.stderr);
+  const explicitArgv = readFileSync(capture, "utf8").split("\0").filter(Boolean);
+  scripts.push(explicitArgv[explicitArgv.indexOf("--env") + 1].replace(/^PI_HERDR_LAUNCH_SCRIPT=/, ""));
+  assert.equal(explicitArgv[explicitArgv.indexOf("--target-pane") + 1], "w1:p2");
+  assert.equal(explicitArgv[explicitArgv.indexOf("--direction") + 1], "down");
   assert.equal(statSync(launch).mode & 0o777, 0o600);
   assert.equal(statSync(join(launch, "..")).mode & 0o777, 0o700);
   assert.ok(!readFileSync(envFile, "utf8").includes("TYPESAFE_API_KEY="));

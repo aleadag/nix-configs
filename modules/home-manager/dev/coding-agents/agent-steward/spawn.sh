@@ -54,7 +54,8 @@ for pane in layout.get("panes") or []:
 if not best_id:
  sys.exit(1)
 print(best_id)
-print("down" if h>=w else "right")
+# Terminal cells are roughly twice as tall as they are wide.
+print("down" if 2*h>=w else "right")
 ') || exit 1
 	target=$(printf '%s\n' "$layout_out" | sed -n '1p')
 	direction=$(printf '%s\n' "$layout_out" | sed -n '2p')
