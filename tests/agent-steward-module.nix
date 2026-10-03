@@ -6,6 +6,7 @@ let
   jsonFormat = pkgs.formats.json { };
   fakePackage = pkgs.symlinkJoin {
     name = "fake-agent-steward";
+    src = flake.inputs.agent-steward.packages.${system}.default.src;
     paths = [
       (pkgs.writeShellScriptBin "agent-steward" "exit 0")
       (pkgs.writeShellScriptBin "agent-steward-herdr-adapter" ''
@@ -33,6 +34,22 @@ let
     );
   enabled = home { };
   withHerdr = home { extra.home-manager.dev.coding-agents.herdr.enable = true; };
+  approvalEnabled = home {
+    extra.home-manager.dev.coding-agents.agent-steward.autoApprove = true;
+  };
+  approvalDisabled = home {
+    extra.home-manager.dev.coding-agents.agent-steward.autoApprove = false;
+  };
+  approvalMissing = home {
+    extra.home-manager.dev.coding-agents.agent-steward.settings = lib.mkForce { };
+  };
+  passthrough = home {
+    extra.home-manager.dev.coding-agents.agent-steward.settings.auto_approve = true;
+  };
+  approvalJson =
+    c:
+    c.xdg.configFile."herdr/plugins/config/agent-steward-recover/targets.json".source
+      or (jsonFormat.generate "missing-targets.json" { });
   withWaybar = home {
     extra.programs.waybar = {
       enable = pkgs.stdenv.hostPlatform.isLinux;
@@ -113,10 +130,10 @@ let
     };
   };
   wrappers = config: lib.filter (p: lib.getName p == "agent-steward") config.home.packages;
-  defaultJson = jsonFormat.generate "agent-steward.json" enabled.home-manager.dev.coding-agents.agent-steward.settings;
-  overrideJson = jsonFormat.generate "agent-steward.json" changed.home-manager.dev.coding-agents.agent-steward.settings;
-  partialJson = jsonFormat.generate "agent-steward.json" partial.home-manager.dev.coding-agents.agent-steward.settings;
-  listsJson = jsonFormat.generate "agent-steward.json" lists.home-manager.dev.coding-agents.agent-steward.settings;
+  defaultJson = enabled.xdg.configFile."agent-steward/config.json".source;
+  overrideJson = changed.xdg.configFile."agent-steward/config.json".source;
+  partialJson = partial.xdg.configFile."agent-steward/config.json".source;
+  listsJson = lists.xdg.configFile."agent-steward/config.json".source;
   absent =
     c:
     wrappers c == [ ]
@@ -161,6 +178,7 @@ assert
   );
 assert !(disabled.systemd.user.timers or { } ? agent-steward-quota-refresh);
 assert absent disabled && absent parentDisabled;
+assert !(disabled.xdg.configFile ? "herdr/plugins/config/agent-steward-recover/targets.json");
 assert lib.any (
   a: !a.assertion && a.message == "agent-steward requires home-manager.sops.enable."
 ) sopsDisabledModule.config.content.assertions;
@@ -185,6 +203,12 @@ pkgs.runCommand "agent-steward-module-check"
         upstreamRecover = flake.inputs.agent-steward + "/herdr-plugins/agent-steward-recover";
         argvPlugin = toString (lib.head withHerdr.home-manager.dev.coding-agents.herdr.plugins);
         stopPlugin = toString (lib.elemAt withHerdr.home-manager.dev.coding-agents.herdr.plugins 1);
+        approvalEnabledJson = toString (approvalJson approvalEnabled);
+        approvalDisabledJson = toString (approvalJson approvalDisabled);
+        approvalMissingJson = toString (approvalJson approvalMissing);
+        approvalEnabledCliJson = toString approvalEnabled.xdg.configFile."agent-steward/config.json".source;
+        passthroughJson = toString passthrough.xdg.configFile."agent-steward/config.json".source;
+        passthroughApprovalJson = toString (approvalJson passthrough);
         defaultJson = toString defaultJson;
         overrideJson = toString overrideJson;
         partialJson = toString partialJson;

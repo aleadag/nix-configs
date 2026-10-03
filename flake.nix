@@ -132,7 +132,7 @@
     };
 
     agent-steward = {
-      url = "github:aleadag/agent-steward/v0.1.0-alpha.8";
+      url = "github:aleadag/agent-steward";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

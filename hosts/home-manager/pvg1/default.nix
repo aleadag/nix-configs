@@ -20,6 +20,7 @@
     };
     dev = {
       enable = true;
+      coding-agents.agent-steward.autoApprove = true;
       coding-agents.collie = {
         enable = true;
         publicHosts = [ "pvg1.tailbea285.ts.net" ];

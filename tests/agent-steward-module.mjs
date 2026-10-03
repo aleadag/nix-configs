@@ -35,7 +35,15 @@ try {
   rmSync(root, { recursive: true, force: true });
 }
 const read = p => readFileSync(p, "utf8");
+// Only the dedicated option controls approval; CLI settings pass through unchanged.
+assert.deepEqual(JSON.parse(read(f.approvalEnabledJson)), { auto_approve: true });
+assert.deepEqual(JSON.parse(read(f.approvalDisabledJson)), { auto_approve: false });
+assert.deepEqual(JSON.parse(read(f.approvalMissingJson)), { auto_approve: false });
 const original = JSON.parse(read(f.defaultJson));
+assert.equal(Object.hasOwn(original, "auto_approve"), false);
+assert.deepEqual(JSON.parse(read(f.approvalEnabledCliJson)), original);
+assert.deepEqual(JSON.parse(read(f.passthroughJson)), { ...original, auto_approve: true });
+assert.deepEqual(JSON.parse(read(f.passthroughApprovalJson)), { auto_approve: false });
 const changed = JSON.parse(read(f.overrideJson));
 function sorted(value) {
   if (Array.isArray(value)) return value.map(sorted);
