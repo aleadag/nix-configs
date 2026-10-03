@@ -16,7 +16,9 @@ let
   testFlake = flake // {
     inputs = flake.inputs // {
       agent-steward = flake.inputs.agent-steward // {
-        packages.${system}.default = fakePackage;
+        packages.${system} = flake.inputs.agent-steward.packages.${system} // {
+          default = fakePackage;
+        };
       };
     };
   };

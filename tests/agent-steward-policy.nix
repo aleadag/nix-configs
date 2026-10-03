@@ -5,8 +5,8 @@ let
   bun = "${raw}/lib/agent-steward/bun/bin/bun";
   config = import ./agent-steward-home.nix { inherit flake pkgs; };
   skills = config.home-manager.dev.coding-agents.skills;
-  approvedRev = "677c62cd3e6b88aee432b7dc13efb3ba201eb0dc";
-  approvedRef = "v0.1.0-alpha.7";
+  approvedRev = "f3c2cdcef29148cdad275e80b511861337601da4";
+  approvedRef = "v0.1.0-alpha.8";
   beforeLock = ./fixtures/agent-steward-before.lock;
   afterLock = ./fixtures/agent-steward-after.lock;
 in
@@ -29,7 +29,7 @@ pkgs.runCommand "agent-steward-policy-check"
         expectedBunVersion = pkgs.bun.version;
         coordinator =
           if skills ? agent-to-agent then builtins.readFile (skills.agent-to-agent + "/SKILL.md") else "";
-        spawn = builtins.readFile ../modules/home-manager/dev/coding-agents/agent-steward/spawn.sh;
+        spawn = builtins.readFile (flake.inputs.agent-steward + "/src/herdr-spawn.ts");
         policyNix = builtins.readFile ./agent-steward-policy.nix;
         subagents = builtins.readFile ../modules/home-manager/dev/coding-agents/pi/skills/subagents/SKILL.md;
         piModule = builtins.readFile ../modules/home-manager/dev/coding-agents/pi/default.nix;

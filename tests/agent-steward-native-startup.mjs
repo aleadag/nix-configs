@@ -24,7 +24,7 @@ const clear = () => {
 // Transport is exercised by steward-spawn-check; do not launch the retired Pi plugin.
 assert.ok(existsSync(f.spawn));
 assert.match(f.spawnSource, /router start/);
-assert.match(f.spawnSource, /plugin pane open --plugin agent-steward-launcher/);
+assert.match(f.spawnSource, /'plugin',\s*'pane',\s*'open',\s*'--plugin',\s*'agent-steward-launcher'/);
 assert.doesNotMatch(f.spawnSource, /--plugin pi-herdr-subagents|send-text|send-keys/);
 // Synthetic tests cover native argv/security through the pinned router start CLI.
 

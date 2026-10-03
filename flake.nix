@@ -132,7 +132,7 @@
     };
 
     agent-steward = {
-      url = "github:aleadag/agent-steward/v0.1.0-alpha.7";
+      url = "github:aleadag/agent-steward/v0.1.0-alpha.8";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -258,10 +258,7 @@
               pkgs = import nixpkgs { inherit system; };
             in
             {
-              checks.steward-spawn = import ./tests/steward-spawn.nix {
-                flake = self;
-                inherit pkgs;
-              };
+              checks.steward-spawn = inputs.agent-steward.checks.${system}.steward-spawn;
               checks.agent-steward-wrapper = import ./tests/agent-steward-wrapper.nix { inherit pkgs; };
               checks.agent-steward-module = import ./tests/agent-steward-module.nix {
                 flake = self;

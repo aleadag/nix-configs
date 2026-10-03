@@ -76,8 +76,10 @@ pkgs.runCommand "agent-steward-native-startup-check"
       builtins.toJSON {
         raw = toString raw;
         inherit bun;
-        spawn = "${pkgs.writeScriptBin "steward-spawn" (builtins.readFile ../modules/home-manager/dev/coding-agents/agent-steward/spawn.sh)}/bin/steward-spawn";
-        spawnSource = builtins.readFile ../modules/home-manager/dev/coding-agents/agent-steward/spawn.sh;
+        spawn = "${
+          flake.inputs.agent-steward.packages.${pkgs.stdenv.hostPlatform.system}.steward-spawn
+        }/bin/steward-spawn";
+        spawnSource = builtins.readFile (flake.inputs.agent-steward + "/src/herdr-spawn.ts");
         runtimePath = pkgs.lib.makeBinPath [
           pkgs.bash
           pkgs.coreutils

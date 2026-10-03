@@ -11,7 +11,7 @@ let
   jsonFormat = pkgs.formats.json { };
   configFile = jsonFormat.generate "agent-steward.json" cfg.settings;
   package = flake.inputs.agent-steward.packages.${pkgs.stdenv.hostPlatform.system}.default;
-  spawn = pkgs.writeScriptBin "steward-spawn" (builtins.readFile ./spawn.sh);
+  spawn = flake.inputs.agent-steward.packages.${pkgs.stdenv.hostPlatform.system}.steward-spawn;
   argvPlugin = flake.inputs.agent-steward + "/herdr-plugins/agent-steward-launcher";
   secretFile = config.sops.secrets.typesafe_api_key.path;
   recoverSource = flake.inputs.agent-steward + "/herdr-plugins/agent-steward-recover";
