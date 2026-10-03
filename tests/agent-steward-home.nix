@@ -19,7 +19,7 @@
           herdr = {
             enable = lib.mkEnableOption "synthetic Herdr";
             plugins = lib.mkOption {
-              type = lib.types.listOf lib.types.package;
+              type = lib.types.listOf (lib.types.either lib.types.package lib.types.path);
               default = [ ];
             };
           };

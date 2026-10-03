@@ -12,37 +12,23 @@ let
   configFile = jsonFormat.generate "agent-steward.json" cfg.settings;
   package = flake.inputs.agent-steward.packages.${pkgs.stdenv.hostPlatform.system}.default;
   spawn = pkgs.writeScriptBin "steward-spawn" (builtins.readFile ./spawn.sh);
-  argvPlugin = pkgs.runCommandLocal "steward-argv-plugin" { } ''
-    mkdir -p "$out"
-    cp -f ${./herdr-plugin/herdr-plugin.toml} "$out/herdr-plugin.toml"
-    cp -f ${./herdr-plugin/dispatch.sh} "$out/dispatch.sh"
-    chmod 0644 "$out/herdr-plugin.toml"
-    chmod 0755 "$out/dispatch.sh"
-  '';
+  argvPlugin = flake.inputs.agent-steward + "/herdr-plugins/agent-steward-launcher";
   secretFile = config.sops.secrets.typesafe_api_key.path;
-  stopRun = pkgs.writeShellScript "agent-steward-herdr-plugin-run" ''
-    set -eu
-    case "''${1-}" in
-      event|scheduler) ;;
-      *) exit 2 ;;
-    esac
-    secret_file=${lib.escapeShellArg (toString secretFile)}
-    if [ -r "$secret_file" ]; then
-      TYPESAFE_API_KEY=$(${pkgs.coreutils}/bin/cat -- "$secret_file")
-      export TYPESAFE_API_KEY
-    fi
-    exec ${lib.escapeShellArg "${package}/bin/agent-steward-herdr-adapter"} "$1"
-  '';
-  stopPlugin = pkgs.runCommandLocal "agent-steward-stop-plugin" { } ''
-    mkdir -p "$out"
-    cp -f ${
-      flake.inputs.agent-steward + "/plugins/agent-steward/herdr-plugin.toml"
-    } "$out/herdr-plugin.toml"
-    cp -f ${stopRun} "$out/run.sh"
-    ln -s ${package}/bin/agent-steward-herdr-adapter "$out/agent-steward-herdr-adapter"
-    chmod 0644 "$out/herdr-plugin.toml"
-    chmod 0755 "$out/run.sh"
-  '';
+  recoverSource = flake.inputs.agent-steward + "/herdr-plugins/agent-steward-recover";
+  stopPlugin =
+    pkgs.runCommandLocal "agent-steward-recover-plugin"
+      {
+        nativeBuildInputs = [ pkgs.makeWrapper ];
+      }
+      ''
+        mkdir -p "$out"
+        cp -f ${recoverSource}/herdr-plugin.toml "$out/herdr-plugin.toml"
+        makeWrapper ${pkgs.runtimeShell} "$out/run.sh" \
+          --add-flags ${lib.escapeShellArg "${recoverSource}/run.sh"} \
+          --set TYPESAFE_API_KEY_FILE ${lib.escapeShellArg (toString secretFile)} \
+          --set AGENT_STEWARD_HERDR_ADAPTER ${lib.escapeShellArg "${package}/bin/agent-steward-herdr-adapter"} \
+          --prefix PATH : ${pkgs.coreutils}/bin
+      '';
   wrapper = import ./wrapper.nix {
     inherit pkgs package configFile;
     inherit secretFile;

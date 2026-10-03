@@ -51,7 +51,7 @@ try {
   const argv = readFileSync(capture, "utf8").split("\0").filter(Boolean);
   const launch = argv[argv.indexOf("--env") + 1].replace(/^PI_HERDR_LAUNCH_SCRIPT=/, "");
   scripts.push(launch);
-  assert.deepEqual(argv, ["plugin", "pane", "open", "--plugin", "steward-argv", "--entrypoint", "argv", "--placement", "split", "--target-pane", "w1:p2", "--direction", "right", "--cwd", cwd, "--env", `PI_HERDR_LAUNCH_SCRIPT=${launch}`, "--no-focus"]);
+  assert.deepEqual(argv, ["plugin", "pane", "open", "--plugin", "agent-steward-launcher", "--entrypoint", "argv", "--placement", "split", "--target-pane", "w1:p2", "--direction", "right", "--cwd", cwd, "--env", `PI_HERDR_LAUNCH_SCRIPT=${launch}`, "--no-focus"]);
   assert.deepEqual(readFileSync(renameCapture, "utf8").split("\0").filter(Boolean), ["pane", "rename", "w9:p3", "unique"]);
   const auto = invoke(["--target-pane", "w1:p2", "--name", "unique", "--cwd", cwd, "--", instruction]);
   assert.equal(auto.status, 0, auto.stderr);

@@ -1,15 +1,39 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { readFileSync, statSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 const f = JSON.parse(readFileSync(process.argv[2], "utf8"));
-assert.equal(statSync(`${f.argvPlugin}/dispatch.sh`).mode & 0o111, 0o111);
+assert.ok(statSync(`${f.argvPlugin}/dispatch.sh`).isFile());
 assert.equal(statSync(`${f.argvPlugin}/herdr-plugin.toml`).mode & 0o111, 0);
-assert.equal(statSync(`${f.stopPlugin}/run.sh`).mode & 0o111, 0o111);
+assert.ok(statSync(`${f.stopPlugin}/run.sh`).isFile());
 assert.equal(statSync(`${f.stopPlugin}/herdr-plugin.toml`).mode & 0o111, 0);
-assert.match(readFileSync(`${f.stopPlugin}/herdr-plugin.toml`, "utf8"), /id = "agent-steward"/);
-assert.match(readFileSync(`${f.stopPlugin}/run.sh`, "utf8"), /TYPESAFE_API_KEY/);
+assert.match(readFileSync(`${f.stopPlugin}/herdr-plugin.toml`, "utf8"), /min_herdr_version/);
 assert.match(readFileSync(`${f.stopPlugin}/run.sh`, "utf8"), /agent-steward-herdr-adapter/);
 assert.doesNotMatch(readFileSync(`${f.stopPlugin}/run.sh`, "utf8"), /sessionVariables/);
+assert.equal(readFileSync(`${f.stopPlugin}/herdr-plugin.toml`, "utf8"),
+  readFileSync(`${f.upstreamRecover}/herdr-plugin.toml`, "utf8"));
+const root = mkdtempSync(join(tmpdir(), "steward-plugin-wrapper-"));
+const syntheticKey = "synthetic-wrapper-key";
+try {
+  writeFileSync(join(root, "synthetic secret.key"), syntheticKey, { mode: 0o600 });
+  for (const command of ["event", "scheduler"]) {
+    const result = spawnSync(`${f.stopPlugin}/run.sh`, [command], {
+      cwd: root, env: {}, encoding: "utf8", timeout: 5000,
+    });
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(result.stdout, `${syntheticKey}\n${command}\n`);
+  }
+  const rejected = spawnSync(`${f.stopPlugin}/run.sh`, ["invalid"], {
+    cwd: root, env: {}, encoding: "utf8", timeout: 5000,
+  });
+  assert.equal(rejected.status, 2);
+  assert.equal(rejected.stdout, "");
+  assert.doesNotMatch(readFileSync(`${f.stopPlugin}/run.sh`, "utf8"), new RegExp(syntheticKey));
+} finally {
+  rmSync(root, { recursive: true, force: true });
+}
 const read = p => readFileSync(p, "utf8");
 const original = JSON.parse(read(f.defaultJson));
 const changed = JSON.parse(read(f.overrideJson));
@@ -54,5 +78,8 @@ assert.match(f.sopsModule, /defaultSopsFile\s*=/); // existing production defaul
 assert.match(f.stewardModule, /systemd\.user\.timers\.agent-steward-quota-refresh/);
 assert.match(f.stewardModule, /quota refresh/);
 assert.match(f.stewardModule, /OnCalendar = "hourly"/);
-assert.doesNotMatch(f.stewardModule, /temp\/config|readFile.*secret|sessionVariables|launchd/);
+assert.doesNotMatch(f.stewardModule, /temp\/config|readFile.*secret|launchd|sessionVariables/);
+assert.match(f.stewardModule, /TYPESAFE_API_KEY_FILE/);
+assert.match(f.stewardModule, /AGENT_STEWARD_HERDR_ADAPTER/);
+assert.doesNotMatch(f.stewardModule, /TYPESAFE_API_KEY\s*=\s/);
 assert.ok(["x86_64-linux", "aarch64-linux", "aarch64-darwin"].includes(f.system));

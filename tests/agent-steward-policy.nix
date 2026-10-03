@@ -5,8 +5,8 @@ let
   bun = "${raw}/lib/agent-steward/bun/bin/bun";
   config = import ./agent-steward-home.nix { inherit flake pkgs; };
   skills = config.home-manager.dev.coding-agents.skills;
-  approvedRev = "70dc740644f7bfaa9dc3f251f3ba35aa45cc57a3";
-  approvedRef = "v0.1.0-alpha.6";
+  approvedRev = "677c62cd3e6b88aee432b7dc13efb3ba201eb0dc";
+  approvedRef = "v0.1.0-alpha.7";
   beforeLock = ./fixtures/agent-steward-before.lock;
   afterLock = ./fixtures/agent-steward-after.lock;
 in

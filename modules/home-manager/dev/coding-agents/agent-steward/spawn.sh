@@ -73,7 +73,7 @@ chmod 0600 "$launch_script"
 # Keep scripts even on failure: opening may have already launched the child.
 open_status=0
 opened=$(
-	"$herdr" plugin pane open --plugin steward-argv --entrypoint argv \
+	"$herdr" plugin pane open --plugin agent-steward-launcher --entrypoint argv \
 		--placement split --target-pane "$target" --direction "$direction" \
 		--cwd "$cwd" --env "PI_HERDR_LAUNCH_SCRIPT=$launch_script" --no-focus
 ) || open_status=$?

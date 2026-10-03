@@ -43,14 +43,15 @@ let
 
   keyCommands = config: config.programs.herdr.settings.keys.command or [ ];
 in
-assert lib.assertMsg (hasBeadsPlugin enabled)
-  "herdr-beads plugin must be in herdr.plugins when both herdr and beads are enabled";
-assert lib.assertMsg (lib.elem dockBinding (
-  keyCommands enabled
-)) "herdr-beads dock keybinding must be present when beads is enabled";
-assert lib.assertMsg (lib.elem boardBinding (
-  keyCommands enabled
-)) "herdr-beads board keybinding must be present when beads is enabled";
+assert lib.assertMsg (
+  !(hasBeadsPlugin enabled)
+) "herdr-beads plugin must not be linked; bd stays via the beads module";
+assert lib.assertMsg (
+  !(lib.elem dockBinding (keyCommands enabled))
+) "herdr-beads dock keybinding must not be present without the plugin";
+assert lib.assertMsg (
+  !(lib.elem boardBinding (keyCommands enabled))
+) "herdr-beads board keybinding must not be present without the plugin";
 assert lib.assertMsg (
   !(hasBeadsPlugin beadsDisabled)
 ) "herdr-beads plugin must NOT be in herdr.plugins when beads is disabled";

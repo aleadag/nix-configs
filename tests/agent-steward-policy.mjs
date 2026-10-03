@@ -25,7 +25,7 @@ assert.doesNotMatch(f.coordinator, /subagent-driven-development/);
 // Point at Herdr for wait/close; do not copy idle/done semantics.
 assert.doesNotMatch(f.coordinator, /idle.*done|--until/);
 assert.match(f.spawn, /router start/);
-assert.match(f.spawn, /plugin pane open --plugin steward-argv/);
+assert.match(f.spawn, /plugin pane open --plugin agent-steward-launcher/);
 assert.doesNotMatch(f.spawn, /--plugin pi-herdr-subagents|send-text|send-keys/);
 assert.match(f.subagents, /name: subagents/);
 assert.match(f.subagents, /agents\/explore\.md/);

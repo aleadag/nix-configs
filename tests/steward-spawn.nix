@@ -1,4 +1,4 @@
-{ pkgs }:
+{ pkgs, flake }:
 let
   spawn = pkgs.writeScriptBin "steward-spawn" (
     builtins.readFile ../modules/home-manager/dev/coding-agents/agent-steward/spawn.sh
@@ -14,6 +14,8 @@ pkgs.runCommand "steward-spawn-check"
     ];
   }
   ''
-    node ${./steward-spawn.mjs} ${spawn}/bin/steward-spawn ${pkgs.bash}/bin/bash ${../modules/home-manager/dev/coding-agents/agent-steward/herdr-plugin/dispatch.sh}
+    node ${./steward-spawn.mjs} ${spawn}/bin/steward-spawn ${pkgs.bash}/bin/bash ${
+      flake.inputs.agent-steward + "/herdr-plugins/agent-steward-launcher/dispatch.sh"
+    }
     touch "$out"
   ''

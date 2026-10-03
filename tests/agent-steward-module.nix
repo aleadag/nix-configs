@@ -4,7 +4,15 @@ let
   system = pkgs.stdenv.hostPlatform.system;
   inventory = import ../modules/home-manager/dev/coding-agents/agent-steward/config.nix;
   jsonFormat = pkgs.formats.json { };
-  fakePackage = pkgs.writeShellScriptBin "agent-steward" "exit 0";
+  fakePackage = pkgs.symlinkJoin {
+    name = "fake-agent-steward";
+    paths = [
+      (pkgs.writeShellScriptBin "agent-steward" "exit 0")
+      (pkgs.writeShellScriptBin "agent-steward-herdr-adapter" ''
+        printf '%s\n' "$TYPESAFE_API_KEY" "$@"
+      '')
+    ];
+  };
   testFlake = flake // {
     inputs = flake.inputs // {
       agent-steward = flake.inputs.agent-steward // {
@@ -114,6 +122,8 @@ assert
   == flake.inputs.agent-steward + "/skills/agent-steward";
 assert enabled.sops.secrets.typesafe_api_key.key == "typesafe_api_key";
 assert enabled.sops.secrets.typesafe_api_key.mode == "0600";
+assert !(enabled.home.sessionVariables ? TYPESAFE_API_KEY_FILE);
+assert !(enabled.home.sessionVariables ? AGENT_STEWARD_HERDR_ADAPTER);
 assert !(enabled.home.sessionVariables ? TYPESAFE_API_KEY);
 assert
   !pkgs.stdenv.hostPlatform.isLinux
@@ -133,6 +143,7 @@ pkgs.runCommand "agent-steward-module-check"
     fixture = pkgs.writeText "agent-steward-module-fixture.json" (
       builtins.toJSON {
         inherit system;
+        upstreamRecover = flake.inputs.agent-steward + "/herdr-plugins/agent-steward-recover";
         argvPlugin = toString (lib.head withHerdr.home-manager.dev.coding-agents.herdr.plugins);
         stopPlugin = toString (lib.elemAt withHerdr.home-manager.dev.coding-agents.herdr.plugins 1);
         defaultJson = toString defaultJson;
