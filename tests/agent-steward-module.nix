@@ -33,6 +33,18 @@ let
     );
   enabled = home { };
   withHerdr = home { extra.home-manager.dev.coding-agents.herdr.enable = true; };
+  withWaybar = home {
+    extra.programs.waybar = {
+      enable = pkgs.stdenv.hostPlatform.isLinux;
+      settings.top.modules-right = [ "network" ];
+    };
+  };
+  disabledWithWaybar = home {
+    extra = {
+      programs.waybar.enable = pkgs.stdenv.hostPlatform.isLinux;
+      home-manager.dev.coding-agents.agent-steward.enable = false;
+    };
+  };
   disabledWithHerdr = home {
     extra.home-manager.dev.coding-agents = {
       herdr.enable = true;
@@ -111,6 +123,20 @@ let
     && !(c.home-manager.dev.coding-agents.skills ? agent-steward)
     && !(c.sops.secrets ? typesafe_api_key);
 in
+assert
+  !pkgs.stdenv.hostPlatform.isLinux
+  || (
+    (withWaybar.programs.waybar.settings.top.modules-right or [ ]) == [
+      "custom/agent-steward"
+      "network"
+    ]
+    && withWaybar.programs.waybar.settings.top."custom/agent-steward".return-type == "json"
+    && withWaybar.programs.waybar.style != null
+  );
+assert enabled.programs.waybar.settings == [ ];
+assert disabledWithWaybar.programs.waybar.settings == [ ];
+assert enabled.programs.waybar.style == null;
+assert disabledWithWaybar.programs.waybar.style == null;
 assert enabled.home-manager.dev.coding-agents.agent-steward.enable;
 assert enabled.home-manager.dev.coding-agents.agent-steward.settings == inventory;
 assert lib.length (wrappers enabled) == 1;
@@ -141,7 +167,18 @@ assert lib.any (
 assert builtins.readFile ../modules/home-manager/dev/coding-agents/pi/default.nix != "";
 pkgs.runCommand "agent-steward-module-check"
   {
-    nativeBuildInputs = [ pkgs.nodejs ];
+    nativeBuildInputs = [
+      pkgs.nodejs
+      pkgs.python3
+    ];
+    waybarStyle = pkgs.writeText "agent-steward-waybar.css" (
+      if withWaybar.programs.waybar.style == null then "" else withWaybar.programs.waybar.style
+    );
+    waybarExec =
+      if pkgs.stdenv.hostPlatform.isLinux then
+        withWaybar.programs.waybar.settings.top."custom/agent-steward".exec
+      else
+        "${pkgs.python3}/bin/python3 ${../modules/home-manager/dev/coding-agents/agent-steward/waybar.py} ${defaultJson}";
     fixture = pkgs.writeText "agent-steward-module-fixture.json" (
       builtins.toJSON {
         inherit system;
@@ -169,5 +206,12 @@ pkgs.runCommand "agent-steward-module-check"
   }
   ''
     node ${./agent-steward-module.mjs} "$fixture"
+    python3 ${./agent-steward-waybar.test.py} "$waybarExec" \
+      ${lib.getLib pkgs.pango}/lib/libpango-1.0${pkgs.stdenv.hostPlatform.extensions.sharedLibrary}
+    ${lib.optionalString pkgs.stdenv.hostPlatform.isLinux ''
+      mkdir -p "$TMPDIR/gtk-cache"
+      XDG_CACHE_HOME="$TMPDIR/gtk-cache" ${pkgs.xvfb-run}/bin/xvfb-run -a python3 ${./agent-steward-waybar-css.test.py} \
+        "$waybarStyle" ${lib.getLib pkgs.gtk3}/lib/libgtk-3.so
+    ''}
     touch "$out"
   ''

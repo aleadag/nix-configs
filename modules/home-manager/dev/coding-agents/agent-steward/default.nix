@@ -8,6 +8,7 @@
 let
   agentsCfg = config.home-manager.dev.coding-agents;
   cfg = agentsCfg.agent-steward;
+  waybarEnabled = pkgs.stdenv.hostPlatform.isLinux && config.programs.waybar.enable;
   jsonFormat = pkgs.formats.json { };
   configFile = jsonFormat.generate "agent-steward.json" cfg.settings;
   package = flake.inputs.agent-steward.packages.${pkgs.stdenv.hostPlatform.system}.default;
@@ -61,6 +62,44 @@ in
       spawn
     ];
     xdg.configFile."agent-steward/config.json".source = configFile;
+    programs.waybar.settings = lib.mkIf waybarEnabled {
+      top = {
+        modules-right = lib.mkBefore [ "custom/agent-steward" ];
+        "custom/agent-steward" = {
+          exec = lib.getExe (
+            pkgs.writeShellApplication {
+              name = "agent-steward-waybar";
+              text = ''
+                exec ${pkgs.python3}/bin/python3 ${./waybar.py} ${configFile}
+              '';
+            }
+          );
+          return-type = "json";
+          interval = 30;
+        };
+      };
+    };
+    programs.waybar.style = lib.mkIf waybarEnabled (
+      lib.mkAfter ''
+        #custom-agent-steward {
+          background: @base0C;
+          color: @base00;
+          border-radius: 4px;
+          padding: 0 2px;
+          margin: 0;
+        }
+        #custom-agent-steward.warning {
+          background: @base0A;
+        }
+        #custom-agent-steward.critical {
+          background: @base08;
+        }
+        #custom-agent-steward.unknown {
+          background: @base01;
+          color: @base04;
+        }
+      ''
+    );
     systemd.user.services.agent-steward-quota-refresh = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
       Unit = {
         Description = "Refresh agent-steward quota snapshots";
