@@ -1,5 +1,6 @@
 {
   config,
+  flake,
   lib,
   pkgs,
   ...
@@ -8,6 +9,17 @@
 let
   agentsCfg = config.home-manager.dev.coding-agents;
   cfg = agentsCfg.antigravity-cli;
+  captureEnabled = agentsCfg.agent-steward.enable;
+  captureCommand = lib.escapeShellArgs [
+    "${
+      flake.inputs.agent-steward.packages.${pkgs.stdenv.hostPlatform.system}.default
+    }/bin/agent-steward"
+    "quota"
+    "hook"
+    "agy"
+  ];
+  captureState = "${config.xdg.stateHome}/agent-steward/agy";
+  captureWorkdir = "${config.xdg.stateHome}/agent-steward/agy-quota-workdir";
   inherit (agentsCfg.permissions)
     allowedShellCommands
     commonExternalDirectories
@@ -91,6 +103,11 @@ let
     }:$PATH"
     ${builtins.readFile ./scripts/statusline.sh}
   '';
+  previousStatusLine = {
+    type = "command";
+    command = "${statusLineScript}";
+    enabled = true;
+  };
 in
 {
   options.home-manager.dev.coding-agents.antigravity-cli = {
@@ -110,6 +127,32 @@ in
     mutableConfig.files."${config.home.homeDirectory}/.gemini/antigravity-cli/settings.json" = {
       source = config.home.file.".gemini/antigravity-cli/settings.json".source;
     };
+
+    mutableConfig.files."${captureState}/statusline.json" = lib.mkIf captureEnabled {
+      settings = {
+        schema_version = 1;
+        inherit previousStatusLine;
+        installedCommand = captureCommand;
+      };
+    };
+
+    home.activation.initAgyQuotaDirectories = lib.mkIf captureEnabled (
+      lib.hm.dag.entryBetween [ "injectMutableSettings" ] [ "writeBoundary" ] ''
+        for directory in ${
+          lib.escapeShellArgs [
+            "${config.xdg.stateHome}/agent-steward"
+            captureState
+            captureWorkdir
+          ]
+        }; do
+          if [[ -L "$directory" || ( -e "$directory" && ! -d "$directory" ) ]]; then
+            echo "agent-steward: unsafe AGY quota directory" >&2
+            exit 1
+          fi
+          $DRY_RUN_CMD ${pkgs.coreutils}/bin/install -d -m 0700 -- "$directory"
+        done
+      ''
+    );
 
     programs.antigravity-cli = {
       enable = true;
@@ -136,10 +179,11 @@ in
         enableTelemetry = false;
         notifications = false;
         showFeedbackSurvey = false;
-        statusLine = {
-          command = "${statusLineScript}";
-          enabled = true;
-        };
+        statusLine =
+          previousStatusLine
+          // lib.optionalAttrs captureEnabled {
+            command = captureCommand;
+          };
         toolPermission = "proceed-in-sandbox";
       };
     };

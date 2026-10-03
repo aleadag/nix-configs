@@ -260,6 +260,10 @@
             {
               checks.steward-spawn = inputs.agent-steward.checks.${system}.steward-spawn;
               checks.agent-steward-wrapper = import ./tests/agent-steward-wrapper.nix { inherit pkgs; };
+              checks.agent-steward-agy = import ./tests/agent-steward-agy.nix {
+                flake = self;
+                inherit pkgs;
+              };
               checks.agent-steward-module = import ./tests/agent-steward-module.nix {
                 flake = self;
                 inherit pkgs;
