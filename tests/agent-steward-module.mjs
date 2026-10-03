@@ -4,6 +4,12 @@ import { readFileSync, statSync } from "node:fs";
 const f = JSON.parse(readFileSync(process.argv[2], "utf8"));
 assert.equal(statSync(`${f.argvPlugin}/dispatch.sh`).mode & 0o111, 0o111);
 assert.equal(statSync(`${f.argvPlugin}/herdr-plugin.toml`).mode & 0o111, 0);
+assert.equal(statSync(`${f.stopPlugin}/run.sh`).mode & 0o111, 0o111);
+assert.equal(statSync(`${f.stopPlugin}/herdr-plugin.toml`).mode & 0o111, 0);
+assert.match(readFileSync(`${f.stopPlugin}/herdr-plugin.toml`, "utf8"), /id = "agent-steward"/);
+assert.match(readFileSync(`${f.stopPlugin}/run.sh`, "utf8"), /TYPESAFE_API_KEY/);
+assert.match(readFileSync(`${f.stopPlugin}/run.sh`, "utf8"), /agent-steward-herdr-adapter/);
+assert.doesNotMatch(readFileSync(`${f.stopPlugin}/run.sh`, "utf8"), /sessionVariables/);
 const read = p => readFileSync(p, "utf8");
 const original = JSON.parse(read(f.defaultJson));
 const changed = JSON.parse(read(f.overrideJson));
@@ -14,15 +20,16 @@ function sorted(value) {
   return value;
 }
 assert.equal(createHash("sha256").update(JSON.stringify(sorted(original))).digest("hex"),
-  "9d2385b91dbc66162668fbe60bf90143f7e85ce27ee1aebbc59093e0173e6630");
+  "88ef48c50b66c44c2569d238647cfa592abbd045928d5c9fcbb03a2fbd6e96a0");
+assert.equal(original.candidates.find(c => c.tool === "agy").quota_pool, "gemini");
 assert.deepEqual(original.tools, ["pi", "agy"]);
 assert.equal(Object.hasOwn(original, "accounts"), false);
 assert.deepEqual(original.candidates.map(c => c.id), [
-  "sol-pi", "astra-pi", "luna-pi", "grok-4.6-pi", "gemini-flash-low-agy", "gemini-flash-medium-agy", "gemini-flash-high-agy"
+  "sol-pi", "astra-pi", "luna-pi", "grok-4.6-pi", "gemini-flash-agy"
 ]);
 const expected = structuredClone(original);
 expected.thresholds.risky = 0.7;
-expected.candidates.find(c => c.id === "gemini-flash-high-agy").capabilities += "; declarative override";
+expected.candidates.find(c => c.id === "gemini-flash-agy").capabilities += "; declarative override";
 assert.deepEqual(changed, expected);
 const expectedPartial = structuredClone(original);
 expectedPartial.thresholds.risky = 0.8;
@@ -31,8 +38,8 @@ const expectedLists = structuredClone(original);
 expectedLists.tools = ["agy"];
 expectedLists.candidates = original.candidates.filter(c => c.tool === "agy");
 assert.deepEqual(JSON.parse(read(f.listsJson)), expectedLists);
-assert.ok(read(f.defaultWrapper).includes(f.defaultJson));
-assert.ok(read(f.overrideWrapper).includes(f.overrideJson));
+assert.doesNotMatch(read(f.defaultWrapper), /--config/);
+assert.doesNotMatch(read(f.overrideWrapper), /--config/);
 assert.notEqual(f.defaultJson, f.overrideJson);
 assert.doesNotMatch(f.piModule, /skills\.agent-steward\s*=/);
 assert.match(f.stewardModule, /skills\.agent-steward\s*=/);

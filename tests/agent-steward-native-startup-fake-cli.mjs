@@ -6,18 +6,13 @@ import { pathToFileURL } from 'node:url';
 const pkg = process.env.STEWARD_TEST_PACKAGE;
 const imp = (name) => import(pathToFileURL(join(pkg, 'lib/agent-steward/dist/src', name + '.js')));
 const { run } = await imp('cli');
-const { readFileText, readBoundedUtf8 } = await imp('io');
+const { createRuntime } = await imp('main');
 const { launchForeground } = await imp('process');
 
 process.exitCode = await run(process.argv.slice(2), {
+  ...createRuntime(),
   env: { ...process.env, HOME: process.env.HOME || '/tmp' },
   cwd: process.cwd(),
-  readText: readFileText,
-  appendText: async () => {},
-  readTextIfPresent: async () => null,
-  mkdirp: async () => {},
-  chmod: async () => {},
-  readStdin: () => readBoundedUtf8(process.stdin),
   stdout: (text) => process.stdout.write(text),
   stderr: (text) => process.stderr.write(text),
   now: () => new Date('2026-09-30T12:00:00Z'),

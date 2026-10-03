@@ -63,7 +63,6 @@ pkgs.writeShellApplication {
     export TYPESAFE_API_KEY
     # The config path is escaped literal data, including shell-like syntax.
     # shellcheck disable=SC2016
-    exec ${pkgs.lib.escapeShellArg "${package}/bin/agent-steward"} \
-      --config ${pkgs.lib.escapeShellArg (toString configFile)} "$@"
+    exec ${pkgs.lib.escapeShellArg "${package}/bin/agent-steward"} "$@"
   '';
 }

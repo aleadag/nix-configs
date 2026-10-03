@@ -19,9 +19,33 @@ let
     chmod 0644 "$out/herdr-plugin.toml"
     chmod 0755 "$out/dispatch.sh"
   '';
+  secretFile = config.sops.secrets.typesafe_api_key.path;
+  stopRun = pkgs.writeShellScript "agent-steward-herdr-plugin-run" ''
+    set -eu
+    case "''${1-}" in
+      event|scheduler) ;;
+      *) exit 2 ;;
+    esac
+    secret_file=${lib.escapeShellArg (toString secretFile)}
+    if [ -r "$secret_file" ]; then
+      TYPESAFE_API_KEY=$(${pkgs.coreutils}/bin/cat -- "$secret_file")
+      export TYPESAFE_API_KEY
+    fi
+    exec ${lib.escapeShellArg "${package}/bin/agent-steward-herdr-adapter"} "$1"
+  '';
+  stopPlugin = pkgs.runCommandLocal "agent-steward-stop-plugin" { } ''
+    mkdir -p "$out"
+    cp -f ${
+      flake.inputs.agent-steward + "/plugins/agent-steward/herdr-plugin.toml"
+    } "$out/herdr-plugin.toml"
+    cp -f ${stopRun} "$out/run.sh"
+    ln -s ${package}/bin/agent-steward-herdr-adapter "$out/agent-steward-herdr-adapter"
+    chmod 0644 "$out/herdr-plugin.toml"
+    chmod 0755 "$out/run.sh"
+  '';
   wrapper = import ./wrapper.nix {
     inherit pkgs package configFile;
-    secretFile = config.sops.secrets.typesafe_api_key.path;
+    inherit secretFile;
   };
 in
 {
@@ -50,6 +74,7 @@ in
       wrapper
       spawn
     ];
+    xdg.configFile."agent-steward/config.json".source = configFile;
     systemd.user.services.agent-steward-quota-refresh = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
       Unit = {
         Description = "Refresh agent-steward quota snapshots";
@@ -71,7 +96,10 @@ in
       };
       Install.WantedBy = [ "timers.target" ];
     };
-    home-manager.dev.coding-agents.herdr.plugins = lib.mkIf agentsCfg.herdr.enable [ argvPlugin ];
+    home-manager.dev.coding-agents.herdr.plugins = lib.mkIf agentsCfg.herdr.enable [
+      argvPlugin
+      stopPlugin
+    ];
     home-manager.dev.coding-agents.agent-steward.settings = lib.mapAttrsRecursive (
       _: value: lib.mkDefault value
     ) (import ./config.nix);

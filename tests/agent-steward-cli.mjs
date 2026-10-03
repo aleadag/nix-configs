@@ -17,11 +17,11 @@ const expectedChanged = {
   jev: { ...original.jev, model: "jev-declarative-override" }
 };
 assert.deepEqual(changed, expectedChanged);
-const candidateIds = ["sol-pi", "astra-pi", "luna-pi", "grok-4.6-pi", "gemini-flash-low-agy", "gemini-flash-medium-agy", "gemini-flash-high-agy"];
+const candidateIds = ["sol-pi", "astra-pi", "luna-pi", "grok-4.6-pi", "gemini-flash-agy"];
 for (const [path, value] of [[f.generated, original], [f.overridden, changed]]) {
   assert.equal(Object.hasOwn(value, "accounts"), false);
-  assert.deepEqual(value.candidates.map(c => c.quota_bucket), ["pi_codex", "pi_codex", "pi_codex", "pi_xai", "antigravity", "antigravity", "antigravity"]);
-  assert.deepEqual(value.candidates.map(c => c.cost), [20, 100, 1, 13, 8, 8, 8]);
+  assert.deepEqual(value.candidates.map(c => c.quota_bucket), ["pi_codex", "pi_codex", "pi_codex", "pi_xai", "antigravity"]);
+  assert.deepEqual(value.candidates.map(c => c.cost), [20, 100, 1, 13, 8]);
   assert.deepEqual(value.candidates.map(c => c.id), candidateIds);
   assert.deepEqual(ConfigSchema.parse(value), value);
   const loaded = await loadConfig(path, {
@@ -29,7 +29,10 @@ for (const [path, value] of [[f.generated, original], [f.overridden, changed]]) 
   });
   assert.deepEqual(loaded, value);
   loaded.candidates.forEach(validateCandidateSyntax);
-  assert.equal(loaded.candidates.filter(c => c.tool === "agy").length, 3);
+  const agy = loaded.candidates.filter(c => c.tool === "agy");
+  assert.equal(agy.length, 1);
+  assert.equal(agy[0].model, "gemini-3.8-flash");
+  assert.deepEqual(agy[0].thinking_levels.map(level => level.id), ["low", "medium", "high"]);
 }
 assert.equal(changed.thresholds.risky, 0.7);
 assert.equal(changed.jev.model, "jev-declarative-override");
@@ -104,13 +107,19 @@ try {
   noLeak(duplicate);
   // Actual compiled CLI with fake HTTP: the complete multi-tool config reached the evaluator.
   const task = "planner: literal '\" $(touch task-executed)\nsecond line";
-  for (const pair of ["sol-pi", "gemini-flash-high-agy"]) {
+  for (const pair of ["sol-pi", "gemini-flash-agy"]) {
     clear();
     const preview = call(f.integrated, ["router", "start", "--dry-run", "--json", "--", "--config literal task"], pair);
     assert.equal(preview.status, 0, preview.stderr);
     const p = ResultSchema.parse(JSON.parse(preview.stdout));
     assert.equal(p.decision, "selected");
     assert.equal(p.selected.candidate_id, pair);
+    if (pair === "gemini-flash-agy") {
+      assert.equal(p.selected.model, "gemini-3.8-flash");
+      assert.equal(p.selected.thinking_level, "high");
+      assert.deepEqual(p.planned_command.args, ["--model=gemini-3.8-flash", "--effort=high"]);
+      assert.equal(lines(httpCapture)[1].wire.state.candidate.model, "gemini-3.8-flash");
+    }
     assert.equal(lines(httpCapture)[0].wire.state.task, "--config literal task");
     assert.deepEqual(lines(httpCapture)[0].wire.state.candidates.map(c => c.id), original.candidates.map(c => c.id));
     assert.equal(lines(httpCapture)[0].wire.model, "jev-1.13.0");
@@ -125,15 +134,15 @@ try {
     assert.deepEqual(records[0], {
       tool: pi ? "pi" : "agy", cwd: root, keyNames: [], provider: "SyntheticProvider-Only",
       argv: pi ? ["--provider", "openai-codex", "--model", "gpt-6.1-sol", "--thinking", "high", "--", "User task:\n" + task]
-        : ["--model=gemini-3.8-flash-high", "--prompt-interactive=User task:\n" + task]
+        : ["--model=gemini-3.8-flash", "--effort=high", "--prompt-interactive=User task:\n" + task]
     });
     const liveRequests = lines(httpCapture);
-    assert.equal(liveRequests.length, pi ? 2 : 1);
+    assert.equal(liveRequests.length, 2);
     for (const { wire } of liveRequests) assert.equal(wire.state.task, task);
     noLeak(live);
   }
   clear();
-  const overridePreview = call(f.integratedOverride, ["router", "start", "override task", "--dry-run", "--json"], "gemini-flash-high-agy");
+  const overridePreview = call(f.integratedOverride, ["router", "start", "override task", "--dry-run", "--json"], "gemini-flash-agy");
   assert.equal(overridePreview.status, 0, overridePreview.stderr);
   const overriddenPreview = ResultSchema.parse(JSON.parse(overridePreview.stdout));
   assert.equal(overriddenPreview.evaluations.pair.model, "jev-declarative-override");

@@ -5,9 +5,10 @@ let
   bun = "${raw}/lib/agent-steward/bun/bin/bun";
   config = import ./agent-steward-home.nix { inherit flake pkgs; };
   skills = config.home-manager.dev.coding-agents.skills;
-  approvedRev = "f7f550d01fa1991fb15736ed459307a14cfa76e8";
-  approvedRef = "v0.1.0-alpha.3";
+  approvedRev = "70dc740644f7bfaa9dc3f251f3ba35aa45cc57a3";
+  approvedRef = "v0.1.0-alpha.6";
   beforeLock = ./fixtures/agent-steward-before.lock;
+  afterLock = ./fixtures/agent-steward-after.lock;
 in
 assert raw.system == system;
 assert skills.agent-steward == flake.inputs.agent-steward + "/skills/agent-steward";
@@ -44,6 +45,9 @@ pkgs.runCommand "agent-steward-policy-check"
   ''
     ${bun} ${./agent-steward-policy.mjs} "$fixture"
     python3 ${./agent-steward-lock.test.py} \
-      ${beforeLock} ${../flake.lock} ${approvedRev} ${./agent-steward-lock.py} ${approvedRef}
+      ${beforeLock} ${afterLock} ${approvedRev} ${./agent-steward-lock.py} ${approvedRef}
+    python3 ${./agent-steward-lock-live.py} ${../flake.lock} ${approvedRev} ${approvedRef}
+    python3 ${./agent-steward-lock-live.test.py} \
+      ${./agent-steward-lock-live.py} ${../flake.lock} ${approvedRev} ${approvedRef}
     touch "$out"
   ''

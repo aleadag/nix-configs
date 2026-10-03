@@ -129,50 +129,26 @@
       ];
     }
     {
-      id = "gemini-flash-low-agy";
+      id = "gemini-flash-agy";
       tool = "agy";
       provider = "google";
-      model = "gemini-3.8-flash-low";
+      model = "gemini-3.8-flash";
       quota_bucket = "antigravity";
-      quota_pool = "primary";
+      quota_pool = "gemini";
       cost = 8;
-      capabilities = "Fast flash lane for straightforward edits and small agent steps on Antigravity quota. Not gpt-6-astra / gpt-6.1-sol hard reasoning.";
+      capabilities = "Fast flash model for straightforward edits, routine coding, and agent workflows on Antigravity quota. Still a flash model, not gpt-6-astra / gpt-6.1-sol hard reasoning.";
       thinking_levels = [
         {
-          id = "default";
-          description = "Low is encoded in the agy model selector; no separate effort override";
+          id = "low";
+          description = "Brief reasoning for straightforward edits and small agent steps";
         }
-      ];
-    }
-    {
-      id = "gemini-flash-medium-agy";
-      tool = "agy";
-      provider = "google";
-      model = "gemini-3.8-flash-medium";
-      quota_bucket = "antigravity";
-      quota_pool = "primary";
-      cost = 8;
-      capabilities = "Fast flash lane for routine coding and typical agent workflows on Antigravity quota. Not gpt-6-astra / gpt-6.1-sol hard reasoning.";
-      thinking_levels = [
         {
-          id = "default";
-          description = "Medium is encoded in the agy model selector; no separate effort override";
+          id = "medium";
+          description = "Balanced reasoning for routine coding and typical agent workflows";
         }
-      ];
-    }
-    {
-      id = "gemini-flash-high-agy";
-      tool = "agy";
-      provider = "google";
-      model = "gemini-3.8-flash-high";
-      quota_bucket = "antigravity";
-      quota_pool = "primary";
-      cost = 8;
-      capabilities = "Strongest flash lane here for longer software-engineering and agent runs on Antigravity quota. Still a flash model, not gpt-6-astra.";
-      thinking_levels = [
         {
-          id = "default";
-          description = "High is encoded in the agy model selector; no separate effort override";
+          id = "high";
+          description = "Deeper reasoning for longer software-engineering and agent runs";
         }
       ];
     }

@@ -35,7 +35,7 @@ let
     };
     candidates = map (
       c:
-      if c.id == "gemini-flash-high-agy" then
+      if c.id == "gemini-flash-agy" then
         c
         // {
           capabilities = c.capabilities + "; declarative override";
@@ -107,7 +107,8 @@ assert lib.length (wrappers enabled) == 1;
 assert lib.any (p: lib.getName p == "steward-spawn") enabled.home.packages;
 assert enabled.home-manager.dev.coding-agents.herdr.plugins == [ ];
 assert disabledWithHerdr.home-manager.dev.coding-agents.herdr.plugins == [ ];
-assert lib.length withHerdr.home-manager.dev.coding-agents.herdr.plugins == 1;
+assert lib.length withHerdr.home-manager.dev.coding-agents.herdr.plugins == 2;
+assert enabled.xdg.configFile."agent-steward/config.json".source != null;
 assert
   enabled.home-manager.dev.coding-agents.skills.agent-steward
   == flake.inputs.agent-steward + "/skills/agent-steward";
@@ -133,6 +134,7 @@ pkgs.runCommand "agent-steward-module-check"
       builtins.toJSON {
         inherit system;
         argvPlugin = toString (lib.head withHerdr.home-manager.dev.coding-agents.herdr.plugins);
+        stopPlugin = toString (lib.elemAt withHerdr.home-manager.dev.coding-agents.herdr.plugins 1);
         defaultJson = toString defaultJson;
         overrideJson = toString overrideJson;
         partialJson = toString partialJson;

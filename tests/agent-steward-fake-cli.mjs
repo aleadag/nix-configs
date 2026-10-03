@@ -6,7 +6,7 @@ const pkg = process.env.STEWARD_TEST_PACKAGE;
 const imp = name => import(pathToFileURL(join(pkg, "lib/agent-steward/dist/src", name + ".js")));
 const { run } = await imp("cli");
 const { launchForeground } = await imp("process");
-const { readFileText, readBoundedUtf8 } = await imp("io");
+const { createRuntime } = await imp("main");
 const post = async request => {
   const wire = JSON.parse(request.body);
   assert.equal(request.url, "https://api.typesafe.ai/v1/systemone");
@@ -27,10 +27,8 @@ const post = async request => {
   }) };
 };
 process.exitCode = await run(process.argv.slice(2), {
-  env: { ...process.env, HOME: process.env.HOME || '/tmp' }, cwd: process.cwd(), readText: readFileText,
-  appendText: async () => {}, readTextIfPresent: async () => null,
-  mkdirp: async () => {}, chmod: async () => {},
-  readStdin: () => readBoundedUtf8(process.stdin),
+  ...createRuntime(),
+  env: { ...process.env, HOME: process.env.HOME || '/tmp' }, cwd: process.cwd(),
   stdout: text => process.stdout.write(text), stderr: text => process.stderr.write(text),
   now: () => new Date("2026-09-30T12:00:00Z"), newRequestId: () => "offline-wrapper-request",
   post, terminal: { stdin: true, stdout: true },
