@@ -90,7 +90,7 @@ try {
     assert.ok(!r.stderr.includes(key));
     assert.ok(!r.stderr.includes(env.TYPESAFE_API_KEY));
     assert.deepEqual(JSON.parse(readFileSync(capture, "utf8")), {
-      argv: ["--config", f.configFile, ...args], cwd: root, key,
+      argv: args, cwd: root, key,
       provider: env.OPENAI_API_KEY
     });
   }

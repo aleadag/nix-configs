@@ -8,6 +8,8 @@ const f = JSON.parse(readFileSync(process.argv[2], 'utf8'));
 const root = mkdtempSync(join(tmpdir(), 'steward-native-startup-'));
 const cwd = join(root, "assigned '\nwork");
 const bin = join(root, 'bin');
+const xdg = join(root, 'xdg');
+const configDir = join(xdg, 'agent-steward');
 const http = join(root, 'http.jsonl');
 const capture = join(root, 'native.jsonl');
 const key = 'SyntheticNativeStartup-KeyOnly';
@@ -29,6 +31,7 @@ assert.doesNotMatch(f.spawnSource, /--plugin pi-herdr-subagents|send-text|send-k
 try {
   mkdirSync(cwd);
   mkdirSync(bin);
+  mkdirSync(configDir, { recursive: true });
   writeFileSync(join(cwd, 'synthetic.key'), key + '\n', { mode: 0o600 });
   for (const tool of ['codex', 'pi', 'agy']) {
     const native =
@@ -43,6 +46,7 @@ try {
 
   let serial = 0;
   for (const effort of ['default', 'high']) {
+    writeFileSync(join(configDir, 'config.json'), readFileSync(f.configs[effort]));
     for (const tool of ['codex', 'pi', 'agy']) {
       serial += 1;
       clear();
@@ -58,6 +62,7 @@ try {
       ].join('\n');
       const env = {
         PATH: `${bin}:${f.runtimePath}`,
+        XDG_CONFIG_HOME: xdg,
         STEWARD_TEST_PACKAGE: f.raw,
         TEST_PAIR: `fixture-${tool}`,
         EXPECTED_TASK: task,
@@ -112,11 +117,13 @@ try {
 
   clear();
   renameSync(join(bin, 'codex'), join(bin, 'codex-disabled'));
+  writeFileSync(join(configDir, 'config.json'), readFileSync(f.configs.default));
   const missingTask = 'Unique missing-native binary fallback sentinel';
   const missing = spawnSync(f.wrappers.default, ['router', 'start', '--', missingTask], {
     cwd,
     env: {
       PATH: `${bin}:${f.runtimePath}`,
+      XDG_CONFIG_HOME: xdg,
       STEWARD_TEST_PACKAGE: f.raw,
       TEST_PAIR: 'fixture-codex',
       EXPECTED_TASK: missingTask,

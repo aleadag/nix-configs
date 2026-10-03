@@ -9,7 +9,7 @@ let
     #!${bun}
     await import(${builtins.toJSON (toString fakeCli)});
   '';
-  makeWrapper =
+  makeFixture =
     effort:
     let
       configFile = (pkgs.formats.json { }).generate "synthetic-startup.json" {
@@ -60,10 +60,13 @@ let
         };
       };
     in
-    import ../modules/home-manager/dev/coding-agents/agent-steward/wrapper.nix {
-      inherit pkgs configFile;
-      package = entry;
-      secretFile = "synthetic.key";
+    {
+      inherit configFile;
+      wrapper = import ../modules/home-manager/dev/coding-agents/agent-steward/wrapper.nix {
+        inherit pkgs configFile;
+        package = entry;
+        secretFile = "synthetic.key";
+      };
     };
 in
 assert raw.system == pkgs.stdenv.hostPlatform.system;
@@ -80,8 +83,12 @@ pkgs.runCommand "agent-steward-native-startup-check"
           pkgs.coreutils
         ];
         wrappers = {
-          default = "${makeWrapper "default"}/bin/agent-steward";
-          high = "${makeWrapper "high"}/bin/agent-steward";
+          default = "${(makeFixture "default").wrapper}/bin/agent-steward";
+          high = "${(makeFixture "high").wrapper}/bin/agent-steward";
+        };
+        configs = {
+          default = (makeFixture "default").configFile;
+          high = (makeFixture "high").configFile;
         };
       }
     );
