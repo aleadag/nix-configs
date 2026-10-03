@@ -68,15 +68,13 @@ legacy_steward["locked"] = copy.deepcopy(before_steward["locked"])
 legacy_steward["original"] = copy.deepcopy(before_steward["original"])
 
 approved_args = [approved_rev] if approved_ref is None else [approved_rev, approved_ref]
-run_checker(
-    [baseline_path, current_path, *approved_args], True, "approved final lock"
-)
+run_checker([baseline_path, current_path, *approved_args], True, "approved final lock")
 check_candidate(
     legacy_candidate, True, "legacy two-argument frozen-revision mode", approved=False
 )
 run_checker([baseline_path, current_path], False, "missing explicit approved revision")
 run_checker(
-    [baseline_path, current_path, "0" * 40, *( [approved_ref] if approved_ref else [])],
+    [baseline_path, current_path, "0" * 40, *([approved_ref] if approved_ref else [])],
     False,
     "wrong expected revision",
 )

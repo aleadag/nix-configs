@@ -63,7 +63,7 @@ let
     {
       inherit configFile;
       wrapper = import ../modules/home-manager/dev/coding-agents/agent-steward/wrapper.nix {
-        inherit pkgs configFile;
+        inherit pkgs;
         package = entry;
         secretFile = "synthetic.key";
       };

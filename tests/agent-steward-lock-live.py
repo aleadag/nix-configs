@@ -31,7 +31,9 @@ def validate(data, approved_revision, approved_ref):
     assert locked["repo"] == "agent-steward"
     assert locked["rev"] == approved_revision
     assert isinstance(locked["lastModified"], int)
-    assert isinstance(locked["narHash"], str) and locked["narHash"].startswith("sha256-")
+    assert isinstance(locked["narHash"], str) and locked["narHash"].startswith(
+        "sha256-"
+    )
     assert steward["inputs"]["nixpkgs"] == ["nixpkgs"]
     assert resolved(steward["inputs"]["nixpkgs"]) in nodes
 
@@ -51,6 +53,8 @@ def validate(data, approved_revision, approved_ref):
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
-        raise SystemExit("usage: agent-steward-lock-live.py CURRENT.lock APPROVED_REV APPROVED_REF")
+        raise SystemExit(
+            "usage: agent-steward-lock-live.py CURRENT.lock APPROVED_REV APPROVED_REF"
+        )
     validate(json.loads(Path(sys.argv[1]).read_text()), sys.argv[2], sys.argv[3])
     print("live steward lock: approved source, root follows and reachable graph passed")

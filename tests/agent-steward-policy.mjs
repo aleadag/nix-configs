@@ -41,7 +41,7 @@ assert.doesNotMatch(f.piModule, /HERDR\.md|configDir}\/agents\/planner/);
 assert.match(f.piModule, /\.\/skills\/subagents/);
 assert.match(f.piModule, /\(pluginSkills \/\/ agentsCfg\.skills\)/);
 assert.doesNotMatch(f.piModule, /superpowers\.patch|pi-tools\.md|piPluginSkills|piPlugins/);
-assert.match(f.piModule, /context = agentsCfg\.context;/);
+assert.match(f.piModule, /inherit \(agentsCfg\) context;/);
 
 assert.ok(f.roles.explore, "the explore role must be supplied");
 assert.match(f.roles.explore, /^name: explore$/m);

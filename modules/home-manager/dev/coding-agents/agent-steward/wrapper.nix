@@ -1,7 +1,6 @@
 {
   pkgs,
   package,
-  configFile,
   secretFile,
 }:
 pkgs.writeShellApplication {

@@ -30,13 +30,11 @@ let
   integrated = import ../modules/home-manager/dev/coding-agents/agent-steward/wrapper.nix {
     inherit pkgs;
     package = fakeEntry;
-    configFile = generated;
     secretFile = enabled.sops.secrets.typesafe_api_key.path;
   };
   integratedOverride = import ../modules/home-manager/dev/coding-agents/agent-steward/wrapper.nix {
     inherit pkgs;
     package = fakeEntry;
-    configFile = overridden;
     secretFile = changed.sops.secrets.typesafe_api_key.path;
   };
 in

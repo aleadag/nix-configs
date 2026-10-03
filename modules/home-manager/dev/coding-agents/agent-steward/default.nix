@@ -30,7 +30,7 @@ let
           --prefix PATH : ${pkgs.coreutils}/bin
       '';
   wrapper = import ./wrapper.nix {
-    inherit pkgs package configFile;
+    inherit pkgs package;
     inherit secretFile;
   };
 in

@@ -10,17 +10,16 @@ let
     process.exit(Number(process.env.TEST_STATUS || "0"));
   '';
   secretFile = "secret 'quoted'\n$(touch secret-path-executed).key";
-  configFile = "config 'quoted'\n$(touch config-path-executed).json";
   templatedSecretFile = "%r/agent-steward-synthetic-${
     builtins.substring 0 20 (builtins.hashString "sha256" (toString fake))
   }.key";
   templatedWrapper = import ../modules/home-manager/dev/coding-agents/agent-steward/wrapper.nix {
-    inherit pkgs configFile;
+    inherit pkgs;
     package = fake;
     secretFile = templatedSecretFile;
   };
   wrapper = import ../modules/home-manager/dev/coding-agents/agent-steward/wrapper.nix {
-    inherit pkgs configFile secretFile;
+    inherit pkgs secretFile;
     package = fake;
   };
 in
@@ -34,7 +33,7 @@ pkgs.runCommand "agent-steward-wrapper-check"
       builtins.toJSON {
         wrapper = "${wrapper}/bin/agent-steward";
         bash = "${pkgs.bash}/bin/bash";
-        inherit configFile secretFile templatedSecretFile;
+        inherit secretFile templatedSecretFile;
         templatedWrapper = "${templatedWrapper}/bin/agent-steward";
       }
     );

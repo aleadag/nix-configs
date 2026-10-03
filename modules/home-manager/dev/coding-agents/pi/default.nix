@@ -42,7 +42,7 @@ in
     programs.pi-coding-agent = {
       enable = true;
       package = pkgs.llm-agents.pi;
-      context = agentsCfg.context;
+      inherit (agentsCfg) context;
       settings = {
         defaultProvider = "openai-codex";
         defaultModel = "gpt-6.1-sol";

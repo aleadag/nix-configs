@@ -48,6 +48,9 @@ const secret = join(root, f.secretFile);
 const httpCapture = join(root, "http.jsonl");
 const nativeCapture = join(root, "native.jsonl");
 const bin = join(root, "bin");
+const xdg = join(root, "xdg");
+const configDir = join(xdg, "agent-steward");
+const configFile = join(configDir, "config.json");
 function lines(path) {
   return existsSync(path) ? readFileSync(path, "utf8").trim().split("\n").filter(Boolean).map(JSON.parse) : [];
 }
@@ -58,7 +61,7 @@ function clear() {
 function call(exe, args, pair = "sol-pi", input) {
   return spawnSync(exe, args, {
     cwd: root, env: {
-      PATH: bin, HOME: root, XDG_CONFIG_HOME: join(root, "absent-xdg"),
+      PATH: bin, HOME: root, XDG_CONFIG_HOME: xdg,
       STEWARD_TEST_PACKAGE: f.raw, TEST_PAIR: pair,
       TEST_HTTP_CAPTURE: httpCapture, STUB_CAPTURE: nativeCapture,
       TYPESAFE_API_KEY: "InheritedIntegrated-NotUsed",
@@ -73,6 +76,8 @@ function noLeak(r) {
 }
 try {
   mkdirSync(bin);
+  mkdirSync(configDir, { recursive: true });
+  writeFileSync(configFile, readFileSync(f.generated));
   writeFileSync(secret, key + "\n", { mode: 0o600 });
   for (const tool of ["pi", "agy"]) {
     writeFileSync(join(bin, tool), `#!${f.bun}\n` +
@@ -98,8 +103,8 @@ try {
   assert.equal(JSON.parse(stop.stdout).reason_code, "insufficient_context");
   assert.equal(existsSync(httpCapture), false);
   noLeak(stop);
-  // The injected managed config and caller config duplicate are rejected by the real packaged executable.
-  const duplicate = call(f.wrapper, ["--config", join(root, "not-read.json"), "router", "start", "task", "--dry-run", "--json"]);
+  // Duplicate caller config flags are rejected before either file is read.
+  const duplicate = call(f.wrapper, ["--config", join(root, "not-read.json"), "router", "start", "task", "--config", join(root, "also-not-read.json"), "--dry-run", "--json"]);
   assert.equal(duplicate.status, 1);
   assert.equal(JSON.parse(duplicate.stdout).reason_code, "invalid_input");
   assert.equal(existsSync(httpCapture), false);
@@ -142,6 +147,7 @@ try {
     noLeak(live);
   }
   clear();
+  writeFileSync(configFile, readFileSync(f.overridden));
   const overridePreview = call(f.integratedOverride, ["router", "start", "override task", "--dry-run", "--json"], "gemini-flash-agy");
   assert.equal(overridePreview.status, 0, overridePreview.stderr);
   const overriddenPreview = ResultSchema.parse(JSON.parse(overridePreview.stdout));
@@ -150,12 +156,13 @@ try {
   assert.equal(lines(nativeCapture).length, 0);
   noLeak(overridePreview);
   clear();
-  const duplicateInjected = call(f.integrated, ["router", "start", "task", "--config", "ignored.json", "--dry-run", "--json"]);
-  assert.equal(duplicateInjected.status, 1);
-  assert.equal(JSON.parse(duplicateInjected.stdout).reason_code, "invalid_input");
+  writeFileSync(configFile, readFileSync(f.generated));
+  const duplicateConfig = call(f.integrated, ["router", "start", "task", "--config", "ignored.json", "--config", "also-ignored.json", "--dry-run", "--json"]);
+  assert.equal(duplicateConfig.status, 1);
+  assert.equal(JSON.parse(duplicateConfig.stdout).reason_code, "invalid_input");
   assert.equal(lines(httpCapture).length, 0);
   assert.equal(lines(nativeCapture).length, 0);
-  noLeak(duplicateInjected);
+  noLeak(duplicateConfig);
   assert.equal(existsSync(join(root, "task-executed")), false);
 } finally {
   rmSync(root, { recursive: true, force: true });

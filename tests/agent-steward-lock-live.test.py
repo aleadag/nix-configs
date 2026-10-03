@@ -25,7 +25,9 @@ def check(change, should_pass, label):
 validate(current, approved_revision, approved_ref)
 for name in ("superpowers", "nixpkgs"):
     check(
-        lambda data: data["nodes"][data["nodes"]["root"]["inputs"][name]]["locked"].update(rev="0" * 40),
+        lambda data, name=name: data["nodes"][data["nodes"]["root"]["inputs"][name]][
+            "locked"
+        ].update(rev="0" * 40),
         True,
         f"independent {name} update",
     )
@@ -35,16 +37,46 @@ def steward(data):
     return data["nodes"][data["nodes"]["root"]["inputs"]["agent-steward"]]
 
 
-check(lambda data: steward(data)["locked"].update(rev="0" * 40), False, "wrong steward revision")
-check(lambda data: steward(data)["original"].update(ref="v0.0.0"), False, "wrong steward ref")
-check(lambda data: steward(data)["locked"].update(type="path"), False, "path-pinned source")
-check(lambda data: steward(data)["locked"].update(owner="other"), False, "wrong source owner")
-check(lambda data: steward(data)["locked"].update(repo="other"), False, "wrong source repository")
-check(lambda data: steward(data)["locked"].update(narHash="invalid"), False, "invalid source hash")
-check(lambda data: steward(data).update(flake=False), False, "non-flake steward")
-check(lambda data: steward(data)["inputs"].update(nixpkgs="nixpkgs"), False, "lost follows edge")
 check(
-    lambda data: data["nodes"].update(duplicate=copy.deepcopy(data["nodes"]["nixpkgs"])),
+    lambda data: steward(data)["locked"].update(rev="0" * 40),
+    False,
+    "wrong steward revision",
+)
+check(
+    lambda data: steward(data)["original"].update(ref="v0.0.0"),
+    False,
+    "wrong steward ref",
+)
+check(
+    lambda data: steward(data)["locked"].update(type="path"),
+    False,
+    "path-pinned source",
+)
+check(
+    lambda data: steward(data)["locked"].update(owner="other"),
+    False,
+    "wrong source owner",
+)
+check(
+    lambda data: steward(data)["locked"].update(repo="other"),
+    False,
+    "wrong source repository",
+)
+check(
+    lambda data: steward(data)["locked"].update(narHash="invalid"),
+    False,
+    "invalid source hash",
+)
+check(lambda data: steward(data).update(flake=False), False, "non-flake steward")
+check(
+    lambda data: steward(data)["inputs"].update(nixpkgs="nixpkgs"),
+    False,
+    "lost follows edge",
+)
+check(
+    lambda data: data["nodes"].update(
+        duplicate=copy.deepcopy(data["nodes"]["nixpkgs"])
+    ),
     False,
     "retained duplicate or orphan node",
 )
@@ -53,4 +85,6 @@ check(
     False,
     "dangling graph edge",
 )
-print("live steward lock: unrelated updates accepted; source, follows and graph negative controls passed")
+print(
+    "live steward lock: unrelated updates accepted; source, follows and graph negative controls passed"
+)

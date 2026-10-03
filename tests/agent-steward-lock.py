@@ -73,7 +73,9 @@ else:
         assert original.get("ref") == approved_ref
         assert "rev" not in original
         assert {key: value for key, value in original.items() if key != "ref"} == {
-            key: value for key, value in before_original.items() if key not in {"rev", "ref"}
+            key: value
+            for key, value in before_original.items()
+            if key not in {"rev", "ref"}
         }
     assert locked["owner"] == original["owner"] == "aleadag"
     assert locked["repo"] == original["repo"] == "agent-steward"
