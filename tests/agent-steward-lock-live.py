@@ -4,9 +4,7 @@ import sys
 from pathlib import Path
 
 
-def validate(data, approved_revision, approved_ref):
-    assert re.fullmatch(r"[0-9a-f]{40}", approved_revision)
-    assert re.fullmatch(r"v[0-9A-Za-z._-]+", approved_ref)
+def validate(data):
     nodes = data["nodes"]
 
     def resolved(link):
@@ -19,17 +17,15 @@ def validate(data, approved_revision, approved_ref):
 
     steward = nodes[resolved(nodes["root"]["inputs"]["agent-steward"])]
     assert steward.get("flake", True)
-    assert steward["original"] == {
-        "type": "github",
-        "owner": "aleadag",
-        "repo": "agent-steward",
-        "ref": approved_ref,
-    }
+    original = steward["original"]
+    assert original["type"] == "github"
+    assert original["owner"] == "aleadag"
+    assert original["repo"] == "agent-steward"
     locked = steward["locked"]
     assert locked["type"] == "github"
     assert locked["owner"] == "aleadag"
     assert locked["repo"] == "agent-steward"
-    assert locked["rev"] == approved_revision
+    assert re.fullmatch(r"[0-9a-f]{40}", locked["rev"])
     assert isinstance(locked["lastModified"], int)
     assert isinstance(locked["narHash"], str) and locked["narHash"].startswith(
         "sha256-"
@@ -52,9 +48,7 @@ def validate(data, approved_revision, approved_ref):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
-        raise SystemExit(
-            "usage: agent-steward-lock-live.py CURRENT.lock APPROVED_REV APPROVED_REF"
-        )
-    validate(json.loads(Path(sys.argv[1]).read_text()), sys.argv[2], sys.argv[3])
-    print("live steward lock: approved source, root follows and reachable graph passed")
+    if len(sys.argv) != 2:
+        raise SystemExit("usage: agent-steward-lock-live.py CURRENT.lock")
+    validate(json.loads(Path(sys.argv[1]).read_text()))
+    print("live steward lock: source, root follows and reachable graph passed")

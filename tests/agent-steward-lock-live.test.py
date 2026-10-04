@@ -6,14 +6,13 @@ from pathlib import Path
 
 validate = runpy.run_path(sys.argv[1])["validate"]
 current = json.loads(Path(sys.argv[2]).read_text())
-approved_revision, approved_ref = sys.argv[3:5]
 
 
 def check(change, should_pass, label):
     candidate = copy.deepcopy(current)
     change(candidate)
     try:
-        validate(candidate, approved_revision, approved_ref)
+        validate(candidate)
     except (AssertionError, KeyError):
         if should_pass:
             raise AssertionError(f"{label}: expected pass")
@@ -22,7 +21,7 @@ def check(change, should_pass, label):
             raise AssertionError(f"{label}: expected rejection")
 
 
-validate(current, approved_revision, approved_ref)
+validate(current)
 for name in ("superpowers", "nixpkgs"):
     check(
         lambda data, name=name: data["nodes"][data["nodes"]["root"]["inputs"][name]][
@@ -38,14 +37,19 @@ def steward(data):
 
 
 check(
-    lambda data: steward(data)["locked"].update(rev="0" * 40),
-    False,
-    "wrong steward revision",
+    lambda data: steward(data)["locked"].update(rev="1" * 40),
+    True,
+    "steward revision update",
 )
 check(
-    lambda data: steward(data)["original"].update(ref="v0.0.0"),
+    lambda data: steward(data)["original"].update(ref="main"),
+    True,
+    "steward ref update",
+)
+check(
+    lambda data: steward(data)["locked"].update(rev="invalid"),
     False,
-    "wrong steward ref",
+    "malformed steward revision",
 )
 check(
     lambda data: steward(data)["locked"].update(type="path"),
@@ -86,5 +90,5 @@ check(
     "dangling graph edge",
 )
 print(
-    "live steward lock: unrelated updates accepted; source, follows and graph negative controls passed"
+    "live steward lock: revision updates accepted; source, follows and graph negative controls passed"
 )

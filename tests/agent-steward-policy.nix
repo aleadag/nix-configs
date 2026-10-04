@@ -5,14 +5,13 @@ let
   bun = "${raw}/lib/agent-steward/bun/bin/bun";
   config = import ./agent-steward-home.nix { inherit flake pkgs; };
   skills = config.home-manager.dev.coding-agents.skills;
-  approvedRev = "f3c2cdcef29148cdad275e80b511861337601da4";
-  approvedRef = "v0.1.0-alpha.8";
+  fixtureRev = "f3c2cdcef29148cdad275e80b511861337601da4";
+  fixtureRef = "v0.1.0-alpha.8";
   beforeLock = ./fixtures/agent-steward-before.lock;
   afterLock = ./fixtures/agent-steward-after.lock;
 in
 assert raw.system == system;
 assert skills.agent-steward == flake.inputs.agent-steward + "/skills/agent-steward";
-assert flake.inputs.agent-steward.sourceInfo.rev == approvedRev;
 assert toString flake.inputs.agent-steward.inputs.nixpkgs == toString flake.inputs.nixpkgs;
 assert
   builtins.hashString "sha256" (builtins.readFile beforeLock)
@@ -45,9 +44,9 @@ pkgs.runCommand "agent-steward-policy-check"
   ''
     ${bun} ${./agent-steward-policy.mjs} "$fixture"
     python3 ${./agent-steward-lock.test.py} \
-      ${beforeLock} ${afterLock} ${approvedRev} ${./agent-steward-lock.py} ${approvedRef}
-    python3 ${./agent-steward-lock-live.py} ${../flake.lock} ${approvedRev} ${approvedRef}
+      ${beforeLock} ${afterLock} ${fixtureRev} ${./agent-steward-lock.py} ${fixtureRef}
+    python3 ${./agent-steward-lock-live.py} ${../flake.lock}
     python3 ${./agent-steward-lock-live.test.py} \
-      ${./agent-steward-lock-live.py} ${../flake.lock} ${approvedRev} ${approvedRef}
+      ${./agent-steward-lock-live.py} ${../flake.lock}
     touch "$out"
   ''

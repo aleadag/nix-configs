@@ -14,16 +14,7 @@ let
   approvalConfigFile = jsonFormat.generate "agent-steward-targets.json" {
     auto_approve = cfg.autoApprove;
   };
-  # Keep the reviewed input pinned while carrying the observed done-dialog fix.
-  package =
-    flake.inputs.agent-steward.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs
-      (old: {
-        src = pkgs.applyPatches {
-          name = "agent-steward-done-source";
-          inherit (old) src;
-          patches = [ ./approval-done.patch ];
-        };
-      });
+  package = flake.inputs.agent-steward.packages.${pkgs.stdenv.hostPlatform.system}.default;
   spawn = flake.inputs.agent-steward.packages.${pkgs.stdenv.hostPlatform.system}.steward-spawn;
   argvPlugin = flake.inputs.agent-steward + "/herdr-plugins/agent-steward-launcher";
   secretFile = config.sops.secrets.typesafe_api_key.path;
