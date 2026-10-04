@@ -46,7 +46,7 @@ in
       settings = {
         defaultProvider = "openai-codex";
         defaultModel = "gpt-6.1-sol";
-        defaultThinkingLevel = "medium";
+        defaultThinkingLevel = "high";
         defaultTools = [ "+codemode" ];
         enableAnalytics = false;
         enableInstallTelemetry = false;
