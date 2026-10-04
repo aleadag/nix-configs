@@ -5,12 +5,40 @@ import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 const f = JSON.parse(readFileSync(process.argv[2], "utf8"));
+assert.equal(f.argvPlugin, f.packagedLauncher);
 assert.ok(statSync(`${f.argvPlugin}/dispatch.sh`).isFile());
+assert.ok(statSync(`${f.argvPlugin}/agent-steward-launcher-log`).isFile());
+const diagnostic = {
+  request_id: "module-logging-test",
+  reason_code: "invalid_response",
+  diagnostics: { stage: "response", http_status: 200, duration_ms: 438 },
+};
+for (const payload of [diagnostic, { ...diagnostic, message: "private-task" }]) {
+  const result = spawnSync(f.shell, [`${f.argvPlugin}/log-failure.sh`], {
+    env: {
+      PATH: "",
+      HERDR_PLUGIN_ROOT: f.argvPlugin,
+      HERDR_PLUGIN_CONTEXT_JSON: JSON.stringify({ selected_text: JSON.stringify(payload) }),
+    },
+    encoding: "utf8",
+    timeout: 5000,
+  });
+  if (payload === diagnostic) {
+    assert.equal(result.status, 0, result.stderr);
+    assert.deepEqual(JSON.parse(result.stdout), diagnostic);
+    assert.equal(result.stderr, "");
+  } else {
+    assert.equal(result.status, 1);
+    assert.equal(result.stdout, "");
+    assert.equal(result.stderr, "agent-steward-launcher: invalid_failure_diagnostic\n");
+  }
+}
 assert.equal(statSync(`${f.argvPlugin}/herdr-plugin.toml`).mode & 0o111, 0);
 assert.ok(statSync(`${f.stopPlugin}/run.sh`).isFile());
 assert.equal(statSync(`${f.stopPlugin}/herdr-plugin.toml`).mode & 0o111, 0);
 assert.match(readFileSync(`${f.stopPlugin}/herdr-plugin.toml`, "utf8"), /min_herdr_version/);
-assert.match(readFileSync(`${f.stopPlugin}/run.sh`, "utf8"), /agent-steward-herdr-adapter/);
+assert.ok(readFileSync(`${f.stopPlugin}/run.sh`, "utf8").includes(`${f.packagedRecover}/run.sh`));
+assert.doesNotMatch(readFileSync(`${f.stopPlugin}/run.sh`, "utf8"), /AGENT_STEWARD_HERDR_ADAPTER/);
 assert.doesNotMatch(readFileSync(`${f.stopPlugin}/run.sh`, "utf8"), /sessionVariables/);
 assert.equal(readFileSync(`${f.stopPlugin}/herdr-plugin.toml`, "utf8"),
   readFileSync(`${f.upstreamRecover}/herdr-plugin.toml`, "utf8"));
@@ -88,6 +116,6 @@ assert.match(f.stewardModule, /quota refresh/);
 assert.match(f.stewardModule, /OnCalendar = "hourly"/);
 assert.doesNotMatch(f.stewardModule, /temp\/config|readFile.*secret|launchd|sessionVariables/);
 assert.match(f.stewardModule, /TYPESAFE_API_KEY_FILE/);
-assert.match(f.stewardModule, /AGENT_STEWARD_HERDR_ADAPTER/);
+assert.doesNotMatch(f.stewardModule, /--set AGENT_STEWARD_HERDR_ADAPTER/);
 assert.doesNotMatch(f.stewardModule, /TYPESAFE_API_KEY\s*=\s/);
 assert.ok(["x86_64-linux", "aarch64-linux", "aarch64-darwin"].includes(f.system));

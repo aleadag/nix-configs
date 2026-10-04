@@ -16,9 +16,9 @@ let
   };
   package = flake.inputs.agent-steward.packages.${pkgs.stdenv.hostPlatform.system}.default;
   spawn = flake.inputs.agent-steward.packages.${pkgs.stdenv.hostPlatform.system}.steward-spawn;
-  argvPlugin = flake.inputs.agent-steward + "/herdr-plugins/agent-steward-launcher";
+  argvPlugin = "${package}/share/agent-steward/herdr-plugins/agent-steward-launcher";
   secretFile = config.sops.secrets.typesafe_api_key.path;
-  recoverSource = flake.inputs.agent-steward + "/herdr-plugins/agent-steward-recover";
+  recoverPlugin = "${package}/share/agent-steward/herdr-plugins/agent-steward-recover";
   stopPlugin =
     pkgs.runCommandLocal "agent-steward-recover-plugin"
       {
@@ -26,11 +26,10 @@ let
       }
       ''
         mkdir -p "$out"
-        cp -f ${recoverSource}/herdr-plugin.toml "$out/herdr-plugin.toml"
+        cp -f ${recoverPlugin}/herdr-plugin.toml "$out/herdr-plugin.toml"
         makeWrapper ${pkgs.runtimeShell} "$out/run.sh" \
-          --add-flags ${lib.escapeShellArg "${recoverSource}/run.sh"} \
+          --add-flags ${lib.escapeShellArg "${recoverPlugin}/run.sh"} \
           --set TYPESAFE_API_KEY_FILE ${lib.escapeShellArg (toString secretFile)} \
-          --set AGENT_STEWARD_HERDR_ADAPTER ${lib.escapeShellArg "${package}/bin/agent-steward-herdr-adapter"} \
           --prefix PATH : ${pkgs.coreutils}/bin
       '';
   wrapper = import ./wrapper.nix {

@@ -4,14 +4,22 @@ let
   system = pkgs.stdenv.hostPlatform.system;
   inventory = import ../modules/home-manager/dev/coding-agents/agent-steward/config.nix;
   jsonFormat = pkgs.formats.json { };
+  fakeAdapter = pkgs.writeShellScriptBin "agent-steward-herdr-adapter" ''
+    printf '%s\n' "$TYPESAFE_API_KEY" "$@"
+  '';
   fakePackage = pkgs.symlinkJoin {
     name = "fake-agent-steward";
     src = flake.inputs.agent-steward.packages.${system}.default.src;
     paths = [
-      (pkgs.writeShellScriptBin "agent-steward" "exit 0")
-      (pkgs.writeShellScriptBin "agent-steward-herdr-adapter" ''
-        printf '%s\n' "$TYPESAFE_API_KEY" "$@"
+      (pkgs.runCommand "fake-steward-recover-plugin" { } ''
+        plugin="$out/share/agent-steward/herdr-plugins/agent-steward-recover"
+        mkdir -p "$plugin"
+        cp -f ${flake.inputs.agent-steward}/herdr-plugins/agent-steward-recover/herdr-plugin.toml "$plugin/herdr-plugin.toml"
+        cp -f ${flake.inputs.agent-steward}/herdr-plugins/agent-steward-recover/run.sh "$plugin/run.sh"
+        ln -s ${fakeAdapter}/bin/agent-steward-herdr-adapter "$plugin/agent-steward-herdr-adapter"
       '')
+      (pkgs.writeShellScriptBin "agent-steward" "exit 0")
+      fakeAdapter
     ];
   };
   testFlake = flake // {
@@ -34,6 +42,10 @@ let
     );
   enabled = home { };
   withHerdr = home { extra.home-manager.dev.coding-agents.herdr.enable = true; };
+  withPackagedHerdr = home {
+    inherit flake;
+    extra.home-manager.dev.coding-agents.herdr.enable = true;
+  };
   approvalEnabled = home {
     extra.home-manager.dev.coding-agents.agent-steward.autoApprove = true;
   };
@@ -161,6 +173,9 @@ assert lib.any (p: lib.getName p == "steward-spawn") enabled.home.packages;
 assert enabled.home-manager.dev.coding-agents.herdr.plugins == [ ];
 assert disabledWithHerdr.home-manager.dev.coding-agents.herdr.plugins == [ ];
 assert lib.length withHerdr.home-manager.dev.coding-agents.herdr.plugins == 2;
+assert
+  toString (lib.head withHerdr.home-manager.dev.coding-agents.herdr.plugins)
+  == "${fakePackage}/share/agent-steward/herdr-plugins/agent-steward-launcher";
 assert enabled.xdg.configFile."agent-steward/config.json".source != null;
 assert
   enabled.home-manager.dev.coding-agents.skills.agent-steward
@@ -201,7 +216,12 @@ pkgs.runCommand "agent-steward-module-check"
       builtins.toJSON {
         inherit system;
         upstreamRecover = flake.inputs.agent-steward + "/herdr-plugins/agent-steward-recover";
-        argvPlugin = toString (lib.head withHerdr.home-manager.dev.coding-agents.herdr.plugins);
+        argvPlugin = toString (lib.head withPackagedHerdr.home-manager.dev.coding-agents.herdr.plugins);
+        packagedLauncher = "${
+          flake.inputs.agent-steward.packages.${system}.default
+        }/share/agent-steward/herdr-plugins/agent-steward-launcher";
+        shell = pkgs.runtimeShell;
+        packagedRecover = "${fakePackage}/share/agent-steward/herdr-plugins/agent-steward-recover";
         stopPlugin = toString (lib.elemAt withHerdr.home-manager.dev.coding-agents.herdr.plugins 1);
         approvalEnabledJson = toString (approvalJson approvalEnabled);
         approvalDisabledJson = toString (approvalJson approvalDisabled);
