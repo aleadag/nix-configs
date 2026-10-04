@@ -7,7 +7,11 @@
 
 let
   cfg = config.home-manager.dev.coding-agents.collie;
-  package = pkgs.llm-agents.collie;
+  package = pkgs.llm-agents.collie.overrideAttrs (old: {
+    postInstall = (old.postInstall or "") + ''
+      cp -r web/src $out/lib/collie/web/src
+    '';
+  });
 in
 {
   options.home-manager.dev.coding-agents.collie = {
