@@ -47,6 +47,7 @@ in
         defaultProvider = "openai-codex";
         defaultModel = "gpt-6.1-sol";
         defaultThinkingLevel = "medium";
+        defaultTools = [ "+codemode" ];
         enableAnalytics = false;
         enableInstallTelemetry = false;
         enabledModels = [
