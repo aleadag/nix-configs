@@ -52,7 +52,7 @@ function sorted(value) {
   return value;
 }
 assert.equal(createHash("sha256").update(JSON.stringify(sorted(original))).digest("hex"),
-  "88ef48c50b66c44c2569d238647cfa592abbd045928d5c9fcbb03a2fbd6e96a0");
+  "d2f4f074ead32c15d015a6580153615d7830e9d9c7055b4a8690a1911dc6dd40");
 assert.equal(original.candidates.find(c => c.tool === "agy").quota_pool, "gemini");
 assert.deepEqual(original.tools, ["pi", "agy"]);
 assert.equal(Object.hasOwn(original, "accounts"), false);

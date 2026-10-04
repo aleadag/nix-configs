@@ -12,27 +12,27 @@
       quota_bucket = "pi_codex";
       quota_pool = "primary";
       cost = 20;
-      capabilities = "Near-flagship complex reasoning and coding at lower cost. Use for substantial multi-file coding, refactors, and agent workflows when gpt-6-luna is too weak and gpt-6-astra is too expensive. Text and image in, tools.";
+      capabilities = "General-purpose choice for substantial implementation, multi-file refactors, code review, and debugging with defined acceptance criteria. Fits work that requires tracing dependencies, preserving behavior, and iterating on tests. For highly ambiguous problems or tightly interacting architectural constraints, prefer a candidate suited to deeper analysis.";
       thinking_levels = [
         {
           id = "low";
-          description = "Brief reasoning for straightforward coding tasks";
+          description = "Localized edits with an explicit solution and straightforward verification";
         }
         {
           id = "medium";
-          description = "Balanced reasoning for routine coding and agent work";
+          description = "Implementation following established patterns with a few dependent steps";
         }
         {
           id = "high";
-          description = "Deeper reasoning for complex coding and agent workflows";
+          description = "Multi-file changes, root-cause debugging, or refactors requiring dependency and invariant checks";
         }
         {
           id = "xhigh";
-          description = "Extended reasoning for difficult multi-step coding tasks";
+          description = "Competing hypotheses or interacting constraints requiring comparison before implementation";
         }
         {
           id = "max";
-          description = "Maximum reasoning for the hardest coding and agent tasks";
+          description = "Unusually difficult reasoning where high and xhigh budgets are insufficient; not a default for large tasks";
         }
       ];
     }
@@ -44,27 +44,27 @@
       quota_bucket = "pi_codex";
       quota_pool = "primary";
       cost = 100;
-      capabilities = "Most capable GPT-6 for the most demanding reasoning, architecture, research, and long coding agents. Use only when gpt-6.1-sol is likely to fail. Text and image in, tools. Do not use for routine or high-volume work.";
+      capabilities = "Choice for ambiguous requirements, difficult root-cause diagnosis, architecture trade-offs, and changes with tightly interacting constraints. Fits unfamiliar problems requiring hypothesis testing, synthesis of conflicting evidence, or careful reasoning across subsystem boundaries. Routine implementation, boilerplate, and task length alone do not require this candidate.";
       thinking_levels = [
         {
           id = "low";
-          description = "Brief reasoning when a capable model is useful but the task is simple";
+          description = "A narrow judgment or review with supplied evidence and few interacting constraints";
         }
         {
           id = "medium";
-          description = "Balanced reasoning for substantial tasks";
+          description = "A bounded diagnosis or design decision with clear alternatives and acceptance criteria";
         }
         {
           id = "high";
-          description = "Deeper reasoning for complex end-to-end work";
+          description = "Ambiguous diagnosis or architecture work requiring hypothesis testing and cross-subsystem reasoning";
         }
         {
           id = "xhigh";
-          description = "Extended reasoning for very difficult multi-step work";
+          description = "Conflicting evidence or tightly coupled constraints requiring sustained comparison of alternatives";
         }
         {
           id = "max";
-          description = "Maximum reasoning for the hardest end-to-end tasks";
+          description = "Exceptional reasoning difficulty that exceeds lower budgets; not justified by task length alone";
         }
       ];
     }
@@ -76,27 +76,27 @@
       quota_bucket = "pi_codex";
       quota_pool = "primary";
       cost = 1;
-      capabilities = "Most efficient GPT-6 for focused, cost-sensitive, high-volume work. Use for small edits, boilerplate, simple questions, and narrow tasks. Weakest GPT-6 here; do not use for hard multi-step reasoning or large refactors.";
+      capabilities = "Choice for bounded edits, boilerplate, extraction, summaries, and straightforward questions with clear instructions and supplied context. Fits localized changes with an explicit approach and easy verification. Avoid open-ended diagnosis, architecture decisions, and refactors with broad or unclear dependencies; extra thinking does not remove these scope limits.";
       thinking_levels = [
         {
           id = "low";
-          description = "Brief reasoning for simple focused tasks";
+          description = "Mechanical edits, extraction, or direct answers from supplied context";
         }
         {
           id = "medium";
-          description = "Balanced reasoning for routine focused tasks";
+          description = "Localized implementation following a known pattern with simple verification";
         }
         {
           id = "high";
-          description = "Deeper reasoning for demanding focused tasks";
+          description = "A bounded change requiring edge-case checks or a few dependent reasoning steps";
         }
         {
           id = "xhigh";
-          description = "Extended reasoning when the focused task is unusually difficult";
+          description = "Detailed consistency checks within a clearly defined scope; broader ambiguity calls for another candidate";
         }
         {
           id = "max";
-          description = "Maximum reasoning for the hardest focused tasks";
+          description = "Exceptional difficulty within a bounded task; not a substitute for a stronger candidate on open-ended work";
         }
       ];
     }
@@ -108,23 +108,23 @@
       quota_bucket = "pi_xai";
       quota_pool = "primary";
       cost = 13;
-      capabilities = "Frontier model for coding, agentic tasks, and knowledge work. Text and image in, 500k context, function calling, structured outputs, and reasoning. Use for large-context coding and knowledge work. Not a GPT-6 substitute.";
+      capabilities = "Alternative for coding, code review, and synthesis of supplied code or documents when a different model perspective is useful. Consider for large-input analysis only after confirming that the installed Pi/provider path supports the required input size. Context capacity alone does not establish suitability for difficult reasoning or broad refactors.";
       thinking_levels = [
         {
           id = "low";
-          description = "Brief reasoning for straightforward tasks";
+          description = "Direct questions, extraction, or localized edits with an explicit approach";
         }
         {
           id = "medium";
-          description = "Balanced reasoning for routine work";
+          description = "Routine implementation, review, or synthesis with clear acceptance criteria";
         }
         {
           id = "high";
-          description = "Deeper reasoning for complex work";
+          description = "Debugging or analysis requiring dependency tracing and comparison of evidence";
         }
         {
           id = "xhigh";
-          description = "Extended reasoning for difficult multi-step work";
+          description = "Multi-step analysis with interacting constraints; input length alone does not justify this level";
         }
       ];
     }
@@ -136,19 +136,19 @@
       quota_bucket = "antigravity";
       quota_pool = "gemini";
       cost = 8;
-      capabilities = "Fast flash model for straightforward edits, routine coding, and agent workflows on Antigravity quota. Still a flash model, not gpt-6-astra / gpt-6.1-sol hard reasoning.";
+      capabilities = "Choice for straightforward edits, routine implementation, and well-specified coding tasks through Antigravity. Fits established patterns and short feedback loops with clear verification. Avoid ambiguous root-cause diagnosis and architecture work with tightly coupled constraints. Tool and modality availability depend on the installed AGY configuration, not the model name alone.";
       thinking_levels = [
         {
           id = "low";
-          description = "Brief reasoning for straightforward edits and small agent steps";
+          description = "Mechanical edits or small coding steps with an explicit solution";
         }
         {
           id = "medium";
-          description = "Balanced reasoning for routine coding and typical agent workflows";
+          description = "Routine implementation using established patterns with a few dependent steps";
         }
         {
           id = "high";
-          description = "Deeper reasoning for longer software-engineering and agent runs";
+          description = "Well-scoped debugging or implementation requiring edge-case and dependency checks; broader ambiguity calls for another candidate";
         }
       ];
     }
