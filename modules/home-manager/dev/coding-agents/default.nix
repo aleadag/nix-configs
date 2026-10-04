@@ -1,6 +1,5 @@
 {
   config,
-  flake,
   lib,
   pkgs,
   ...
@@ -68,7 +67,6 @@ in
     ./agent-steward
     ./beads.nix
     ./codex.nix
-    ./coding-brain.nix
     ./collie.nix
     ./cursor-agent.nix
     ./herdr.nix
@@ -76,7 +74,6 @@ in
     ./pi
     ./mcp.nix
     ./permissions.nix
-    flake.inputs.coding-brain.homeManagerModules.default
   ];
 
   options.home-manager.dev.coding-agents = {

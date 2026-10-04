@@ -122,32 +122,6 @@
         "type": "github"
       }
     },
-    "coding-brain": {
-      "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "home-manager": [
-          "home-manager"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1786590346,
-        "narHash": "sha256-ZyYvy+G8uyouD0Nfhu+LmvUPdE3Gxhtpu95/cQls070=",
-        "owner": "aleadag",
-        "repo": "coding-brain",
-        "rev": "ff58ee58c38977748251abdadf7ef109341286ad",
-        "type": "github"
-      },
-      "original": {
-        "owner": "aleadag",
-        "repo": "coding-brain",
-        "type": "github"
-      }
-    },
     "crane": {
       "locked": {
         "lastModified": 1785541369,
@@ -802,7 +776,6 @@
     "root": {
       "inputs": {
         "agent-steward": "agent-steward",
-        "coding-brain": "coding-brain",
         "disko": "disko",
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",

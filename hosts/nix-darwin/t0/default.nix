@@ -10,7 +10,6 @@
         desktop.obsidian.enable = true;
         syncthing.enable = true;
         window-manager.paneru.enable = true;
-        dev.coding-agents.coding-brain.enable = false;
         dev.podman.enable = true;
       };
 

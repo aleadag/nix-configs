@@ -122,15 +122,6 @@
       };
     };
 
-    coding-brain = {
-      url = "github:aleadag/coding-brain";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        home-manager.follows = "home-manager";
-        flake-utils.follows = "flake-utils";
-      };
-    };
-
     agent-steward = {
       url = "github:aleadag/agent-steward";
       inputs.nixpkgs.follows = "nixpkgs";
