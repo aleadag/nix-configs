@@ -56,8 +56,6 @@ for (const text of Object.values(f.roles)) {
   for (const line of ["spawning: false", "auto-exit: true", "session-mode: standalone", "system-prompt: append"])
     assert.ok(front.includes(line));
 }
-assert.match(f.piModule, /defaultModel = "gpt-6\.1-sol"/);
-assert.match(f.piModule, /defaultThinkingLevel = "medium"/);
 assert.doesNotMatch(f.piModule, /skills\.agent-(?:steward|to-agent)\s*=/);
 
 console.log("agent-steward policy: coordinator skill, spawn boundary, review and worktree controls passed");

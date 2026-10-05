@@ -18,16 +18,22 @@ const expectedChanged = {
 };
 assert.deepEqual(changed, expectedChanged);
 const candidateIds = ["sol-pi", "astra-pi", "luna-pi", "grok-4.6-pi", "gemini-flash-agy"];
-for (const [path, value] of [[f.generated, original], [f.overridden, changed]]) {
+for (const [path, value, model] of [[f.generated, original, "jev-1.13.0"], [f.overridden, changed, "jev-declarative-override"]]) {
+  const expected = {
+    tools: value.tools,
+    candidates: value.candidates,
+    thresholds: value.thresholds,
+    evaluator: { type: "jev", provider: "typesafe", model }
+  };
   assert.equal(Object.hasOwn(value, "accounts"), false);
   assert.deepEqual(value.candidates.map(c => c.quota_bucket), ["pi_codex", "pi_codex", "pi_codex", "pi_xai", "antigravity"]);
   assert.deepEqual(value.candidates.map(c => c.cost), [20, 100, 1, 13, 8]);
   assert.deepEqual(value.candidates.map(c => c.id), candidateIds);
-  assert.deepEqual(ConfigSchema.parse(value), value);
+  assert.deepEqual(ConfigSchema.parse(value), expected);
   const loaded = await loadConfig(path, {
     env: {}, cwd: "/", readText: async p => readFileSync(p, "utf8")
   });
-  assert.deepEqual(loaded, value);
+  assert.deepEqual(loaded, expected);
   loaded.candidates.forEach(validateCandidateSyntax);
   const agy = loaded.candidates.filter(c => c.tool === "agy");
   assert.equal(agy.length, 1);
