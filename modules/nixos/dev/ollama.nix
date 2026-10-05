@@ -5,9 +5,7 @@
 }:
 
 {
-  options.nixos.dev.ollama.enable = lib.mkEnableOption "Ollama config" // {
-    default = config.nixos.dev.enable;
-  };
+  options.nixos.dev.ollama.enable = lib.mkEnableOption "Ollama config";
 
   config = lib.mkIf config.nixos.dev.ollama.enable {
     services = {
