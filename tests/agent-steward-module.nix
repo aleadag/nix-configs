@@ -149,6 +149,7 @@ let
   absent =
     c:
     wrappers c == [ ]
+    && !(c.home.shellAliases ? ags)
     && !(c.home-manager.dev.coding-agents.skills ? agent-steward)
     && !(c.sops.secrets ? typesafe_api_key);
 in
@@ -169,6 +170,7 @@ assert disabledWithWaybar.programs.waybar.style == null;
 assert enabled.home-manager.dev.coding-agents.agent-steward.enable;
 assert enabled.home-manager.dev.coding-agents.agent-steward.settings == inventory;
 assert lib.length (wrappers enabled) == 1;
+assert enabled.home.shellAliases.ags == "${lib.head (wrappers enabled)}/bin/agent-steward";
 assert lib.any (p: lib.getName p == "steward-spawn") enabled.home.packages;
 assert enabled.home-manager.dev.coding-agents.herdr.plugins == [ ];
 assert disabledWithHerdr.home-manager.dev.coding-agents.herdr.plugins == [ ];
