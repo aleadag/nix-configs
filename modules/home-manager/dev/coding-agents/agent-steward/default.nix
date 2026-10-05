@@ -68,7 +68,7 @@ in
       wrapper
       spawn
     ];
-    home.shellAliases.ags = lib.getExe wrapper;
+    home.shellAliases.stw = lib.getExe wrapper;
     xdg.configFile."agent-steward/config.json".source = configFile;
     xdg.configFile."herdr/plugins/config/agent-steward-recover/targets.json".source =
       approvalConfigFile;
