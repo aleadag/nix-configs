@@ -108,7 +108,7 @@
       quota_bucket = "pi_xai";
       quota_pool = "primary";
       cost = 13;
-      capabilities = "Alternative for coding, code review, and synthesis of supplied code or documents when a different model perspective is useful. Consider for large-input analysis only after confirming that the installed Pi/provider path supports the required input size. Context capacity alone does not establish suitability for difficult reasoning or broad refactors.";
+      capabilities = "General-purpose choice for routine implementation, multi-file changes with clear acceptance criteria, code review, debugging, and synthesis of supplied code or documents. Fits dependency tracing, comparison of evidence, and iteration on tests. For highly ambiguous problems or tightly interacting architectural constraints, prefer a candidate configured for deeper analysis.";
       thinking_levels = [
         {
           id = "low";
@@ -136,7 +136,7 @@
       quota_bucket = "antigravity";
       quota_pool = "gemini";
       cost = 8;
-      capabilities = "Choice for straightforward edits, routine implementation, and well-specified coding tasks through Antigravity. Fits established patterns and short feedback loops with clear verification. Avoid ambiguous root-cause diagnosis and architecture work with tightly coupled constraints. Tool and modality availability depend on the installed AGY configuration, not the model name alone.";
+      capabilities = "Choice for straightforward edits, routine implementation, and well-specified coding tasks. Fits established patterns, well-scoped debugging, and edge-case checks with clear verification. For ambiguous root-cause diagnosis or architecture work with tightly interacting constraints, prefer a candidate configured for deeper analysis.";
       thinking_levels = [
         {
           id = "low";
