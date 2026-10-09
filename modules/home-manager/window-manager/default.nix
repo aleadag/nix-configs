@@ -80,9 +80,10 @@ in
       gthumb
       (nemo-with-extensions.override { extensions = [ nemo-fileroller ]; })
       pamixer
-      pwvucontrol
       playerctl
+      pwvucontrol
       qalculate-gtk
+      xdg-utils
     ];
 
     services.udiskie.enable = true;
@@ -97,9 +98,14 @@ in
         enable = true;
         defaultApplications = {
           "application/pdf" = "org.gnome.Evince.desktop";
+          "image/bmp" = "org.gnome.gThumb.desktop";
           "image/gif" = "org.gnome.gThumb.desktop";
           "image/jpeg" = "org.gnome.gThumb.desktop";
+          "image/jxl" = "org.gnome.gThumb.desktop";
           "image/png" = "org.gnome.gThumb.desktop";
+          "image/svg+xml" = "org.gnome.gThumb.desktop";
+          "image/tiff" = "org.gnome.gThumb.desktop";
+          "image/webp" = "org.gnome.gThumb.desktop";
           "inode/directory" = "nemo.desktop";
           "text/html" = "firefox.desktop";
           "text/plain" = "nvim.desktop";
