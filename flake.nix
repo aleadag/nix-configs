@@ -122,6 +122,11 @@
       };
     };
 
+    collie = {
+      url = "github:AltanS/collie";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     agent-steward = {
       url = "github:aleadag/agent-steward";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -122,6 +122,26 @@
         "type": "github"
       }
     },
+    "collie": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791811171,
+        "narHash": "sha256-HdS55IODHHIQBf5REoI3jlQcyBVdMfPY0Qz1X+5mLDQ=",
+        "owner": "AltanS",
+        "repo": "collie",
+        "rev": "b60f2411b90538ad66f427356807676d6652cf64",
+        "type": "github"
+      },
+      "original": {
+        "owner": "AltanS",
+        "repo": "collie",
+        "type": "github"
+      }
+    },
     "crane": {
       "locked": {
         "lastModified": 1785541369,
@@ -776,6 +796,7 @@
     "root": {
       "inputs": {
         "agent-steward": "agent-steward",
+        "collie": "collie",
         "disko": "disko",
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",
