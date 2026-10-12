@@ -44,7 +44,7 @@ in
       ${lib.optionalString pkgs.stdenv.hostPlatform.isLinux ''
         $DRY_RUN_CMD systemctl --user reset-failed collie.service 2>/dev/null || true
       ''}
-      $DRY_RUN_CMD ${lib.getExe package} start --plain
+      $DRY_RUN_CMD ${lib.getExe package} restart --plain
     '';
   };
 }
