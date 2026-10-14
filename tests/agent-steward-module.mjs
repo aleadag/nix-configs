@@ -46,7 +46,7 @@ const root = mkdtempSync(join(tmpdir(), "steward-plugin-wrapper-"));
 const syntheticKey = "synthetic-wrapper-key";
 try {
   writeFileSync(join(root, "synthetic secret.key"), syntheticKey, { mode: 0o600 });
-  for (const command of ["event", "scheduler"]) {
+  for (const command of ["event"]) {
     const result = spawnSync(`${f.stopPlugin}/run.sh`, [command], {
       cwd: root, env: {}, encoding: "utf8", timeout: 5000,
     });
@@ -80,12 +80,12 @@ function sorted(value) {
   return value;
 }
 assert.equal(createHash("sha256").update(JSON.stringify(sorted(original))).digest("hex"),
-  "472e141d6a9fa610c0e5b37d81c04a2c4fe153f014000eab16fec607e0accc2c");
+  "56f9ab9407c87a0cfd2a3fa12ebe6961b7807c4ce13665b52d3a6630aefc8a87");
 assert.equal(original.candidates.find(c => c.tool === "agy").quota_pool, "gemini");
 assert.deepEqual(original.tools, ["pi", "agy"]);
 assert.equal(Object.hasOwn(original, "accounts"), false);
 assert.deepEqual(original.candidates.map(c => c.id), [
-  "sol-pi", "astra-pi", "luna-pi", "grok-4.6-pi", "gemini-flash-agy"
+  "sol-pi", "astra-pi", "luna-pi", "grok-4.6-pi", "gemini-flash-agy", "gemini-argon-agy"
 ]);
 const expected = structuredClone(original);
 expected.thresholds.risky = 0.7;

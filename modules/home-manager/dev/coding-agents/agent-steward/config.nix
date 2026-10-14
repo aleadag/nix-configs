@@ -152,6 +152,30 @@
         }
       ];
     }
+    {
+      id = "gemini-argon-agy";
+      tool = "agy";
+      provider = "google";
+      model = "gemini-4-argon";
+      quota_bucket = "antigravity";
+      quota_pool = "gemini";
+      cost = 50;
+      capabilities = "Choice for complex software engineering, difficult root-cause diagnosis, architecture trade-offs, and changes with tightly interacting constraints. Fits unfamiliar problems requiring hypothesis testing, synthesis of conflicting evidence, or deep reasoning across large codebases. Routine implementation, boilerplate, and simple edits alone do not require this candidate.";
+      thinking_levels = [
+        {
+          id = "low";
+          description = "A narrow judgment, review, or bounded change with supplied evidence and few interacting constraints";
+        }
+        {
+          id = "medium";
+          description = "Substantial implementation, bounded diagnosis, or design decisions with clear alternatives and acceptance criteria";
+        }
+        {
+          id = "high";
+          description = "Ambiguous root-cause diagnosis, complex architecture trade-offs, or changes with tightly interacting constraints";
+        }
+      ];
+    }
   ];
   jev.model = "jev-1.13.0";
   thresholds = {
