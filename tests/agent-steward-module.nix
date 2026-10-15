@@ -68,6 +68,12 @@ let
       settings.top.modules-right = [ "network" ];
     };
   };
+  agyOnlyWithWaybar = home {
+    extra = {
+      programs.waybar.enable = pkgs.stdenv.hostPlatform.isLinux;
+      home-manager.dev.coding-agents.agent-steward.settings.tools = [ "agy" ];
+    };
+  };
   disabledWithWaybar = home {
     extra = {
       programs.waybar.enable = pkgs.stdenv.hostPlatform.isLinux;
@@ -157,10 +163,20 @@ assert
   !pkgs.stdenv.hostPlatform.isLinux
   || (
     (withWaybar.programs.waybar.settings.top.modules-right or [ ]) == [
-      "custom/agent-steward"
+      "custom/agent-steward-0"
+      "custom/agent-steward-1"
+      "custom/agent-steward-2"
       "network"
     ]
-    && withWaybar.programs.waybar.settings.top."custom/agent-steward".return-type == "json"
+    && lib.all (name: withWaybar.programs.waybar.settings.top.${name}.return-type == "json") [
+      "custom/agent-steward-0"
+      "custom/agent-steward-1"
+      "custom/agent-steward-2"
+    ]
+    &&
+      agyOnlyWithWaybar.programs.waybar.settings.top.modules-right == [
+        "custom/agent-steward-0"
+      ]
     && withWaybar.programs.waybar.style != null
   );
 assert enabled.programs.waybar.settings == [ ];
@@ -209,11 +225,39 @@ pkgs.runCommand "agent-steward-module-check"
     waybarStyle = pkgs.writeText "agent-steward-waybar.css" (
       if withWaybar.programs.waybar.style == null then "" else withWaybar.programs.waybar.style
     );
-    waybarExec =
-      if pkgs.stdenv.hostPlatform.isLinux then
-        withWaybar.programs.waybar.settings.top."custom/agent-steward".exec
-      else
-        "${pkgs.python3}/bin/python3 ${../modules/home-manager/dev/coding-agents/agent-steward/waybar.py} ${defaultJson}";
+    waybarCommands = pkgs.writeText "agent-steward-waybar-commands.json" (
+      builtins.toJSON (
+        lib.listToAttrs (
+          lib.imap0
+            (
+              index: pool:
+              lib.nameValuePair pool.label (
+                if pkgs.stdenv.hostPlatform.isLinux then
+                  withWaybar.programs.waybar.settings.top."custom/agent-steward-${toString index}".exec
+                else
+                  "${pkgs.python3}/bin/python3 ${../modules/home-manager/dev/coding-agents/agent-steward/waybar.py} ${defaultJson} ${pool.bucket} ${pool.pool}"
+              )
+            )
+            [
+              {
+                label = "Codex";
+                bucket = "pi_codex";
+                pool = "primary";
+              }
+              {
+                label = "xAI";
+                bucket = "pi_xai";
+                pool = "primary";
+              }
+              {
+                label = "Gemini";
+                bucket = "antigravity";
+                pool = "gemini";
+              }
+            ]
+        )
+      )
+    );
     fixture = pkgs.writeText "agent-steward-module-fixture.json" (
       builtins.toJSON {
         inherit system;
@@ -252,7 +296,7 @@ pkgs.runCommand "agent-steward-module-check"
   }
   ''
     node ${./agent-steward-module.mjs} "$fixture"
-    python3 ${./agent-steward-waybar.test.py} "$waybarExec" \
+    python3 ${./agent-steward-waybar.test.py} "$waybarCommands" \
       ${lib.getLib pkgs.pango}/lib/libpango-1.0${pkgs.stdenv.hostPlatform.extensions.sharedLibrary}
     ${lib.optionalString pkgs.stdenv.hostPlatform.isLinux ''
       mkdir -p "$TMPDIR/gtk-cache"

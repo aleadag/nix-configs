@@ -10,7 +10,7 @@ import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-COMMAND = shlex.split(sys.argv.pop(1))
+COMMANDS = json.loads(Path(sys.argv.pop(1)).read_text())
 PANGO = ctypes.CDLL(sys.argv.pop(1))
 PANGO.pango_parse_markup.argtypes = [
     ctypes.c_char_p,
@@ -57,9 +57,9 @@ class QuotaDisplayTest(unittest.TestCase):
             )
         )
 
-    def display(self, **env):
+    def display(self, label="Codex", **env):
         result = subprocess.run(
-            COMMAND,
+            shlex.split(COMMANDS[label]),
             env={**os.environ, "XDG_STATE_HOME": str(self.state), **env},
             capture_output=True,
             text=True,
@@ -67,18 +67,28 @@ class QuotaDisplayTest(unittest.TestCase):
         )
         self.assertEqual(result.stderr, "")
         output = json.loads(result.stdout)
-        self.assertTrue(
-            PANGO.pango_parse_markup(
-                output["tooltip"].encode(), -1, 0, None, None, None, None
-            ),
-            "Tooltip must be valid Pango markup",
-        )
+        for field in ("text", "tooltip"):
+            self.assertTrue(
+                PANGO.pango_parse_markup(
+                    output[field].encode(), -1, 0, None, None, None, None
+                ),
+                f"{field} must be valid Pango markup",
+            )
+        markup = ET.fromstring("<markup>" + output["text"] + "</markup>")
+        output["plain_text"] = "".join(markup.itertext())
         return output
 
+    def assert_pool_color(self, output, label, state):
+        self.assertTrue(output["plain_text"].startswith(label + " "))
+        self.assertEqual(output["class"], state)
+        self.assertNotIn("<span", output["text"])
+        self.assertNotIn(" · ", output["plain_text"])
+
     def test_missing_snapshots_are_unknown(self):
-        output = self.display()
-        self.assertEqual(output["text"], "Codex ? · xAI ? · Gemini ?")
-        self.assertEqual(output.get("class"), "unknown")
+        for label in ("Codex", "xAI", "Gemini"):
+            output = self.display(label)
+            self.assertEqual(output["plain_text"], label + " ?")
+            self.assert_pool_color(output, label, "unknown")
 
     def test_lowest_applicable_limit_and_tooltip(self):
         self.write("pi_codex", [self.window(65), self.window(42, id="weekly")])
@@ -91,7 +101,12 @@ class QuotaDisplayTest(unittest.TestCase):
             ],
         )
         output = self.display()
-        self.assertEqual(output["text"], "Codex 42% · xAI 90% · Gemini 80%")
+        self.assertEqual(output["plain_text"], "Codex 42%")
+        self.assertEqual(self.display("xAI")["plain_text"], "xAI 90%")
+        self.assertEqual(self.display("Gemini")["plain_text"], "Gemini 80%")
+        self.assertNotIn("xAI", output["tooltip"])
+        self.assertNotIn("Gemini", output["tooltip"])
+        self.assertNotIn("weekly", self.display("xAI")["tooltip"])
         self.assertIn("weekly: 42%", output["tooltip"])
         self.assertIn("reset", output["tooltip"])
         self.assertIn("10m ago", output["tooltip"])
@@ -109,28 +124,119 @@ class QuotaDisplayTest(unittest.TestCase):
                 self.assertIn(f"<b>Codex · {percent}%</b>", output["tooltip"])
                 self.assertIn(f"<tt>{meter}</tt>", output["tooltip"])
                 self.assertIn("<small>reset ", output["tooltip"])
-                self.assertIn(f"Codex {percent}%", output["text"])
-                self.assertNotIn("<", output["text"])
+                self.assertEqual(output["plain_text"], f"Codex {percent}%")
 
-    def test_quota_state_classes_and_thresholds(self):
-        for percent, expected in [
-            (20, "healthy"),
-            (19, "warning"),
-            (10, "warning"),
-            (9, "critical"),
+    def test_colors_follow_weekly_pacing_not_remaining_percentage(self):
+        self.write("pi_xai", [self.window(80)])
+        self.write(
+            "antigravity",
+            [self.window(80, scope={"type": "pool", "pool_id": "gemini"})],
+        )
+        for percent, cadence, until_reset, expected in [
+            (80, "weekly", timedelta(days=6), "critical"),
+            (90, "weekly", timedelta(days=6), "healthy"),
+            (5, "weekly", timedelta(hours=1), "healthy"),
+            (5, "daily", timedelta(hours=3), "healthy"),
+            (5, None, timedelta(hours=3), "healthy"),
+            (100, "weekly", timedelta(days=8), "healthy"),
+            (99.96, "weekly", timedelta(days=8), "healthy"),
+            (99.94, "weekly", timedelta(days=8), "critical"),
         ]:
-            with self.subTest(percent=percent):
-                self.write("pi_codex", [self.window(percent)])
-                self.write("pi_xai", [self.window(80)])
+            with self.subTest(percent=percent, cadence=cadence, reset=until_reset):
+                extra = {"cadence": cadence} if cadence else {}
                 self.write(
-                    "antigravity",
-                    [self.window(80, scope={"type": "pool", "pool_id": "gemini"})],
+                    "pi_codex",
+                    [
+                        self.window(
+                            percent,
+                            reset_at=(self.now + until_reset).isoformat(),
+                            **extra,
+                        )
+                    ],
                 )
-                self.assertEqual(self.display().get("class"), expected)
+                output = self.display()
+                self.assert_pool_color(output, "Codex", expected)
+                self.assert_pool_color(self.display("xAI"), "xAI", "healthy")
+                self.assert_pool_color(self.display("Gemini"), "Gemini", "healthy")
         (self.quota / "antigravity.json").unlink()
-        self.assertEqual(self.display().get("class"), "critical")
-        self.write("pi_codex", [self.window(50)])
-        self.assertEqual(self.display().get("class"), "unknown")
+        self.assert_pool_color(self.display(), "Codex", "critical")
+        self.assert_pool_color(self.display("xAI"), "xAI", "healthy")
+        self.assert_pool_color(self.display("Gemini"), "Gemini", "unknown")
+        self.write("pi_codex", [self.window(5)])
+        self.assert_pool_color(self.display(), "Codex", "healthy")
+        self.assert_pool_color(self.display("Gemini"), "Gemini", "unknown")
+
+    def test_xai_can_alert_while_codex_is_normal_and_gemini_is_unknown(self):
+        self.write("pi_codex", [self.window(5)])
+        self.write(
+            "pi_xai",
+            [
+                self.window(
+                    80,
+                    cadence="weekly",
+                    reset_at=(self.now + timedelta(days=6)).isoformat(),
+                )
+            ],
+        )
+        self.assert_pool_color(self.display(), "Codex", "healthy")
+        self.assert_pool_color(self.display("xAI"), "xAI", "critical")
+        self.assert_pool_color(self.display("Gemini"), "Gemini", "unknown")
+
+    def test_over_budget_weekly_limit_is_not_hidden_by_a_short_window(self):
+        self.write(
+            "pi_codex",
+            [
+                self.window(5, cadence="five_hour"),
+                self.window(
+                    80,
+                    id="weekly",
+                    cadence="weekly",
+                    reset_at=(self.now + timedelta(days=6)).isoformat(),
+                ),
+            ],
+        )
+        output = self.display()
+        self.assertIn("Codex 5%", output["text"])
+        self.assert_pool_color(output, "Codex", "critical")
+
+    def test_inapplicable_or_untrusted_windows_do_not_trigger_pacing_alerts(self):
+        over_budget = self.window(
+            80,
+            cadence="weekly",
+            reset_at=(self.now + timedelta(days=6)).isoformat(),
+        )
+        for mutation in [
+            {"scope": {"type": "pool", "pool_id": "third_party"}},
+            {"valid_until": self.now.isoformat()},
+            {"observed_at": (self.now + timedelta(minutes=1)).isoformat()},
+            {"reset_at": (self.now - timedelta(seconds=1)).isoformat()},
+        ]:
+            with self.subTest(mutation=mutation):
+                self.write("pi_codex", [{**over_budget, **mutation}])
+                self.assert_pool_color(self.display(), "Codex", "unknown")
+        self.write("pi_codex", [over_budget, self.window(101)])
+        self.assert_pool_color(self.display(), "Codex", "unknown")
+        self.write(
+            "pi_codex",
+            [over_budget, self.window(5, valid_until=self.now.isoformat())],
+        )
+        self.assert_pool_color(self.display(), "Codex", "unknown")
+
+    def test_applicable_pool_weekly_limit_can_trigger_pacing_alert(self):
+        self.write(
+            "antigravity",
+            [
+                self.window(
+                    80,
+                    cadence="weekly",
+                    scope={"type": "pool", "pool_id": "gemini"},
+                    reset_at=(self.now + timedelta(days=6)).isoformat(),
+                )
+            ],
+        )
+        self.assert_pool_color(self.display("Gemini"), "Gemini", "critical")
+        self.assert_pool_color(self.display(), "Codex", "unknown")
+        self.assert_pool_color(self.display("xAI"), "xAI", "unknown")
 
     def test_stale_tooltip_does_not_render_a_quota_meter(self):
         self.write("pi_codex", [self.window(65, valid_until=self.now.isoformat())])
@@ -139,7 +245,7 @@ class QuotaDisplayTest(unittest.TestCase):
         self.assertIn("? (stale)", output["tooltip"])
         self.assertNotIn("▰", output["tooltip"])
         self.assertNotIn("▱", output["tooltip"])
-        self.assertEqual(output.get("class"), "unknown")
+        self.assert_pool_color(output, "Codex", "unknown")
 
     def test_reset_tooltip_uses_relative_time(self):
         cases = [
@@ -209,7 +315,7 @@ class QuotaDisplayTest(unittest.TestCase):
         self.write("pi_xai", [self.window(75)])
         (self.quota / "pi_xai.json").rename(quota / "pi_xai.json")
         self.assertIn(
-            "xAI 75%", self.display(HOME=str(home), XDG_STATE_HOME="")["text"]
+            "xAI 75%", self.display("xAI", HOME=str(home), XDG_STATE_HOME="")["text"]
         )
 
 

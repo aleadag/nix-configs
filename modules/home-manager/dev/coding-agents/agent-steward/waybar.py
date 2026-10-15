@@ -64,7 +64,7 @@ def relative_reset(reset, now):
     return f"in {duration}" if seconds >= 0 else f"{duration} ago"
 
 
-def display(config, state, now):
+def display(config, state, now, bucket, pool):
     labels = {
         "codex": "Codex",
         "pi_codex": "Codex",
@@ -76,82 +76,76 @@ def display(config, state, now):
         for candidate in config["candidates"]
         if candidate["tool"] in config["tools"]
     )
-    text, tooltip, pool_values = [], [], []
-    for bucket, pool in pools:
-        label = (
-            "Gemini" if bucket == "antigravity" and pool == "gemini" else labels[bucket]
-        )
-        if bucket == "codex" and ("pi_codex", pool) in pools:
-            label = "Native Codex"
-        if sum(other == bucket for other, _ in pools) > 1 or (
-            bucket == "antigravity" and pool != "gemini"
-        ):
-            label += "/" + pool
-        details, percentages = [], []
-        try:
-            windows = snapshot(
-                state / "agent-steward/quota" / (bucket + ".json"), bucket
+    label = "Gemini" if bucket == "antigravity" and pool == "gemini" else labels[bucket]
+    if bucket == "codex" and ("pi_codex", pool) in pools:
+        label = "Native Codex"
+    if sum(other == bucket for other, _ in pools) > 1 or (
+        bucket == "antigravity" and pool != "gemini"
+    ):
+        label += "/" + pool
+    details, percentages = [], []
+    over_budget = False
+    try:
+        windows = snapshot(state / "agent-steward/quota" / (bucket + ".json"), bucket)
+        windows = [
+            window
+            for window in windows
+            if window["scope"]["type"] == "account"
+            or window["scope"]["pool_id"] == pool
+        ]
+        for window in windows:
+            observed = timestamp(window["observed_at"])
+            reset = timestamp(window["reset_at"])
+            fresh = observed <= now < min(reset, timestamp(window["valid_until"]))
+            percent = window["remaining_percent"] if fresh else None
+            percentages.append(percent)
+            if fresh and window.get("cadence") == "weekly":
+                expected = min(100, (reset - now).total_seconds() / 604800 * 100)
+                # Match quota show's pacing indicator rounded to 0.1 percentage points.
+                over_budget |= math.floor((expected - percent) * 10 + 0.5) > 0
+            remaining = f"{percent:.0f}%" if fresh else "? (stale)"
+            age = (
+                f"{int((now - observed).total_seconds() // 60)}m ago"
+                if observed <= now
+                else "future observation"
             )
-            windows = [
-                window
-                for window in windows
-                if window["scope"]["type"] == "account"
-                or window["scope"]["pool_id"] == pool
-            ]
-            for window in windows:
-                observed = timestamp(window["observed_at"])
-                reset = timestamp(window["reset_at"])
-                fresh = observed <= now < min(reset, timestamp(window["valid_until"]))
-                percent = window["remaining_percent"] if fresh else None
-                percentages.append(percent)
-                remaining = f"{percent:.0f}%" if fresh else "? (stale)"
-                age = (
-                    f"{int((now - observed).total_seconds() // 60)}m ago"
-                    if observed <= now
-                    else "future observation"
-                )
-                title = html.escape(
-                    f"{window.get('id', window.get('cadence', 'limit'))}: {remaining}"
-                )
-                timing = html.escape(
-                    f"reset {relative_reset(reset, now)}; observed {age}"
-                )
-                meter = ""
-                if fresh:
-                    filled = int(percent // 10)
-                    meter = f"\n  <tt>{'▰' * filled}{'▱' * (10 - filled)}</tt>"
-                details.append(f"  <b>{title}</b>{meter}\n  <small>{timing}</small>")
-        except (
-            OSError,
-            ValueError,
-            TypeError,
-            KeyError,
-            AttributeError,
-            RecursionError,
-        ):
-            details = ["  <small>Unavailable or invalid snapshot</small>"]
-            percentages = []
-        value = min(percentages) if percentages and None not in percentages else None
-        pool_values.append(value)
-        remaining = f"{value:.0f}%" if value is not None else "?"
-        text.append(f"{label} {remaining}")
-        tooltip.append(
+            title = html.escape(
+                f"{window.get('id', window.get('cadence', 'limit'))}: {remaining}"
+            )
+            timing = html.escape(f"reset {relative_reset(reset, now)}; observed {age}")
+            meter = ""
+            if fresh:
+                filled = int(percent // 10)
+                meter = f"\n  <tt>{'▰' * filled}{'▱' * (10 - filled)}</tt>"
+            details.append(f"  <b>{title}</b>{meter}\n  <small>{timing}</small>")
+    except (
+        OSError,
+        ValueError,
+        TypeError,
+        KeyError,
+        AttributeError,
+        RecursionError,
+    ):
+        details = ["  <small>Unavailable or invalid snapshot</small>"]
+        percentages = []
+    value = min(percentages) if percentages and None not in percentages else None
+    pool_state = (
+        "unknown" if value is None else "critical" if over_budget else "healthy"
+    )
+    remaining = f"{value:.0f}%" if value is not None else "?"
+    return {
+        "text": html.escape(f"{label} {remaining}"),
+        "tooltip": (
             f"<b>{html.escape(label)} · {remaining}</b>\n"
             + "\n\n".join(details or ["  <small>No applicable limits</small>"])
-        )
-    lowest = min((value for value in pool_values if value is not None), default=100)
-    if lowest < 10:
-        state = "critical"
-    elif lowest < 20:
-        state = "warning"
-    elif not pool_values or None in pool_values:
-        state = "unknown"
-    else:
-        state = "healthy"
-    return {"text": " · ".join(text), "tooltip": "\n\n".join(tooltip), "class": state}
+        ),
+        "class": pool_state,
+    }
 
 
 if __name__ == "__main__":
     config = json.loads(Path(sys.argv[1]).read_text())
     state = Path(os.environ.get("XDG_STATE_HOME") or Path.home() / ".local/state")
-    print(json.dumps(display(config, state, datetime.now(timezone.utc))))
+    print(
+        json.dumps(display(config, state, datetime.now(timezone.utc), *sys.argv[2:4]))
+    )

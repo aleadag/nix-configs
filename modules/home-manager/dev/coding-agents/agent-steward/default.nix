@@ -11,6 +11,39 @@ let
   waybarEnabled = pkgs.stdenv.hostPlatform.isLinux && config.programs.waybar.enable;
   jsonFormat = pkgs.formats.json { };
   configFile = jsonFormat.generate "agent-steward.json" cfg.settings;
+  waybarPools = lib.imap0 (index: pool: pool // { name = "agent-steward-${toString index}"; }) (
+    lib.unique (
+      map (candidate: {
+        bucket = candidate.quota_bucket;
+        pool = candidate.quota_pool;
+      }) (lib.filter (candidate: lib.elem candidate.tool cfg.settings.tools) cfg.settings.candidates)
+    )
+  );
+  waybarModules = lib.listToAttrs (
+    map (
+      pool:
+      lib.nameValuePair "custom/${pool.name}" {
+        exec = lib.getExe (
+          pkgs.writeShellApplication {
+            name = "${pool.name}-waybar";
+            text = ''
+              exec ${pkgs.python3}/bin/python3 ${./waybar.py} ${configFile} ${
+                lib.escapeShellArgs [
+                  pool.bucket
+                  pool.pool
+                ]
+              }
+            '';
+          }
+        );
+        return-type = "json";
+        escape = false;
+        interval = 30;
+      }
+    ) waybarPools
+  );
+  waybarSelectors =
+    suffix: lib.concatMapStringsSep ", " (pool: "#custom-${pool.name}${suffix}") waybarPools;
   approvalConfigFile = jsonFormat.generate "agent-steward-targets.json" {
     auto_approve = cfg.autoApprove;
   };
@@ -74,37 +107,23 @@ in
       approvalConfigFile;
     programs.waybar.settings = lib.mkIf waybarEnabled {
       top = {
-        modules-right = lib.mkBefore [ "custom/agent-steward" ];
-        "custom/agent-steward" = {
-          exec = lib.getExe (
-            pkgs.writeShellApplication {
-              name = "agent-steward-waybar";
-              text = ''
-                exec ${pkgs.python3}/bin/python3 ${./waybar.py} ${configFile}
-              '';
-            }
-          );
-          return-type = "json";
-          interval = 30;
-        };
-      };
+        modules-right = lib.mkBefore (map (pool: "custom/${pool.name}") waybarPools);
+      }
+      // waybarModules;
     };
-    programs.waybar.style = lib.mkIf waybarEnabled (
+    programs.waybar.style = lib.mkIf (waybarEnabled && waybarPools != [ ]) (
       lib.mkAfter ''
-        #custom-agent-steward {
+        ${waybarSelectors ""} {
           background: @base0C;
           color: @base00;
           border-radius: 4px;
-          padding: 0 2px;
-          margin: 0;
+          padding: 0 6px;
+          margin: 0 2px;
         }
-        #custom-agent-steward.warning {
-          background: @base0A;
-        }
-        #custom-agent-steward.critical {
+        ${waybarSelectors ".critical"} {
           background: @base08;
         }
-        #custom-agent-steward.unknown {
+        ${waybarSelectors ".unknown"} {
           background: @base01;
           color: @base04;
         }
