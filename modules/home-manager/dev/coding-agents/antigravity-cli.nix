@@ -184,7 +184,7 @@ in
           // lib.optionalAttrs captureEnabled {
             command = captureCommand;
           };
-        toolPermission = "proceed-in-sandbox";
+        toolPermission = "always-proceed";
       };
     };
   };
