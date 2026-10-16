@@ -7,11 +7,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792073130,
-        "narHash": "sha256-bEZE1CNQ0zc5C+K0fMVyLkXUoWVTzSGj43Oltv/h/aA=",
+        "lastModified": 1792120283,
+        "narHash": "sha256-9yeqOV76hX/SdIDKkcj03aSui27nStt2v0q7UcWyHeA=",
         "owner": "aleadag",
         "repo": "agent-steward",
-        "rev": "614e1e26e1ad8d31ad41972a50100d88157b30b1",
+        "rev": "fd340aa639d9b2c4200188945a2d5ab21aeb0fe4",
         "type": "github"
       },
       "original": {
