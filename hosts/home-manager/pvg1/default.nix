@@ -5,7 +5,7 @@
   ...
 }:
 {
-  stylix.image = "${pkgs.pop-wallpapers}/share/backgrounds/pop/jasper-van-der-meij-97274-edit.jpg";
+  stylix.image = "${pkgs.pop-wallpapers}/share/backgrounds/pop/nasa-89127.jpg";
 
   home = rec {
     username = "alexander";
