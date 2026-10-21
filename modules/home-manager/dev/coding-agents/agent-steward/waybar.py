@@ -4,12 +4,12 @@ import math
 import os
 import re
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 
 def timestamp(value):
-    time = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    time = datetime.fromisoformat(value)
     if time.tzinfo is None:
         raise ValueError("Missing timezone")
     return time
@@ -146,6 +146,4 @@ def display(config, state, now, bucket, pool):
 if __name__ == "__main__":
     config = json.loads(Path(sys.argv[1]).read_text())
     state = Path(os.environ.get("XDG_STATE_HOME") or Path.home() / ".local/state")
-    print(
-        json.dumps(display(config, state, datetime.now(timezone.utc), *sys.argv[2:4]))
-    )
+    print(json.dumps(display(config, state, datetime.now(UTC), *sys.argv[2:4])))

@@ -7,7 +7,7 @@ import sys
 import tempfile
 import unittest
 import xml.etree.ElementTree as ET
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from pathlib import Path
 
 COMMANDS = json.loads(Path(sys.argv.pop(1)).read_text())
@@ -31,7 +31,7 @@ class QuotaDisplayTest(unittest.TestCase):
         self.state = Path(self.temp.name)
         self.quota = self.state / "agent-steward/quota"
         self.quota.mkdir(parents=True)
-        self.now = datetime.now(timezone.utc)
+        self.now = datetime.now(UTC)
 
     def window(self, percent, **extra):
         return {
