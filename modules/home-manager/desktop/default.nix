@@ -12,6 +12,7 @@ in
   imports = [
     ./anki.nix
     ./chromium.nix
+    ./easyeffects
     ./firefox.nix
     ./fonts
     ./im.nix
