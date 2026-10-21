@@ -135,6 +135,7 @@
       model = "gemini-3.8-flash";
       quota_bucket = "antigravity";
       quota_pool = "gemini";
+      # Standard API prices are 7.5x Luna through 2026-12-31, rounded up.
       cost = 8;
       capabilities = "Choice for straightforward edits, routine implementation, and well-specified coding tasks. Fits established patterns, well-scoped debugging, and edge-case checks with clear verification. For ambiguous root-cause diagnosis or architecture work with tightly interacting constraints, prefer a candidate configured for deeper analysis.";
       thinking_levels = [
@@ -159,7 +160,8 @@
       model = "gemini-4-argon";
       quota_bucket = "antigravity";
       quota_pool = "gemini";
-      cost = 50;
+      # Standard API prices are 20x Luna through 2026-11-30.
+      cost = 20;
       capabilities = "Choice for complex software engineering, difficult root-cause diagnosis, architecture trade-offs, and changes with tightly interacting constraints. Fits unfamiliar problems requiring hypothesis testing, synthesis of conflicting evidence, or deep reasoning across large codebases. Routine implementation, boilerplate, and simple edits alone do not require this candidate.";
       thinking_levels = [
         {
@@ -173,6 +175,26 @@
         {
           id = "high";
           description = "Ambiguous root-cause diagnosis, complex architecture trade-offs, or changes with tightly interacting constraints";
+        }
+      ];
+    }
+    {
+      id = "deepseek-v4-flash-pi";
+      tool = "pi";
+      provider = "deepseek";
+      model = "deepseek-v4-flash";
+      billing = "api";
+      # Relative to Luna = 1; a ranking hint, not a dollar price.
+      cost = 3;
+      capabilities = "Choice for software engineering, multi-file implementation and refactoring, code review, debugging, and end-to-end project development. Fits tool-driven workflows that require tracing dependencies, iterating on changes, and checking results with tests.";
+      thinking_levels = [
+        {
+          id = "high";
+          description = "Implementation, code review, or debugging following established patterns with clear acceptance criteria";
+        }
+        {
+          id = "xhigh";
+          description = "Complex debugging, multi-step refactors, or design trade-offs involving competing hypotheses and interacting constraints";
         }
       ];
     }

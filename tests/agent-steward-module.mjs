@@ -79,13 +79,14 @@ function sorted(value) {
     Object.keys(value).sort().map(k => [k, sorted(value[k])]));
   return value;
 }
-assert.equal(createHash("sha256").update(JSON.stringify(sorted(original))).digest("hex"),
-  "56f9ab9407c87a0cfd2a3fa12ebe6961b7807c4ce13665b52d3a6630aefc8a87");
+const subscriptions = original.candidates.filter(c => c.billing !== "api");
+assert.equal(createHash("sha256").update(JSON.stringify(sorted({ ...original, candidates: subscriptions }))).digest("hex"),
+  "9e51c2b17b4e837666d558155c20a25b6e687643003aa86ff065f773dc92f3fd");
 assert.equal(original.candidates.find(c => c.tool === "agy").quota_pool, "gemini");
 assert.deepEqual(original.tools, ["pi", "agy"]);
 assert.equal(Object.hasOwn(original, "accounts"), false);
 assert.deepEqual(original.candidates.map(c => c.id), [
-  "sol-pi", "astra-pi", "luna-pi", "grok-4.6-pi", "gemini-flash-agy", "gemini-argon-agy"
+  "sol-pi", "astra-pi", "luna-pi", "grok-4.6-pi", "gemini-flash-agy", "gemini-argon-agy", "deepseek-v4-flash-pi"
 ]);
 const expected = structuredClone(original);
 expected.thresholds.risky = 0.7;

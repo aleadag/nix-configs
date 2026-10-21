@@ -17,17 +17,17 @@ const expectedChanged = {
   jev: { ...original.jev, model: "jev-declarative-override" }
 };
 assert.deepEqual(changed, expectedChanged);
-const candidateIds = ["sol-pi", "astra-pi", "luna-pi", "grok-4.6-pi", "gemini-flash-agy", "gemini-argon-agy"];
+const candidateIds = ["sol-pi", "astra-pi", "luna-pi", "grok-4.6-pi", "gemini-flash-agy", "gemini-argon-agy", "deepseek-v4-flash-pi"];
 for (const [path, value, model] of [[f.generated, original, "jev-1.13.0"], [f.overridden, changed, "jev-declarative-override"]]) {
   const expected = {
     tools: value.tools,
-    candidates: value.candidates,
+    candidates: value.candidates.map(c => ({ billing: "subscription", ...c })),
     thresholds: value.thresholds,
     evaluator: { type: "jev", provider: "typesafe", model }
   };
   assert.equal(Object.hasOwn(value, "accounts"), false);
-  assert.deepEqual(value.candidates.map(c => c.quota_bucket), ["pi_codex", "pi_codex", "pi_codex", "pi_xai", "antigravity", "antigravity"]);
-  assert.deepEqual(value.candidates.map(c => c.cost), [20, 100, 1, 13, 8, 50]);
+  assert.deepEqual(value.candidates.map(c => c.quota_bucket), ["pi_codex", "pi_codex", "pi_codex", "pi_xai", "antigravity", "antigravity", undefined]);
+  assert.deepEqual(value.candidates.map(c => c.cost), [20, 100, 1, 13, 8, 20, 3]);
   assert.deepEqual(value.candidates.map(c => c.id), candidateIds);
   assert.deepEqual(ConfigSchema.parse(value), expected);
   const loaded = await loadConfig(path, {
@@ -35,11 +35,21 @@ for (const [path, value, model] of [[f.generated, original, "jev-1.13.0"], [f.ov
   });
   assert.deepEqual(loaded, expected);
   loaded.candidates.forEach(validateCandidateSyntax);
+  const deepseek = loaded.candidates.filter(c => c.provider === "deepseek");
+  assert.equal(deepseek.length, 1);
+  assert.equal(deepseek[0].tool, "pi");
+  assert.equal(deepseek[0].model, "deepseek-v4-flash");
+  assert.equal(deepseek[0].billing, "api");
+  assert.equal(deepseek[0].cost, 3 * loaded.candidates.find(c => c.id === "luna-pi").cost);
+  assert.equal(Object.hasOwn(deepseek[0], "quota_bucket"), false);
+  assert.equal(Object.hasOwn(deepseek[0], "quota_pool"), false);
+  assert.deepEqual(deepseek[0].thinking_levels.map(level => level.id), ["high", "xhigh"]);
   const agy = loaded.candidates.filter(c => c.tool === "agy");
   assert.equal(agy.length, 2);
   assert.equal(agy[0].model, "gemini-3.8-flash");
   assert.deepEqual(agy[0].thinking_levels.map(level => level.id), ["low", "medium", "high"]);
   assert.equal(agy[1].model, "gemini-4-argon");
+  assert.equal(agy[1].cost, 20 * loaded.candidates.find(c => c.id === "luna-pi").cost);
   assert.deepEqual(agy[1].thinking_levels.map(level => level.id), ["low", "medium", "high"]);
 }
 assert.equal(changed.thresholds.risky, 0.7);
@@ -120,13 +130,23 @@ try {
   noLeak(duplicate);
   // Actual compiled CLI with fake HTTP: the complete multi-tool config reached the evaluator.
   const task = "planner: literal '\" $(touch task-executed)\nsecond line";
-  for (const pair of ["sol-pi", "gemini-flash-agy"]) {
+  for (const pair of ["sol-pi", "gemini-flash-agy", "deepseek-v4-flash-pi"]) {
     clear();
     const preview = call(f.integrated, ["router", "start", "--dry-run", "--json", "--", "--config literal task"], pair);
     assert.equal(preview.status, 0, preview.stderr);
     const p = ResultSchema.parse(JSON.parse(preview.stdout));
     assert.equal(p.decision, "selected");
     assert.equal(p.selected.candidate_id, pair);
+    if (pair === "deepseek-v4-flash-pi") {
+      assert.equal(p.schema_version, 2);
+      assert.equal(p.selected.billing, "api");
+      assert.equal(p.selected.provider, "deepseek");
+      assert.equal(p.selected.model, "deepseek-v4-flash");
+      assert.equal(p.selected.quota_bucket, null);
+      assert.equal(p.selected.quota_pool, null);
+      assert.deepEqual(p.quota, { status: "not_applicable", reason: "api_billed" });
+      assert.deepEqual(p.planned_command.args, ["--provider", "deepseek", "--model", "deepseek-v4-flash", "--thinking", "high"]);
+    }
     if (pair === "gemini-flash-agy") {
       assert.equal(p.selected.model, "gemini-3.8-flash");
       assert.equal(p.selected.thinking_level, "high");
@@ -143,10 +163,11 @@ try {
     assert.equal(live.status, 23, live.stderr);
     const records = lines(nativeCapture);
     assert.equal(records.length, 1);
-    const pi = pair === "sol-pi";
+    const pi = pair !== "gemini-flash-agy";
+    const api = pair === "deepseek-v4-flash-pi";
     assert.deepEqual(records[0], {
       tool: pi ? "pi" : "agy", cwd: root, keyNames: [], provider: "SyntheticProvider-Only",
-      argv: pi ? ["--provider", "openai-codex", "--model", "gpt-6.1-sol", "--thinking", "high", "--", "User task:\n" + task]
+      argv: pi ? ["--provider", api ? "deepseek" : "openai-codex", "--model", api ? "deepseek-v4-flash" : "gpt-6.1-sol", "--thinking", "high", "--", "User task:\n" + task]
         : ["--model=gemini-3.8-flash", "--effort=high", "--prompt-interactive=User task:\n" + task]
     });
     const liveRequests = lines(httpCapture);

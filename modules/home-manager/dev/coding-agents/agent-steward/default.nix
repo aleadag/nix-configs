@@ -13,10 +13,18 @@ let
   configFile = jsonFormat.generate "agent-steward.json" cfg.settings;
   waybarPools = lib.imap0 (index: pool: pool // { name = "agent-steward-${toString index}"; }) (
     lib.unique (
-      map (candidate: {
-        bucket = candidate.quota_bucket;
-        pool = candidate.quota_pool;
-      }) (lib.filter (candidate: lib.elem candidate.tool cfg.settings.tools) cfg.settings.candidates)
+      map
+        (candidate: {
+          bucket = candidate.quota_bucket;
+          pool = candidate.quota_pool;
+        })
+        (
+          lib.filter (
+            candidate:
+            lib.elem candidate.tool cfg.settings.tools
+            && (candidate.billing or "subscription") == "subscription"
+          ) cfg.settings.candidates
+        )
     )
   );
   waybarModules = lib.listToAttrs (

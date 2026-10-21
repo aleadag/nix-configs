@@ -75,6 +75,7 @@ def display(config, state, now, bucket, pool):
         (candidate["quota_bucket"], candidate["quota_pool"])
         for candidate in config["candidates"]
         if candidate["tool"] in config["tools"]
+        and candidate.get("billing", "subscription") == "subscription"
     )
     label = "Gemini" if bucket == "antigravity" and pool == "gemini" else labels[bucket]
     if bucket == "codex" and ("pi_codex", pool) in pools:
