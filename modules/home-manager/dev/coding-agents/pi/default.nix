@@ -109,7 +109,6 @@ in
         enableAnalytics = false;
         enableInstallTelemetry = false;
         enabledModels = [
-          "grok-4.6"
           "gpt-6*"
           "deepseek/deepseek-v4-*"
         ];

@@ -101,34 +101,6 @@
       ];
     }
     {
-      id = "grok-4.6-pi";
-      tool = "pi";
-      provider = "xai";
-      model = "grok-4.6";
-      quota_bucket = "pi_xai";
-      quota_pool = "primary";
-      cost = 13;
-      capabilities = "General-purpose choice for routine implementation, multi-file changes with clear acceptance criteria, code review, debugging, and synthesis of supplied code or documents. Fits dependency tracing, comparison of evidence, and iteration on tests. For highly ambiguous problems or tightly interacting architectural constraints, prefer a candidate configured for deeper analysis.";
-      thinking_levels = [
-        {
-          id = "low";
-          description = "Direct questions, extraction, or localized edits with an explicit approach";
-        }
-        {
-          id = "medium";
-          description = "Routine implementation, review, or synthesis with clear acceptance criteria";
-        }
-        {
-          id = "high";
-          description = "Debugging or analysis requiring dependency tracing and comparison of evidence";
-        }
-        {
-          id = "xhigh";
-          description = "Multi-step analysis with interacting constraints; input length alone does not justify this level";
-        }
-      ];
-    }
-    {
       id = "gemini-flash-agy";
       tool = "agy";
       provider = "google";
