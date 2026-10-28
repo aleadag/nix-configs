@@ -17,7 +17,7 @@ const expectedChanged = {
   jev: { ...original.jev, model: "jev-declarative-override" }
 };
 assert.deepEqual(changed, expectedChanged);
-const candidateIds = ["sol-pi", "astra-pi", "luna-pi", "grok-4.6-pi", "gemini-flash-agy", "gemini-argon-agy", "deepseek-v4-flash-pi"];
+const candidateIds = ["sol-pi", "astra-pi", "luna-pi", "gemini-flash-agy", "gemini-argon-agy", "deepseek-v4-flash-pi"];
 for (const [path, value, model] of [[f.generated, original, "jev-1.13.0"], [f.overridden, changed, "jev-declarative-override"]]) {
   const expected = {
     tools: value.tools,
@@ -26,8 +26,8 @@ for (const [path, value, model] of [[f.generated, original, "jev-1.13.0"], [f.ov
     evaluator: { type: "jev", provider: "typesafe", model }
   };
   assert.equal(Object.hasOwn(value, "accounts"), false);
-  assert.deepEqual(value.candidates.map(c => c.quota_bucket), ["pi_codex", "pi_codex", "pi_codex", "pi_xai", "antigravity", "antigravity", undefined]);
-  assert.deepEqual(value.candidates.map(c => c.cost), [20, 100, 1, 13, 8, 20, 3]);
+  assert.deepEqual(value.candidates.map(c => c.quota_bucket), ["pi_codex", "pi_codex", "pi_codex", "antigravity", "antigravity", undefined]);
+  assert.deepEqual(value.candidates.map(c => c.cost), [20, 100, 1, 8, 20, 3]);
   assert.deepEqual(value.candidates.map(c => c.id), candidateIds);
   assert.deepEqual(ConfigSchema.parse(value), expected);
   const loaded = await loadConfig(path, {

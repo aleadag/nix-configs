@@ -99,7 +99,7 @@ bind("gtk_style_context_add_provider", None, [pointer, pointer, ctypes.c_uint])(
     reference_context, provider, 600
 )
 
-for index, text in enumerate((b"Codex 65%", b"xAI 42%", b"Gemini 80%")):
+for index, text in enumerate((b"Codex 65%", b"Gemini 80%")):
     label = bind("gtk_label_new", pointer, [string])(text)
     bind("gtk_widget_set_name", None, [pointer, string])(
         label, f"custom-agent-steward-{index}".encode()

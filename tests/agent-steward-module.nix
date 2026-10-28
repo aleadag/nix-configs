@@ -165,13 +165,11 @@ assert
     (withWaybar.programs.waybar.settings.top.modules-right or [ ]) == [
       "custom/agent-steward-0"
       "custom/agent-steward-1"
-      "custom/agent-steward-2"
       "network"
     ]
     && lib.all (name: withWaybar.programs.waybar.settings.top.${name}.return-type == "json") [
       "custom/agent-steward-0"
       "custom/agent-steward-1"
-      "custom/agent-steward-2"
     ]
     &&
       agyOnlyWithWaybar.programs.waybar.settings.top.modules-right == [
@@ -245,17 +243,15 @@ pkgs.runCommand "agent-steward-module-check"
                 pool = "primary";
               }
               {
-                label = "xAI";
-                bucket = "pi_xai";
-                pool = "primary";
-              }
-              {
                 label = "Gemini";
                 bucket = "antigravity";
                 pool = "gemini";
               }
             ]
         )
+        // {
+          xAI = "${pkgs.python3}/bin/python3 ${../modules/home-manager/dev/coding-agents/agent-steward/waybar.py} ${defaultJson} pi_xai primary";
+        }
       )
     );
     fixture = pkgs.writeText "agent-steward-module-fixture.json" (

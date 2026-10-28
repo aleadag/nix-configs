@@ -81,12 +81,12 @@ function sorted(value) {
 }
 const subscriptions = original.candidates.filter(c => c.billing !== "api");
 assert.equal(createHash("sha256").update(JSON.stringify(sorted({ ...original, candidates: subscriptions }))).digest("hex"),
-  "9e51c2b17b4e837666d558155c20a25b6e687643003aa86ff065f773dc92f3fd");
+  "17ac7d5faee4f0ddc6e1968da5c53b22493eba929035e668f62ad6fa637e0d5d");
 assert.equal(original.candidates.find(c => c.tool === "agy").quota_pool, "gemini");
 assert.deepEqual(original.tools, ["pi", "agy"]);
 assert.equal(Object.hasOwn(original, "accounts"), false);
 assert.deepEqual(original.candidates.map(c => c.id), [
-  "sol-pi", "astra-pi", "luna-pi", "grok-4.6-pi", "gemini-flash-agy", "gemini-argon-agy", "deepseek-v4-flash-pi"
+  "sol-pi", "astra-pi", "luna-pi", "gemini-flash-agy", "gemini-argon-agy", "deepseek-v4-flash-pi"
 ]);
 const expected = structuredClone(original);
 expected.thresholds.risky = 0.7;
@@ -114,7 +114,7 @@ assert.match(f.stewardModule, /import \.\/config\.nix/);
 assert.match(f.sopsModule, /defaultSopsFile\s*=/); // existing production default retained, no secret contents read
 assert.match(f.stewardModule, /systemd\.user\.timers\.agent-steward-quota-refresh/);
 assert.match(f.stewardModule, /quota refresh/);
-assert.match(f.stewardModule, /OnCalendar = "hourly"/);
+assert.match(f.stewardModule, /OnCalendar = "\*:0\/15"/);
 assert.doesNotMatch(f.stewardModule, /temp\/config|readFile.*secret|launchd|sessionVariables/);
 assert.match(f.stewardModule, /TYPESAFE_API_KEY_FILE/);
 assert.doesNotMatch(f.stewardModule, /--set AGENT_STEWARD_HERDR_ADAPTER/);
