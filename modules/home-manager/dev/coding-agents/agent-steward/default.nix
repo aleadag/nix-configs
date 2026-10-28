@@ -152,7 +152,7 @@ in
     systemd.user.timers.agent-steward-quota-refresh = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
       Unit.Description = "Hourly agent-steward quota refresh";
       Timer = {
-        OnCalendar = "hourly";
+        OnCalendar = "*:0/15";
         Persistent = true;
         RandomizedDelaySec = 300;
       };
