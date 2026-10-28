@@ -3,10 +3,8 @@ final: prev:
 
 let
   nurOverlay = inputs.nur.overlays.default final prev;
-  niriOverlay = inputs.niri.overlays.niri final prev;
 in
 nurOverlay
-// niriOverlay
 // (
   let
     inherit (prev.stdenv.hostPlatform) system;

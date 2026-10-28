@@ -1,6 +1,5 @@
 {
   config,
-  flake,
   lib,
   pkgs,
   ...
@@ -47,60 +46,57 @@ let
   xkbOptions =
     if config.home.keyboard != null then lib.concatStringsSep "," config.home.keyboard.options else "";
   action = name: {
-    action.${name} = [ ];
+    ${name} = { };
   };
-  typedSettings = {
+  settings = {
     input = {
       keyboard = {
-        numlock = true;
+        numlock = { };
         xkb =
           lib.optionalAttrs (layout != null) { inherit layout; }
           // lib.optionalAttrs (variant != null) { inherit variant; }
           // lib.optionalAttrs (xkbOptions != "") { options = xkbOptions; };
       };
       touchpad = {
-        tap = true;
-        dwt = true;
-        natural-scroll = true;
+        tap = { };
+        dwt = { };
+        natural-scroll = { };
         scroll-method = "two-finger";
-        middle-emulation = true;
+        middle-emulation = { };
       };
       mouse.accel-profile = "flat";
-      workspace-auto-back-and-forth = true;
+      workspace-auto-back-and-forth = { };
     };
 
     layout = {
       gaps = 8;
       center-focused-column = "always";
-      preset-column-widths = map (proportion: { inherit proportion; }) [
+      preset-column-widths._children = map (proportion: { inherit proportion; }) [
         0.33333
         0.5
         0.66667
       ];
       default-column-width.proportion = 0.66667;
-      focus-ring = {
-        enable = true;
-        width = 2;
-      };
+      focus-ring.width = 2;
       border = {
-        enable = false;
+        off = { };
         width = 2;
       };
       shadow = {
-        enable = false;
+        off = { };
         softness = 30;
         spread = 5;
-        offset = {
+        offset._props = {
           x = 0;
           y = 5;
         };
       };
     };
 
-    spawn-at-startup = [
-      { sh = "xrdb -merge ~/.Xresources"; }
+    _children = [
+      { spawn-sh-at-startup = "xrdb -merge ~/.Xresources"; }
       {
-        argv = [
+        spawn-at-startup = [
           (lib.getExe pkgs.swaybg)
           "-i"
           (toString config.stylix.image)
@@ -108,102 +104,99 @@ let
           wallpaperMode
         ];
       }
+      {
+        window-rule = {
+          match._props = {
+            app-id = "firefox$";
+            title = "^Picture-in-Picture$";
+          };
+          open-floating = true;
+        };
+      }
     ];
-    hotkey-overlay.skip-at-startup = true;
+    hotkey-overlay.skip-at-startup = { };
 
     # Ask clients to omit client-side decorations when possible. Explicit CSD requests are still
     # honored. Marking clients as tiled can also remove rounded corners and fix border or
     # focus-ring rendering behind semitransparent windows. Restart applications after changing this.
-    prefer-no-csd = true;
+    prefer-no-csd = { };
 
     screenshot-path = "~/Pictures/Screenshots/%Y-%m-%d_%H-%M-%S-screenshot.png";
-
-    window-rules = [
-      {
-        matches = [
-          {
-            app-id = "firefox$";
-            title = "^Picture-in-Picture$";
-          }
-        ];
-        open-floating = true;
-      }
-    ];
 
     binds = {
       "Mod+Ctrl+Slash" = action "show-hotkey-overlay";
       "Mod+D" = {
-        action.spawn-sh = menu;
-        hotkey-overlay.title = "Run an Application";
+        spawn-sh = menu;
+        _props.hotkey-overlay-title = "Run an Application";
       };
       "Mod+Return" = {
-        action.spawn-sh = terminal;
-        hotkey-overlay.title = "Open Terminal";
+        spawn-sh = terminal;
+        _props.hotkey-overlay-title = "Open Terminal";
       };
       "Mod+B" = {
-        action.spawn-sh = browser;
-        hotkey-overlay.title = "Open Browser";
+        spawn-sh = browser;
+        _props.hotkey-overlay-title = "Open Browser";
       };
       "Mod+Shift+Escape" = {
-        action.spawn = lib.getExe niriPowerMenu;
-        hotkey-overlay.title = "Power Menu";
-        allow-inhibiting = false;
+        spawn = lib.getExe niriPowerMenu;
+        _props.hotkey-overlay-title = "Power Menu";
+        _props.allow-inhibiting = false;
       };
       "Super+Alt+L" = {
-        action.spawn = [
+        spawn = [
           loginctl
           "lock-session"
         ];
-        hotkey-overlay.title = "Lock the Screen";
-        allow-inhibiting = false;
+        _props.hotkey-overlay-title = "Lock the Screen";
+        _props.allow-inhibiting = false;
       };
 
       "XF86AudioRaiseVolume" = {
-        action.spawn-sh = "${lib.getExe pkgs.pamixer} --set-limit 150 --allow-boost -i 5";
-        allow-when-locked = true;
+        spawn-sh = "${lib.getExe pkgs.pamixer} --set-limit 150 --allow-boost -i 5";
+        _props.allow-when-locked = true;
       };
       "XF86AudioLowerVolume" = {
-        action.spawn-sh = "${lib.getExe pkgs.pamixer} --set-limit 150 --allow-boost -d 5";
-        allow-when-locked = true;
+        spawn-sh = "${lib.getExe pkgs.pamixer} --set-limit 150 --allow-boost -d 5";
+        _props.allow-when-locked = true;
       };
       "XF86AudioMute" = {
-        action.spawn-sh = "${lib.getExe pkgs.pamixer} --toggle-mute";
-        allow-when-locked = true;
+        spawn-sh = "${lib.getExe pkgs.pamixer} --toggle-mute";
+        _props.allow-when-locked = true;
       };
       "XF86AudioMicMute" = {
-        action.spawn-sh = "${lib.getExe pkgs.pamixer} --toggle-mute --default-source";
-        allow-when-locked = true;
+        spawn-sh = "${lib.getExe pkgs.pamixer} --toggle-mute --default-source";
+        _props.allow-when-locked = true;
       };
       "XF86AudioPlay" = {
-        action.spawn-sh = "${lib.getExe pkgs.playerctl} play-pause";
-        allow-when-locked = true;
+        spawn-sh = "${lib.getExe pkgs.playerctl} play-pause";
+        _props.allow-when-locked = true;
       };
       "XF86AudioStop" = {
-        action.spawn-sh = "${lib.getExe pkgs.playerctl} stop";
-        allow-when-locked = true;
+        spawn-sh = "${lib.getExe pkgs.playerctl} stop";
+        _props.allow-when-locked = true;
       };
       "XF86AudioPrev" = {
-        action.spawn-sh = "${lib.getExe pkgs.playerctl} previous";
-        allow-when-locked = true;
+        spawn-sh = "${lib.getExe pkgs.playerctl} previous";
+        _props.allow-when-locked = true;
       };
       "XF86AudioNext" = {
-        action.spawn-sh = "${lib.getExe pkgs.playerctl} next";
-        allow-when-locked = true;
+        spawn-sh = "${lib.getExe pkgs.playerctl} next";
+        _props.allow-when-locked = true;
       };
       "XF86MonBrightnessUp" = {
-        action.spawn-sh = "${lib.getExe pkgs.brightnessctl} --class=backlight set +5%";
-        allow-when-locked = true;
+        spawn-sh = "${lib.getExe pkgs.brightnessctl} --class=backlight set +5%";
+        _props.allow-when-locked = true;
       };
       "XF86MonBrightnessDown" = {
-        action.spawn-sh = "${lib.getExe pkgs.brightnessctl} --class=backlight set -5%";
-        allow-when-locked = true;
+        spawn-sh = "${lib.getExe pkgs.brightnessctl} --class=backlight set -5%";
+        _props.allow-when-locked = true;
       };
 
       "Mod+S" = action "toggle-overview" // {
-        repeat = false;
+        _props.repeat = false;
       };
       "Mod+Shift+Slash" = action "close-window" // {
-        repeat = false;
+        _props.repeat = false;
       };
 
       "Mod+Left" = action "focus-column-left";
@@ -253,16 +246,16 @@ let
       "Mod+Shift+Page_Up" = action "move-column-to-workspace-up";
 
       "Mod+WheelScrollDown" = action "focus-workspace-down" // {
-        cooldown-ms = 150;
+        _props.cooldown-ms = 150;
       };
       "Mod+WheelScrollUp" = action "focus-workspace-up" // {
-        cooldown-ms = 150;
+        _props.cooldown-ms = 150;
       };
       "Mod+Ctrl+WheelScrollDown" = action "move-column-to-workspace-down" // {
-        cooldown-ms = 150;
+        _props.cooldown-ms = 150;
       };
       "Mod+Ctrl+WheelScrollUp" = action "move-column-to-workspace-up" // {
-        cooldown-ms = 150;
+        _props.cooldown-ms = 150;
       };
       "Mod+WheelScrollRight" = action "focus-column-right";
       "Mod+WheelScrollLeft" = action "focus-column-left";
@@ -273,29 +266,29 @@ let
       "Mod+Ctrl+Shift+WheelScrollDown" = action "move-column-right";
       "Mod+Ctrl+Shift+WheelScrollUp" = action "move-column-left";
 
-      "Mod+Q".action.focus-workspace = 1;
-      "Mod+W".action.focus-workspace = 2;
-      "Mod+E".action.focus-workspace = 3;
-      "Mod+R".action.focus-workspace = 4;
-      "Mod+T".action.focus-workspace = 5;
-      "Mod+Y".action.focus-workspace = 6;
-      "Mod+U".action.focus-workspace = 7;
-      "Mod+I".action.focus-workspace = 8;
-      "Mod+O".action.focus-workspace = 9;
-      "Mod+P".action.focus-workspace = 10;
-      "Mod+Shift+Q".action.move-column-to-workspace = 1;
-      "Mod+Shift+W".action.move-column-to-workspace = 2;
-      "Mod+Shift+E".action.move-column-to-workspace = 3;
-      "Mod+Shift+R".action.move-column-to-workspace = 4;
-      "Mod+Shift+T".action.move-column-to-workspace = 5;
-      "Mod+Shift+Y".action.move-column-to-workspace = 6;
-      "Mod+Shift+U".action.move-column-to-workspace = 7;
-      "Mod+Shift+I".action.move-column-to-workspace = 8;
-      "Mod+Shift+O".action.move-column-to-workspace = 9;
-      "Mod+Shift+P".action.move-column-to-workspace = 10;
+      "Mod+Q".focus-workspace = 1;
+      "Mod+W".focus-workspace = 2;
+      "Mod+E".focus-workspace = 3;
+      "Mod+R".focus-workspace = 4;
+      "Mod+T".focus-workspace = 5;
+      "Mod+Y".focus-workspace = 6;
+      "Mod+U".focus-workspace = 7;
+      "Mod+I".focus-workspace = 8;
+      "Mod+O".focus-workspace = 9;
+      "Mod+P".focus-workspace = 10;
+      "Mod+Shift+Q".move-column-to-workspace = 1;
+      "Mod+Shift+W".move-column-to-workspace = 2;
+      "Mod+Shift+E".move-column-to-workspace = 3;
+      "Mod+Shift+R".move-column-to-workspace = 4;
+      "Mod+Shift+T".move-column-to-workspace = 5;
+      "Mod+Shift+Y".move-column-to-workspace = 6;
+      "Mod+Shift+U".move-column-to-workspace = 7;
+      "Mod+Shift+I".move-column-to-workspace = 8;
+      "Mod+Shift+O".move-column-to-workspace = 9;
+      "Mod+Shift+P".move-column-to-workspace = 10;
 
       "Mod+Tab" = action "focus-workspace-previous" // {
-        hotkey-overlay.title = "Switch Focus Between Workspaces";
+        _props.hotkey-overlay-title = "Switch Focus Between Workspaces";
       };
       "Mod+BracketLeft" = action "consume-or-expel-window-left";
       "Mod+BracketRight" = action "consume-or-expel-window-right";
@@ -305,15 +298,15 @@ let
       "Mod+Ctrl+M" = action "maximize-column";
       "Mod+F" = action "fullscreen-window";
       "Mod+Shift+M" = action "maximize-window-to-edges" // {
-        hotkey-overlay.title = "Maximize Window";
+        _props.hotkey-overlay-title = "Maximize Window";
       };
       "Mod+Ctrl+F" = action "expand-column-to-available-width";
       "Mod+C" = action "center-column";
       "Mod+Ctrl+C" = action "center-visible-columns";
-      "Mod+Minus".action.set-column-width = "-10%";
-      "Mod+Equal".action.set-column-width = "+10%";
-      "Mod+Shift+Minus".action.set-window-height = "-10%";
-      "Mod+Shift+Equal".action.set-window-height = "+10%";
+      "Mod+Minus".set-column-width = "-10%";
+      "Mod+Equal".set-column-width = "+10%";
+      "Mod+Shift+Minus".set-window-height = "-10%";
+      "Mod+Shift+Equal".set-window-height = "+10%";
       "Mod+Shift+F" = action "toggle-window-floating";
       "Mod+Shift+V" = action "switch-focus-between-floating-and-tiling";
       "Mod+Ctrl+T" = action "toggle-column-tabbed-display";
@@ -321,7 +314,7 @@ let
       "Ctrl+Print" = action "screenshot-screen";
       "Alt+Print" = action "screenshot-window";
       "Mod+Escape" = action "toggle-keyboard-shortcuts-inhibit" // {
-        allow-inhibiting = false;
+        _props.allow-inhibiting = false;
       };
       "Ctrl+Alt+Delete" = action "quit";
       "Mod+Shift+Alt+P" = action "power-off-monitors";
@@ -337,43 +330,43 @@ let
     };
 
     xwayland-satellite = {
-      enable = true;
-      path = lib.getExe pkgs.xwayland-satellite-unstable;
+      path = lib.getExe pkgs.xwayland-satellite;
     };
   };
 in
 {
-  imports = [
-    flake.inputs.niri.homeModules.niri
-    flake.inputs.niri.homeModules.stylix
-  ];
-
   options.home-manager.window-manager.wayland.niri = {
     enable = lib.mkEnableOption "Niri config" // {
       default = config.home-manager.window-manager.wayland.enable;
     };
     package = lib.mkOption {
       type = lib.types.nullOr lib.types.package;
-      default = pkgs.niri-unstable;
-      defaultText = lib.literalExpression "pkgs.niri-unstable";
+      default = pkgs.niri;
+      defaultText = lib.literalExpression "pkgs.niri";
       description = "The niri package to use. Set to null to use the system-provided package.";
     };
   };
 
-  config = lib.mkMerge [
-    (lib.mkIf (!pkgs.stdenv.hostPlatform.isLinux) {
-      stylix.targets.niri.enable = false;
-    })
-    (lib.mkIf cfg.enable {
-      programs.niri = {
-        package = if cfg.package != null then cfg.package else pkgs.niri;
-        enable = cfg.package != null;
-        settings = typedSettings;
-      };
+  config = lib.mkIf cfg.enable {
+    wayland.windowManager.niri = {
+      enable = true;
+      inherit (cfg) package;
+      systemd.enable = cfg.package != null;
+      settings = lib.mkMerge [
+        settings
+        (lib.mkIf config.stylix.enable {
+          cursor = lib.mkIf (config.stylix.cursor != null) {
+            xcursor-size = lib.mkDefault config.stylix.cursor.size;
+            xcursor-theme = lib.mkDefault config.stylix.cursor.name;
+          };
+          layout.border = with config.lib.stylix.colors.withHashtag; {
+            active-color = lib.mkDefault base0D;
+            inactive-color = lib.mkDefault base03;
+          };
+        })
+      ];
+    };
 
-      xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-
-      systemd.user.packages = lib.optional (cfg.package != null) cfg.package;
-    })
-  ];
+    xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  };
 }
