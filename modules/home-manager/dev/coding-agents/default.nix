@@ -68,7 +68,6 @@ in
     ./beads.nix
     ./codex.nix
     ./collie.nix
-    ./cursor-agent.nix
     ./herdr.nix
     ./pi
     ./mcp.nix
