@@ -70,7 +70,6 @@ in
     ./collie.nix
     ./cursor-agent.nix
     ./herdr.nix
-    ./opencode.nix
     ./pi
     ./mcp.nix
     ./permissions.nix
