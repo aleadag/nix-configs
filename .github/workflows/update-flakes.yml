@@ -22,7 +22,7 @@ jobs:
           nix run '.#nix-info' -- -m
       - uses: thiagokokada/free-disk-space@main
         with:
-          opt: true
+          opt: false
           tool-cache: true
           usrlocal: true
           usrmisc: true

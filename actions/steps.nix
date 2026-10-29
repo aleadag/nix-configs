@@ -9,7 +9,7 @@ rec {
   freeDiskSpaceStep = {
     uses = actions.free-disk-space;
     "with" = {
-      opt = true;
+      opt = false;
       tool-cache = true;
       usrlocal = true;
       usrmisc = true;
