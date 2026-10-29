@@ -18,14 +18,17 @@ let
         ];
         options.home-manager.dev.coding-agents = {
           permissions = lib.mkOption {
-            type = lib.types.attrs;
-            default = {
-              allowedShellCommands = [ "pwd" ];
-              deniedShellCommands = [ "rm -rf /" ];
-              commonExternalDirectories = [ ];
-              commonNetworkDomains = [ ];
-              finalAllowedWriteDirectories = [ ];
+            type = lib.types.submodule {
+              freeformType = lib.types.attrsOf (lib.types.listOf lib.types.str);
+              config = {
+                allowedShellCommands = [ "pwd" ];
+                deniedShellCommands = [ "rm -rf /" ];
+                commonExternalDirectories = [ ];
+                commonNetworkDomains = [ ];
+                finalAllowedWriteDirectories = [ ];
+              };
             };
+            default = { };
           };
           plugins = lib.mkOption {
             type = lib.types.attrsOf lib.types.path;

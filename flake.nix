@@ -215,6 +215,10 @@
                 flake = self;
                 inherit pkgs;
               };
+              coding-agent-permissions = import ./tests/coding-agent-permissions.nix {
+                flake = self;
+                inherit pkgs;
+              };
               herdr-beads = import ./tests/herdr-beads.nix {
                 flake = self;
                 inherit pkgs;

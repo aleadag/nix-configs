@@ -61,6 +61,10 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    home-manager.dev.coding-agents.permissions.commonExternalDirectories = [
+      "${config.xdg.configHome}/opencode"
+    ];
+
     programs.opencode = {
       enable = true;
       package = pkgs.llm-agents.opencode;

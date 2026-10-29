@@ -51,6 +51,15 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    home-manager.dev.coding-agents.permissions.commonExternalDirectories = [
+      (
+        if config.home.preferXdgDirectories then
+          "${config.xdg.configHome}/codex"
+        else
+          "${config.home.homeDirectory}/.codex"
+      )
+    ];
+
     mutableConfig.files.${codexConfigPath} = lib.mkIf isTomlConfig {
       source = config.home.file."${codexConfigDir}/config.toml".source;
     };

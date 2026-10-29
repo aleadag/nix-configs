@@ -5,8 +5,7 @@
 }:
 
 let
-  agentsCfg = config.home-manager.dev.coding-agents;
-  permCfg = agentsCfg.permissions;
+  permCfg = config.home-manager.dev.coding-agents.permissions;
   hasContainers = permCfg.containers.enable;
   extraAllowed = permCfg.allowedCommands;
   extraDenied = permCfg.deniedCommands;
@@ -151,18 +150,6 @@ let
     "rustup.rs"
   ];
 
-  commonExternalDirectories =
-    lib.optional agentsCfg.opencode.enable "${config.xdg.configHome}/opencode"
-    ++ lib.optional agentsCfg.codex.enable (
-      if config.home.preferXdgDirectories then
-        "${config.xdg.configHome}/codex"
-      else
-        "${config.home.homeDirectory}/.codex"
-    )
-    ++ lib.optional agentsCfg.antigravity-cli.enable "${config.home.homeDirectory}/.gemini"
-    ++ lib.optional agentsCfg.cursor-agent.enable "${config.home.homeDirectory}/.cursor"
-    ++ [ "/nix/store" ];
-
   allowedWriteDirectories = lib.unique (
     [
       config.home.homeDirectory
@@ -217,8 +204,7 @@ in
     commonExternalDirectories = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       internal = true;
-      readOnly = true;
-      description = "Shared external read-only directories across coding agents";
+      description = "Shared external read-only directories contributed by enabled coding agents";
     };
 
     finalAllowedWriteDirectories = lib.mkOption {
@@ -234,8 +220,8 @@ in
       allowedShellCommands
       deniedShellCommands
       commonNetworkDomains
-      commonExternalDirectories
       ;
+    commonExternalDirectories = [ "/nix/store" ];
     finalAllowedWriteDirectories = allowedWriteDirectories;
   };
 }

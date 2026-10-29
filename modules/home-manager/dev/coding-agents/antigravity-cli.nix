@@ -117,6 +117,10 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    home-manager.dev.coding-agents.permissions.commonExternalDirectories = [
+      "${config.home.homeDirectory}/.gemini"
+    ];
+
     home.file = lib.mapAttrs' (
       name: plugin:
       lib.nameValuePair ".gemini/config/plugins/${name}" {

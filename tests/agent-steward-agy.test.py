@@ -47,8 +47,14 @@ with tempfile.TemporaryDirectory() as directory:
     assert saved["schema_version"] == 1
     assert saved["previousStatusLine"]["command"] != saved["installedCommand"]
     assert current["unrelated"] == "preserve me"
-    assert current["permissions"]["allow"] == ["command(pwd)"]
-    assert current["permissions"]["deny"] == ["command(rm -rf /)"]
+    assert current["permissions"]["allow"] == [
+        "command(pwd)",
+        f"read_file({fixture['home']}/.gemini)",
+    ]
+    assert current["permissions"]["deny"] == [
+        "command(rm -rf /)",
+        f"write_file({fixture['home']}/.gemini)",
+    ]
     assert workdir.is_dir() and not workdir.is_symlink()
     for path in [state / "agent-steward", manifest.parent, workdir]:
         assert path.stat().st_mode & 0o777 == 0o700

@@ -21,10 +21,13 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home-manager.dev.coding-agents.permissions.allowedCommands = [
-      "agent"
-      "cursor-agent"
-    ];
+    home-manager.dev.coding-agents.permissions = {
+      allowedCommands = [
+        "agent"
+        "cursor-agent"
+      ];
+      commonExternalDirectories = [ "${config.home.homeDirectory}/.cursor" ];
+    };
 
     home.packages = [ cfg.package ];
   };
