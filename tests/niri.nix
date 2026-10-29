@@ -51,6 +51,15 @@ assert systemProvided.wayland.windowManager.niri.enable;
 assert systemProvided.wayland.windowManager.niri.package == null;
 assert !systemProvided.wayland.windowManager.niri.systemd.enable;
 assert systemProvided.systemd.user.packages == [ ];
+assert systemProvided.warnings == [ ];
+assert
+  (systemProvided.xdg.portal.config.niri or { }) == {
+    default = "gnome;gtk";
+    "org.freedesktop.impl.portal.Access" = "gtk";
+    "org.freedesktop.impl.portal.Notification" = "gtk";
+    "org.freedesktop.impl.portal.Secret" = "gnome-keyring";
+  };
+assert enabled.xdg.portal.config == { };
 assert !(disabled.xdg.configFile ? "niri/config.kdl");
 assert lib.all (a: a.assertion) (enabled.assertions ++ systemProvided.assertions);
 pkgs.runCommand "niri-config-check" { nativeBuildInputs = [ pkgs.niri ]; } ''
