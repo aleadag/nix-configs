@@ -7,7 +7,7 @@
 
 let
   cfg = config.home-manager.dev.coding-agents.collie;
-  package = pkgs.collie;
+  package = pkgs.llm-agents.collie;
   publicHosts = lib.concatStringsSep "," cfg.publicHosts;
 in
 {

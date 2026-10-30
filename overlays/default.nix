@@ -23,7 +23,6 @@ nurOverlay
 
     inherit (inputs.gh-gfm-preview.packages.${system}) gh-gfm-preview;
     inherit (inputs.nix-proxy-manager.packages.${system}) nix-proxy-manager;
-    inherit (inputs.collie.packages.${system}) collie;
 
     llm-agents = inputs.llm-agents.packages.${system};
 
