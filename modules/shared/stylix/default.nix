@@ -104,6 +104,9 @@ in
         light = "Papirus-Light";
       };
     }
+    // lib.optionalAttrs (options ? stylix.targets.rofi) {
+      targets.rofi.enable = false;
+    }
     // lib.optionalAttrs (options ? stylix.homeManagerIntegration) {
       # NixOS-specific: disable home-manager integration
       homeManagerIntegration.autoImport = false;
