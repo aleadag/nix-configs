@@ -28,6 +28,7 @@
             default = { };
           };
         };
+        home-manager.dev.ollama.enable = lib.mkEnableOption "synthetic Ollama";
         home-manager.sops.enable = lib.mkOption {
           type = lib.types.bool;
           default = true;

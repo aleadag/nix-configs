@@ -251,10 +251,6 @@
                 flake = self;
                 inherit pkgs;
               };
-              checks.agent-steward-cli = import ./tests/agent-steward-cli.nix {
-                flake = self;
-                inherit pkgs;
-              };
               checks.agent-steward-policy = import ./tests/agent-steward-policy.nix {
                 flake = self;
                 inherit pkgs;

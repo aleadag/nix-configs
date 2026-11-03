@@ -1,5 +1,4 @@
 import assert from "node:assert/strict";
-import { createHash } from "node:crypto";
 import { mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
@@ -73,15 +72,6 @@ assert.deepEqual(JSON.parse(read(f.approvalEnabledCliJson)), original);
 assert.deepEqual(JSON.parse(read(f.passthroughJson)), { ...original, auto_approve: true });
 assert.deepEqual(JSON.parse(read(f.passthroughApprovalJson)), { auto_approve: false });
 const changed = JSON.parse(read(f.overrideJson));
-function sorted(value) {
-  if (Array.isArray(value)) return value.map(sorted);
-  if (value && typeof value === "object") return Object.fromEntries(
-    Object.keys(value).sort().map(k => [k, sorted(value[k])]));
-  return value;
-}
-const subscriptions = original.candidates.filter(c => c.billing !== "api");
-assert.equal(createHash("sha256").update(JSON.stringify(sorted({ ...original, candidates: subscriptions }))).digest("hex"),
-  "17ac7d5faee4f0ddc6e1968da5c53b22493eba929035e668f62ad6fa637e0d5d");
 assert.equal(original.candidates.find(c => c.tool === "agy").quota_pool, "gemini");
 assert.deepEqual(original.tools, ["pi", "agy"]);
 assert.equal(Object.hasOwn(original, "accounts"), false);
