@@ -58,7 +58,6 @@ let
   package = flake.inputs.agent-steward.packages.${pkgs.stdenv.hostPlatform.system}.default;
   spawn = flake.inputs.agent-steward.packages.${pkgs.stdenv.hostPlatform.system}.steward-spawn;
   argvPlugin = "${package}/share/agent-steward/herdr-plugins/agent-steward-launcher";
-  secretFile = config.sops.secrets.typesafe_api_key.path;
   recoverPlugin = "${package}/share/agent-steward/herdr-plugins/agent-steward-recover";
   stopPlugin =
     pkgs.runCommandLocal "agent-steward-recover-plugin"
@@ -70,13 +69,8 @@ let
         cp -f ${recoverPlugin}/herdr-plugin.toml "$out/herdr-plugin.toml"
         makeWrapper ${pkgs.runtimeShell} "$out/run.sh" \
           --add-flags ${lib.escapeShellArg "${recoverPlugin}/run.sh"} \
-          --set TYPESAFE_API_KEY_FILE ${lib.escapeShellArg (toString secretFile)} \
           --prefix PATH : ${pkgs.coreutils}/bin
       '';
-  wrapper = import ./wrapper.nix {
-    inherit pkgs package;
-    inherit secretFile;
-  };
 in
 {
   options.home-manager.dev.coding-agents.agent-steward = {
@@ -95,18 +89,8 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
-    assertions = [
-      {
-        assertion = config.home-manager.sops.enable;
-        message = "agent-steward requires home-manager.sops.enable.";
-      }
-    ];
-    sops.secrets.typesafe_api_key = {
-      key = "typesafe_api_key";
-      mode = "0600";
-    };
     home.packages = [
-      wrapper
+      package
       spawn
     ];
     home.shellAliases.stw = "agent-steward";
@@ -145,7 +129,7 @@ in
       };
       Service = {
         Type = "oneshot";
-        ExecStart = "${wrapper}/bin/agent-steward quota refresh";
+        ExecStart = "${package}/bin/agent-steward quota refresh";
         Nice = 10;
       };
     };
@@ -158,6 +142,7 @@ in
       };
       Install.WantedBy = [ "timers.target" ];
     };
+    home-manager.dev.ollama.enable = true;
     home-manager.dev.coding-agents.herdr.plugins = lib.mkIf agentsCfg.herdr.enable [
       argvPlugin
       stopPlugin

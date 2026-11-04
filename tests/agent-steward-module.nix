@@ -147,7 +147,8 @@ let
       sops.secrets.typesafe_api_key.path = "synthetic secret.key";
     };
   };
-  wrappers = config: lib.filter (p: lib.getName p == "agent-steward") config.home.packages;
+  wrappers =
+    config: lib.filter (p: p == fakePackage || lib.getName p == "agent-steward") config.home.packages;
   defaultJson = enabled.xdg.configFile."agent-steward/config.json".source;
   overrideJson = changed.xdg.configFile."agent-steward/config.json".source;
   partialJson = partial.xdg.configFile."agent-steward/config.json".source;
@@ -196,8 +197,8 @@ assert enabled.xdg.configFile."agent-steward/config.json".source != null;
 assert
   enabled.home-manager.dev.coding-agents.skills.agent-steward
   == flake.inputs.agent-steward + "/skills/agent-steward";
-assert enabled.sops.secrets.typesafe_api_key.key == "typesafe_api_key";
-assert enabled.sops.secrets.typesafe_api_key.mode == "0600";
+assert !(enabled.sops.secrets ? typesafe_api_key);
+assert lib.head (wrappers enabled) == fakePackage;
 assert !(enabled.home.sessionVariables ? TYPESAFE_API_KEY_FILE);
 assert !(enabled.home.sessionVariables ? AGENT_STEWARD_HERDR_ADAPTER);
 assert !(enabled.home.sessionVariables ? TYPESAFE_API_KEY);
@@ -210,9 +211,7 @@ assert
 assert !(disabled.systemd.user.timers or { } ? agent-steward-quota-refresh);
 assert absent disabled && absent parentDisabled;
 assert !(disabled.xdg.configFile ? "herdr/plugins/config/agent-steward-recover/targets.json");
-assert lib.any (
-  a: !a.assertion && a.message == "agent-steward requires home-manager.sops.enable."
-) sopsDisabledModule.config.content.assertions;
+assert lib.all (a: a.assertion) (sopsDisabledModule.config.content.assertions or [ ]);
 assert builtins.readFile ../modules/home-manager/dev/coding-agents/pi/default.nix != "";
 pkgs.runCommand "agent-steward-module-check"
   {

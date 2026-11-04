@@ -50,7 +50,7 @@ try {
       cwd: root, env: {}, encoding: "utf8", timeout: 5000,
     });
     assert.equal(result.status, 0, result.stderr);
-    assert.equal(result.stdout, `${syntheticKey}\n${command}\n`);
+    assert.equal(result.stdout, `\n${command}\n`);
   }
   const rejected = spawnSync(`${f.stopPlugin}/run.sh`, ["invalid"], {
     cwd: root, env: {}, encoding: "utf8", timeout: 5000,
@@ -99,14 +99,14 @@ assert.deepEqual(
   [f.newModule, f.newConfig, f.newWrapper, f.oldModule, f.oldConfig, f.oldWrapper],
   [true, true, true, false, false, false]
 );
-assert.match(f.stewardModule, /import \.\/wrapper\.nix/);
+assert.doesNotMatch(f.stewardModule, /import \.\/wrapper\.nix/);
 assert.match(f.stewardModule, /import \.\/config\.nix/);
 assert.match(f.sopsModule, /defaultSopsFile\s*=/); // existing production default retained, no secret contents read
 assert.match(f.stewardModule, /systemd\.user\.timers\.agent-steward-quota-refresh/);
 assert.match(f.stewardModule, /quota refresh/);
 assert.match(f.stewardModule, /OnCalendar = "\*:0\/15"/);
 assert.doesNotMatch(f.stewardModule, /temp\/config|readFile.*secret|launchd|sessionVariables/);
-assert.match(f.stewardModule, /TYPESAFE_API_KEY_FILE/);
+assert.doesNotMatch(readFileSync(`${f.stopPlugin}/run.sh`, "utf8"), /TYPESAFE_API_KEY_FILE/);
 assert.doesNotMatch(f.stewardModule, /--set AGENT_STEWARD_HERDR_ADAPTER/);
 assert.doesNotMatch(f.stewardModule, /TYPESAFE_API_KEY\s*=\s/);
 assert.ok(["x86_64-linux", "aarch64-linux", "aarch64-darwin"].includes(f.system));

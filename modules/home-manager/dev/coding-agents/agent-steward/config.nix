@@ -171,7 +171,10 @@
       ];
     }
   ];
-  jev.model = "jev-1.13.0";
+  evaluator = {
+    provider = "ollama";
+    model = "kev:4b-q8_0";
+  };
   thresholds = {
     risky = 0.6;
     choiceConfidence = 0.45;
