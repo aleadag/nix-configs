@@ -378,12 +378,29 @@
       syncVaultRels = map (lib.removePrefix "Sync/") (
         lib.filter (lib.hasPrefix "Sync/") (map (vault: vault.target) (lib.attrValues vaults))
       );
-      stignoreText = lib.concatMapStrings (rel: "${rel}/.agents\n${rel}/.pi\n") syncVaultRels;
+      managedObsidianFiles = lib.filterAttrs (
+        _: file: lib.any (rel: lib.hasPrefix "Sync/${rel}/.obsidian/" file.target) syncVaultRels
+      ) config.home.file;
+      managedObsidianTargets = map (file: file.target) (lib.attrValues managedObsidianFiles);
+      # Keep mutable plugin data syncing unless Home Manager owns data.json too.
+      mutablePluginData = lib.concatMap (
+        file:
+        lib.optional (
+          file.recursive
+          && lib.hasInfix "/.obsidian/plugins/" file.target
+          && !(lib.elem "${file.target}/data.json" managedObsidianTargets)
+        ) "${file.target}/data.json"
+      ) (lib.attrValues managedObsidianFiles);
+      stignoreText =
+        lib.concatMapStrings (rel: "${rel}/.agents\n${rel}/.pi\n") syncVaultRels
+        # Syncthing uses the first matching rule, so exceptions must come first.
+        + lib.concatMapStrings (target: "!/${lib.removePrefix "Sync/" target}\n") mutablePluginData
+        + lib.concatMapStrings (target: "/${lib.removePrefix "Sync/" target}\n") managedObsidianTargets;
     in
     {
       home.file =
         vaultSkillFiles
-        // lib.optionalAttrs (stignoreText != "") {
+        // lib.optionalAttrs (syncVaultRels != [ ]) {
           "Sync/.stignore".text = stignoreText;
         };
 
