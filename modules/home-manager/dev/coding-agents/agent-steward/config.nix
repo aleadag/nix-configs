@@ -173,7 +173,7 @@
   ];
   evaluator = {
     provider = "ollama";
-    model = "kev:4b-q8_0";
+    model = "d3:4b-16k";
   };
   thresholds = {
     risky = 0.6;
