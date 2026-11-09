@@ -28,8 +28,3 @@ creation_rules:
       - *user_alexander
       - *host_pvg1
       - *host_macmini53
-  - path_regex: hosts/home-manager/macmini53/secrets\.yaml$
-    key_groups:
-    - age:
-      - *user_alexander
-      - *host_macmini53
