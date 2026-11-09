@@ -8,7 +8,6 @@
   imports = [
     flake.inputs.stylix.homeModules.stylix
     flake.outputs.lib.internal.sharedModules.default
-    ./cc-connect
     ./cli
     ./crostini.nix
     ./darwin

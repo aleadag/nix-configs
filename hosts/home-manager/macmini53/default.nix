@@ -13,62 +13,11 @@
     dev.enable = false;
     kanata.enable = false;
     mihomo.enable = false;
-    cc-connect = {
-      enable = true;
-      environmentFiles = [ config.sops.templates.cc-connect-env.path ];
-      settings = {
-        language = "zh";
-        display = {
-          thinking_messages = false;
-          tool_messages = false;
-          mode = "compact";
-        };
-        log.level = "info";
-        projects = [
-          {
-            name = "lifewiki";
-            agent = {
-              type = "codex";
-              options = {
-                work_dir = "${config.home.homeDirectory}/Sync/Lifewiki";
-                mode = "full-auto";
-              };
-            };
-            platforms = [
-              {
-                type = "feishu";
-                options = {
-                  app_id = "\${CC_CONNECT_FEISHU_APP_ID}";
-                  app_secret = "\${CC_CONNECT_FEISHU_APP_SECRET}";
-                };
-              }
-            ];
-          }
-        ];
-      };
-    };
     syncthing.enable = true;
     window-manager = {
       default.terminal = lib.getExe config.programs.kitty.package;
       enable = true;
     };
-  };
-
-  sops = {
-    secrets = {
-      "feishu/main/app_id".sopsFile = ./secrets.yaml;
-      "feishu/main/app_secret".sopsFile = ./secrets.yaml;
-    };
-
-    templates.cc-connect-env.content = ''
-      CC_CONNECT_FEISHU_APP_ID=${config.sops.placeholder."feishu/main/app_id"}
-      CC_CONNECT_FEISHU_APP_SECRET=${config.sops.placeholder."feishu/main/app_secret"}
-    '';
-  };
-
-  systemd.user.services.cc-connect.Unit = {
-    Requires = [ "sops-nix.service" ];
-    After = [ "sops-nix.service" ];
   };
 
   targets.genericLinux = {
