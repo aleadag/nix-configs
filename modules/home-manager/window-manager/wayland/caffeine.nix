@@ -5,6 +5,12 @@
   ...
 }:
 let
+  systemd-inhibit =
+    if config.targets.genericLinux.enable then
+      "/usr/bin/systemd-inhibit"
+    else
+      lib.getExe' pkgs.systemd "systemd-inhibit";
+
   caffeine-inhibitor = pkgs.writeShellScriptBin "caffeine-inhibitor" ''
     exec ${lib.getExe' pkgs.coreutils "sleep"} infinity
   '';
@@ -14,7 +20,6 @@ let
     runtimeInputs = with pkgs; [
       coreutils
       procps
-      systemd
       libnotify
       caffeine-inhibitor
     ];
@@ -27,7 +32,7 @@ let
         notify-send -u normal -t 3000 "Caffeine" "Disabled 💤"
       else
         # Start systemd-inhibit in background
-        systemd-inhibit \
+        ${systemd-inhibit} \
           --what=idle \
           --who="caffeine-toggle" \
           --why="User requested" \
