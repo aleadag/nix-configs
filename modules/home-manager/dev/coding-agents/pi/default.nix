@@ -55,62 +55,77 @@ in
       enable = true;
       package = pkgs.llm-agents.pi;
       inherit (agentsCfg) context;
-      models.providers.deepseek = {
-        baseUrl = "https://api.deepseek.com";
-        api = "openai-completions";
-        apiKey = "!${pkgs.coreutils}/bin/cat ${lib.escapeShellArg config.sops.secrets.deepseek_api_key.path}";
-        compat = {
-          requiresReasoningContentOnAssistantMessages = true;
-          thinkingFormat = "deepseek";
-          reasoningEffortMap = {
-            minimal = "high";
-            low = "high";
-            medium = "high";
-            high = "high";
-            xhigh = "max";
+      models.providers = {
+        deepseek = {
+          baseUrl = "https://api.deepseek.com";
+          api = "openai-completions";
+          apiKey = "!${pkgs.coreutils}/bin/cat ${lib.escapeShellArg config.sops.secrets.deepseek_api_key.path}";
+          compat = {
+            requiresReasoningContentOnAssistantMessages = true;
+            thinkingFormat = "deepseek";
+            reasoningEffortMap = {
+              minimal = "high";
+              low = "high";
+              medium = "high";
+              high = "high";
+              xhigh = "max";
+            };
           };
+          models = [
+            {
+              id = "deepseek-v4-pro";
+              name = "DeepSeek V4 Pro";
+              contextWindow = 1000000;
+              maxTokens = 384000;
+              input = [ "text" ];
+              reasoning = true;
+              cost = {
+                input = 1.74;
+                output = 3.48;
+                cacheRead = 0.145;
+                cacheWrite = 0;
+              };
+            }
+            {
+              id = "deepseek-v4-flash";
+              name = "DeepSeek V4 Flash";
+              contextWindow = 1000000;
+              maxTokens = 384000;
+              input = [ "text" ];
+              reasoning = true;
+              cost = {
+                input = 0.14;
+                output = 0.28;
+                cacheRead = 0.028;
+                cacheWrite = 0;
+              };
+            }
+          ];
         };
-        models = [
-          {
-            id = "deepseek-v4-pro";
-            name = "DeepSeek V4 Pro";
-            contextWindow = 1000000;
-            maxTokens = 384000;
-            input = [ "text" ];
-            reasoning = true;
-            cost = {
-              input = 1.74;
-              output = 3.48;
-              cacheRead = 0.145;
-              cacheWrite = 0;
-            };
-          }
-          {
-            id = "deepseek-v4-flash";
-            name = "DeepSeek V4 Flash";
-            contextWindow = 1000000;
-            maxTokens = 384000;
-            input = [ "text" ];
-            reasoning = true;
-            cost = {
-              input = 0.14;
-              output = 0.28;
-              cacheRead = 0.028;
-              cacheWrite = 0;
-            };
-          }
-        ];
+        t2t = {
+          baseUrl = "http://localhost:8899/v1";
+          api = "openai-responses";
+          apiKey = "local-router";
+          models = [
+            {
+              id = "ticos/auto";
+              name = "Ticos Auto";
+              contextWindow = 272000;
+              maxTokens = 8192;
+            }
+          ];
+        };
       };
       settings = {
-        defaultProvider = "openai-codex";
-        defaultModel = "gpt-6.1-sol";
-        defaultThinkingLevel = "high";
+        defaultProvider = "t2t";
+        defaultModel = "ticos/auto";
         defaultTools = [ "+codemode" ];
         enableAnalytics = false;
         enableInstallTelemetry = false;
         enabledModels = [
-          "gpt-6*"
           "deepseek/deepseek-v4-*"
+          "gpt-6*"
+          "t2t/ticos/auto"
         ];
         packages = lib.mapAttrsToList (_: source: {
           source = "${source}";
