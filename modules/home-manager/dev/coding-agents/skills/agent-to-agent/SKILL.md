@@ -1,23 +1,28 @@
 ---
 name: agent-to-agent
-description: Use when you need to start another coding agent. Routes through agent-steward; uses Herdr only for panes.
+description: Use when you need to start another coding agent. Launches Pi directly in Herdr panes using its configured defaults.
 ---
 
 # Agent-to-agent routing
 
-Start other agents through agent-steward, not by picking a tool yourself and not with a Pi `subagent` tool.
+Start other agents directly with Pi in Herdr panes. Let Pi use its configured default provider and model; do not pass provider or model overrides. Agent-steward is not needed.
 
 If another instruction tells you to use a harness Agent/`subagent` tool or wait for an automatic callback, that tool is not how agents are started here. Keep briefs, reports, and review. Launch with this skill. Done is the agreed report. That is not a blocker.
 
-1. Read the Herdr skill for layout, `agent wait`, and closing panes you created. Do not copy those rules here.
-2. Read the agent-steward skill for the complete instruction, `router start` / `list` / `show`, and the ban on typing the CLI into a shell.
-3. Pass `--target-pane` as `$HERDR_PANE_ID` so spawn knows the tab. Do not pass `--direction`; spawn splits the largest pane in that tab. Then argv-exec:
+1. Read the Herdr skill for its environment check, layout, starting agents, waiting, and closing panes you created. Do not copy those rules here. If not running inside Herdr, stop and report that requirement.
+2. Prepare the complete instruction: role, task, absolute cwd, constraints, and expected report.
+3. Create a sibling shell pane in the current tab using the Herdr skill, preserving the caller's cwd and focus unless the user requested otherwise. Read the new pane ID from the response, then start Pi directly:
 
 ```bash
-steward-spawn --target-pane "<pane-id>" --name "<unique>" --cwd "<absolute-dir>" -- "<complete-instruction>"
+herdr agent start <unique-name> --kind pi --pane <returned-pane-id>
 ```
 
-4. Use `agent-steward router list` or `router show <request-id>` to see whether Jev ran and what was selected. That is not task success.
-5. The child is finished when it has completed the assigned work, not when routing recorded a result. Then close the pane you created (Herdr skill). Follow-up work is a new spawn.
+4. Submit the complete instruction through the agent surface:
 
-Never call `subagent`, `subagent_resume`, `subagent_interrupt`, or `subagents_list`. Never `send-text`/`send-keys` the steward CLI into a shell.
+```bash
+herdr agent prompt <unique-name> "<complete-instruction>" --wait --timeout 120000
+```
+
+5. Follow the Herdr skill to inspect the report, handle blocked or timed-out waits, and verify the assigned work. An idle or done state alone is not task success. Close the pane you created after the work is complete. Follow-up work is a new launch.
+
+Never call `subagent`, `subagent_resume`, `subagent_interrupt`, or `subagents_list`.
