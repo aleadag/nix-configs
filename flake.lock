@@ -575,17 +575,17 @@
     "obsidian-skills": {
       "flake": false,
       "locked": {
-        "dir": "skills",
-        "lastModified": 1789483437,
-        "narHash": "sha256-kyH07EVmwIEC/q6i91Kz8mPE78j9ITga2NZUpU1+nHU=",
-        "owner": "kepano",
+        "dir": "plugins/obsidian/skills",
+        "lastModified": 1794413553,
+        "narHash": "sha256-+BUNxlcper8xFl0Kuxfe30crKhtrzBiDCiC8sr2IRcM=",
+        "owner": "obsidianmd",
         "repo": "obsidian-skills",
-        "rev": "3ccff5338ea700537839b21900aa5358a0402c98",
+        "rev": "398127736bd4ba42d767b1419fee1a927508370b",
         "type": "github"
       },
       "original": {
-        "dir": "skills",
-        "owner": "kepano",
+        "dir": "plugins/obsidian/skills",
+        "owner": "obsidianmd",
         "repo": "obsidian-skills",
         "type": "github"
       }

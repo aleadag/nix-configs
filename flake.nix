@@ -111,7 +111,7 @@
 
     # Agent skills
     obsidian-skills = {
-      url = "github:kepano/obsidian-skills?dir=skills";
+      url = "github:obsidianmd/obsidian-skills?dir=plugins/obsidian/skills";
       flake = false;
     };
     openai-skills = {
