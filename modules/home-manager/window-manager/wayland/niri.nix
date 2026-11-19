@@ -368,13 +368,14 @@ in
 
     xdg.portal = {
       extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-      # The upstream module only loads Niri's portal config when its package is set.
-      config.niri = lib.mkIf (cfg.package == null) {
+      # Keep Niri's routing, but use GTK's standalone file picker instead of Nautilus.
+      config.niri = {
         default = [
           "gnome"
           "gtk"
         ];
         "org.freedesktop.impl.portal.Access" = "gtk";
+        "org.freedesktop.impl.portal.FileChooser" = "gtk";
         "org.freedesktop.impl.portal.Notification" = "gtk";
         "org.freedesktop.impl.portal.Secret" = "gnome-keyring";
       };
