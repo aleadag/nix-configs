@@ -26,26 +26,6 @@ nurOverlay
 
     llm-agents = inputs.llm-agents.packages.${system};
 
-    neovim-standalone =
-      let
-        hostName = "neovim-standalone";
-        hm = outputs.lib.mkHomeConfig {
-          inherit hostName system;
-          configuration = {
-            home-manager = {
-              cli.icons.enable = false;
-              dev.nix.enable = true;
-              editor.neovim = {
-                lsp.enable = true;
-                treeSitter.enable = true;
-              };
-            };
-            home.stateVersion = "26.11";
-          };
-        };
-      in
-      hm.homeConfigurations.${hostName}.config.home-manager.editor.neovim.standalonePackage;
-
     nix-cleanup = prev.callPackage ../packages/nix-cleanup { };
 
     nixos-cleanup = final.nix-cleanup.override { isNixOS = true; };

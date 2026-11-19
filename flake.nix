@@ -184,8 +184,7 @@
               default = pkgs.mkShell {
                 packages = with pkgs; [
                   age
-                  neovim-standalone
-                  nil
+                  neovim
                   nixfmt
                   sops
                   statix
