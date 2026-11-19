@@ -55,13 +55,6 @@
     services = {
       dbus.implementation = "broker";
       flatpak.enable = true;
-      scx = {
-        enable = true;
-        scheduler = "scx_lavd";
-      };
     };
-
-    # https://github.com/Jovian-Experiments/Jovian-NixOS/blob/d15853dadb69837bc1e86c5be52c1e6b4bda3da4/modules/steam/steam.nix#L64
-    systemd.services.scx.wantedBy = libEx.mkLocalForce [ "multi-user.target" ];
   };
 }
