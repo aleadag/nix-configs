@@ -112,6 +112,10 @@ in
               name = "Ticos Auto";
               contextWindow = 272000;
               maxTokens = 8192;
+              input = [
+                "text"
+                "image"
+              ];
             }
           ];
         };
