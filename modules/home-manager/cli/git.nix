@@ -66,20 +66,6 @@ in
         enable = true;
         settings = {
           keybindings = {
-            universal = [
-              {
-                key = "g";
-                name = "lazygit";
-                command = ''zellij run --floating --cwd {{.RepoPath}} --name "lazygit" -- lazygit'';
-              }
-            ];
-            prs = [
-              {
-                key = "C";
-                name = "code review";
-                command = "zellij run --floating --cwd {{.RepoPath}} --name \"PR-{{.PrNumber}}\" -- nu -c 'gh pr checkout {{.PrNumber}}; nvim'";
-              }
-            ];
             issues = [
               {
                 key = "O";
