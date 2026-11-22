@@ -102,6 +102,34 @@ in
             }
           ];
         };
+        strata = {
+          baseUrl = "http://rtx5090:8080/v1";
+          api = "openai-completions";
+          apiKey = "strata";
+          compat = {
+            maxTokensField = "max_tokens";
+            thinkingFormat = "qwen-chat-template";
+          };
+          models = [
+            {
+              id = "qwen3.8-flash-next-coder-iq1_m";
+              name = "Strata Coder IQ1_M (RTX 5090)";
+              contextWindow = 131072;
+              maxTokens = 16384;
+              input = [
+                "text"
+                "image"
+              ];
+              reasoning = true;
+              cost = {
+                input = 0;
+                output = 0;
+                cacheRead = 0;
+                cacheWrite = 0;
+              };
+            }
+          ];
+        };
         t2t = {
           baseUrl = "http://localhost:8899/v1";
           api = "openai-responses";
@@ -130,6 +158,7 @@ in
           "deepseek/deepseek-v4-*"
           "gpt-6*"
           "t2t/ticos/auto"
+          "strata/qwen3.8-flash-next-coder-iq1_m"
         ];
         packages = lib.mapAttrsToList (_: source: {
           source = "${source}";
