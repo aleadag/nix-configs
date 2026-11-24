@@ -11,7 +11,7 @@ let
     import ./agent-steward-home.nix {
       inherit flake;
       pkgs = testPkgs;
-      extra = { lib, ... }: {
+      extra = { config, lib, ... }: {
         imports = [
           ../modules/home-manager/dev/coding-agents/antigravity-cli.nix
           ../modules/home-manager/meta/mutable-config.nix
@@ -20,14 +20,6 @@ let
           permissions = lib.mkOption {
             type = lib.types.submodule {
               freeformType = lib.types.attrsOf (lib.types.listOf lib.types.str);
-              config = {
-                allowedShellCommands = [ "pwd" ];
-                deniedShellCommands = [ "rm -rf /" ];
-                commonExternalDirectories = [ ];
-                commonNetworkDomains = [ ];
-                finalExternalDirectories = [ ];
-                finalAllowedWriteDirectories = [ ];
-              };
             };
             default = { };
           };
@@ -43,6 +35,20 @@ let
             type = lib.types.listOf lib.types.str;
             default = [ ];
           };
+        };
+        config.home-manager.dev.coding-agents.permissions = {
+          allowedShellCommands = [ "pwd" ];
+          deniedShellCommands = [ "rm -rf /" ];
+          commonExternalDirectories = [ ];
+          commonNetworkDomains = [ ];
+          # mirrors modules/home-manager/dev/coding-agents/permissions.nix, where
+          # finalExternalDirectories is the deduplicated sorted merge of every
+          # commonExternalDirectories contribution; antigravity-cli contributes its own ~/.gemini
+          # directory, so the synthetic config must see it the same way the real one does.
+          finalExternalDirectories = [
+            "${config.home.homeDirectory}/.gemini"
+          ];
+          finalAllowedWriteDirectories = [ ];
         };
         config.home-manager.dev.coding-agents.agent-steward.enable = stewardEnabled;
       };
