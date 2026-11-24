@@ -66,6 +66,7 @@ in
     ./antigravity-cli.nix
     ./agent-steward
     ./beads.nix
+    ./claude-code.nix
     ./codex.nix
     ./collie.nix
     ./herdr.nix
