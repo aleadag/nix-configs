@@ -27,7 +27,7 @@ for (const role of ["explore", "planner", "worker", "reviewer"]) {
 
 assert.ok(config.stewardSkill, "the coordinator must discover the agent-steward skill");
 assert.match(config.coordinatorSkill, /name: agent-to-agent/);
-assert.match(config.coordinatorSkill, /steward-spawn/);
+assert.match(config.coordinatorSkill, /herdr agent start/);
 assert.match(config.subagentsSkill, /name: subagents/);
 assert.match(config.subagentsSkill, /agents\/explore\.md/);
 assert.match(config.subagentsSkill, /agents\/planner\.md/);

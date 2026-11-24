@@ -116,8 +116,8 @@ assert lib.assertMsg (
   !(enabled.home.sessionVariables ? TYPESAFE_API_KEY)
 ) "Instruction routing must not globally export the TypeSafe key";
 assert lib.assertMsg (
-  enabled.programs.pi-coding-agent.settings.defaultModel == "gpt-6.1-sol"
-) "The coordinator must use Sol";
+  enabled.programs.pi-coding-agent.settings.defaultModel == "ticos/auto"
+) "The coordinator must use the local Ticos router";
 pkgs.runCommand "pi-herdr-subagents-check"
   {
     nativeBuildInputs = [ pkgs.nodejs ];

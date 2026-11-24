@@ -12,18 +12,17 @@ const bunVersion = spawnSync(f.bun, ["--version"], { encoding: "utf8", env: { PA
 assert.equal(bunVersion.status, 0, bunVersion.stderr);
 assert.equal(bunVersion.stdout.trim(), f.expectedBunVersion);
 assert.match(f.coordinator, /name: agent-to-agent/);
-assert.match(f.coordinator, /steward-spawn --target-pane "<pane-id>" --name "<unique>" --cwd "<absolute-dir>" -- "<complete-instruction>"/);
-assert.doesNotMatch(f.coordinator, /--pane\b|--ratio\b/);
-assert.match(f.coordinator, /router list/);
-assert.match(f.coordinator, /router show <request-id>/);
+assert.match(f.coordinator, /Agent-steward is not needed/);
+assert.match(f.coordinator, /herdr agent start <unique-name> --kind pi --pane <returned-pane-id>/);
+assert.match(f.coordinator, /herdr agent prompt <unique-name> "<complete-instruction>" --wait --timeout 120000/);
+assert.doesNotMatch(f.coordinator, /--ratio\b|send-text|send-keys|router (?:list|show|start)/);
 assert.match(f.coordinator, /Never call `subagent`, `subagent_resume`, `subagent_interrupt`, or `subagents_list`/);
-assert.match(f.coordinator, /Never `send-text`\/`send-keys`/);
-assert.match(f.coordinator, /close the pane you created/);
-assert.match(f.coordinator, /Follow-up work is a new spawn/);
+assert.match(f.coordinator, /Close the pane you created/);
+assert.match(f.coordinator, /Follow-up work is a new launch/);
 assert.match(f.coordinator, /That is not a blocker/);
 assert.doesNotMatch(f.coordinator, /subagent-driven-development/);
-// Point at Herdr for wait/close; do not copy idle/done semantics.
-assert.doesNotMatch(f.coordinator, /idle.*done|--until/);
+// Delegate wait/close semantics to the Herdr skill rather than restating them.
+assert.match(f.coordinator, /Follow the Herdr skill/);
 assert.match(f.spawn, /router start/);
 assert.match(f.spawn, /'plugin',\s*'pane',\s*'open',\s*'--plugin',\s*'agent-steward-launcher'/);
 assert.doesNotMatch(f.spawn, /--plugin pi-herdr-subagents|send-text|send-keys/);
