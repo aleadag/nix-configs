@@ -36,6 +36,15 @@
     };
   };
 
+  # cudaSupport is on for this host, so ollama compiles GGML/llama.cpp with nvcc.
+  # nixpkgs defaults `cudaArches` to sm_75..sm_121, so every ggml-cuda template
+  # instance is compiled for 10 targets: ~8min here on 32 cores, ~2h48m in CI.
+  # This GPU is RTX 4090 D (compute_cap 8.9). Keep this in sync if the GPU changes;
+  # an unmatched arch silently falls back to CPU inference.
+  services.ollama.package = pkgs.ollama.override {
+    cudaArches = [ "sm_89" ];
+  };
+
   programs.swaylock.package = null;
 
   nix.settings = {
