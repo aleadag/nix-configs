@@ -24,18 +24,18 @@ NUM_COLOR="${FG_BRIGHT_WHITE}${B}"
 # ─── Parse JSON from stdin (Single jq pass for performance) ──────────────────
 # Extract all fields in one pass to prevent spawning jq 8 times.
 {
-  read -r STATE
-  read -r USED_PCT
-  read -r VCS_BRANCH
-  read -r VCS_DIRTY
-  read -r SANDBOX
-  read -r ARTIFACTS
-  read -r SUBAGENTS
-  read -r BG_TASKS
-  read -r MODEL
-  read -r COLS
+	read -r STATE
+	read -r USED_PCT
+	read -r VCS_BRANCH
+	read -r VCS_DIRTY
+	read -r SANDBOX
+	read -r ARTIFACTS
+	read -r SUBAGENTS
+	read -r BG_TASKS
+	read -r MODEL
+	read -r COLS
 } <<<"$(
-  jq -r '
+	jq -r '
     (.agent_state // "idle"),
     (.context_window.used_percentage // 0),
     (.vcs.branch // ""),
@@ -67,24 +67,24 @@ esac
 # ─── VCS Branch ──────────────────────────────────────────────────────────────
 V=""
 if [ -n "$VCS_BRANCH" ]; then
-  if [ "$VCS_DIRTY" = "true" ]; then
-    V="${FG_GRAY} ╱ ${FG_BRIGHT_RED}${VCS_BRANCH}${FG_BRIGHT_YELLOW}*${R}"
-  else
-    V="${FG_GRAY} ╱ ${FG_BRIGHT_BLUE}${VCS_BRANCH}${R}"
-  fi
+	if [ "$VCS_DIRTY" = "true" ]; then
+		V="${FG_GRAY} ╱ ${FG_BRIGHT_RED}${VCS_BRANCH}${FG_BRIGHT_YELLOW}*${R}"
+	else
+		V="${FG_GRAY} ╱ ${FG_BRIGHT_BLUE}${VCS_BRANCH}${R}"
+	fi
 fi
 
 # ─── Model ───────────────────────────────────────────────────────────────────
 M=""
 if [ -n "$MODEL" ]; then
-  M="${FG_GRAY} ╱ ${FG_BRIGHT_MAGENTA}${I}${MODEL}${R}"
+	M="${FG_GRAY} ╱ ${FG_BRIGHT_MAGENTA}${I}${MODEL}${R}"
 fi
 
 # ─── Sandbox Badge ───────────────────────────────────────────────────────────
 if [ "$SANDBOX" = "true" ]; then
-  SB="${FG_GRAY}sandbox ${FG_BRIGHT_GREEN}${B}ON${R}"
+	SB="${FG_GRAY}sandbox ${FG_BRIGHT_GREEN}${B}ON${R}"
 else
-  SB="${FG_GRAY}sandbox off${R}"
+	SB="${FG_GRAY}sandbox off${R}"
 fi
 
 # ─── Context Bar (15 segments, fine-grain Unicode) ────────────────────────────
@@ -94,31 +94,31 @@ REMAINDER=$(((PCT_INT * BAR_LEN) % 100))
 
 # Pick color based on percentage
 if [ "$PCT_INT" -ge 90 ]; then
-  BAR_COLOR="$FG_BRIGHT_RED"
+	BAR_COLOR="$FG_BRIGHT_RED"
 elif [ "$PCT_INT" -ge 60 ]; then
-  BAR_COLOR="$FG_BRIGHT_YELLOW"
+	BAR_COLOR="$FG_BRIGHT_YELLOW"
 else
-  BAR_COLOR="$FG_BRIGHT_WHITE"
+	BAR_COLOR="$FG_BRIGHT_WHITE"
 fi
 
 # Build bar with partial-fill last block
 BAR=""
 for ((i = 0; i < BAR_LEN; i++)); do
-  if [ "$i" -lt "$FILLED" ]; then
-    BAR="${BAR}█"
-  elif [ "$i" -eq "$FILLED" ]; then
-    if [ "$REMAINDER" -ge 75 ]; then
-      BAR="${BAR}▓"
-    elif [ "$REMAINDER" -ge 50 ]; then
-      BAR="${BAR}▒"
-    elif [ "$REMAINDER" -ge 25 ]; then
-      BAR="${BAR}░"
-    else
-      BAR="${BAR}·"
-    fi
-  else
-    BAR="${BAR}·"
-  fi
+	if [ "$i" -lt "$FILLED" ]; then
+		BAR="${BAR}█"
+	elif [ "$i" -eq "$FILLED" ]; then
+		if [ "$REMAINDER" -ge 75 ]; then
+			BAR="${BAR}▓"
+		elif [ "$REMAINDER" -ge 50 ]; then
+			BAR="${BAR}▒"
+		elif [ "$REMAINDER" -ge 25 ]; then
+			BAR="${BAR}░"
+		else
+			BAR="${BAR}·"
+		fi
+	else
+		BAR="${BAR}·"
+	fi
 done
 
 # ─── Stats ───────────────────────────────────────────────────────────────────
@@ -135,14 +135,14 @@ LINE1="${S}${M}${V}"
 LINE2=" ${CTX}${DOT}${ART_FMT}${DOT}${SUB_FMT}${DOT}${BG_FMT}${DOT}${SB}"
 
 if [ "$COLS" -ge 120 ]; then
-  # Wide: single line
-  echo -e "${LINE1}${FG_GRAY}  │  ${R}${LINE2}"
+	# Wide: single line
+	echo -e "${LINE1}${FG_GRAY}  │  ${R}${LINE2}"
 elif [ "$COLS" -ge 80 ]; then
-  # Medium: two-line layout with border
-  echo -e "${FG_GRAY}╭─${R} ${LINE1}"
-  echo -e "${FG_GRAY}╰─${R}${LINE2}"
+	# Medium: two-line layout with border
+	echo -e "${FG_GRAY}╭─${R} ${LINE1}"
+	echo -e "${FG_GRAY}╰─${R}${LINE2}"
 else
-  # Narrow: compact two-line, minimal chrome
-  echo -e "${S}${M}"
-  echo -e "${CTX}${DOT}${BG_FMT}"
+	# Narrow: compact two-line, minimal chrome
+	echo -e "${S}${M}"
+	echo -e "${CTX}${DOT}${BG_FMT}"
 fi
