@@ -103,7 +103,7 @@ in
           ];
         };
         strata = {
-          baseUrl = "http://rtx5090:8080/v1";
+          baseUrl = "http://${agentsCfg.strataHost}:${toString agentsCfg.strataPort}/v1";
           api = "openai-completions";
           apiKey = "strata";
           compat = {
@@ -112,7 +112,7 @@ in
           };
           models = [
             {
-              id = "qwen3.8-flash-next-coder-iq1_m";
+              id = agentsCfg.strataModel;
               name = "Strata Coder IQ1_M (RTX 5090)";
               contextWindow = 131072;
               maxTokens = 16384;
@@ -158,7 +158,7 @@ in
           "deepseek/deepseek-v4-*"
           "gpt-6*"
           "t2t/ticos/auto"
-          "strata/qwen3.8-flash-next-coder-iq1_m"
+          "strata/${agentsCfg.strataModel}"
         ];
         packages = lib.mapAttrsToList (_: source: {
           source = "${source}";

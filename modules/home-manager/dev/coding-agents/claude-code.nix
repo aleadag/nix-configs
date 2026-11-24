@@ -9,13 +9,12 @@ let
   agentsCfg = config.home-manager.dev.coding-agents;
   cfg = agentsCfg.claude-code;
 
-  strataHost = "rtx5090";
-  strataBaseUrl = "http://${strataHost}:8080";
-  strataModel = "qwen3.8-flash-next-coder-iq1_m";
+  inherit (agentsCfg) strataHost strataModel;
+  strataBaseUrl = "http://${strataHost}:${toString agentsCfg.strataPort}";
 
   inherit (agentsCfg.permissions)
     allowedShellCommands
-    commonExternalDirectories
+    finalExternalDirectories
     commonNetworkDomains
     deniedShellCommands
     ;
@@ -35,7 +34,7 @@ let
   deniedBashPermissions = map (command: "Bash(${command}:*)") deniedShellCommands;
   # Claude Code matches file-path rules with `Edit(...)` only; `Write(<path>)`
   # rules never match, so the `Edit` form is what guards these directories.
-  readOnlyDirectoryPermissions = map (directory: "Edit(${directory}/**)") commonExternalDirectories;
+  readOnlyDirectoryPermissions = map (directory: "Edit(${directory}/**)") finalExternalDirectories;
 in
 {
   options.home-manager.dev.coding-agents.claude-code = {
@@ -69,7 +68,7 @@ in
         permissions = {
           allow = allowedBashPermissions ++ allowedNetworkPermissions ++ basicToolPermissions;
           deny = deniedBashPermissions ++ readOnlyDirectoryPermissions;
-          additionalDirectories = commonExternalDirectories;
+          additionalDirectories = finalExternalDirectories;
         };
         sandbox = {
           enabled = true;

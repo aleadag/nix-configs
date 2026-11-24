@@ -22,7 +22,7 @@ let
   captureWorkdir = "${config.xdg.stateHome}/agent-steward/agy-quota-workdir";
   inherit (agentsCfg.permissions)
     allowedShellCommands
-    commonExternalDirectories
+    finalExternalDirectories
     commonNetworkDomains
     deniedShellCommands
     ;
@@ -31,12 +31,14 @@ let
   allowedCommands = map (command: "command(${command})") allowedShellCommands;
   deniedCommands = map (command: "command(${command})") deniedShellCommands;
   allowedNetworkReads = map (domain: "read_url(${domain})") commonNetworkDomains;
-  allowedDirectoryPermissions = map (directory: "read_file(${directory})") commonExternalDirectories;
+  allowedDirectoryPermissions = map (directory: "read_file(${directory})") finalExternalDirectories;
   allowedWriteDirectoryPermissions = map (
     directory: "write_file(${directory})"
   ) allowedWriteDirectories;
-  deniedDirectoryPermissions = map (directory: "write_file(${directory})") commonExternalDirectories;
+  deniedDirectoryPermissions = map (directory: "write_file(${directory})") finalExternalDirectories;
 
+  # Upstream home-manager's antigravity-cli module hardcodes ~/.gemini (it ignores
+  # preferXdgDirectories), so skill command paths mirror that exactly.
   allowedSkillPatterns = lib.concatMap (
     rel:
     let

@@ -25,6 +25,7 @@ let
                 deniedShellCommands = [ "rm -rf /" ];
                 commonExternalDirectories = [ ];
                 commonNetworkDomains = [ ];
+                finalExternalDirectories = [ ];
                 finalAllowedWriteDirectories = [ ];
               };
             };

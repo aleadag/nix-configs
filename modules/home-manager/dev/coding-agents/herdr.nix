@@ -7,6 +7,22 @@
 
 let
   cfg = config.home-manager.dev.coding-agents.herdr;
+  herdrPackage = config.programs.herdr.package;
+
+  # Every plugin name this config has ever linked via cfg.plugins; unlink them
+  # all before relinking so stale links disappear after upgrades. Extend when
+  # new herdr plugins are shipped.
+  purgedPluginNames = [
+    "herdr-navigator"
+    "herdr.collie"
+    "herdr-beads"
+    "pi-herdr-subagents"
+    "steward-argv"
+    "agent-steward-router"
+    "agent-steward"
+    "agent-steward-approval"
+    "agent-steward-stop"
+  ];
 in
 {
   options.home-manager.dev.coding-agents.herdr = {
@@ -27,15 +43,9 @@ in
     };
 
     home.activation.unlinkHerdrPlugins = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      $DRY_RUN_CMD ${lib.getExe config.programs.herdr.package} plugin unlink herdr-navigator || true
-      $DRY_RUN_CMD ${lib.getExe config.programs.herdr.package} plugin unlink herdr.collie || true
-      $DRY_RUN_CMD ${lib.getExe config.programs.herdr.package} plugin unlink herdr-beads || true
-      $DRY_RUN_CMD ${lib.getExe config.programs.herdr.package} plugin unlink pi-herdr-subagents || true
-      $DRY_RUN_CMD ${lib.getExe config.programs.herdr.package} plugin unlink steward-argv || true
-      $DRY_RUN_CMD ${lib.getExe config.programs.herdr.package} plugin unlink agent-steward-router || true
-      $DRY_RUN_CMD ${lib.getExe config.programs.herdr.package} plugin unlink agent-steward || true
-      $DRY_RUN_CMD ${lib.getExe config.programs.herdr.package} plugin unlink agent-steward-approval || true
-      $DRY_RUN_CMD ${lib.getExe config.programs.herdr.package} plugin unlink agent-steward-stop || true
+      ${lib.concatMapStringsSep "\n" (name: ''
+        $DRY_RUN_CMD ${lib.getExe herdrPackage} plugin unlink ${name} || true
+      '') purgedPluginNames}
     '';
 
     home.activation.linkHerdrPlugins = lib.mkIf (cfg.plugins != [ ]) (

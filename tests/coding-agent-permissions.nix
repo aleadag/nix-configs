@@ -36,6 +36,14 @@ assert lib.assertMsg (
   ]
 ) "Agent directory contributions must merge with shared read-only directories";
 assert lib.assertMsg (
+  standalone.finalExternalDirectories == [ "/nix/store" ]
+  &&
+    contributed.finalExternalDirectories == [
+      "/agent/config"
+      "/nix/store"
+    ]
+) "Final external directories must be the deduplicated sorted merge of all contributions";
+assert lib.assertMsg (
   lib.elem "git push" standalone.deniedShellCommands
   && !(lib.elem "git push" standalone.allowedShellCommands)
 ) "Standalone permissions must retain command restrictions";

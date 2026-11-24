@@ -157,6 +157,10 @@ let
     ]
     ++ permCfg.extraAllowedWriteDirectories
   );
+
+  finalExternalDirectories = lib.sort builtins.lessThan (
+    lib.unique permCfg.commonExternalDirectories
+  );
 in
 {
   options.home-manager.dev.coding-agents.permissions = {
@@ -207,6 +211,13 @@ in
       description = "Shared external read-only directories contributed by enabled coding agents";
     };
 
+    finalExternalDirectories = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      internal = true;
+      readOnly = true;
+      description = "Deduplicated and sorted shared external read-only directories for consumers";
+    };
+
     finalAllowedWriteDirectories = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       internal = true;
@@ -220,6 +231,7 @@ in
       allowedShellCommands
       deniedShellCommands
       commonNetworkDomains
+      finalExternalDirectories
       ;
     commonExternalDirectories = [ "/nix/store" ];
     finalAllowedWriteDirectories = allowedWriteDirectories;

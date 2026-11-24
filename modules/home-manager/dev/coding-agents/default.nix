@@ -1,64 +1,13 @@
 {
   config,
   lib,
+  libEx,
   pkgs,
   ...
 }:
 
 let
   cfg = config.home-manager.dev.coding-agents;
-
-  scriptExtensions = [ "sh" ];
-  portableSkillScriptPathPattern = "[A-Za-z0-9._/-]+";
-
-  isScriptFile =
-    path:
-    let
-      fileName = baseNameOf path;
-      splitName = lib.splitString "." fileName;
-      ext = if builtins.length splitName > 1 then lib.last splitName else "";
-    in
-    lib.elem ext scriptExtensions && lib.hasPrefix "#!" (builtins.readFile path);
-
-  findScriptsInDir =
-    baseRel: dirPath:
-    if builtins.pathExists dirPath then
-      let
-        entries = builtins.readDir dirPath;
-        regularFiles = builtins.attrNames (lib.filterAttrs (_: type: type == "regular") entries);
-      in
-      lib.concatMap (
-        file:
-        let
-          fullPath = dirPath + "/${file}";
-          relPath = if baseRel == "" then file else "${baseRel}/${file}";
-        in
-        if isScriptFile fullPath then [ relPath ] else [ ]
-      ) regularFiles
-    else
-      [ ];
-
-  discoverSkillScripts =
-    skills:
-    lib.unique (
-      lib.concatLists (
-        lib.mapAttrsToList (
-          skillName: skillPath:
-          (findScriptsInDir skillName skillPath)
-          ++ (findScriptsInDir "${skillName}/scripts" (skillPath + "/scripts"))
-        ) skills
-      )
-    );
-
-  validateSkillScriptRelativePaths =
-    paths:
-    let
-      invalidPaths = lib.filter (path: builtins.match portableSkillScriptPathPattern path == null) paths;
-    in
-    if invalidPaths == [ ] then
-      paths
-    else
-      throw "Unsafe standalone skill script relative path(s): ${lib.concatStringsSep ", " invalidPaths}. Paths must contain only ASCII letters, digits, '.', '_', '-', and '/'.";
 
 in
 {
@@ -107,12 +56,30 @@ in
       description = "Shared coding agent context";
     };
 
+    strataHost = lib.mkOption {
+      type = lib.types.str;
+      default = "rtx5090";
+      description = "Hostname of the Strata model server shared by coding agents";
+    };
+
+    strataPort = lib.mkOption {
+      type = lib.types.port;
+      default = 8080;
+      description = "HTTP port of the Strata model server";
+    };
+
+    strataModel = lib.mkOption {
+      type = lib.types.str;
+      default = "qwen3.8-flash-next-coder-iq1_m";
+      description = "Model id served by the Strata model server";
+    };
+
   };
 
   config = lib.mkMerge [
     {
-      home-manager.dev.coding-agents.skillScriptRelativePaths = validateSkillScriptRelativePaths (
-        discoverSkillScripts cfg.skills
+      home-manager.dev.coding-agents.skillScriptRelativePaths = libEx.validateSkillScriptRelativePaths (
+        libEx.discoverSkillScripts cfg.skills
       );
     }
     (lib.mkIf cfg.enable {
