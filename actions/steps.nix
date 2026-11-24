@@ -61,8 +61,7 @@ rec {
 
   validateFlakesStep = {
     name = "Validate Flakes";
-    continue-on-error = true;
-    run = "nix flake check --all-systems --option abort-on-warn true ${toString sharedNixFlags}";
+    run = "nix flake check --option abort-on-warn true ${toString sharedNixFlags}";
   };
 
   buildNixDarwinConfigurations =
