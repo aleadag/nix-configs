@@ -84,7 +84,6 @@ in
         ]
         ++ (lib.optionals stdenv.hostPlatform.isLinux [
           bluetui
-          rustnet
         ]);
 
       sessionVariables = {
