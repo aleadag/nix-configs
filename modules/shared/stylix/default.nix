@@ -107,6 +107,16 @@ in
     // lib.optionalAttrs (options ? stylix.targets.rofi) {
       targets.rofi.enable = false;
     }
+    // lib.optionalAttrs (options ? stylix.targets.gtksourceview) {
+      # Stylix's gtksourceview target is a *package overlay* (overrideAttrs postFixup
+      # that installs stylix.xml into share/gtksourceview-<ver>/styles). That changes
+      # gtksourceview's drv hash, so cache.nixos.org can no longer serve it, nor
+      # anything downstream of it: inkscape depends on gtksourceview4 and was rebuilt
+      # from source for 32 minutes in every update-flakes run.
+      # gtksourceview already reads ~/.local/share/gtksourceview-<ver>/styles, so the
+      # theme can be delivered as a plain XDG file instead of a package rebuild.
+      targets.gtksourceview.enable = false;
+    }
     // lib.optionalAttrs (options ? stylix.homeManagerIntegration) {
       # NixOS-specific: disable home-manager integration
       homeManagerIntegration.autoImport = false;
