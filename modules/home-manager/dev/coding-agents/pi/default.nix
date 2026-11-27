@@ -115,7 +115,7 @@ in
               id = agentsCfg.strataModel;
               name = "Strata Coder IQ1_M (RTX 5090)";
               contextWindow = 262144;
-              maxTokens = 16384;
+              maxTokens = 32768;
               input = [
                 "text"
                 "image"
